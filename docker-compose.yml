@@ -8,6 +8,7 @@ services:
             - "8080:8080" # Aplikasi Laravel pada port 8080
         volumes:
             - ./:/var/www/html:delegated
+            - ./app/Http/Middleware:/var/www/html/app/Http/Middleware  # Mount spesifik
         depends_on:
             - db
             - redis
