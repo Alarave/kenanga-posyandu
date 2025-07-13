@@ -36,7 +36,7 @@
 
 ### 2.2 **Buat Migration**
 
-- [ ]  Buat migration untuk tabel-tabel yang diperlukan:
+- [X]  Buat migration untuk tabel-tabel yang diperlukan:
 
   - Users
   - Posyandu
@@ -46,11 +46,11 @@
   - Article
   - MedicalRecord
   - Pedukuhan
-- [ ]  Jalankan `docker-compose exec app php artisan migrate` untuk membuat tabel di database yang berjalan di container.
+- [X]  Jalankan `docker-compose exec app php artisan migrate` untuk membuat tabel di database yang berjalan di container.
 
 ### 2.3 **Buat Seeder**
 
-- [ ]  Buat seeder untuk mengisi data dummy ke dalam tabel:
+- [X]  Buat seeder untuk mengisi data dummy ke dalam tabel:
 
   - UserSeeder
   - PosyanduSeeder
@@ -59,11 +59,11 @@
   - ArticleSeeder
   - MedicalRecordSeeder
   - PedukuhanSeeder
-- [ ]  Jalankan `docker-compose exec app php artisan db:seed` untuk mengisi data awal.
+- [X]  Jalankan `docker-compose exec app php artisan db:seed` untuk mengisi data awal.
 
 ### 2.4 **Buat Factory (Opsional)**
 
-- [ ]  Jika menggunakan data dummy secara otomatis, buat factory untuk model (misalnya `docker-compose exec app php artisan make:factory`).
+- [X]  Jika menggunakan data dummy secara otomatis, buat factory untuk model (misalnya `docker-compose exec app php artisan make:factory`).
 
 ---
 
@@ -71,7 +71,7 @@
 
 ### 3.1 **Buat Models**
 
-- [ ]  Buat model untuk setiap entitas yang terhubung ke tabel database:
+- [X]  Buat model untuk setiap entitas yang terhubung ke tabel database:
 
   - **User**
   - **Posyandu**
