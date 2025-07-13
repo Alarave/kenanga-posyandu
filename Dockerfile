@@ -45,5 +45,5 @@ RUN composer install --no-dev --optimize-autoloader
 # Expose port yang digunakan oleh aplikasi Laravel
 EXPOSE 8080
 
-# Command untuk menjalankan aplikasi Laravel
-CMD ["php-fpm"]
+# Perintah untuk menjalankan Laravel dan frontend secara bersamaan di background
+CMD ["bash", "-c", "php artisan serve --host=0.0.0.0 --port=8080 & npm run dev & tail -f /dev/null"]

@@ -4,25 +4,25 @@
 
 ### 1.1 **Setup Docker**
 
--   [ ] Buat **Dockerfile** untuk aplikasi:
+-   [x] Buat **Dockerfile** untuk aplikasi:
 
     -   Gunakan image dasar PHP, Nginx, Composer, dan Node.js.
     -   Instal PHP, Composer, Node.js, dan dependensi lainnya.
     -   Salin aplikasi ke dalam container dan jalankan `composer install` serta `npm install`.
     -   Tentukan port dan expose di Dockerfile untuk menjalankan aplikasi di port 8080.
 
--   [ ] Buat **docker-compose.yml** untuk mengelola container:
+-   [x] Buat **docker-compose.yml** untuk mengelola container:
 
     -   Tentukan service untuk aplikasi, database (PostgreSQL), Redis, dan Nginx.
     -   Tentukan volume untuk menyimpan data aplikasi dan database.
 
--   [ ] Sesuaikan **Nginx configuration** di **nginx/default.conf** untuk aplikasi Laravel.
--   [ ] Jalankan perintah `docker-compose up --build` untuk membangun dan menjalankan container.
--   [ ] Pastikan aplikasi berjalan di `http://localhost:8080`.
+-   [x] Sesuaikan **Nginx configuration** di **nginx/default.conf** untuk aplikasi Laravel.
+-   [x] Jalankan perintah `docker-compose up --build` untuk membangun dan menjalankan container.
+-   [x] Pastikan aplikasi berjalan di `http://localhost:8080`.
 
 ### 1.2 **Setup Versi Kontrol dan CI/CD**
 
--   [ ] Inisialisasi Git (jika belum).
+-   [x] Inisialisasi Git (jika belum).
 -   [ ] Buat repositori di GitHub dan push proyek ke repositori tersebut.
 -   [ ] Sesuaikan konfigurasi GitHub Actions di folder `.github/workflows` untuk CI/CD.
 
