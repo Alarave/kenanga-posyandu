@@ -85,8 +85,9 @@
 │   ├── css
 │   │   └── app.css                      # File CSS utama untuk font dan warna global
 │   ├── js                               # Folder untuk file JavaScript
-│   └── images                           # Folder untuk gambar statis yang jarang berubah
-│       ├── (empty or minimal if no local images needed)
+│   └── storage                           # Folder untuk penyimpanan statis yang jarang berubah
+│   │   ├── icons                        # Folder untuk ikon statis yang jarang berubah
+│   │   └── images                     # Folder untuk gambar statis yang jarang berubah
 ├── resources
 │   ├── sass
 │   │   ├── app.scss                     # SCSS utama yang memuat variabel font dan warna
@@ -159,6 +160,16 @@
 │   │   │   ├── alert.blade.php          # Komponen alert untuk pesan error/sukses
 │   │   │   ├── search-bar.blade.php     # Komponen pencarian
 │   │   │   ├── notifications.blade.php  # Komponen untuk menampilkan notifikasi
+│   │   │   ├── button.blade.php         # Komponen button reusable (primary, secondary, outline, disabled)
+│   │   │   ├── tooltip.blade.php        # Komponen tooltip
+│   │   │   ├── card.blade.php           # Komponen card untuk menampilkan informasi
+│   │   │   ├── table.blade.php          # Komponen table untuk data dengan sorting dan pagination
+│   │   │   ├── progress-bar.blade.php   # Komponen progress bar
+│   │   │   ├── rating.blade.php         # Komponen rating (star rating)
+│   │   │   ├── switch.blade.php         # Komponen switch (toggle)
+│   │   │   ├── tabs.blade.php           # Komponen tabbed navigation
+│   │   │   ├── avatar.blade.php         # Komponen avatar untuk profil
+│   │   │   └── dropdown.blade.php       # Komponen dropdown menu
 │   │   ├── layouts
 │   │   │   ├── app.blade.php            # Layout utama (memuat sidebar, navbar, footer)
 │   │   │   ├── guest.blade.php          # Layout untuk pengguna tamu (login, register)
@@ -172,6 +183,7 @@
 │   ├── notifications                   # Folder untuk tampilan notifikasi
 │   │   ├── info.blade.php              # Tampilan untuk notifikasi informasi
 │   │   ├── success.blade.php           # Tampilan untuk notifikasi sukses
+│   │   ├── warning.blade.php           # Tampilan untuk notifikasi warning
 │   │   └── error.blade.php             # Tampilan untuk notifikasi error
 ├── routes
 │   ├── api.php
@@ -215,3 +227,4 @@
 * **Notifications**: Menyediakan notifikasi untuk pengguna aplikasi, seperti notifikasi sukses atau error.
 
 Struktur ini telah diatur agar setiap bagian aplikasi dapat dikembangkan dan dipelihara dengan mudah, memungkinkan fleksibilitas dalam penambahan fitur atau pembaruan.
+
