@@ -2,114 +2,115 @@
 
 ```
 /posyandu
-├── .github                        # Folder untuk konfigurasi GitHub Actions
-│   └── workflows                  # File workflow untuk GitHub Actions
+├── .github                        # GitHub Actions configuration
+│   └── workflows                  # GitHub Actions workflow files
 ├── app
-│   ├── Console                     # Folder untuk Artisan Commands (perintah custom dari Artisan CLI)
-│   ├── Exceptions                  # Folder untuk menangani exceptions (error)
+│   ├── Console                     # Custom Artisan commands
+│   ├── Exceptions                  # Error handling
 │   ├── Http
-│   │   ├── Controllers             # Folder untuk Controller yang menangani request dan response
-│   │   │   ├── UserController.php       # Controller untuk aksi terkait User (manajemen user) memiliki role 'superadmin', 'admin', 'coordinator', 'staff', 'medical', 'patient', 'partner'
-│   │   │   ├── PatientController.php     # Controller untuk mengelola data pasien (CRUD)
-│   │   │   ├── ScheduleController.php    # Controller untuk mengelola jadwal (CRUD)
-│   │   │   ├── GalleryController.php     # Controller untuk mengelola galeri gambar (CRUD)
-│   │   │   ├── ArticleController.php     # Controller untuk mengelola artikel (CRUD)
-│   │   │   ├── MedicalRecordController.php # Controller untuk mengelola catatan medis (CRUD)
-│   │   │   ├── PosyanduController.php    # Controller untuk mengelola data Posyandu (CRUD)
-│   │   │   └── PedukuhanController.php   # Controller untuk mengelola data Pedukuhan
-│   │   ├── Livewire                   # Folder untuk Livewire component
-│   │   │   ├── UserDashboard.php         # Komponen Livewire untuk Dashboard User (pengelolaan user) memiliki role 'superadmin', 'admin', 'coordinator', 'staff', 'medical', 'patient', 'partner'
-│   │   │   ├── PatientManagement.php     # Komponen Livewire untuk mengelola pasien
-│   │   │   ├── ScheduleManagement.php    # Komponen Livewire untuk mengelola jadwal
-│   │   │   ├── GalleryManagement.php     # Komponen Livewire untuk mengelola galeri
-│   │   │   ├── ArticleManagement.php     # Komponen Livewire untuk mengelola artikel
-│   │   │   ├── MedicalRecordManagement.php # Komponen Livewire untuk mengelola catatan medis
-│   │   │   ├── PedukuhanManagement.php   # Komponen Livewire untuk mengelola Pedukuhan
-│   │   │   └── SearchComponent.php       # Komponen Livewire untuk pencarian dinamis
-│   │   ├── Middleware                 # Folder untuk middleware (fungsi perantara)
-│   │   │   ├── UserMiddleware.php       # Middleware untuk akses User (akses terbatas) memiliki role 'superadmin', 'admin', 'coordinator', 'staff', 'medical', 'patient', 'partner'
-│   │   │   ├── PatientMiddleware.php     # Middleware untuk akses data pasien (akses terbatas)
-│   │   │   ├── Authenticate.php         # Middleware untuk otentikasi (login, autentikasi pengguna)
-│   │   │   ├── CheckUserStatus.php      # Middleware untuk memeriksa status akun pengguna (aktif/tidak aktif)
-│   │   │   ├── VerifyEmailMiddleware.php # Middleware untuk verifikasi email pengguna
-│   │   │   └── PedukuhanMiddleware.php   # Middleware untuk akses data Pedukuhan
-│   │   └── Requests                    # Folder untuk file validasi request (menjaga integritas data)
-│   │       ├── UserRequest.php          # Validasi data User memiliki role 'superadmin', 'admin', 'coordinator', 'staff', 'medical', 'patient', 'partner'
-│   │       ├── PatientRequest.php        # Validasi data pasien
-│   │       ├── ScheduleRequest.php       # Validasi data jadwal
-│   │       ├── GalleryRequest.php        # Validasi data galeri
-│   │       ├── ArticleRequest.php        # Validasi data artikel
-│   │       ├── MedicalRecordRequest.php  # Validasi data catatan medis
-│   │       └── PedukuhanRequest.php      # Validasi data Pedukuhan
-│   ├── Models                          # Folder untuk model (struktur data yang terhubung dengan database)
-│   │   ├── User.php                      # Model untuk User, mewakili data pengguna aplikasi memiliki role 'superadmin', 'admin', 'coordinator', 'staff', 'medical', 'patient', 'partner'
-│   │   ├── Posyandu.php                 # Model untuk Posyandu, mewakili data posyandu
-│   │   ├── Pedukuhan.php                # Model untuk Pedukuhan, mewakili data pedukuhan
-│   │   ├── Schedule.php                 # Model untuk Jadwal, mewakili data jadwal layanan
-│   │   ├── Gallery.php                  # Model untuk Galeri, mewakili data galeri gambar
-│   │   ├── Patient.php                  # Model untuk Pasien, mewakili data pasien
-│   │   ├── Article.php                  # Model untuk Artikel, mewakili data artikel edukasi
-│   │   ├── MedicalRecord.php            # Model untuk Catatan Medis, mewakili data catatan medis pasien
-│   ├── Providers                       # Folder untuk Service Provider (pengaturan dan penyedia layanan aplikasi)
-│   ├── Services                        # Folder untuk Services (logika bisnis aplikasi)
-│   └── Policies                        # Folder untuk policy (kebijakan akses dan kontrol aplikasi)
-├── bootstrap                         # Folder untuk bootstrap aplikasi (pengaturan awal aplikasi)
+│   │   ├── Controllers             # Controllers handling requests and responses
+│   │   │   ├── Auth
+│   │   │   │   └── VerifyEmailController.php
+│   │   │   ├── UserController.php       # Manages user actions for 'superadmin', 'admin', etc.
+│   │   │   ├── PatientController.php     # Manages patient data (CRUD)
+│   │   │   ├── ScheduleController.php    # Manages schedules (CRUD)
+│   │   │   ├── GalleryController.php     # Manages gallery images (CRUD)
+│   │   │   ├── ArticleController.php     # Manages articles (CRUD)
+│   │   │   ├── MedicalRecordController.php # Manages medical records (CRUD)
+│   │   │   ├── PosyanduController.php    # Manages Posyandu data (CRUD)
+│   │   │   └── PedukuhanController.php   # Manages Pedukuhan data
+│   │   ├── Middleware                 # Middleware for request filtering and authentication
+│   │   │   ├── UserMiddleware.php       # User access control based on roles
+│   │   │   ├── PatientMiddleware.php     # Patient access control
+│   │   │   ├── Authenticate.php         # Authentication middleware
+│   │   │   ├── CheckUserStatus.php      # Checks user status (active/inactive)
+│   │   │   ├── VerifyEmailMiddleware.php # Verifies email middleware
+│   │   │   └── PedukuhanMiddleware.php   # Pedukuhan data access control
+│   │   └── Requests                    # Request validation
+│   │       ├── UserRequest.php          # User data validation
+│   │       ├── PatientRequest.php        # Patient data validation
+│   │       ├── ScheduleRequest.php       # Schedule data validation
+│   │       ├── GalleryRequest.php        # Gallery data validation
+│   │       ├── ArticleRequest.php        # Article data validation
+│   │       ├── MedicalRecordRequest.php  # Medical record data validation
+│   │       └── PedukuhanRequest.php      # Pedukuhan data validation
+│   ├── Livewire                   # Livewire components
+│   │   ├── Action
+│   │   │   └── Logout.php
+│   │   ├── UserDashboard.php         # User Dashboard for management
+│   │   ├── PatientManagement.php     # Manages patient data dynamically
+│   │   ├── ScheduleManagement.php    # Manages schedules dynamically
+│   │   ├── GalleryManagement.php     # Manages gallery dynamically
+│   │   ├── ArticleManagement.php     # Manages articles dynamically
+│   │   ├── MedicalRecordManagement.php # Manages medical records dynamically
+│   │   ├── PedukuhanManagement.php   # Manages Pedukuhan dynamically
+│   │   └── SearchComponent.php       # Dynamic search component
+│   ├── Models                          # Eloquent models for database interaction
+│   │   ├── User.php                      # User model
+│   │   ├── Posyandu.php                 # Posyandu model
+│   │   ├── Pedukuhan.php                # Pedukuhan model
+│   │   ├── Schedule.php                 # Schedule model
+│   │   ├── Gallery.php                  # Gallery model
+│   │   ├── Patient.php                  # Patient model
+│   │   ├── Article.php                  # Article model
+│   │   ├── MedicalRecord.php            # Medical record model
+│   ├── Providers                       # Service providers
+│   ├── Services                        # Business logic services
+│   └── Policies                        # Access control policies
+├── bootstrap                         # Application bootstrap files
 ├── config
-│   ├── app.php                         # File konfigurasi aplikasi (pengaturan umum)
-│   ├── auth.php                         # File konfigurasi autentikasi (login, register)
-│   ├── database.php                     # File konfigurasi database
-│   ├── livewire.php                     # File konfigurasi Livewire
-│   ├── volt.php                         # File konfigurasi integrasi Volt (untuk frontend)
-│   └── filesystems.php                  # File konfigurasi untuk cloud storage (Backblaze B2)
+│   ├── app.php                         # General app configuration
+│   ├── auth.php                         # Authentication configuration
+│   ├── database.php                     # Database configuration
+│   ├── livewire.php                     # Livewire configuration
+│   ├── volt.php                         # Frontend Volt integration configuration
+│   └── filesystems.php                  # Cloud storage configuration (Backblaze B2)
 ├── database
-│   ├── migrations                     # Folder untuk migration (struktur tabel database)
-│   │   ├── create_users_table.php       # Migration untuk tabel users memiliki role 'superadmin', 'admin', 'coordinator', 'staff', 'medical', 'patient', 'partner'
-│   │   ├── create_posyandus_table.php   # Migration untuk tabel posyandu
-│   │   ├── create_schedules_table.php   # Migration untuk tabel jadwal
-│   │   ├── create_galleries_table.php   # Migration untuk tabel galeri
-│   │   ├── create_patients_table.php    # Migration untuk tabel pasien
-│   │   ├── create_articles_table.php    # Migration untuk tabel artikel
-│   │   ├── create_medical_records_table.php # Migration untuk tabel catatan medis
-│   │   ├── create_pedukuhans_table.php  # Migration untuk tabel pedukuhan (penambahan)
-│   ├── factories                       # Folder untuk factory data palsu (dummy data)
-│   └── seeders                         # Folder untuk seeders (untuk mengisi data awal)
-│   │   ├── UserSeeder.php               # Seeder untuk tabel users
-│   │   ├── PosyanduSeeder.php           # Seeder untuk tabel posyandu
-│   │   ├── PedukuhanSeeder.php          # Seeder untuk tabel pedukuhan
-│   │   ├── ScheduleSeeder.php           # Seeder untuk tabel jadwal
-│   │   ├── GallerySeeder.php            # Seeder untuk tabel galeri
-│   │   ├── ArticleSeeder.php            # Seeder untuk tabel artikel
-│   │   ├── MedicalRecordSeeder.php      # Seeder untuk tabel catatan medis
-│   │   └── DatabaseSeeder.php           # Seeder utama yang memanggil semua seeder individual
+│   ├── migrations                     # Database migration files
+│   │   ├── create_users_table.php       # Users table migration
+│   │   ├── create_posyandus_table.php   # Posyandu table migration
+│   │   ├── create_schedules_table.php   # Schedules table migration
+│   │   ├── create_galleries_table.php   # Galleries table migration
+│   │   ├── create_patients_table.php    # Patients table migration
+│   │   ├── create_articles_table.php    # Articles table migration
+│   │   ├── create_medical_records_table.php # Medical records table migration
+│   │   ├── create_pedukuhans_table.php  # Pedukuhan table migration
+│   ├── factories                       # Dummy data factory files
+│   └── seeders                         # Seeder files for initial data
+│   │   ├── UserSeeder.php               # UserSeeder for filling user data
+│   │   ├── PosyanduSeeder.php           # PosyanduSeeder for filling Posyandu data
+│   │   ├── PedukuhanSeeder.php          # PedukuhanSeeder for filling Pedukuhan data
+│   │   ├── ScheduleSeeder.php           # ScheduleSeeder for filling schedule data
+│   │   ├── GallerySeeder.php            # GallerySeeder for filling gallery data
+│   │   ├── ArticleSeeder.php            # ArticleSeeder for filling article data
+│   │   ├── MedicalRecordSeeder.php      # MedicalRecordSeeder for filling medical records data
+│   │   └── DatabaseSeeder.php           # Main seeder to call individual seeders
 ├── public
 │   ├── css
-│   │   └── app.css                      # File CSS utama untuk font dan warna global
-│   ├── js                               # Folder untuk file JavaScript
-│   └── storage                           # Folder untuk penyimpanan statis yang jarang berubah
-│   │   ├── icons                        # Folder untuk ikon statis yang jarang berubah
-│   │   └── images                     # Folder untuk gambar statis yang jarang berubah
+│   │   └── app.css                      # Global CSS
+│   ├── js                               # JavaScript files
+│   └── storage                           # Static storage for images, icons
+│   │   ├── icons                        # Static icons
+│   │   └── images                       # Static images
 ├── resources
-│   ├── sass
-│   │   ├── app.scss                     # SCSS utama yang memuat variabel font dan warna
-│   │   └── _variables.scss              # File untuk mendefinisikan variabel warna dan font
 │   ├── views
 │   │   ├── auth
-│   │   │   ├── login.blade.php          # View untuk halaman login
-│   │   │   ├── register.blade.php       # View untuk halaman register
-│   │   │   ├── reset-password.blade.php # Halaman untuk reset password
-│   │   │   ├── verify-email.blade.php   # Halaman verifikasi email
-│   │   │   └── confirm-password.blade.php   # Halaman konfirmasi password
+│   │   │   ├── login.blade.php          # Login page view
+│   │   │   ├── register.blade.php       # Register page view
+│   │   │   ├── reset-password.blade.php # Reset password page view
+│   │   │   ├── verify-email.blade.php   # Email verification page view
+│   │   │   └── confirm-password.blade.php   # Password confirmation page view
 │   │   ├── livewire
-│   │   │   ├── admin-dashboard.blade.php # Komponen Livewire untuk dashboard admin
-│   │   │   ├── patient-management.blade.php # Komponen Livewire untuk mengelola pasien
-│   │   │   ├── schedule-management.blade.php # Komponen Livewire untuk mengelola jadwal
-│   │   │   ├── gallery-management.blade.php # Komponen Livewire untuk mengelola galeri
-│   │   │   ├── article-management.blade.php # Komponen Livewire untuk mengelola artikel
-│   │   │   ├── medical-record-management.blade.php # Komponen Livewire untuk mengelola catatan medis
-│   │   │   ├── pedukuhan-management.blade.php # Komponen Livewire untuk mengelola Pedukuhan
-│   │   │   └── search.blade.php           # Komponen Livewire untuk pencarian dinamis
+│   │   │   ├── admin-dashboard.blade.php # Admin Dashboard
+│   │   │   ├── patient-management.blade.php # Patient management view
+│   │   │   ├── schedule-management.blade.php # Schedule management view
+│   │   │   ├── gallery-management.blade.php # Gallery management view
+│   │   │   ├── article-management.blade.php # Article management view
+│   │   │   ├── medical-record-management.blade.php # Medical record management view
+│   │   │   ├── pedukuhan-management.blade.php # Pedukuhan management view
+│   │   │   └── search.blade.php           # Search view
 │   │   ├── admin
-│   │   │   ├── dashboard.blade.php       # Halaman utama Dashboard Admin
+│   │   │   ├── dashboard.blade.php       # Admin Dashboard main page
 │   │   │   ├── patient-management
 │   │   │   │   ├── index.blade.php      # Daftar pasien
 │   │   │   │   ├── create.blade.php     # Formulir untuk menambah pasien
@@ -185,6 +186,9 @@
 │   │   ├── success.blade.php           # Tampilan untuk notifikasi sukses
 │   │   ├── warning.blade.php           # Tampilan untuk notifikasi warning
 │   │   └── error.blade.php             # Tampilan untuk notifikasi error
+│   ├── errors
+│   │   ├── 404.blade.php               # Custom 404 error page
+│   │   └── 500.blade.php               # Custom 500 error page
 ├── routes
 │   ├── api.php
 │   ├── channels.php
