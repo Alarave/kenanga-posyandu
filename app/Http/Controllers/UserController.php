@@ -6,8 +6,10 @@ use App\Models\User;
 use App\Http\Requests\UserRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
+use \Illuminate\Support\Facades\Auth;
 
 class UserController extends BaseController
 {
@@ -20,7 +22,7 @@ class UserController extends BaseController
     /**
      * Display a listing of users by role
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $role = $request->query('role');
         $users = User::when($role, fn($q) => $q->where('role', $role))
@@ -33,7 +35,7 @@ class UserController extends BaseController
     /**
      * Show form to create a new user
      */
-    public function create()
+    public function create(): View
     {
         $roles = ['admin', 'coordinator', 'staff', 'medical', 'patient', 'partner'];
         return view('admin.user-management.create', compact('roles'));
@@ -42,7 +44,7 @@ class UserController extends BaseController
     /**
      * Store new user
      */
-    public function store(UserRequest $request)
+    public function store(UserRequest $request): RedirectResponse
     {
         $data = $request->validated();
         $data['password'] = Hash::make($data['password']);
@@ -56,7 +58,7 @@ class UserController extends BaseController
     /**
      * Show user details
      */
-    public function show(User $user)
+    public function show(User $user): View
     {
         return view('admin.user-management.show', compact('user'));
     }
@@ -64,7 +66,7 @@ class UserController extends BaseController
     /**
      * Edit user
      */
-    public function edit(User $user)
+    public function edit(User $user): View
     {
         $roles = ['admin', 'coordinator', 'staff', 'medical', 'patient', 'partner'];
         return view('admin.user-management.edit', compact('user', 'roles'));
@@ -73,7 +75,7 @@ class UserController extends BaseController
     /**
      * Update user
      */
-    public function update(UserRequest $request, User $user)
+    public function update(UserRequest $request, User $user): RedirectResponse
     {
         $data = $request->validated();
         
@@ -92,7 +94,7 @@ class UserController extends BaseController
     /**
      * Deactivate user
      */
-    public function deactivate(User $user)
+    public function deactivate(User $user): RedirectResponse
     {
         $user->update(['is_active' => false]);
 
@@ -102,7 +104,7 @@ class UserController extends BaseController
     /**
      * Activate user
      */
-    public function activate(User $user)
+    public function activate(User $user): RedirectResponse
     {
         $user->update(['is_active' => true]);
 
@@ -112,17 +114,17 @@ class UserController extends BaseController
     /**
      * Show user profile
      */
-    public function profile()
+    public function profile(): View
     {
-        return view('profile', ['user' => \Illuminate\Support\Facades\Auth::user()]);
+        return view('profile', ['user' => Auth::user()]);
     }
 
     /**
      * Update user profile
      */
-    public function updateProfile(Request $request)
+    public function updateProfile(Request $request): RedirectResponse
     {
-        $user = \App\Models\User::findOrFail(\Illuminate\Support\Facades\Auth::id());
+        $user = User::findOrFail(Auth::id());
         $data = $request->validate([
             'name' => 'required',
             'email' => "required|email|unique:users,email,{$user->id}",
@@ -136,15 +138,15 @@ class UserController extends BaseController
     /**
      * Change password
      */
-    public function changePassword(Request $request)
+    public function changePassword(Request $request): RedirectResponse
     {
         $request->validate([
             'current_password' => 'required',
             'new_password' => 'required|min:8|confirmed',
         ]);
 
-        $authUser = \Illuminate\Support\Facades\Auth::user();
-        $user = \App\Models\User::findOrFail($authUser->id);
+        $authUser = Auth::user();
+        $user = User::findOrFail($authUser->id);
 
         if (!Hash::check($request->input('current_password'), (string) $user->password)) {
             return back()->withErrors(['current_password' => 'Incorrect password']);

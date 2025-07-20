@@ -14,7 +14,7 @@ class ArticleController extends BaseController
 {
     public function __construct()
     {
-        $this->middleware(['auth', 'admin'])->except(['index', 'show']);
+        $this->middleware(['auth', 'user:admin'])->except(['index', 'show']);
     }
 
     public function index()

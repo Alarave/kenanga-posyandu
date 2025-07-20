@@ -13,7 +13,7 @@ class ScheduleController extends BaseController
 {
     public function __construct()
     {
-        $this->middleware(['auth', 'admin']);
+        $this->middleware(['auth', 'user:admin']);
     }
 
     public function index()

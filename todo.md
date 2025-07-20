@@ -122,9 +122,9 @@
 
 ### 5.2 Set up Autentikasi
 
-- [ ] Gunakan php artisan make:auth untuk membuat sistem login dan registrasi. (tidak digunakan karena sudah ada laravel build authentication)
-- [ ] Sesuaikan pengaturan autentikasi di routes/auth.php.
-- [ ] Sesuaikan pengaturan otentikasi di config/auth.php.
+- [X] Gunakan php artisan make:auth untuk membuat sistem login dan registrasi. (tidak digunakan karena sudah ada laravel build authentication)
+- [X] Sesuaikan pengaturan autentikasi di routes/auth.php.
+- [X] Sesuaikan pengaturan otentikasi di config/auth.php.
 
 ## 6. Livewire Components (Pengelolaan Dinamis)
 

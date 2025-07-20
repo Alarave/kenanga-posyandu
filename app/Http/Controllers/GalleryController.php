@@ -9,11 +9,12 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Auth;
 
+
 class GalleryController extends BaseController
 {
     public function __construct()
     {
-        $this->middleware(['auth', 'admin']);
+        $this->middleware(['auth', 'user:admin']);
     }
 
     public function index()

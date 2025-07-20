@@ -8,27 +8,29 @@ use App\Http\Requests\PosyanduRequest;
 use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class PosyanduController extends BaseController
 {
     public function __construct()
     {
-        $this->middleware(['auth', 'admin']);
+        $this->middleware(['auth', 'user:admin']);
     }
 
-    public function index()
+    public function index(): View
     {
         $posyandus = Posyandu::with('pedukuhan')->latest()->get();
         return view('admin.posyandu-management.index', compact('posyandus'));
     }
 
-    public function create()
+    public function create(): View
     {
         $pedukuhans = Pedukuhan::all();
         return view('admin.posyandu-management.create', compact('pedukuhans'));
     }
 
-    public function store(PosyanduRequest $request)
+    public function store(PosyanduRequest $request): RedirectResponse
     {
         $data = $request->validated();
         
@@ -42,19 +44,19 @@ class PosyanduController extends BaseController
             ->with('success', 'Posyandu berhasil didaftarkan');
     }
 
-    public function show(Posyandu $posyandu)
+    public function show(Posyandu $posyandu): View
     {
         $posyandu->load(['pedukuhan', 'schedules', 'patients']);
         return view('admin.posyandu-management.show', compact('posyandu'));
     }
 
-    public function edit(Posyandu $posyandu)
+    public function edit(Posyandu $posyandu): View
     {
         $pedukuhans = Pedukuhan::all();
         return view('admin.posyandu-management.edit', compact('posyandu', 'pedukuhans'));
     }
 
-    public function update(PosyanduRequest $request, Posyandu $posyandu)
+    public function update(PosyanduRequest $request, Posyandu $posyandu): RedirectResponse
     {
         $data = $request->validated();
         
@@ -69,7 +71,7 @@ class PosyanduController extends BaseController
             ->with('success', 'Data posyandu berhasil diupdate');
     }
 
-    public function destroy(Posyandu $posyandu)
+    public function destroy(Posyandu $posyandu): RedirectResponse
     {
         if ($posyandu->logo_photo) {
             Storage::delete($posyandu->logo_photo);
