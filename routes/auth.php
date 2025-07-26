@@ -28,8 +28,13 @@ Route::middleware('auth')->group(function () {
 
     // Rute untuk verifikasi email
     Route::get('verify-email/{id}/{hash}', VerifyEmailController::class)
-        ->middleware(['signed', 'throttle:6,1'])
+        ->middleware(['auth', 'signed', 'throttle:6,1'])
         ->name('verification.verify');
+
+    // Rute untuk mengirim ulang link verifikasi email
+    Route::post('email/verification-notification', [VerifyEmailController::class, 'resend'])
+        ->middleware(['auth', 'throttle:6,1'])
+        ->name('verification.resend');
 
     // Halaman konfirmasi password (untuk pengguna yang sudah login)
     Volt::route('confirm-password', 'auth.confirm-password')
