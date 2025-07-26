@@ -10,19 +10,22 @@
 │   ├── Http
 │   │   ├── Controllers             # Controllers handling requests and responses
 │   │   │   ├── Admin
-│   │   │   │   ├── UserController.php       # Manages user actions for 'superadmin', 'admin', etc.
-│   │   │   │   ├── PatientController.php     # Manages patient data (CRUD)
-│   │   │   │   ├── ScheduleController.php    # Manages schedules (CRUD)
-│   │   │   │   ├── GalleryController.php     # Manages gallery images (CRUD)
-│   │   │   │   ├── ArticleController.php     # Manages articles (CRUD)
-│   │   │   │   ├── MedicalRecordController.php # Manages medical records (CRUD)
-│   │   │   │   ├── PosyanduController.php    # Manages Posyandu data (CRUD)
-│   │   │   │   └── PedukuhanController.php   # Manages Pedukuhan data
-│   │   │   ├──Auth
-│   │   │   │   ├──
-│   │   │       └── VerifyEmailController.php
-│   │   │   ├── Controller.php
-│   │   │   └── Dashboard.php
+│   │   │   │   ├── ArticleController.php         # Manages articles (CRUD)
+│   │   │   │   ├── GalleryController.php         # Manages gallery images (CRUD)
+│   │   │   │   ├── MedicalRecordController.php   # Manages medical records (CRUD)
+│   │   │   │   ├── PatientController.php         # Manages patient data (CRUD)
+│   │   │   │   ├── PedukuhanController.php       # Manages Pedukuhan data (CRUD)
+│   │   │   │   ├── PosyanduController.php        # Manages Posyandu data (CRUD)
+│   │   │   │   ├── ScheduleController.php        # Manages schedules (CRUD)
+│   │   │   │   └── UserController.php            # Manages user actions for 'superadmin', 'admin', etc.
+│   │   │   ├── Auth
+│   │   │   │   ├── ConfirmPasswordController.php # Manages password confirmation actions
+│   │   │   │   ├── LoginController.php           # Manages login actions
+│   │   │   │   ├── PasswordResetController.php   # Handles password reset actions
+│   │   │   │   ├── RegisterController.php        # Manages user registration
+│   │   │   │   ├── VerifyEmailController.php     # Handles email verification
+│   │   │   ├── Controller.php                    # Base controller class (if any)
+│   │   │   └── DashboardController.php           # Dashboard controller for managing main dashboard logic
 │   │   ├── Livewire                   # Livewire components
 │   │   │   ├── Action
 │   │   │   │   └── Logout.php
@@ -33,22 +36,24 @@
 │   │   │   ├── ArticleManagement.php     # Manages articles dynamically
 │   │   │   ├── MedicalRecordManagement.php # Manages medical records dynamically
 │   │   │   ├── PedukuhanManagement.php   # Manages Pedukuhan dynamically
+│   │   │   ├── AdminDashboard.php
+│   │   │   ├── PosyanduManagement.php
 │   │   │   └── SearchComponent.php       # Dynamic search component
 │   │   ├── Middleware                 # Middleware for request filtering and authentication
 │   │   │   ├── UserMiddleware.php       # User access control based on roles
-│   │   │   ├── PatientMiddleware.php     # Patient access control
 │   │   │   ├── Authenticate.php         # Authentication middleware
 │   │   │   ├── CheckUserStatus.php      # Checks user status (active/inactive)
 │   │   │   ├── VerifyEmailMiddleware.php # Verifies email middleware
-│   │   │   └── PedukuhanMiddleware.php   # Pedukuhan data access control
 │   │   └── Requests                    # Request validation
-│   │       ├── UserRequest.php          # User data validation
-│   │       ├── PatientRequest.php        # Patient data validation
-│   │       ├── ScheduleRequest.php       # Schedule data validation
-│   │       ├── GalleryRequest.php        # Gallery data validation
-│   │       ├── ArticleRequest.php        # Article data validation
-│   │       ├── MedicalRecordRequest.php  # Medical record data validation
-│   │       └── PedukuhanRequest.php      # Pedukuhan data validation
+│   │   │   ├── UserRequest.php          # User data validation
+│   │   │   ├── PatientRequest.php        # Patient data validation
+│   │   │   ├── ScheduleRequest.php       # Schedule data validation
+│   │   │   ├── GalleryRequest.php        # Gallery data validation
+│   │   │   ├── ArticleRequest.php        # Article data validation
+│   │   │   ├── MedicalRecordRequest.php  # Medical record data validation 
+│   │   │   ├── PosyanduRequest.php
+│   │   │   └── PedukuhanRequest.php      # Pedukuhan data validation
+│   │   └── Kernel.php
 │   ├── Models                          # Eloquent models for database interaction
 │   │   ├── User.php                      # User model
 │   │   ├── Posyandu.php                 # Posyandu model
@@ -104,7 +109,6 @@
 │   │   │   ├── reset-password.blade.php # Reset password page view
 │   │   │   ├── verify-email.blade.php   # Email verification page view
 │   │   │   └── confirm-password.blade.php   # Password confirmation page view
-│   ├── views
 │   │   ├── livewire
 │   │   │   ├── authentication                 # Komponen Livewire untuk autentikasi
 │   │   │   │   ├── login.blade.php            # Komponen login
@@ -169,26 +173,75 @@
 │   │   │   │   ├── update.blade.php     # Formulir untuk memperbarui data pengguna
 │   │   │   │   ├── delete.blade.php     # Konfirmasi penghapusan pengguna
 │   │   ├── components
-│   │   │   ├── sidebar.blade.php        # Sidebar untuk dashboard admin
-│   │   │   ├── navbar.blade.php         # Navbar untuk navigasi
-│   │   │   ├── footer.blade.php         # Komponen footer
-│   │   │   ├── pagination.blade.php     # Komponen pagination
-│   │   │   ├── breadcrumbs.blade.php    # Komponen breadcrumbs
-│   │   │   ├── datacard.blade.php       # Komponen untuk menampilkan data statistik
-│   │   │   ├── modal.blade.php          # Komponen modal untuk formulir tambah/ubah
-│   │   │   ├── alert.blade.php          # Komponen alert untuk pesan error/sukses
-│   │   │   ├── search-bar.blade.php     # Komponen pencarian
-│   │   │   ├── notifications.blade.php  # Komponen untuk menampilkan notifikasi
-│   │   │   ├── button.blade.php         # Komponen button reusable (primary, secondary, outline, disabled)
-│   │   │   ├── tooltip.blade.php        # Komponen tooltip
-│   │   │   ├── card.blade.php           # Komponen card untuk menampilkan informasi
-│   │   │   ├── table.blade.php          # Komponen table untuk data dengan sorting dan pagination
-│   │   │   ├── progress-bar.blade.php   # Komponen progress bar
-│   │   │   ├── rating.blade.php         # Komponen rating (star rating)
-│   │   │   ├── switch.blade.php         # Komponen switch (toggle)
-│   │   │   ├── tabs.blade.php           # Komponen tabbed navigation
-│   │   │   ├── avatar.blade.php         # Komponen avatar untuk profil
-│   │   │   └── dropdown.blade.php       # Komponen dropdown menu
+│   │   │   ├── layouts                    # Layouts utama dan elemen UI umum
+│   │   │   │   ├── app
+│   │   │   │   │   ├── header.blade.php            # Header untuk Admin Dashboard
+│   │   │   │   │   ├── sidebar.blade.php           # Sidebar untuk Admin Dashboard
+│   │   │   │   │   ├── navbar.blade.php            # Navbar untuk Admin Dashboard
+│   │   │   │   │   ├── footer.blade.php            # Footer untuk Admin Dashboard
+│   │   │   │   │   ├── pagination.blade.php        # Pagination untuk Admin Dashboard
+│   │   │   │   │   ├── breadcrumbs.blade.php       # Breadcrumbs untuk Admin Dashboard
+│   │   │   │   │   ├── datacard.blade.php          # Komponen untuk menampilkan statistik
+│   │   │   │   │   ├── modal.blade.php             # Modal untuk Admin Dashboard
+│   │   │   │   │   ├── alert.blade.php             # Alert untuk Admin Dashboard
+│   │   │   │   │   ├── button.blade.php            # Button untuk Admin Dashboard
+│   │   │   │   │   ├── card.blade.php              # Card untuk menampilkan informasi statistik
+│   │   │   │   │   └── table.blade.php             # Tabel untuk data (sorting, pagination)
+│   │   │   │   ├── auth                         # Komponen untuk layout autentikasi
+│   │   │   │   │   ├── card.blade.php            # Komponen untuk form kartu (login, register)
+│   │   │   │   │   ├── simple.blade.php          # Layout autentikasi sederhana
+│   │   │   │   │   ├── split.blade.php           # Layout autentikasi dengan pembagian (form & gambar)
+│   │   │   │   │   ├── app.blade.php             # Layout utama untuk autentikasi
+│   │   │   │   │   └── auth.blade.php            # Layout khusus untuk halaman autentikasi (login, register)
+│   │   │   │   ├── settings                     # Komponen untuk pengaturan Admin
+│   │   │   │   │   ├── layout.blade.php         # Layout pengaturan admin
+│   │   │   │   └── sidebar.blade.php            # Sidebar untuk pengaturan admin
+│   │   │   │
+│   │   │   ├── ui                              # Komponen UI umum dan digunakan di berbagai bagian
+│   │   │   │   ├── navbar.blade.php             # Navbar untuk Admin Dashboard
+│   │   │   │   ├── footer.blade.php             # Footer untuk Admin Dashboard
+│   │   │   │   ├── pagination.blade.php         # Pagination (umum untuk aplikasi)
+│   │   │   │   ├── breadcrumbs.blade.php        # Breadcrumbs (umum untuk aplikasi)
+│   │   │   │   ├── button.blade.php             # Button untuk aplikasi umum
+│   │   │   │   ├── card.blade.php               # Card untuk aplikasi umum
+│   │   │   │   ├── table.blade.php              # Table untuk aplikasi umum
+│   │   │   │   └── progress-bar.blade.php       # Progress bar untuk aplikasi umum
+│   │   │   ├── forms
+│   │   │   │   ├── text-input.blade.php         # Komponen input text
+│   │   │   │   ├── select-input.blade.php       # Komponen input select
+│   │   │   │   ├── checkbox.blade.php           # Komponen checkbox
+│   │   │   │   ├── radio-button.blade.php       # Komponen radio button
+│   │   │   │   ├── file-upload.blade.php        # Komponen input file
+│   │   │   │   ├── form-group.blade.php         # Form group untuk input
+│   │   │   │   ├── error-message.blade.php      # Pesan error untuk input
+│   │   │   │   └── validation-summary.blade.php # Ringkasan error form
+│   │   │   ├── notifications
+│   │   │   │   ├── success-alert.blade.php      # Success alert
+│   │   │   │   ├── error-alert.blade.php        # Error alert
+│   │   │   │   ├── warning-alert.blade.php      # Warning alert
+│   │   │   │   └── info-alert.blade.php         # Info alert
+│   │   │   ├── modals
+│   │   │   │   ├── confirm-modal.blade.php      # Modal untuk konfirmasi
+│   │   │   │   ├── info-modal.blade.php         # Modal informasi
+│   │   │   │   └── form-modal.blade.php         # Modal untuk formulir
+│   │   │   ├── widget                           # Komponen Widget dan Statistik untuk Dashboard
+│   │   │   │   ├── stats-card.blade.php         # Widget untuk statistik (dashboard)
+│   │   │   │   ├── chart-widget.blade.php       # Widget untuk grafik (chart.js)
+│   │   │   │   └── dashboard-card.blade.php     # Widget untuk menampilkan data dalam bentuk kartu
+│   │   │   ├── tables
+│   │   │   │   ├── sortable-table.blade.php     # Tabel dengan fitur sorting
+│   │   │   │   ├── filterable-table.blade.php   # Tabel dengan filter
+│   │   │   │   └── data-table.blade.php        # Tabel dengan pencarian dan pagination
+│   │   │   ├── date-time
+│   │   │   │   ├── datepicker.blade.php         # Pemilih tanggal
+│   │   │   │   ├── datetime-picker.blade.php    # Pemilih tanggal dan waktu
+│   │   │   ├── media
+│   │   │   │   ├── image-gallery.blade.php      # Galeri gambar
+│   │   │   │   ├── video-player.blade.php       # Pemutar video
+│   │   │   │   └── image-uploader.blade.php     # Pengunggah gambar
+│   │   │   ├── settings
+│   │   │   │   ├── theme-selector.blade.php     # Selector tema
+│   │   │   │   └── language-selector.blade.php  # Selector bahasa
 │   │   ├── layouts
 │   │   │   ├── app.blade.php            # Layout utama (memuat sidebar, navbar, footer)
 │   │   │   ├── guest.blade.php          # Layout untuk pengguna tamu (login, register)
@@ -233,6 +286,7 @@
 ├── composer.json
 ├── docker-compose.yml
 └── Dockerfile
+
 ```
 
 ### **Penjelasan Komentar:**
