@@ -1,20 +1,19 @@
 <?php
 
-// app/Http/Controllers/DashboardController.php
+namespace App\Http\Controllers\Auth;
 
-namespace App\Http\Controllers;
-
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    /**
-     * Display the admin dashboard.
-     *
-     * @return \Illuminate\View\View
-     */
     public function index()
     {
-        return view('admin.dashboard');
+        if (!Auth::check()) {
+            return redirect()->route('login');
+        }
+
+        return view('dashboard');
     }
 }
