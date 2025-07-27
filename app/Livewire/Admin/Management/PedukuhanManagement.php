@@ -27,6 +27,6 @@ class PedukuhanManagement extends Component
 
     public function render()
     {
-        return view('livewire.admin.management.pedukuhan-management');
+        return view('livewire.admin.pedukuhan-management.index');
     }
 }

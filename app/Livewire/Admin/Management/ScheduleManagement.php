@@ -27,6 +27,6 @@ class ScheduleManagement extends Component
 
     public function render()
     {
-        return view('livewire.admin.management.schedule-management');
+        return view('livewire.admin.schedule-management.index');
     }
 }

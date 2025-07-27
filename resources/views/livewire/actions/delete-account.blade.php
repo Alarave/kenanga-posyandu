@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Livewire\User\Settings;
+namespace App\Livewire\Actions;
 
 use Livewire\Component;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
 
-class DeleteUserForm extends Component
+class DeleteAccount extends Component
 {
     public $password;
 
@@ -15,7 +15,7 @@ class DeleteUserForm extends Component
         'password' => 'required|min:6',
     ];
 
-    public function deleteUser()
+    public function deleteAccount()
     {
         // Validasi password
         $this->validate();
@@ -31,12 +31,12 @@ class DeleteUserForm extends Component
         Auth::user()->delete();
         Auth::logout();
 
-        session()->flash('status', 'Your account has been deleted.');
-        return redirect()->route('login'); // Redirect to home page after deletion
+        session()->flash('status', 'Your account has been deleted successfully.');
+        return redirect()->route('home'); // Redirect to home page after deletion
     }
 
     public function render()
     {
-        return view('livewire.user.settings.delete-user-form');
+        return view('livewire.action.delete-account');
     }
 }

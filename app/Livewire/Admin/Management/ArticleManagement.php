@@ -27,6 +27,6 @@ class ArticleManagement extends Component
 
     public function render()
     {
-        return view('livewire.admin.management.article-management');
+        return view('livewire.admin.article-management.index');
     }
 }

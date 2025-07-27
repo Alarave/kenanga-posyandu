@@ -34,6 +34,6 @@ class UpdateProfile extends Component
 
     public function render()
     {
-        return view('livewire.actions.update-profile');
+        return view('livewire.action.update-profile');
     }
 }

@@ -27,6 +27,6 @@ class MedicalRecordManagement extends Component
 
     public function render()
     {
-        return view('livewire.admin.management.medical-record-management');
+        return view('livewire.admin.medical-record-management.index');
     }
 }

@@ -27,6 +27,6 @@ class PosyanduManagement extends Component
 
     public function render()
     {
-        return view('livewire.admin.management.posyandu-management');
+        return view('livewire.admin.posyandu-management.index');
     }
 }

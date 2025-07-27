@@ -32,11 +32,11 @@ class DeleteAccount extends Component
         Auth::logout();
 
         session()->flash('status', 'Your account has been deleted successfully.');
-        return redirect()->route('home'); // Redirect to home page after deletion
+        return redirect()->route('login'); // Redirect to home page after deletion
     }
 
     public function render()
     {
-        return view('livewire.action.delete-account');
+        return view('livewire.actions.delete-account');
     }
 }
