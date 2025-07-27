@@ -31,13 +31,15 @@ WORKDIR /var/www
 COPY package*.json ./
 
 # Install dependensi Node.js
-RUN npm install --frozen-lockfile
+# RUN npm install --frozen-lockfile
+RUN npm install
 
 # Salin semua file proyek setelah dependensi terinstal
 COPY . .
 
 # Install dependensi PHP dan optimasi autoloader
-RUN composer install --no-dev --optimize-autoloader
+# RUN composer install --no-dev --optimize-autoloader
+RUN composer install
 
 # Expose port yang digunakan oleh aplikasi Laravel
 EXPOSE 8080

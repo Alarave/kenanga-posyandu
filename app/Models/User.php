@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasFactory, Notifiable;
+
 
     /**
      * The attributes that are mass assignable.
@@ -79,10 +81,14 @@ class User extends Authenticatable
         ];
     }
 
+    public function hasRole($role)
+    {
+        return $this->role === $role;
+    }
+
     /**
      * Check if user is SuperAdmin
-     */
-    public function isSuperAdmin(): bool
+     */    public function isSuperAdmin(): bool
     {
         return $this->role === self::ROLE_SUPERADMIN;
     }
@@ -194,6 +200,7 @@ class User extends Authenticatable
      */
     protected static function booted()
     {
+        // Ensure default values are set when creating or retrieving a user
         static::creating(function ($user) {
             if (empty($user->role)) {
                 $user->role = self::ROLE_ADMIN;
@@ -206,6 +213,13 @@ class User extends Authenticatable
             }
             if (is_null($user->attempt_login)) {
                 $user->attempt_login = 0;
+            }
+        });
+
+        // Ensure default role is set when retrieving an existing user
+        static::retrieved(function ($user) {
+            if (empty($user->role)) {
+                $user->role = self::ROLE_ADMIN;
             }
         });
     }
