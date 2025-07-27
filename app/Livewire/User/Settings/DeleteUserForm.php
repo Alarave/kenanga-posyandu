@@ -32,7 +32,7 @@ class DeleteUserForm extends Component
         Auth::logout();
 
         session()->flash('status', 'Your account has been deleted.');
-        return redirect()->route('home'); // Redirect to home page after deletion
+        return redirect()->route('login'); // Redirect to home page after deletion
     }
 
     public function render()

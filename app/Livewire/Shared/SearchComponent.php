@@ -16,6 +16,6 @@ class SearchComponent extends Component
 
     public function render()
     {
-        return view('livewire.shared.search-component');
+        return view('livewire.shared.search');
     }
 }
