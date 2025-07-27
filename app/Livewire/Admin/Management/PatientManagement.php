@@ -27,6 +27,6 @@ class PatientManagement extends Component
 
     public function render()
     {
-        return view('livewire.admin.management.patient-management');
+        return view('livewire.admin.patient-management.index');
     }
 }

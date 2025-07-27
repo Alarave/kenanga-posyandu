@@ -27,6 +27,6 @@ class GalleryManagement extends Component
 
     public function render()
     {
-        return view('livewire.admin.management.gallery-management');
+        return view('livewire.admin.gallery-management.index');
     }
 }
