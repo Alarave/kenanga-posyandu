@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Concerns\HasPosyanduAccess;
 
 class MedicalRecord extends Model
 {
-    use HasFactory;
+    use HasFactory, HasPosyanduAccess;
 
     protected $fillable = [
         'patient_id', 'user_id', 'visit_date', 'weight', 'height',
@@ -39,41 +40,49 @@ class MedicalRecord extends Model
         'z_score_bfa'        => 'decimal:2',  // IMT/U
     ];
 
-    // Relationship with Patient
+    /**
+     * Relationship with Patient
+     */
     public function patient()
     {
         return $this->belongsTo(Patient::class);
     }
 
-    // Relationship with User (Kader yg input)
+    /**
+     * Relationship with User (Kader yg input)
+     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
     /**
-     * Scope to filter medical records based on User role access
-     *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param \App\Models\User $user
-     * @return \Illuminate\Database\Eloquent\Builder
+     * Override scopeByPosyandu untuk MedicalRecord (akses melalui patient)
      */
-    public function scopeAccessibleBy($query, $user)
+    private function scopeByPosyandu($query, $user)
     {
-        if ($user->isSuperAdmin()) {
-            return $query;
+        if (!$user->posyandu_id) {
+            return $query->whereNull('id');
         }
 
-        if ($user->isCoordinator()) {
-            // They can see records from their RW area (pedukuhan)
-            $pedukuhanId = $user->posyandu?->pedukuhan_id;
-            if ($pedukuhanId) {
-                return $query->whereHas('patient.posyandu', fn($q) => $q->where('pedukuhan_id', $pedukuhanId));
-            }
-            return $query->whereNull('id'); // Explicitly return empty if no pedukuhan_id
+        return $query->whereHas('patient', function ($q) use ($user) {
+            $q->where('posyandu_id', $user->posyandu_id);
+        });
+    }
+
+    /**
+     * Override scopeByCoordinator untuk MedicalRecord (akses melalui patient.posyandu.pedukuhan)
+     */
+    private function scopeByCoordinator($query, $user)
+    {
+        $pedukuhanId = $user->getPedukuhanId();
+
+        if (!$pedukuhanId) {
+            return $query->whereNull('id');
         }
 
-        // Admin, Staff, Medical can only see their posyandu's records
-        return $query->whereHas('patient', fn($q) => $q->where('posyandu_id', $user->posyandu_id));
+        return $query->whereHas('patient.posyandu', function ($q) use ($pedukuhanId) {
+            $q->where('pedukuhan_id', $pedukuhanId);
+        });
     }
 }

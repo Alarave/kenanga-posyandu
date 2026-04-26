@@ -2,104 +2,200 @@
 
 namespace App\Http\Controllers\Web;
 
-use App\Models\MedicalRecord;
-use App\Http\Requests\MedicalRecordRequest;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Services\ActivityLogService;
+use App\Http\Requests\MedicalRecordRequest;
+use App\Models\MedicalRecord;
+use App\Models\Patient;
+use App\Services\MedicalRecordService;
+use Illuminate\Http\Request;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 
+/**
+ * Controller untuk mengelola rekam medis pasien
+ * 
+ * Menerapkan prinsip:
+ * - Single Responsibility Principle
+ * - Dependency Injection
+ * - DRY (Don't Repeat Yourself)
+ */
 class MedicalRecordController extends Controller
 {
-    public function index()
+    /**
+     * @var MedicalRecordService
+     */
+    private MedicalRecordService $medicalRecordService;
+
+    /**
+     * Constructor dengan dependency injection
+     * 
+     * @param MedicalRecordService $medicalRecordService
+     */
+    public function __construct(MedicalRecordService $medicalRecordService)
+    {
+        $this->medicalRecordService = $medicalRecordService;
+        $this->middleware('auth');
+    }
+
+    /**
+     * Tampilkan daftar rekam medis
+     * 
+     * @return View
+     */
+    public function index(): View
     {
         $this->authorize('viewAny', MedicalRecord::class);
 
         $medicalRecords = MedicalRecord::with(['patient', 'user'])
             ->accessibleBy(auth()->user())
+            ->latest('visit_date')
             ->paginate(10);
 
         return view('livewire.admin.medical-record-management.index', compact('medicalRecords'));
     }
 
-    public function create(\App\Services\MedicalRecordService $medicalRecordService)
+    /**
+     * Tampilkan form pembuatan rekam medis baru
+     * 
+     * @return View
+     */
+    public function create(): View
     {
         $this->authorize('create', MedicalRecord::class);
 
-        // Scope patients based on user role
-        $user = auth()->user();
-        if ($user->isSuperAdmin()) {
-            $patients = \App\Models\Patient::all();
-        } else {
-            // Admin and Kader can only create records for their posyandu's patients
-            $patients = \App\Models\Patient::where('posyandu_id', $user->posyandu_id)->get();
-        }
-
-        // Check for duplicate Vitamin A and Pill FE in current month if patient_id is provided
-        $duplicateWarnings = null;
-        if (request()->has('patient_id')) {
-            $duplicateWarnings = $medicalRecordService->getDuplicateWarnings((int) request()->get('patient_id'));
-        }
+        $patients = $this->getAvailablePatients();
+        $duplicateWarnings = $this->checkDuplicateWarnings(
+            request()->get('patient_id'), 
+            null, 
+            null
+        );
 
         return view('livewire.admin.medical-record-management.create', compact('patients', 'duplicateWarnings'));
     }
 
-    public function store(MedicalRecordRequest $request, \App\Services\MedicalRecordService $medicalRecordService)
+    /**
+     * Simpan rekam medis baru
+     * 
+     * @param MedicalRecordRequest $request
+     * @return RedirectResponse
+     */
+    public function store(MedicalRecordRequest $request): RedirectResponse
     {
         $this->authorize('create', MedicalRecord::class);
 
-        $medicalRecordService->createRecord($request->validated(), auth()->user());
+        $this->medicalRecordService->createRecord($request->validated(), auth()->user());
 
-        return redirect()->route('admin.medical-records.index')->with('success', 'Medical record created successfully.');
+        return redirect()
+            ->route('admin.medical-records.index')
+            ->with('success', 'Rekam medis berhasil ditambahkan.');
     }
 
-    public function show(MedicalRecord $medicalRecord)
+    /**
+     * Tampilkan detail rekam medis
+     * 
+     * @param MedicalRecord $medicalRecord
+     * @return View
+     */
+    public function show(MedicalRecord $medicalRecord): View
     {
         $this->authorize('view', $medicalRecord);
 
         return view('livewire.admin.medical-record-management.details', compact('medicalRecord'));
     }
 
-    public function edit(MedicalRecord $medicalRecord, \App\Services\MedicalRecordService $medicalRecordService)
+    /**
+     * Tampilkan form edit rekam medis
+     * 
+     * @param MedicalRecord $medicalRecord
+     * @return View
+     */
+    public function edit(MedicalRecord $medicalRecord): View
     {
         $this->authorize('update', $medicalRecord);
 
-        // Scope patients based on user role
-        $user = auth()->user();
-        if ($user->isSuperAdmin()) {
-            $patients = \App\Models\Patient::all();
-        } else {
-            // Admin and Kader can only edit records for their posyandu's patients
-            $patients = \App\Models\Patient::where('posyandu_id', $user->posyandu_id)->get();
-        }
+        $patients = $this->getAvailablePatients();
+        $duplicateWarnings = $this->checkDuplicateWarnings(
+            $medicalRecord->patient_id,
+            $medicalRecord->visit_date,
+            $medicalRecord->id
+        );
 
-        // Check for duplicate Vitamin A and Pill FE in current month (excluding current record)
-        $duplicateWarnings = null;
-        if ($medicalRecord->visit_date) {
-            $duplicateWarnings = $medicalRecordService->getDuplicateWarnings(
-                $medicalRecord->patient_id, 
-                $medicalRecord->visit_date, 
-                $medicalRecord->id
-            );
-        }
-
-        return view('livewire.admin.medical-record-management.update', ['record' => $medicalRecord, 'patients' => $patients, 'duplicateWarnings' => $duplicateWarnings]);
+        return view('livewire.admin.medical-record-management.update', compact('medicalRecord', 'patients', 'duplicateWarnings'));
     }
 
-    public function update(MedicalRecordRequest $request, MedicalRecord $medicalRecord, \App\Services\MedicalRecordService $medicalRecordService)
+    /**
+     * Update rekam medis yang sudah ada
+     * 
+     * @param MedicalRecordRequest $request
+     * @param MedicalRecord $medicalRecord
+     * @return RedirectResponse
+     */
+    public function update(MedicalRecordRequest $request, MedicalRecord $medicalRecord): RedirectResponse
     {
         $this->authorize('update', $medicalRecord);
 
-        $medicalRecordService->updateRecord($medicalRecord, $request->validated(), auth()->user());
+        $this->medicalRecordService->updateRecord($medicalRecord, $request->validated(), auth()->user());
 
-        return redirect()->route('admin.medical-records.index')->with('success', 'Medical record updated successfully.');
+        return redirect()
+            ->route('admin.medical-records.index')
+            ->with('success', 'Rekam medis berhasil diperbarui.');
     }
 
-    public function destroy(MedicalRecord $medicalRecord, \App\Services\MedicalRecordService $medicalRecordService)
+    /**
+     * Hapus rekam medis
+     * 
+     * @param MedicalRecord $medicalRecord
+     * @return RedirectResponse
+     */
+    public function destroy(MedicalRecord $medicalRecord): RedirectResponse
     {
         $this->authorize('delete', $medicalRecord);
 
-        $medicalRecordService->deleteRecord($medicalRecord);
+        $this->medicalRecordService->deleteRecord($medicalRecord);
 
-        return redirect()->route('admin.medical-records.index')->with('success', 'Medical record deleted successfully.');
+        return redirect()
+            ->route('admin.medical-records.index')
+            ->with('success', 'Rekam medis berhasil dihapus.');
+    }
+
+    /**
+     * Dapatkan daftar pasien yang tersedia berdasarkan role user
+     * 
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    private function getAvailablePatients()
+    {
+        $user = auth()->user();
+
+        if ($user->isSuperAdmin()) {
+            return Patient::all();
+        }
+
+        // Admin, Kader, dan Staff hanya bisa akses pasien di posyandu mereka
+        return Patient::where('posyandu_id', $user->posyandu_id)->get();
+    }
+
+    /**
+     * Periksa peringatan duplikasi Vitamin A dan Pill FE
+     * 
+     * @param int|null $patientId
+     * @param \Illuminate\Support\Carbon|null $visitDate
+     * @param int|null $excludeRecordId
+     * @return mixed
+     */
+    private function checkDuplicateWarnings(
+        ?int $patientId = null,
+        $visitDate = null,
+        ?int $excludeRecordId = null
+    ) {
+        if (!$patientId) {
+            return null;
+        }
+
+        return $this->medicalRecordService->getDuplicateWarnings(
+            $patientId,
+            $visitDate,
+            $excludeRecordId
+        );
     }
 }

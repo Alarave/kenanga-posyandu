@@ -6,15 +6,42 @@ use App\Models\MedicalRecord;
 use App\Models\Patient;
 use App\Models\User;
 use Illuminate\Support\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 
+/**
+ * Service untuk mengelola logika bisnis rekam medis
+ * 
+ * Menerapkan prinsip:
+ * - Single Responsibility Principle
+ * - Separation of Concerns
+ * - Encapsulation
+ */
 class MedicalRecordService
 {
+    /**
+     * @var ActivityLogService
+     */
     protected ActivityLogService $activityLogService;
+
+    /**
+     * @var NutritionCalculatorService
+     */
     protected NutritionCalculatorService $nutritionService;
+
+    /**
+     * @var WhatsAppService
+     */
     protected WhatsAppService $whatsAppService;
 
+    /**
+     * Constructor dengan dependency injection
+     * 
+     * @param ActivityLogService $activityLogService
+     * @param NutritionCalculatorService $nutritionService
+     * @param WhatsAppService $whatsAppService
+     */
     public function __construct(
-        ActivityLogService $activityLogService, 
+        ActivityLogService $activityLogService,
         NutritionCalculatorService $nutritionService,
         WhatsAppService $whatsAppService
     ) {
@@ -24,96 +51,72 @@ class MedicalRecordService
     }
 
     /**
-     * Check for duplicate Vitamin A and Pill FE in current month
+     * Periksa duplikasi pemberian Vitamin A dan Pill FE dalam bulan yang sama
+     * 
+     * @param int $patientId
+     * @param Carbon|null $visitDate
+     * @param int|null $excludeRecordId
+     * @return MedicalRecord|null
      */
-    public function getDuplicateWarnings(int $patientId, ?Carbon $visitDate = null, ?int $excludeRecordId = null)
-    {
+    public function getDuplicateWarnings(
+        int $patientId,
+        ?Carbon $visitDate = null,
+        ?int $excludeRecordId = null
+    ): ?MedicalRecord {
         $date = $visitDate ?? now();
 
-        $query = MedicalRecord::where('patient_id', $patientId)
-            ->whereYear('visit_date', $date->year)
-            ->whereMonth('visit_date', $date->month)
-            ->where(function($q) {
-                $q->where('vitamin_a', true)
-                  ->orWhere('pill_fe', true);
-            });
-
-        if ($excludeRecordId) {
-            $query->where('id', '!=', $excludeRecordId);
-        }
+        $query = $this->buildDuplicateQuery($patientId, $date, $excludeRecordId);
 
         return $query->first();
     }
 
     /**
-     * Create a new medical record
+     * Buat rekam medis baru
+     * 
+     * @param array $data
+     * @param User $user
+     * @return MedicalRecord
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function createRecord(array $data, User $user): MedicalRecord
     {
-        $patient = Patient::findOrFail($data['patient_id']);
+        $patient = $this->getPatientOrFail($data['patient_id']);
+        $this->verifyPatientAccess($patient, $user);
 
-        // Verify patient belongs to user's posyandu (for admin/staff/kader)
-        if (!$user->isSuperAdmin() && !$user->isCoordinator()) {
-            if ($patient->posyandu_id !== $user->posyandu_id) {
-                abort(403, 'Anda tidak memiliki akses untuk membuat rekam medis untuk pasien ini.');
-            }
-        }
+        $preparedData = $this->prepareRecordData($data, $patient, $user);
+        $medicalRecord = MedicalRecord::create($preparedData);
 
-        $data = $this->calculateNutrition($data, $patient);
-
-        $data['user_id'] = $user->id;
-        $data['immunization'] = $data['immunization'] ?? 'Tidak ada';
-        $data['complaint'] = $data['complaint'] ?? '—';
-        $data['nutrition_status'] = $data['nutrition_status'] ?? 'Normal';
-
-        $medicalRecord = MedicalRecord::create($data);
-
-        // Log activity
-        $this->activityLogService->log(
-            'create_medical_record',
-            "Menambahkan rekam medis: {$patient->full_name} (Tanggal: {$medicalRecord->visit_date->format('Y-m-d')})",
-            $medicalRecord->id,
-            'MedicalRecord',
-            null,
-            $medicalRecord->toArray()
-        );
+        $this->logActivity('create_medical_record', $patient, $medicalRecord, null, $preparedData);
 
         return $medicalRecord;
     }
 
     /**
-     * Update an existing medical record
+     * Update rekam medis yang sudah ada
+     * 
+     * @param MedicalRecord $medicalRecord
+     * @param array $data
+     * @param User $user
+     * @return MedicalRecord
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function updateRecord(MedicalRecord $medicalRecord, array $data, User $user): MedicalRecord
-    {
+    public function updateRecord(
+        MedicalRecord $medicalRecord,
+        array $data,
+        User $user
+    ): MedicalRecord {
         $oldValues = $medicalRecord->toArray();
-        $patient = Patient::findOrFail($data['patient_id']);
+        $patient = $this->getPatientOrFail($data['patient_id']);
+        
+        $this->verifyPatientAccess($patient, $user);
 
-        // Verify patient belongs to user's posyandu
-        if (!$user->isSuperAdmin() && !$user->isCoordinator()) {
-            if ($patient->posyandu_id !== $user->posyandu_id) {
-                abort(403, 'Anda tidak memiliki akses untuk mengubah rekam medis untuk pasien ini.');
-            }
-        }
+        $preparedData = $this->prepareUpdateData($data, $patient, $medicalRecord, $oldValues);
+        $medicalRecord->update($preparedData);
 
-        $weightChanged = isset($data['weight']) && $data['weight'] != $oldValues['weight'];
-        $heightChanged = isset($data['height']) && $data['height'] != $oldValues['height'];
-
-        if ($weightChanged || $heightChanged) {
-            $data = $this->calculateNutrition($data, $patient);
-        }
-
-        $data['immunization'] = $data['immunization'] ?? $medicalRecord->immunization ?? 'Tidak ada';
-        $data['complaint'] = $data['complaint'] ?? $medicalRecord->complaint ?? '—';
-
-        $medicalRecord->update($data);
-
-        // Log activity
-        $this->activityLogService->log(
+        $this->logActivity(
             'update_medical_record',
-            "Mengubah rekam medis: {$patient->full_name} (Tanggal: {$medicalRecord->visit_date->format('Y-m-d')})",
-            $medicalRecord->id,
-            'MedicalRecord',
+            $patient,
+            $medicalRecord->fresh(),
             $oldValues,
             $medicalRecord->fresh()->toArray()
         );
@@ -122,7 +125,10 @@ class MedicalRecordService
     }
 
     /**
-     * Delete a medical record
+     * Hapus rekam medis
+     * 
+     * @param MedicalRecord $medicalRecord
+     * @return void
      */
     public function deleteRecord(MedicalRecord $medicalRecord): void
     {
@@ -132,7 +138,6 @@ class MedicalRecordService
 
         $medicalRecord->delete();
 
-        // Log activity
         $this->activityLogService->log(
             'delete_medical_record',
             "Menghapus rekam medis untuk: {$patientName} (Tanggal: {$visitDate})",
@@ -144,98 +149,187 @@ class MedicalRecordService
     }
 
     /**
-     * Calculate nutrition data (z-score, status, trend) and append to data array
+     * Bangun query untuk memeriksa duplikasi
+     * 
+     * @param int $patientId
+     * @param Carbon $date
+     * @param int|null $excludeRecordId
+     * @return \Illuminate\Database\Eloquent\Builder
      */
-    private function calculateNutrition(array $data, Patient $patient): array
-    {
-        if ($patient->category === 'balita' && isset($data['weight']) && $patient->birth_date) {
-            $ageInMonths = $patient->birth_date->diffInMonths(now());
-            
-            $nutritionResult = $this->nutritionService->calculateAll(
-                (float) $data['weight'],
-                (float) ($data['height'] ?? 0),
-                $ageInMonths,
-                $patient->gender
-            );
-            
-            $data['z_score'] = $nutritionResult['z_score'];
-            $data['nutrition_status'] = $nutritionResult['nutrition_status'];
-            $data['z_score_hfa'] = $nutritionResult['z_score_hfa'];
-            $data['stunting_status'] = $nutritionResult['stunting_status'];
-            $data['z_score_wfh'] = $nutritionResult['z_score_wfh'];
-            $data['wasting_status'] = $nutritionResult['wasting_status'];
-            $data['z_score_bfa'] = $nutritionResult['z_score_bfa'];
-            
-            // Calculate nutrition trend
-            $previousRecord = MedicalRecord::where('patient_id', $patient->id)
-                ->where('visit_date', '<', $data['visit_date'])
-                ->whereNotNull('nutrition_status')
-                ->orderBy('visit_date', 'desc')
-                ->first();
-            
-            if ($previousRecord && $previousRecord->nutrition_status) {
-                $data['nutrition_trend'] = $this->calculateNutritionTrend(
-                    $previousRecord->nutrition_status,
-                    $nutritionResult['nutrition_status']
-                );
-            }
+    private function buildDuplicateQuery(
+        int $patientId,
+        Carbon $date,
+        ?int $excludeRecordId
+    ) {
+        $query = MedicalRecord::where('patient_id', $patientId)
+            ->whereYear('visit_date', $date->year)
+            ->whereMonth('visit_date', $date->month)
+            ->where(function ($q) {
+                $q->where('vitamin_a', true)
+                  ->orWhere('pill_fe', true);
+            });
 
-            // Check for growth alerts (Stunting, 2T, etc.)
-            $this->checkGrowthTrends($patient, $data);
+        if ($excludeRecordId) {
+            $query->where('id', '!=', $excludeRecordId);
         }
+
+        return $query;
+    }
+
+    /**
+     * Dapatkan patient atau throw exception
+     * 
+     * @param int $patientId
+     * @return Patient
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    private function getPatientOrFail(int $patientId): Patient
+    {
+        return Patient::findOrFail($patientId);
+    }
+
+    /**
+     * Verifikasi user memiliki akses ke patient
+     * 
+     * @param Patient $patient
+     * @param User $user
+     * @return void
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    private function verifyPatientAccess(Patient $patient, User $user): void
+    {
+        if (!$user->isSuperAdmin() && !$user->isCoordinator()) {
+            if ($patient->posyandu_id !== $user->posyandu_id) {
+                abort(403, 'Anda tidak memiliki akses untuk membuat rekam medis untuk pasien ini.');
+            }
+        }
+    }
+
+    /**
+     * Siapkan data untuk pembuatan rekam medis baru
+     * 
+     * @param array $data
+     * @param Patient $patient
+     * @param User $user
+     * @return array
+     */
+    private function prepareRecordData(array $data, Patient $patient, User $user): array
+    {
+        $data = $this->calculateNutrition($data, $patient);
+
+        $data['user_id'] = $user->id;
+        $data['immunization'] = $data['immunization'] ?? 'Tidak ada';
+        $data['complaint'] = $data['complaint'] ?? '—';
+        $data['nutrition_status'] = $data['nutrition_status'] ?? 'Normal';
 
         return $data;
     }
 
     /**
-     * Deteksi tren pertumbuhan dan kirim peringatan jika perlu (2T / Stunting).
+     * Siapkan data untuk update rekam medis
+     * 
+     * @param array $data
+     * @param Patient $patient
+     * @param MedicalRecord $medicalRecord
+     * @param array $oldValues
+     * @return array
      */
-    private function checkGrowthTrends(Patient $patient, array $data): void
-    {
-        // 1. Alert Stunting Baru
-        if (($data['stunting_status'] ?? '') !== 'Normal' && $data['stunting_status'] !== 'Tidak Dapat Dihitung') {
-            $this->sendGrowthAlert($patient, "Perhatian: Balita {$patient->full_name} terdeteksi memiliki status {$data['stunting_status']}. Mohon konsultasikan dengan petugas kesehatan.");
+    private function prepareUpdateData(
+        array $data,
+        Patient $patient,
+        MedicalRecord $medicalRecord,
+        array $oldValues
+    ): array {
+        $weightChanged = isset($data['weight']) && $data['weight'] != $oldValues['weight'];
+        $heightChanged = isset($data['height']) && $data['height'] != $oldValues['height'];
+
+        if ($weightChanged || $heightChanged) {
+            $data = $this->calculateNutrition($data, $patient);
         }
 
-        // 2. Deteksi 2T (Tidak Naik 2 Kali Berturut-turut)
-        $recentRecords = MedicalRecord::where('patient_id', $patient->id)
-            ->where('visit_date', '<', $data['visit_date'])
-            ->orderBy('visit_date', 'desc')
-            ->limit(2)
-            ->get();
+        $data['immunization'] = $data['immunization'] ?? $medicalRecord->immunization ?? 'Tidak ada';
+        $data['complaint'] = $data['complaint'] ?? $medicalRecord->complaint ?? '—';
 
-        if ($recentRecords->count() >= 2) {
-            $lastWeight = (float) $data['weight'];
-            $prevWeight1 = (float) $recentRecords[0]->weight;
-            $prevWeight2 = (float) $recentRecords[1]->weight;
-
-            // Jika BB tidak naik (tetap atau turun) di kunjungan ini DAN kunjungan sebelumnya
-            if ($lastWeight <= $prevWeight1 && $prevWeight1 <= $prevWeight2) {
-                $this->sendGrowthAlert($patient, "Peringatan 2T: Berat badan {$patient->full_name} tidak naik dalam 2 penimbangan terakhir. Segera konsultasikan ke Posyandu atau Puskesmas.");
-            }
-        }
+        return $data;
     }
 
     /**
-     * Kirim notifikasi via WhatsApp Service.
+     * Hitung data gizi (z-score, status, trend)
+     * 
+     * @param array $data
+     * @param Patient $patient
+     * @return array
      */
-    private function sendGrowthAlert(Patient $patient, string $message): void
+    private function calculateNutrition(array $data, Patient $patient): array
     {
-        // Cari nomor WhatsApp orang tua (dari model Patient, biasanya disimpan di field tertentu)
-        // Jika tidak ada di model Patient, mungkin di model User yang terkait?
-        // Asumsi: Patient memiliki field phone_number atau kita kirim ke kader.
+        if (!$this->shouldCalculateNutrition($patient, $data)) {
+            return $data;
+        }
+
+        $ageInMonths = $patient->birth_date->diffInMonths(now());
         
-        $target = $patient->phone_number ?? $patient->parent_phone ?? null;
+        $nutritionResult = $this->nutritionService->calculateAll(
+            (float) $data['weight'],
+            (float) ($data['height'] ?? 0),
+            $ageInMonths,
+            $patient->gender
+        );
+        
+        $data = array_merge($data, $nutritionResult);
+        $data['nutrition_trend'] = $this->calculateNutritionTrend($patient, $data);
 
-        if ($target) {
-            $this->whatsAppService->sendMessage($target, $message);
-        }
+        $this->checkGrowthTrends($patient, $data);
+
+        return $data;
     }
 
     /**
-     * Calculate nutrition trend by comparing current and previous nutrition status
+     * Tentukan apakah perhitungan gizi diperlukan
+     * 
+     * @param Patient $patient
+     * @param array $data
+     * @return bool
      */
-    private function calculateNutritionTrend(string $previousStatus, string $currentStatus): string
+    private function shouldCalculateNutrition(Patient $patient, array $data): bool
+    {
+        return $patient->category === 'balita' 
+            && isset($data['weight']) 
+            && $patient->birth_date;
+    }
+
+    /**
+     * Hitung tren gizi berdasarkan rekam sebelumnya
+     * 
+     * @param Patient $patient
+     * @param array $data
+     * @return string
+     */
+    private function calculateNutritionTrend(Patient $patient, array $data): string
+    {
+        $previousRecord = MedicalRecord::where('patient_id', $patient->id)
+            ->where('visit_date', '<', $data['visit_date'])
+            ->whereNotNull('nutrition_status')
+            ->orderBy('visit_date', 'desc')
+            ->first();
+        
+        if (!$previousRecord || !$previousRecord->nutrition_status) {
+            return 'tetap';
+        }
+
+        return $this->compareNutritionStatus(
+            $previousRecord->nutrition_status,
+            $data['nutrition_status']
+        );
+    }
+
+    /**
+     * Bandingkan status gizi dan tentukan tren
+     * 
+     * @param string $previousStatus
+     * @param string $currentStatus
+     * @return string
+     */
+    private function compareNutritionStatus(string $previousStatus, string $currentStatus): string
     {
         $statusRank = [
             'Gizi Buruk' => 1,
@@ -260,8 +354,142 @@ class MedicalRecordService
             return 'naik';
         } elseif ($currRank < $prevRank) {
             return 'turun';
-        } else {
-            return 'tetap';
         }
+
+        return 'tetap';
+    }
+
+    /**
+     * Deteksi tren pertumbuhan dan kirim peringatan jika perlu
+     * 
+     * @param Patient $patient
+     * @param array $data
+     * @return void
+     */
+    private function checkGrowthTrends(Patient $patient, array $data): void
+    {
+        $this->checkStuntingAlert($patient, $data);
+        $this->checkTwoTAlert($patient, $data);
+    }
+
+    /**
+     * Periksa alert stunting baru
+     * 
+     * @param Patient $patient
+     * @param array $data
+     * @return void
+     */
+    private function checkStuntingAlert(Patient $patient, array $data): void
+    {
+        $stuntingStatus = $data['stunting_status'] ?? '';
+        
+        if ($stuntingStatus !== 'Normal' && $stuntingStatus !== 'Tidak Dapat Dihitung') {
+            $message = "Perhatian: Balita {$patient->full_name} terdeteksi memiliki status {$stuntingStatus}. Mohon konsultasikan dengan petugas kesehatan.";
+            $this->sendGrowthAlert($patient, $message);
+        }
+    }
+
+    /**
+     * Periksa alert 2T (Tidak Naik 2 kali berturut-turut)
+     * 
+     * @param Patient $patient
+     * @param array $data
+     * @return void
+     */
+    private function checkTwoTAlert(Patient $patient, array $data): void
+    {
+        $recentRecords = $this->getPreviousRecords($patient, $data['visit_date'], 2);
+
+        if ($recentRecords->count() < 2) {
+            return;
+        }
+
+        $lastWeight = (float) $data['weight'];
+        $prevWeight1 = (float) $recentRecords[0]->weight;
+        $prevWeight2 = (float) $recentRecords[1]->weight;
+
+        if ($lastWeight <= $prevWeight1 && $prevWeight1 <= $prevWeight2) {
+            $message = "Peringatan 2T: Berat badan {$patient->full_name} tidak naik dalam 2 penimbangan terakhir. Segera konsultasikan ke Posyandu atau Puskesmas.";
+            $this->sendGrowthAlert($patient, $message);
+        }
+    }
+
+    /**
+     * Dapatkan rekam medis sebelumnya
+     * 
+     * @param Patient $patient
+     * @param Carbon $beforeDate
+     * @param int $limit
+     * @return Collection
+     */
+    private function getPreviousRecords(
+        Patient $patient,
+        Carbon $beforeDate,
+        int $limit = 2
+    ): Collection {
+        return MedicalRecord::where('patient_id', $patient->id)
+            ->where('visit_date', '<', $beforeDate)
+            ->orderBy('visit_date', 'desc')
+            ->limit($limit)
+            ->get();
+    }
+
+    /**
+     * Kirim notifikasi alert pertumbuhan via WhatsApp
+     * 
+     * @param Patient $patient
+     * @param string $message
+     * @return void
+     */
+    private function sendGrowthAlert(Patient $patient, string $message): void
+    {
+        $target = $this->getContactNumber($patient);
+
+        if ($target) {
+            $this->whatsAppService->sendMessage($target, $message);
+        }
+    }
+
+    /**
+     * Dapatkan nomor kontak dari patient
+     * 
+     * @param Patient $patient
+     * @return string|null
+     */
+    private function getContactNumber(Patient $patient): ?string
+    {
+        return $patient->phone_number ?? $patient->parent_phone ?? null;
+    }
+
+    /**
+     * Log aktivitas sistem
+     * 
+     * @param string $action
+     * @param Patient $patient
+     * @param MedicalRecord $medicalRecord
+     * @param array|null $oldValues
+     * @param array|null $newValues
+     * @return void
+     */
+    private function logActivity(
+        string $action,
+        Patient $patient,
+        MedicalRecord $medicalRecord,
+        ?array $oldValues,
+        ?array $newValues
+    ): void {
+        $visitDate = $medicalRecord->visit_date->format('Y-m-d');
+        $description = $action === 'create_medical_record'
+            ? "Menambahkan rekam medis: {$patient->full_name} (Tanggal: {$visitDate})"
+            : "Mengubah rekam medis: {$patient->full_name} (Tanggal: {$visitDate})";
+
+        $this->activityLogService->log(
+            $action,
+            $description,
+            $medicalRecord->id,
+            'MedicalRecord',
+            $oldValues,
+            $newValues
+        );
     }
 }

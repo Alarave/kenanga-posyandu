@@ -113,6 +113,14 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Get pedukuhan_id dari posyandu user
+     */
+    public function getPedukuhanId(): ?int
+    {
+        return $this->posyandu?->pedukuhan_id;
+    }
+
+    /**
      * Check if user is Staff
      */
     public function isStaff(): bool
