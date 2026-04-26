@@ -2,31 +2,52 @@
 
 namespace App\Livewire\Admin\Management;
 
-use Livewire\Component;
 use App\Models\Article;
+use App\Services\ArticleService;
+use App\Livewire\Shared\BaseAdminComponent;
+use Illuminate\View\View;
 
-class ArticleManagement extends Component
+/**
+ * Komponen Manajemen Artikel (OOP & Clean Code).
+ * Mengelola daftar artikel, pencarian, dan penghapusan.
+ */
+class ArticleManagement extends BaseAdminComponent
 {
-    public $articles, $searchTerm;
+    public string $search = '';
+    public string $status = '';
+    public string $sort = 'latest';
 
-    protected $rules = [
-        'searchTerm' => 'nullable|string|min:3',
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'status' => ['except' => ''],
+        'sort' => ['except' => 'latest'],
     ];
 
-    public function mount()
+    /**
+     * Render halaman manajemen artikel.
+     */
+    public function render(ArticleService $service): View
     {
-        $this->articles = Article::all();
+        $filters = [
+            'search' => $this->search,
+            'status' => $this->status,
+            'sort'   => $this->sort,
+        ];
+
+        return view('livewire.admin.article-management.index', [
+            'articles' => $service->getFilteredArticles($filters)->paginate(10),
+        ]);
     }
 
-    public function searchArticles()
+    /**
+     * Hapus artikel dengan autorisasi.
+     */
+    public function deleteArticle(int $id, ArticleService $service): void
     {
-        $this->validate();
-
-        $this->articles = Article::where('title', 'like', '%' . $this->searchTerm . '%')->get();
-    }
-
-    public function render()
-    {
-        return view('livewire.admin.article-management.index');
+        $article = Article::findOrFail($id);
+        $this->authorize('delete', $article);
+        
+        $service->deleteArticle($article);
+        $this->notify('Artikel berhasil dihapus permanen.');
     }
 }

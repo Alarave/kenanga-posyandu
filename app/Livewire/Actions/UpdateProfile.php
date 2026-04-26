@@ -2,34 +2,48 @@
 
 namespace App\Livewire\Actions;
 
-use Livewire\Component;
+use App\Services\UserService;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Component;
 
+/**
+ * Komponen untuk memperbarui profil pengguna.
+ * Menggunakan UserService untuk memisahkan logika bisnis dari UI.
+ */
 class UpdateProfile extends Component
 {
-    public $name, $email;
+    public string $name = '';
+    public string $email = '';
 
-    protected $rules = [
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|unique:users,email,' . Auth::id(),
-    ];
-
-    public function mount()
+    protected function rules(): array
     {
-        $this->name = Auth::user()->name;
-        $this->email = Auth::user()->email;
+        return [
+            'name'  => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . Auth::id(),
+        ];
     }
 
-    public function updateProfile()
+    public function mount(): void
+    {
+        $user = Auth::user();
+        $this->name = $user->name;
+        $this->email = $user->email;
+    }
+
+    /**
+     * Eksekusi update profil via UserService.
+     */
+    public function updateProfile(UserService $userService): void
     {
         $this->validate();
 
-        Auth::user()->update([
-            'name' => $this->name,
+        $userService->updateProfile(Auth::user(), [
+            'name'  => $this->name,
             'email' => $this->email,
         ]);
 
-        session()->flash('status', 'Profile updated successfully.');
+        $this->dispatch('profile-updated');
+        session()->flash('status', 'Profil berhasil diperbarui.');
     }
 
     public function render()

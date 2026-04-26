@@ -23,15 +23,19 @@ class LoginController extends Controller
         ]);
 
         if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            return redirect()->route('dashboard')->with('success', 'Logged in successfully.');
+            return redirect()->route('dashboard')->with('success', 'Berhasil masuk ke sistem.');
         }
 
-        return back()->withErrors(['email' => 'The provided credentials do not match our records.']);
+        return back()->withErrors(['email' => 'Email atau password yang Anda masukkan salah.']);
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
         Auth::logout();
-        return redirect()->route('login')->with('success', 'Logged out successfully.');
+
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('public.articles.index')->with('success', 'Berhasil keluar.');
     }
 }

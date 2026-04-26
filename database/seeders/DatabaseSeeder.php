@@ -11,12 +11,14 @@ use Database\Seeders\GallerySeeder;
 use Database\Seeders\ArticleSeeder;
 use Database\Seeders\MedicalRecordSeeder;
 use Database\Seeders\PatientSeeder;
+use Database\Seeders\WhoWeightForAgeSeeder;
 
 class DatabaseSeeder extends Seeder
 {
     public function run()
     {
         $this->call([
+            WhoWeightForAgeSeeder::class,  // Reference data - seed first
             PedukuhanSeeder::class,
             PosyanduSeeder::class,
             UserSeeder::class,
@@ -25,6 +27,7 @@ class DatabaseSeeder extends Seeder
             PatientSeeder::class,
             ArticleSeeder::class,
             MedicalRecordSeeder::class,
+            BalitaKenanga1Seeder::class,  // Import data balita Kenanga 1
         ]);
     }
 }

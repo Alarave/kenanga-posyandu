@@ -105,6 +105,8 @@ return [
         ),
     ],
 
+    'encryption_key' => env('ENCRYPTION_KEY'),
+
     /*
     |--------------------------------------------------------------------------
     | Maintenance Mode Driver

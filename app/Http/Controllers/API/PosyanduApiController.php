@@ -11,13 +11,13 @@ class PosyanduApiController extends Controller
 {
     public function index()
     {
-        $posyandus = Posyandu::all();
+        $posyandus = Posyandu::with('pedukuhan')->get();
         return response()->json($posyandus);
     }
 
-    public function store(PosyanduRequest $request)
+    public function store(PosyanduRequest $request, \App\Services\PosyanduService $posyanduService)
     {
-        $posyandu = Posyandu::create($request->validated());
+        $posyandu = $posyanduService->createPosyandu($request->validated());
         return response()->json($posyandu, 201);
     }
 
@@ -26,15 +26,15 @@ class PosyanduApiController extends Controller
         return response()->json($posyandu);
     }
 
-    public function update(PosyanduRequest $request, Posyandu $posyandu)
+    public function update(PosyanduRequest $request, Posyandu $posyandu, \App\Services\PosyanduService $posyanduService)
     {
-        $posyandu->update($request->validated());
+        $posyanduService->updatePosyandu($posyandu, $request->validated());
         return response()->json($posyandu);
     }
 
-    public function destroy(Posyandu $posyandu)
+    public function destroy(Posyandu $posyandu, \App\Services\PosyanduService $posyanduService)
     {
-        $posyandu->delete();
+        $posyanduService->deletePosyandu($posyandu);
         return response()->json(['message' => 'Posyandu deleted successfully']);
     }
 }

@@ -1,13 +1,15 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+<div class="w-full max-w-full px-4 sm:px-6 lg:px-8 py-8">
     <!-- Admin Header -->
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-        <h1 class="text-2xl font-bold text-gray-800">@yield('admin-title')</h1>
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 w-full">
+        <div class="flex-1 min-w-0 w-full">
+            <h1 class="text-2xl font-bold text-gray-900 truncate">@yield('admin-title')</h1>
+        </div>
         
         @hasSection('admin-actions')
-            <div class="flex flex-wrap gap-2">
+            <div class="flex flex-wrap gap-3 items-center justify-start sm:justify-end shrink-0 w-full sm:w-auto">
                 @yield('admin-actions')
             </div>
         @endif

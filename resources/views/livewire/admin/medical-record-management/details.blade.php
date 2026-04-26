@@ -1,138 +1,117 @@
 @extends('layouts.admin-layout')
 
 @section('admin-title')
-    Detail Rekam Medis - {{ $medicalRecord->patient->name }}
+    Detail Rekam Medis - {{ $medicalRecord->patient->full_name }}
 @endsection
 
 @section('admin-content')
-<div class="flex justify-between items-center mb-6">
-    <div>
-        <h2 class="text-2xl font-bold">Detail Rekam Medis</h2>
-        <x-breadcrumb :items="[
-            ['label' => 'Rekam Medis', 'url' => route('medical-records.index')],
-            ['label' => $medicalRecord->patient->name, 'active' => true]
-        ]" />
-    </div>
-    <div class="flex space-x-2">
-        <x-button href="{{ route('medical-records.edit', $medicalRecord->id) }}" variant="outline" icon="pencil">
-            Edit
-        </x-button>
-        <x-button href="{{ route('medical-records.index') }}" variant="outline" icon="arrow-left">
-            Kembali
-        </x-button>
-    </div>
-</div>
-
-<x-card>
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Info Pasien -->
-        <div class="md:col-span-1">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Informasi Pasien</h3>
-            
-            <div class="flex items-center space-x-4 mb-4">
-                <x-avatar :src="$medicalRecord->patient->photo_url" size="xl" />
-                <div>
-                    <h4 class="font-bold">{{ $medicalRecord->patient->name }}</h4>
-                    <p class="text-sm text-gray-500">{{ $medicalRecord->patient->age }} tahun</p>
-                    <p class="text-sm text-gray-500">{{ $medicalRecord->patient->pedukuhan->name }}</p>
-                </div>
-            </div>
-            
-            <div class="space-y-2">
-                <x-detail-item label="NIK">
-                    {{ $medicalRecord->patient->nik }}
-                </x-detail-item>
-                <x-detail-item label="Jenis Kelamin">
-                    {{ $medicalRecord->patient->gender === 'L' ? 'Laki-laki' : 'Perempuan' }}
-                </x-detail-item>
-                <x-detail-item label="Golongan Darah">
-                    {{ $medicalRecord->patient->blood_type ?: '-' }}
-                </x-detail-item>
-            </div>
+<div class="max-w-5xl mx-auto space-y-6">
+    {{-- Header --}}
+    <div class="flex flex-wrap items-center justify-between gap-4">
+        <div>
+            <h2 class="text-2xl font-black text-slate-900 tracking-tight">Detail Pemeriksaan</h2>
+            <p class="text-sm font-semibold text-slate-500">Informasi lengkap hasil kunjungan bulanan.</p>
         </div>
-        
-        <!-- Detail Pemeriksaan -->
-        <div class="md:col-span-2">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Detail Pemeriksaan</h3>
-            
-            <div class="bg-gray-50 p-6 rounded-lg">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                    <div>
-                        <h4 class="text-sm font-medium text-gray-500 mb-1">Tanggal Pemeriksaan</h4>
-                        <p class="font-medium">{{ $medicalRecord->checkup_date->format('d F Y') }}</p>
+        <div class="flex items-center gap-2">
+            <x-button href="{{ route('admin.medical-records.edit', $medicalRecord->id) }}" variant="secondary" size="md" icon="edit">
+                Edit Data
+            </x-button>
+            <x-button href="{{ route('admin.medical-records.index') }}" variant="outline" size="md" icon="arrow_back">
+                Kembali
+            </x-button>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {{-- Left: Patient & Measurement --}}
+        <div class="lg:col-span-2 space-y-6">
+            {{-- Assessment Card --}}
+            <div class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
+                <div class="flex items-center gap-3 mb-8">
+                    <div class="w-10 h-10 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center border border-teal-100">
+                        <span class="material-symbols-outlined text-[20px]">analytics</span>
                     </div>
-                    
-                    <div>
-                        <h4 class="text-sm font-medium text-gray-500 mb-1">Petugas Kesehatan</h4>
-                        <div class="flex items-center">
-                            <x-avatar :initials="$medicalRecord->healthWorker->initials" size="sm" class="mr-3" />
-                            <div>
-                                <p class="font-medium">{{ $medicalRecord->healthWorker->name }}</p>
-                                <p class="text-sm text-gray-500">{{ $medicalRecord->healthWorker->position }}</p>
-                            </div>
+                    <h3 class="text-xs font-black text-slate-800 uppercase tracking-widest">Hasil Pengukuran Utama</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="p-6 rounded-3xl bg-slate-50/50 border border-slate-100 text-center">
+                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Berat Badan</div>
+                        <div class="text-2xl font-black text-slate-900">{{ $medicalRecord->weight ?? '-' }} <span class="text-sm font-bold text-slate-400">kg</span></div>
+                    </div>
+                    <div class="p-6 rounded-3xl bg-slate-50/50 border border-slate-100 text-center">
+                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Tinggi Badan</div>
+                        <div class="text-2xl font-black text-slate-900">{{ $medicalRecord->height ?? '-' }} <span class="text-sm font-bold text-slate-400">cm</span></div>
+                    </div>
+                    <div class="p-6 rounded-3xl bg-slate-50/50 border border-slate-100 text-center">
+                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Lila</div>
+                        <div class="text-2xl font-black text-slate-900">{{ $medicalRecord->head_circumference ?? '-' }} <span class="text-sm font-bold text-slate-400">cm</span></div>
+                    </div>
+                </div>
+
+                <div class="mt-8 space-y-6">
+                    <div class="space-y-2">
+                        <div class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Keluhan / Temuan</div>
+                        <div class="p-5 bg-slate-50 rounded-2xl text-sm font-semibold text-slate-700 leading-relaxed italic">
+                            "{{ $medicalRecord->complaint ?: 'Tidak ada keluhan khusus yang dicatat.' }}"
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Diagnosa / Hasil Akhir</div>
+                        <div class="p-6 bg-teal-50/30 border border-teal-100 rounded-2xl text-sm font-bold text-slate-800 leading-relaxed">
+                            {{ $medicalRecord->diagnosis }}
                         </div>
                     </div>
                 </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-                    <div>
-                        <h4 class="text-sm font-medium text-gray-500 mb-1">Tinggi Badan</h4>
-                        <p class="font-medium">{{ $medicalRecord->height }} cm</p>
+            </div>
+        </div>
+
+        {{-- Right: Status & Context --}}
+        <div class="space-y-6">
+            {{-- Patient Bio --}}
+            <div class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
+                <div class="flex flex-col items-center text-center">
+                    <div class="w-20 h-20 rounded-3xl bg-teal-50 text-teal-600 flex items-center justify-center font-black text-2xl border-4 border-white shadow-xl mb-4">
+                        {{ strtoupper(substr($medicalRecord->patient->full_name, 0, 1)) }}
                     </div>
+                    <h4 class="font-black text-slate-900 text-lg leading-tight">{{ $medicalRecord->patient->full_name }}</h4>
+                    <span class="px-3 py-1 rounded-full bg-slate-100 text-slate-500 text-[10px] font-black uppercase tracking-widest mt-2 border border-slate-200">
+                        {{ $medicalRecord->patient->category }}
+                    </span>
                     
-                    <div>
-                        <h4 class="text-sm font-medium text-gray-500 mb-1">Berat Badan</h4>
-                        <p class="font-medium">{{ $medicalRecord->weight }} kg</p>
-                    </div>
-                    
-                    <div>
-                        <h4 class="text-sm font-medium text-gray-500 mb-1">Indeks Massa Tubuh</h4>
-                        <p class="font-medium">{{ $medicalRecord->bmi }} ({{ $medicalRecord->bmi_category }})</p>
-                    </div>
-                </div>
-                
-                <div class="mb-6">
-                    <h4 class="text-sm font-medium text-gray-500 mb-1">Keluhan</h4>
-                    <p class="font-medium">{{ $medicalRecord->complaints ?: '-' }}</p>
-                </div>
-                
-                <div>
-                    <h4 class="text-sm font-medium text-gray-500 mb-1">Diagnosa & Catatan</h4>
-                    <div class="prose max-w-none">
-                        {!! $medicalRecord->notes !!}
+                    <div class="w-full grid grid-cols-2 gap-4 mt-8 pt-8 border-t border-slate-100">
+                        <div class="text-left">
+                            <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">NIK</div>
+                            <div class="text-xs font-bold text-slate-700">{{ $medicalRecord->patient->id_number }}</div>
+                        </div>
+                        <div class="text-left">
+                            <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Umur</div>
+                            <div class="text-xs font-bold text-slate-700">{{ $medicalRecord->patient->age }}</div>
+                        </div>
                     </div>
                 </div>
             </div>
-            
-            <!-- Tindakan & Resep -->
-            <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <h4 class="text-sm font-medium text-gray-900 mb-2">Tindakan</h4>
-                    @if($medicalRecord->treatments->isEmpty())
-                        <p class="text-gray-500">Tidak ada tindakan</p>
-                    @else
-                        <ul class="list-disc pl-5 space-y-1">
-                            @foreach($medicalRecord->treatments as $treatment)
-                                <li>{{ $treatment->name }}</li>
-                            @endforeach
-                        </ul>
-                    @endif
-                </div>
-                
-                <div>
-                    <h4 class="text-sm font-medium text-gray-900 mb-2">Resep Obat</h4>
-                    @if($medicalRecord->prescriptions->isEmpty())
-                        <p class="text-gray-500">Tidak ada resep obat</p>
-                    @else
-                        <ul class="list-disc pl-5 space-y-1">
-                            @foreach($medicalRecord->prescriptions as $prescription)
-                                <li>{{ $prescription->medicine }} ({{ $prescription->dosage }})</li>
-                            @endforeach
-                        </ul>
-                    @endif
+
+            {{-- Visit Context --}}
+            <div class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
+                <div class="space-y-6">
+                    <div class="flex items-center justify-between">
+                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Tanggal Periksa</div>
+                        <div class="text-sm font-bold text-slate-900">{{ $medicalRecord->visit_date->format('d M Y') }}</div>
+                    </div>
+                    <div class="flex items-center justify-between pt-6 border-t border-slate-50">
+                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Petugas Pemeriksa</div>
+                        <div class="text-sm font-bold text-slate-900">{{ $medicalRecord->user->name ?? '-' }}</div>
+                    </div>
+                    <div class="flex items-center justify-between pt-6 border-t border-slate-50">
+                        <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Pemberian Vitamin</div>
+                        <div class="text-sm font-bold {{ $medicalRecord->vitamin_a ? 'text-green-600' : 'text-slate-300' }}">
+                            {{ $medicalRecord->vitamin_a ? 'Sudah Diberikan' : 'Tidak' }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</x-card>
+</div>
 @endsection

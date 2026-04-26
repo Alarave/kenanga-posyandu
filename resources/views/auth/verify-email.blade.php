@@ -1,22 +1,39 @@
-<!-- resources/views/auth/verify-email.blade.php -->
-@extends('layouts.app')
+@extends('layouts.guest')
+
+@section('title', 'Verifikasi Email')
 
 @section('content')
-    <div class="max-w-md mx-auto mt-12 bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-2xl font-semibold text-teal-500 mb-6">Verify Your Email Address</h2>
+<div class="mb-12">
+    <h2 class="text-3xl md:text-5xl font-black text-slate-800 tracking-tight font-jakarta leading-tight mb-4">
+        Verifikasi <br> <span class="text-teal-600 italic">Email Anda.</span>
+    </h2>
+    <p class="text-lg font-bold text-slate-500 italic leading-relaxed">
+        Terima kasih telah mendaftar! Sebelum mulai, silakan verifikasi alamat email Anda melalui tautan yang baru saja kami kirimkan.
+    </p>
+</div>
 
-        @if (session('resent'))
-            <div class="mb-4 text-sm text-teal-500">
-                A fresh verification link has been sent to your email address.
-            </div>
-        @endif
-
-        <p class="text-sm text-gray-600">
-            Before proceeding, please check your email for a verification link. If you did not receive the email,
-            <form class="inline" method="POST" action="{{ route('verification.resend') }}">
-                @csrf
-                <button type="submit" class="text-teal-500 hover:text-teal-600 text-sm">click here to request another</button>.
-            </form>
-        </p>
+@if (session('status') == 'verification-link-sent')
+    <div class="mb-8 p-6 bg-emerald-50 border border-emerald-200 rounded-[2rem] text-emerald-700 font-bold text-lg flex items-center gap-4 shadow-sm">
+        <span class="material-symbols-outlined text-[32px]">mark_email_read</span>
+        Tautan verifikasi baru telah dikirim ke email Anda.
     </div>
+@endif
+
+<div class="space-y-6">
+    <form method="POST" action="{{ route('verification.send') }}">
+        @csrf
+        <button type="submit" 
+                class="w-full h-20 bg-teal-600 text-white text-xl font-black uppercase tracking-[0.2em] rounded-[2.5rem] shadow-2xl hover:bg-teal-700 transition-all flex items-center justify-center gap-4">
+            Kirim Ulang Email
+            <span class="material-symbols-outlined text-[28px]">send</span>
+        </button>
+    </form>
+
+    <form method="POST" action="{{ route('logout') }}" class="text-center">
+        @csrf
+        <button type="submit" class="text-lg font-black text-slate-400 hover:text-red-500 uppercase tracking-widest transition-colors">
+            Keluar / Logout
+        </button>
+    </form>
+</div>
 @endsection

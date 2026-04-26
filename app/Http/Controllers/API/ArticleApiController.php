@@ -11,13 +11,13 @@ class ArticleApiController extends Controller
 {
     public function index()
     {
-        $articles = Article::all();
+        $articles = Article::latest('published_at')->get();
         return response()->json($articles);
     }
 
-    public function store(ArticleRequest $request)
+    public function store(ArticleRequest $request, \App\Services\ArticleService $articleService)
     {
-        $article = Article::create($request->validated());
+        $article = $articleService->createArticle($request->validated(), auth()->id());
         return response()->json($article, 201);
     }
 
@@ -26,15 +26,15 @@ class ArticleApiController extends Controller
         return response()->json($article);
     }
 
-    public function update(ArticleRequest $request, Article $article)
+    public function update(ArticleRequest $request, Article $article, \App\Services\ArticleService $articleService)
     {
-        $article->update($request->validated());
+        $articleService->updateArticle($article, $request->validated());
         return response()->json($article);
     }
 
-    public function destroy(Article $article)
+    public function destroy(Article $article, \App\Services\ArticleService $articleService)
     {
-        $article->delete();
+        $articleService->deleteArticle($article);
         return response()->json(['message' => 'Article deleted successfully']);
     }
 }

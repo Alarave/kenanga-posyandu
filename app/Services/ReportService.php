@@ -1,0 +1,230 @@
+<?php
+
+namespace App\Services;
+
+use App\Models\Patient;
+use App\Models\MedicalRecord;
+use App\Models\Schedule;
+use App\Models\Posyandu;
+use Illuminate\Support\Facades\DB;
+use App\Exports\MonthlyReportExport;
+
+class ReportService
+{
+    /**
+     * Generate monthly report for a posyandu
+     *
+     * @param int $posyanduId Posyandu ID
+     * @param int $month Month (1-12)
+     * @param int $year Year (e.g., 2024)
+     * @return array Report data structure
+     */
+    public function generateMonthlyReport(int $posyanduId, int $month, int $year): array
+    {
+        $posyandu = Posyandu::findOrFail($posyanduId);
+        
+        // Date range for the month
+        $startDate = sprintf('%04d-%02d-01', $year, $month);
+        $endDate = date('Y-m-t', strtotime($startDate)); // Last day of month
+        
+        // 1. Kunjungan per kategori
+        $visitsByCategory = MedicalRecord::query()
+            ->join('patients', 'medical_records.patient_id', '=', 'patients.id')
+            ->where('patients.posyandu_id', $posyanduId)
+            ->whereBetween('medical_records.visit_date', [$startDate, $endDate])
+            ->select('patients.category', DB::raw('COUNT(*) as total'))
+            ->groupBy('patients.category')
+            ->get()
+            ->pluck('total', 'category')
+            ->toArray();
+        
+        // Ensure all categories are present
+        $categories = ['balita', 'ibu_hamil', 'remaja', 'lansia'];
+        foreach ($categories as $category) {
+            if (!isset($visitsByCategory[$category])) {
+                $visitsByCategory[$category] = 0;
+            }
+        }
+        
+        // 2. Distribusi status gizi (hanya untuk balita)
+        $nutritionDistribution = MedicalRecord::query()
+            ->join('patients', 'medical_records.patient_id', '=', 'patients.id')
+            ->where('patients.posyandu_id', $posyanduId)
+            ->where('patients.category', 'balita')
+            ->whereBetween('medical_records.visit_date', [$startDate, $endDate])
+            ->whereNotNull('medical_records.nutrition_status')
+            ->select('medical_records.nutrition_status', DB::raw('COUNT(*) as total'))
+            ->groupBy('medical_records.nutrition_status')
+            ->get()
+            ->pluck('total', 'nutrition_status')
+            ->toArray();
+        
+        // 3. Pemberian Vitamin A
+        $vitaminACount = MedicalRecord::query()
+            ->join('patients', 'medical_records.patient_id', '=', 'patients.id')
+            ->where('patients.posyandu_id', $posyanduId)
+            ->whereBetween('medical_records.visit_date', [$startDate, $endDate])
+            ->where('medical_records.vitamin_a', true)
+            ->count();
+        
+        // 4. Pemberian Pill FE
+        $pillFeCount = MedicalRecord::query()
+            ->join('patients', 'medical_records.patient_id', '=', 'patients.id')
+            ->where('patients.posyandu_id', $posyanduId)
+            ->whereBetween('medical_records.visit_date', [$startDate, $endDate])
+            ->where('medical_records.pill_fe', true)
+            ->count();
+        
+        // 5. Jadwal kegiatan bulan ini
+        $schedules = Schedule::query()
+            ->where('posyandu_id', $posyanduId)
+            ->whereYear('start_time', $year)
+            ->whereMonth('start_time', $month)
+            ->orderBy('start_time')
+            ->get()
+            ->map(function ($schedule) {
+                return [
+                    'title' => $schedule->title,
+                    'date' => $schedule->start_time,
+                    'location' => $schedule->location,
+                    'status' => $schedule->status,
+                ];
+            })
+            ->toArray();
+        
+        // 6. Total sasaran terdaftar per kategori
+        $totalPatientsByCategory = Patient::query()
+            ->where('posyandu_id', $posyanduId)
+            ->select('category', DB::raw('COUNT(*) as total'))
+            ->groupBy('category')
+            ->get()
+            ->pluck('total', 'category')
+            ->toArray();
+        
+        foreach ($categories as $category) {
+            if (!isset($totalPatientsByCategory[$category])) {
+                $totalPatientsByCategory[$category] = 0;
+            }
+        }
+
+        // 7. Data mentah rekam medis (untuk sheet detail)
+        $rawRecords = MedicalRecord::query()
+            ->join('patients', 'medical_records.patient_id', '=', 'patients.id')
+            ->where('patients.posyandu_id', $posyanduId)
+            ->whereBetween('medical_records.visit_date', [$startDate, $endDate])
+            ->select('medical_records.*', 'patients.full_name', 'patients.id_number', 'patients.category', 'patients.gender')
+            ->orderBy('medical_records.visit_date')
+            ->get()
+            ->toArray();
+        
+        return [
+            'posyandu' => [
+                'id' => $posyandu->id,
+                'name' => $posyandu->name,
+                'address' => $posyandu->address,
+            ],
+            'period' => [
+                'month' => $month,
+                'year' => $year,
+                'month_name' => $this->getMonthName($month),
+                'start_date' => $startDate,
+                'end_date' => $endDate,
+            ],
+            'visits_by_category' => $visitsByCategory,
+            'total_patients_by_category' => $totalPatientsByCategory,
+            'nutrition_distribution' => $nutritionDistribution,
+            'vitamin_a_given' => $vitaminACount,
+            'pill_fe_given' => $pillFeCount,
+            'schedules' => $schedules,
+            'total_visits' => array_sum($visitsByCategory),
+            'raw_medical_records' => $rawRecords,
+        ];
+    }
+
+    /**
+     * Export report data to Excel file (CSV format — no external library needed)
+     *
+     * @param array $reportData Report data from generateMonthlyReport
+     * @param string $posyanduName Posyandu name for filename
+     * @return string Path to the generated CSV file
+     */
+    public function exportToExcel(array $reportData, string $posyanduName): string
+    {
+        $fileName = sprintf(
+            'Laporan_%s_%s_%s.xlsx',
+            str_replace([' ', '/'], '_', $posyanduName),
+            $reportData['period']['month_name'],
+            $reportData['period']['year']
+        );
+
+        $directory = storage_path('app/public/exports');
+        if (!file_exists($directory)) {
+            mkdir($directory, 0755, true);
+        }
+
+        $filePath = $directory . '/' . $fileName;
+
+        // Gunakan export class baru berbasis PhpSpreadsheet
+        $export = new MonthlyReportExport($reportData);
+        $export->export($filePath);
+
+        return $filePath;
+    }
+
+    /**
+     * Export report data to PDF file
+     *
+     * @param array $reportData Report data from generateMonthlyReport
+     * @param string $posyanduName Posyandu name for filename
+     * @return string Path to the generated PDF file
+     */
+    public function exportToPdf(array $reportData, string $posyanduName): string
+    {
+        $fileName = sprintf(
+            'Laporan_%s_%s_%s.pdf',
+            str_replace(' ', '_', $posyanduName),
+            $reportData['period']['month_name'],
+            $reportData['period']['year']
+        );
+        
+        $filePath = 'exports/' . $fileName;
+        
+        // Generate PDF using dompdf
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.monthly-report-pdf', [
+            'reportData' => $reportData,
+        ]);
+        
+        // Set paper size and orientation
+        $pdf->setPaper('A4', 'portrait');
+        
+        // Save to storage
+        $fullPath = storage_path('app/public/' . $filePath);
+        
+        // Ensure directory exists
+        $directory = dirname($fullPath);
+        if (!file_exists($directory)) {
+            mkdir($directory, 0755, true);
+        }
+        
+        $pdf->save($fullPath);
+        
+        return $fullPath;
+    }
+
+    /**
+     * Get Indonesian month name
+     *
+     * @param int $month Month number (1-12)
+     * @return string Month name in Indonesian
+     */
+    private function getMonthName(int $month): string
+    {
+        $months = [
+            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+            5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+        ];
+        
+        return $months[$month] ?? '';
+    }
+}

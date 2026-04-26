@@ -17,7 +17,7 @@
     
     <div class="mt-5 flex justify-center space-x-3">
         <x-button @click="open = false" variant="outline">Batal</x-button>
-        <form method="POST" action="{{ route('galleries.destroy', $gallery->id) }}">
+        <form method="POST" action="{{ route('admin.gallery.destroy', $gallery->id) }}">
             @csrf
             @method('DELETE')
             <x-button type="submit" variant="danger" icon="trash">Hapus Foto</x-button>

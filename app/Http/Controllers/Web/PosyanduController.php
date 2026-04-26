@@ -9,42 +9,60 @@ use App\Http\Controllers\Controller;
 
 class PosyanduController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $posyandus = Posyandu::all();
-        return view('admin.posyandu-management.index', compact('posyandus'));
+        $posyandus = Posyandu::with('pedukuhan')
+            ->when($request->search, fn($q, $s) => $q->where(function ($q) use ($s) {
+                $q->where('name', 'like', "%{$s}%")
+                  ->orWhere('unique_code', 'like', "%{$s}%")
+                  ->orWhere('address', 'like', "%{$s}%");
+            }))
+            ->orderBy('name')
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('livewire.admin.posyandu-management.index', compact('posyandus'));
     }
 
     public function create()
     {
-        return view('admin.posyandu-management.create');
+        $pedukuhans = \App\Models\Pedukuhan::orderBy('name')->get();
+        return view('livewire.admin.posyandu-management.create', compact('pedukuhans'));
     }
 
-    public function store(PosyanduRequest $request)
+    public function store(PosyanduRequest $request, \App\Services\PosyanduService $posyanduService)
     {
-        Posyandu::create($request->validated());
-        return redirect()->route('posyandus.index')->with('success', 'Posyandu created successfully.');
+        $posyanduService->createPosyandu($request->validated());
+
+        return redirect()->route('admin.posyandu.index')
+            ->with('success', 'Posyandu berhasil ditambahkan.');
     }
 
     public function show(Posyandu $posyandu)
     {
-        return view('admin.posyandu-management.details', compact('posyandu'));
+        $posyandu->load('pedukuhan');
+        return view('livewire.admin.posyandu-management.details', compact('posyandu'));
     }
 
     public function edit(Posyandu $posyandu)
     {
-        return view('admin.posyandu-management.update', compact('posyandu'));
+        $pedukuhans = \App\Models\Pedukuhan::orderBy('name')->get();
+        return view('livewire.admin.posyandu-management.update', compact('posyandu', 'pedukuhans'));
     }
 
-    public function update(PosyanduRequest $request, Posyandu $posyandu)
+    public function update(PosyanduRequest $request, Posyandu $posyandu, \App\Services\PosyanduService $posyanduService)
     {
-        $posyandu->update($request->validated());
-        return redirect()->route('posyandus.index')->with('success', 'Posyandu updated successfully.');
+        $posyanduService->updatePosyandu($posyandu, $request->validated());
+
+        return redirect()->route('admin.posyandu.index')
+            ->with('success', 'Posyandu berhasil diperbarui.');
     }
 
-    public function destroy(Posyandu $posyandu)
+    public function destroy(Posyandu $posyandu, \App\Services\PosyanduService $posyanduService)
     {
-        $posyandu->delete();
-        return redirect()->route('posyandus.index')->with('success', 'Posyandu deleted successfully.');
+        $posyanduService->deletePosyandu($posyandu);
+
+        return redirect()->route('admin.posyandu.index')
+            ->with('success', 'Posyandu berhasil dihapus.');
     }
 }

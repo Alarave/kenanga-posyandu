@@ -2,37 +2,35 @@
 
 namespace App\Livewire\Actions;
 
-use Livewire\Component;
+use App\Services\UserService;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\ValidationException;
+use Livewire\Component;
 
+/**
+ * Komponen untuk menghapus akun pengguna secara mandiri.
+ */
 class DeleteAccount extends Component
 {
-    public $password;
+    public string $password = '';
 
-    protected $rules = [
+    protected array $rules = [
         'password' => 'required|min:6',
     ];
 
-    public function deleteAccount()
+    /**
+     * Eksekusi penghapusan akun via UserService.
+     */
+    public function deleteAccount(UserService $userService)
     {
-        // Validasi password
         $this->validate();
 
-        // Cek apakah password saat ini sesuai dengan yang ada di database
-        if (!Hash::check($this->password, Auth::user()->getAuthPassword())) {
-            throw ValidationException::withMessages([
-                'password' => 'The password you entered is incorrect.',
-            ]);
-        }
+        // Service menangani verifikasi password dan penghapusan
+        $userService->deleteAccount(Auth::user(), $this->password);
 
-        // Hapus user setelah validasi
-        Auth::user()->delete();
         Auth::logout();
 
-        session()->flash('status', 'Your account has been deleted successfully.');
-        return redirect()->route('login'); // Redirect to home page after deletion
+        session()->flash('status', 'Akun Anda berhasil dihapus.');
+        return redirect()->route('login');
     }
 
     public function render()

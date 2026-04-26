@@ -3,34 +3,40 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use App\Models\Pedukuhan;
 
 class PedukuhanSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
-        DB::table('pedukuhans')->insert([
+        $pedukuhans = [
             [
-                'name' => 'Dukuh A',
-                'postal_code' => '55281',
+                'name'         => 'Dukuh A',
+                'postal_code'  => '55281',
                 'geo_location' => json_encode(['lat' => -7.123456, 'lng' => 110.123456]),
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
             [
-                'name' => 'Dukuh B',
-                'postal_code' => '55282',
+                'name'         => 'Dukuh B',
+                'postal_code'  => '55282',
                 'geo_location' => json_encode(['lat' => -7.223456, 'lng' => 110.223456]),
-                'created_at' => now(),
-                'updated_at' => now(),
             ],
             [
-                'name' => 'Dukuh C',
-                'postal_code' => '55283',
+                'name'         => 'Dukuh C',
+                'postal_code'  => '55283',
                 'geo_location' => json_encode(['lat' => -7.323456, 'lng' => 110.323456]),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]
-        ]);
+            ],
+            [
+                'name'         => 'Aren Jaya',
+                'postal_code'  => '17111',
+                'geo_location' => json_encode(['lat' => -6.234567, 'lng' => 107.012345]),
+            ],
+        ];
+
+        foreach ($pedukuhans as $data) {
+            Pedukuhan::updateOrCreate(
+                ['name' => $data['name']],
+                $data
+            );
+        }
     }
 }

@@ -13,11 +13,20 @@ class ArticleRequest extends FormRequest
 
     public function rules()
     {
-        return [
+        $rules = [
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'status' => 'required|string|in:published,draft',
+            'published_at' => 'nullable|date',
         ];
+
+        if ($this->isMethod('POST')) {
+            $rules['thumbnail'] = 'required|image|mimes:jpg,jpeg,png|max:2048';
+        } else {
+            $rules['thumbnail'] = 'nullable|image|mimes:jpg,jpeg,png|max:2048';
+        }
+
+        return $rules;
     }
 
     public function messages()

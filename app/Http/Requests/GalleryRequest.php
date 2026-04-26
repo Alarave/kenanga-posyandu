@@ -13,11 +13,20 @@ class GalleryRequest extends FormRequest
 
     public function rules()
     {
-        return [
+        $rules = [
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
-            'photo' => 'required|image|mimes:jpg,jpeg,png|max:2048',
+            'posyandu_id' => 'nullable|exists:posyandus,id',
+            'is_featured' => 'boolean',
         ];
+
+        if ($this->isMethod('POST')) {
+            $rules['photo'] = 'required|image|mimes:jpg,jpeg,png|max:2048';
+        } else {
+            $rules['photo'] = 'nullable|image|mimes:jpg,jpeg,png|max:2048';
+        }
+
+        return $rules;
     }
 
     public function messages()

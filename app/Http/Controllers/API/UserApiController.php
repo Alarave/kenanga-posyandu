@@ -9,30 +9,32 @@ use Illuminate\Support\Facades\Auth;
 
 class UserApiController extends Controller
 {
-    public function show($id)
+    public function show(User $user)
     {
         // Cek apakah pengguna yang sedang login adalah pemilik data
-        $user = Auth::user();
-
-        if ($user->id !== (int)$id) {
-            return response()->json(['message' => 'Unauthorized access.'], 403); // Unauthorized if they try to access someone else's data
+        if (auth()->id() !== $user->id && !auth()->user()->isSuperAdmin()) {
+            return response()->json(['message' => 'Unauthorized access.'], 403);
         }
 
-        $user = User::findOrFail($id); // Ambil data user berdasarkan ID yang diberikan
         return response()->json($user);
     }
 
-    public function update(Request $request, $id)
+    public function update(\App\Http\Requests\UserRequest $request, User $user, \App\Services\UserService $userService)
     {
         // Cek apakah pengguna yang sedang login adalah pemilik data
-        $user = Auth::user();
-
-        if ($user->id !== (int)$id) {
-            return response()->json(['message' => 'Unauthorized access.'], 403); // Unauthorized if they try to update someone else's data
+        if (auth()->id() !== $user->id && !auth()->user()->isSuperAdmin()) {
+            return response()->json(['message' => 'Unauthorized access.'], 403);
         }
 
-        $user = User::findOrFail($id);
-        $user->update($request->all()); // Update user data
+        $userService->updateUser($user, $request->validated(), $request->input('is_active', $user->is_active));
         return response()->json($user);
+    }
+
+    public function index()
+    {
+        if (!auth()->user()->isSuperAdmin()) {
+            return response()->json(['message' => 'Unauthorized access.'], 403);
+        }
+        return response()->json(User::all());
     }
 }

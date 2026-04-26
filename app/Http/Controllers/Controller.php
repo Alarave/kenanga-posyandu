@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
 abstract class Controller
 {
+    use AuthorizesRequests;
+    
     /**
      * Return a standardized success JSON response.
      *

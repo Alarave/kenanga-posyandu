@@ -2,26 +2,38 @@
 
 namespace App\Livewire\Actions;
 
-use Livewire\Component;
+use App\Models\User;
+use App\Services\UserService;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Hash;  // Add this line to import the Hash facade
-use Illuminate\Validation\ValidationException;
+use Livewire\Component;
 
+/**
+ * Komponen untuk mereset password melalui token email.
+ */
 class ResetPassword extends Component
 {
-    public $email, $token, $password, $password_confirmation;
+    public string $email = '';
+    public string $token = '';
+    public string $password = '';
+    public string $password_confirmation = '';
 
-    protected $rules = [
-        'password' => 'required|min:6|confirmed',
-    ];
+    protected function rules(): array
+    {
+        return [
+            'password' => 'required|min:6|confirmed',
+        ];
+    }
 
-    public function mount($token, $email)
+    public function mount(string $token, string $email): void
     {
         $this->token = $token;
         $this->email = $email;
     }
 
-    public function resetPassword()
+    /**
+     * Eksekusi reset password menggunakan Laravel Password Broker.
+     */
+    public function resetPassword(UserService $userService)
     {
         $this->validate();
 
@@ -32,18 +44,18 @@ class ResetPassword extends Component
                 'password_confirmation' => $this->password_confirmation,
                 'token' => $this->token,
             ],
-            function ($user) {
-                $user->password = Hash::make($this->password);  // Using Hash facade here
-                $user->save();
+            function (User $user) use ($userService) {
+                // Gunakan service untuk konsistensi logging
+                $userService->resetPassword($user, $this->password);
             }
         );
 
         if ($status == Password::PASSWORD_RESET) {
-            session()->flash('status', 'Password has been reset.');
+            session()->flash('status', 'Password Anda berhasil direset.');
             return redirect()->route('login');
         }
 
-        session()->flash('error', 'Failed to reset the password.');
+        session()->flash('error', 'Gagal mereset password. Pastikan token masih valid.');
     }
 
     public function render()

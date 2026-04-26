@@ -2,31 +2,38 @@
 
 namespace App\Livewire\Admin\Management;
 
-use Livewire\Component;
 use App\Models\MedicalRecord;
+use App\Livewire\Shared\BaseAdminComponent;
 
-class MedicalRecordManagement extends Component
+class MedicalRecordManagement extends BaseAdminComponent
 {
-    public $medicalRecords, $searchTerm;
+    public string $search = '';
+    public string $posyandu_id = '';
 
-    protected $rules = [
-        'searchTerm' => 'nullable|string|min:3',
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'posyandu_id' => ['except' => ''],
     ];
-
-    public function mount()
-    {
-        $this->medicalRecords = MedicalRecord::all();
-    }
-
-    public function searchMedicalRecords()
-    {
-        $this->validate();
-
-        $this->medicalRecords = MedicalRecord::where('diagnosis', 'like', '%' . $this->searchTerm . '%')->get();
-    }
 
     public function render()
     {
-        return view('livewire.admin.medical-record-management.index');
+        // Gunakan applyPosyanduScope dari Trait
+        $query = $this->applyPosyanduScope(MedicalRecord::with(['patient.posyandu', 'user']))
+            ->when($this->search, function($q) {
+                $q->whereHas('patient', function($sq) {
+                    $sq->where('full_name', 'like', '%' . $this->search . '%')
+                       ->orWhere('id_number', 'like', '%' . $this->search . '%');
+                });
+            })
+            ->when($this->posyandu_id, function($q) {
+                $q->whereHas('patient', function($sq) {
+                    $sq->where('posyandu_id', $this->posyandu_id);
+                });
+            })
+            ->latest('visit_date');
+
+        return view('livewire.admin.medical-record-management.index', [
+            'medicalRecords' => $query->paginate(10),
+        ]);
     }
 }

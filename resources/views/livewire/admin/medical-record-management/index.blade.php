@@ -1,117 +1,138 @@
 @extends('layouts.admin-layout')
 
-@section('admin-title')
-    Manajemen Rekam Medis
+@section('admin-title') Rekam Medis Bulanan @endsection
+
+@section('admin-actions')
+    @can('create', App\Models\Patient::class)
+    <x-button href="{{ route('admin.medical-records.create') }}" variant="secondary" icon="note_add">
+        Tambah Rekam Medis
+    </x-button>
+    @endcan
 @endsection
 
 @section('admin-content')
-<div class="flex justify-between items-center mb-6">
-    <h2 class="text-2xl font-bold">Daftar Rekam Medis</h2>
-    @if($patientId)
-        <x-button href="{{ route('medical-records.create', ['patient_id' => $patientId]) }}" icon="plus" variant="primary">
-            Tambah Rekam Medis
-        </x-button>
-    @else
-        <x-button href="{{ route('medical-records.create') }}" icon="plus" variant="primary">
-            Tambah Rekam Medis
-        </x-button>
-    @endif
-</div>
+<div class="space-y-6">
+    
+    {{-- ── Search & Filter Bar ── --}}
+    <section class="bg-slate-50/50 p-4 border-b border-slate-100">
+        <div class="flex flex-wrap items-center gap-4">
+            {{-- Search Input (Livewire) --}}
+            <div class="flex-1 min-w-[280px] relative group">
+                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-teal-600 transition-colors">search</span>
+                <input type="text" wire:model.live.debounce.300ms="search"
+                       placeholder="Cari nama warga..."
+                       class="w-full h-12 pl-12 pr-4 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all">
+            </div>
 
-<x-card>
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
-        <x-search-bar placeholder="Cari rekam medis..." model="search" />
-        
-        <div class="flex space-x-2">
-            @if($patientId)
-                <x-button href="{{ route('medical-records.index') }}" variant="outline" icon="arrow-left">
-                    Semua Rekam Medis
-                </x-button>
+            {{-- Posyandu Filter (Superadmin Only) --}}
+            @if(auth()->user()->isSuperAdmin())
+            <div class="w-full sm:w-auto min-w-[200px]">
+                <select wire:model.live="posyandu_id"
+                        class="w-full h-12 px-4 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all appearance-none cursor-pointer">
+                    <option value="">Semua Posyandu</option>
+                    @foreach(\App\Models\Posyandu::all() as $p)
+                        <option value="{{ $p->id }}">{{ $p->name }}</option>
+                    @endforeach
+                </select>
+            </div>
             @endif
-            
-            <x-dropdown>
-                <x-slot name="trigger">
-                    <x-button variant="outline" icon="funnel">
-                        Filter
-                    </x-button>
-                </x-slot>
-                <x-dropdown.link wire:click="filterByPeriod('all')">Semua</x-dropdown.link>
-                <x-dropdown.link wire:click="filterByPeriod('today')">Hari Ini</x-dropdown.link>
-                <x-dropdown.link wire:click="filterByPeriod('week')">Minggu Ini</x-dropdown.link>
-                <x-dropdown.link wire:click="filterByPeriod('month')">Bulan Ini</x-dropdown.link>
-            </x-dropdown>
-        </div>
-    </div>
 
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pasien</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Petugas</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tinggi/Berat</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Catatan</th>
-                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                @foreach($medicalRecords as $record)
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {{ $record->checkup_date->format('d M Y') }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="flex items-center">
-                            <x-avatar :src="$record->patient->photo_url" :initials="$record->patient->initials" size="sm" class="mr-3" />
-                            <div>
-                                <div class="font-medium text-gray-900">{{ $record->patient->name }}</div>
-                                <div class="text-sm text-gray-500">{{ $record->patient->age }} tahun</div>
+            @if($search || $posyandu_id)
+            <button wire:click="$set('search', ''); $set('posyandu_id', '');"
+                    class="h-12 px-4 flex items-center gap-2 text-red-500 font-bold text-xs uppercase tracking-widest hover:bg-red-50 rounded-xl transition-all">
+                <span class="material-symbols-outlined text-[18px]">restart_alt</span>
+                Reset
+            </button>
+            @endif
+        </div>
+    </section>
+
+    {{-- ── Data Table ── --}}
+    <x-table>
+        <thead class="bg-slate-50/80 border-b border-slate-100">
+            <tr>
+                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest text-left">Tanggal</th>
+                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest text-left">Warga / Pasien</th>
+                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest text-left">Antropometri</th>
+                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest text-center">Petugas</th>
+                <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest text-right">Aksi</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-50">
+            @forelse($medicalRecords as $record)
+            <tr class="group hover:bg-slate-50/50 transition-colors" wire:key="record-{{ $record->id }}">
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <div class="font-bold text-slate-700 text-sm">
+                        {{ $record->visit_date ? \Carbon\Carbon::parse($record->visit_date)->format('d M Y') : '-' }}
+                    </div>
+                </td>
+                <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                        <div class="h-10 w-10 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center font-black text-xs border border-teal-100">
+                            {{ strtoupper(substr($record->patient->full_name ?? 'P', 0, 1)) }}
+                        </div>
+                        <div>
+                            <div class="font-bold text-slate-900 text-sm">{{ $record->patient->full_name ?? 'Tidak Diketahui' }}</div>
+                            <div class="text-[11px] text-slate-400 font-semibold uppercase mt-0.5">
+                                {{ $record->patient->category ?? '-' }} · {{ $record->patient->age ?? '?' }}
                             </div>
                         </div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">{{ $record->healthWorker->name }}</div>
-                        <div class="text-sm text-gray-500">{{ $record->healthWorker->position }}</div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="text-sm text-gray-900">{{ $record->height }} cm / {{ $record->weight }} kg</div>
-                        <div class="text-xs text-gray-500">IMT: {{ $record->bmi }}</div>
-                    </td>
-                    <td class="px-6 py-4 text-sm text-gray-500">
-                        {{ Str::limit($record->notes, 50) ?: '-' }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div class="flex space-x-2 justify-end">
-                            <x-button href="{{ route('medical-records.show', $record->id) }}" variant="outline" size="sm" icon="eye">
-                                Detail
-                            </x-button>
-                            <x-button href="{{ route('medical-records.edit', $record->id) }}" variant="outline" size="sm" icon="pencil">
-                                Edit
-                            </x-button>
-                            <x-button wire:click="confirmDelete({{ $record->id }})" variant="danger" size="sm" icon="trash">
-                                Hapus
-                            </x-button>
+                    </div>
+                </td>
+                <td class="px-6 py-4">
+                    <div class="flex flex-col gap-1">
+                        <div class="flex items-center gap-2">
+                            <span class="text-[11px] font-black text-slate-400 uppercase tracking-tighter w-6">BB:</span>
+                            <span class="text-sm font-bold text-slate-700">{{ $record->weight ?? '-' }} kg</span>
                         </div>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[11px] font-black text-slate-400 uppercase tracking-tighter w-6">TB:</span>
+                            <span class="text-sm font-bold text-slate-700">{{ $record->height ?? '-' }} cm</span>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-6 py-4 text-center">
+                    <div class="text-sm font-semibold text-slate-700">{{ $record->user->name ?? '-' }}</div>
+                </td>
+                <td class="px-6 py-4 text-right">
+                    <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <x-button href="{{ route('admin.medical-records.show', $record->id) }}" variant="ghost" size="sm">
+                            <span class="material-symbols-outlined text-[18px]">visibility</span>
+                        </x-button>
+                        @can('update', $record->patient ?? new \App\Models\Patient)
+                        <x-button href="{{ route('admin.medical-records.edit', $record->id) }}" variant="ghost" size="sm">
+                            <span class="material-symbols-outlined text-[18px]">edit</span>
+                        </x-button>
+                        @endcan
+                        
+                        @can('delete', $record)
+                        <form action="{{ route('admin.medical-records.destroy', $record->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus rekam medis ini?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="w-10 h-10 flex items-center justify-center rounded-xl text-red-500 hover:bg-red-50 transition-all">
+                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                            </button>
+                        </form>
+                        @endcan
+                    </div>
+                </td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="5" class="px-6 py-24 text-center">
+                    <div class="flex flex-col items-center gap-4 text-slate-300">
+                        <span class="material-symbols-outlined text-[64px]">medical_information</span>
+                        <p class="text-sm font-bold text-slate-500 uppercase tracking-widest">Tidak ada rekam medis ditemukan</p>
+                    </div>
+                </td>
+            </tr>
+            @endforelse
+        </tbody>
+    </x-table>
 
-    <div class="mt-4">
+    {{-- ── Pagination ── --}}
+    <div class="px-6 py-4 bg-slate-50">
         {{ $medicalRecords->links() }}
     </div>
-</x-card>
-
-<!-- Delete Confirmation Modal -->
-<x-modal id="confirmMedicalRecordDeletion" title="Konfirmasi Penghapusan">
-    <p class="text-gray-600 mb-4">Apakah Anda yakin ingin menghapus rekam medis ini?</p>
-    
-    <div class="flex justify-end space-x-3">
-        <x-button @click="open = false" variant="outline">Batal</x-button>
-        <x-button wire:click="deleteMedicalRecord" variant="danger" icon="trash">Hapus</x-button>
-    </div>
-</x-modal>
+</div>
 @endsection

@@ -24,6 +24,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'username',
         'password',
         'role',
+        'posyandu_id',
         'is_active',
         'verified_email',
         'attempt_login',
@@ -60,6 +61,7 @@ class User extends Authenticatable implements MustVerifyEmail
     const ROLE_SUPERADMIN = 'superadmin';
     const ROLE_ADMIN = 'admin';
     const ROLE_COORDINATOR = 'coordinator';
+    const ROLE_KADER = 'kader';
     const ROLE_STAFF = 'staff';
     const ROLE_MEDICAL = 'medical';
     const ROLE_PATIENT = 'patient';
@@ -74,6 +76,7 @@ class User extends Authenticatable implements MustVerifyEmail
             self::ROLE_SUPERADMIN,
             self::ROLE_ADMIN,
             self::ROLE_COORDINATOR,
+            self::ROLE_KADER,
             self::ROLE_STAFF,
             self::ROLE_MEDICAL,
             self::ROLE_PATIENT,
@@ -142,6 +145,16 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Check if user is Kader (dedicated kader role, or legacy staff/medical)
+     */
+    public function isKader(): bool
+    {
+        return $this->role === self::ROLE_KADER
+            || $this->role === self::ROLE_STAFF
+            || $this->role === self::ROLE_MEDICAL;
+    }
+
+    /**
      * Get the user's initials
      */
     public function getInitialsAttribute(): string
@@ -156,7 +169,15 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * Relationship with Posyandu
+     * Relationship with Posyandu (belongsTo - user assigned to one posyandu)
+     */
+    public function posyandu()
+    {
+        return $this->belongsTo(Posyandu::class);
+    }
+
+    /**
+     * Relationship with Posyandu (hasMany - for backwards compatibility)
      */
     public function posyandus()
     {
@@ -196,6 +217,46 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Check if the user is active
+     */
+    public function isActive(): bool
+    {
+        return (bool) $this->is_active;
+    }
+
+    /**
+     * Check if the user is currently blocked from logging in
+     */
+    public function isBlocked(): bool
+    {
+        return $this->block_expires && now()->lessThan($this->block_expires);
+    }
+
+    /**
+     * Get remaining block minutes
+     */
+    public function getRemainingBlockMinutes(): int
+    {
+        if (!$this->isBlocked()) {
+            return 0;
+        }
+        return now()->diffInMinutes($this->block_expires);
+    }
+
+    /**
+     * Clear the block if it has expired
+     */
+    public function unlockIfExpired(): void
+    {
+        if ($this->block_expires && now()->greaterThanOrEqualTo($this->block_expires)) {
+            $this->update([
+                'block_expires' => null,
+                'attempt_login' => 0,
+            ]);
+        }
+    }
+
+    /**
      * Boot the model
      */
     protected static function booted()
@@ -222,5 +283,35 @@ class User extends Authenticatable implements MustVerifyEmail
                 $user->role = self::ROLE_ADMIN;
             }
         });
+    }
+
+    /**
+     * Scope a query to apply standard filters.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param array $filters
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeFilter($query, array $filters)
+    {
+        $query->when($filters['search'] ?? false, function ($q, $search) {
+            $q->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        });
+
+        $query->when($filters['role'] ?? false, function ($q, $role) {
+            $q->where('role', $role);
+        });
+
+        $status = $filters['status'] ?? null;
+        if ($status === 'active') {
+            $query->where('is_active', true);
+        } elseif ($status === 'inactive') {
+            $query->where('is_active', false);
+        }
+
+        return $query;
     }
 }

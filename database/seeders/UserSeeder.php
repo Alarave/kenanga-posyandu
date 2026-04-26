@@ -3,112 +3,147 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use App\Models\User;
+use App\Models\Posyandu;
 
 class UserSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
-        DB::table('users')->insert([
+        // ── Superadmins (no posyandu scope) ──────────────────────────────────
+        $superadmins = [
             [
-                'name' => 'Super Admin',
-                'email' => 'superadmin@posyandu.com',
-                'username' => 'superadmin',
-                'password' => Hash::make('password123'),
-                'role' => 'superadmin',
-                'is_active' => true,
-                'verified_email' => true,
-                'attempt_login' => 0,
-                'block_expires' => null,
-                'email_verified_at' => now(),
-                'created_at' => now(),
-                'updated_at' => now(),
+                'name'              => 'Sekretaris Posyandu',
+                'email'             => 'sekretaris@posyandu.com',
+                'username'          => 'sekretaris',
+                'role'              => User::ROLE_SUPERADMIN,
+                'posyandu_id'       => null,
             ],
             [
-                'name' => 'Admin Posyandu', // Changed from 'Kader Posyandu'
-                'email' => 'admin@posyandu.com',
-                'username' => 'admin',
-                'password' => Hash::make('password123'),
-                'role' => 'admin', // Changed from 'kader'
-                'is_active' => true,
-                'verified_email' => true,
-                'attempt_login' => 0,
-                'block_expires' => null,
-                'email_verified_at' => now(),
-                'created_at' => now(),
-                'updated_at' => now(),
+                'name'              => 'Ibu Arimbi',
+                'email'             => 'arimbi@posyandu.com',
+                'username'          => 'arimbi',
+                'role'              => User::ROLE_SUPERADMIN,
+                'posyandu_id'       => null,
             ],
+        ];
+
+        foreach ($superadmins as $data) {
+            User::updateOrCreate(
+                ['username' => $data['username']],
+                array_merge($data, [
+                    'password'          => Hash::make('password123'),
+                    'is_active'         => true,
+                    'verified_email'    => true,
+                    'attempt_login'     => 0,
+                    'block_expires'     => null,
+                    'email_verified_at' => now(),
+                ])
+            );
+        }
+
+        // ── Coordinator (cross-posyandu oversight) ────────────────────────────
+        User::updateOrCreate(
+            ['username' => 'koordinator'],
             [
-                'name' => 'Medical Officer', // Changed from 'Dokter'
-                'email' => 'medical@posyandu.com',
-                'username' => 'medical',
-                'password' => Hash::make('password123'),
-                'role' => 'medical', // Changed from 'dokter'
-                'is_active' => true,
-                'verified_email' => true,
-                'attempt_login' => 0,
-                'block_expires' => null,
+                'name'              => 'Koordinator Wilayah',
+                'email'             => 'koordinator@posyandu.com',
+                'username'          => 'koordinator',
+                'password'          => Hash::make('password123'),
+                'role'              => User::ROLE_COORDINATOR,
+                'posyandu_id'       => null,
+                'is_active'         => true,
+                'verified_email'    => true,
+                'attempt_login'     => 0,
+                'block_expires'     => null,
                 'email_verified_at' => now(),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Coordinator',
-                'email' => 'coordinator@posyandu.com',
-                'username' => 'coordinator',
-                'password' => Hash::make('password123'),
-                'role' => 'coordinator',
-                'is_active' => true,
-                'verified_email' => true,
-                'attempt_login' => 0,
-                'block_expires' => null,
-                'email_verified_at' => now(),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Staff',
-                'email' => 'staff@posyandu.com',
-                'username' => 'staff',
-                'password' => Hash::make('password123'),
-                'role' => 'staff',
-                'is_active' => true,
-                'verified_email' => true,
-                'attempt_login' => 0,
-                'block_expires' => null,
-                'email_verified_at' => now(),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Patient',
-                'email' => 'patient@posyandu.com',
-                'username' => 'patient',
-                'password' => Hash::make('password123'),
-                'role' => 'patient',
-                'is_active' => true,
-                'verified_email' => true,
-                'attempt_login' => 0,
-                'block_expires' => null,
-                'email_verified_at' => now(),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'name' => 'Partner',
-                'email' => 'partner@posyandu.com',
-                'username' => 'partner',
-                'password' => Hash::make('password123'),
-                'role' => 'partner',
-                'is_active' => true,
-                'verified_email' => true,
-                'attempt_login' => 0,
-                'block_expires' => null,
-                'email_verified_at' => now(),
-                'created_at' => now(),
-                'updated_at' => now(),
             ]
-        ]);
+        );
+
+        // ── Per-posyandu users ────────────────────────────────────────────────
+        $posyanduUsers = [
+            // Posyandu Melati
+            [
+                'posyandu_code' => 'PSY001',
+                'name'          => 'Admin Melati',
+                'email'         => 'admin.melati@posyandu.com',
+                'username'      => 'admin_melati',
+                'role'          => User::ROLE_ADMIN,
+            ],
+            [
+                'posyandu_code' => 'PSY001',
+                'name'          => 'Kader Melati',
+                'email'         => 'kader.melati@posyandu.com',
+                'username'      => 'kader_melati',
+                'role'          => User::ROLE_KADER,
+            ],
+            // Posyandu Mawar
+            [
+                'posyandu_code' => 'PSY002',
+                'name'          => 'Admin Mawar',
+                'email'         => 'admin.mawar@posyandu.com',
+                'username'      => 'admin_mawar',
+                'role'          => User::ROLE_ADMIN,
+            ],
+            [
+                'posyandu_code' => 'PSY002',
+                'name'          => 'Kader Mawar',
+                'email'         => 'kader.mawar@posyandu.com',
+                'username'      => 'kader_mawar',
+                'role'          => User::ROLE_KADER,
+            ],
+            // Posyandu Anggrek
+            [
+                'posyandu_code' => 'PSY003',
+                'name'          => 'Admin Anggrek',
+                'email'         => 'admin.anggrek@posyandu.com',
+                'username'      => 'admin_anggrek',
+                'role'          => User::ROLE_ADMIN,
+            ],
+            [
+                'posyandu_code' => 'PSY003',
+                'name'          => 'Kader Anggrek',
+                'email'         => 'kader.anggrek@posyandu.com',
+                'username'      => 'kader_anggrek',
+                'role'          => User::ROLE_KADER,
+            ],
+            // KENANGA 1
+            [
+                'posyandu_code' => 'KENANGA1',
+                'name'          => 'Admin Kenanga 1',
+                'email'         => 'admin.kenanga1@posyandu.com',
+                'username'      => 'admin_kenanga1',
+                'role'          => User::ROLE_ADMIN,
+            ],
+            [
+                'posyandu_code' => 'KENANGA1',
+                'name'          => 'Moderator Kenanga 1',
+                'email'         => 'kenanga1@posyandu.com',
+                'username'      => 'kenanga1',
+                'role'          => User::ROLE_KADER,
+            ],
+        ];
+
+        foreach ($posyanduUsers as $data) {
+            $posyandu = Posyandu::where('unique_code', $data['posyandu_code'])->firstOrFail();
+
+            User::updateOrCreate(
+                ['username' => $data['username']],
+                [
+                    'name'              => $data['name'],
+                    'email'             => $data['email'],
+                    'username'          => $data['username'],
+                    'password'          => Hash::make('password123'),
+                    'role'              => $data['role'],
+                    'posyandu_id'       => $posyandu->id,
+                    'is_active'         => true,
+                    'verified_email'    => true,
+                    'attempt_login'     => 0,
+                    'block_expires'     => null,
+                    'email_verified_at' => now(),
+                ]
+            );
+        }
     }
 }

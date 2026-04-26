@@ -1,49 +1,82 @@
-<!-- resources/views/auth/register.blade.php -->
 @extends('layouts.guest')
 
+@section('title', 'Daftar Akun')
+
 @section('content')
-    <div class="max-w-md mx-auto mt-12 bg-white p-6 rounded-lg shadow-md">
-        <h2 class="text-2xl font-semibold text-teal-500 mb-6">Create a New Account</h2>
+<div class="mb-12">
+    <h2 class="text-3xl md:text-5xl font-black text-slate-800 tracking-tight font-jakarta leading-tight mb-4">
+        Daftar <br> <span class="text-teal-600 italic">Akun Baru.</span>
+    </h2>
+    <p class="text-lg font-bold text-slate-500 italic">Lengkapi data berikut untuk bergabung.</p>
+</div>
 
-        <form method="POST" action="{{ route('register') }}">
-            @csrf
+<form method="POST" action="{{ route('register') }}" class="space-y-8">
+    @csrf
 
-            <!-- Name -->
-            <div class="mb-4">
-                <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-                <input type="text" name="name" id="name" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md" value="{{ old('name') }}" required />
-                @error('name')
-                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <!-- Email -->
-            <div class="mb-4">
-                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                <input type="email" name="email" id="email" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md" value="{{ old('email') }}" required />
-                @error('email')
-                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <!-- Password -->
-            <div class="mb-4">
-                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                <input type="password" name="password" id="password" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md" required />
-                @error('password')
-                    <span class="text-red-500 text-sm">{{ $message }}</span>
-                @enderror
-            </div>
-
-            <!-- Confirm Password -->
-            <div class="mb-6">
-                <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Confirm Password</label>
-                <input type="password" name="password_confirmation" id="password_confirmation" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md" required />
-            </div>
-
-            <button type="submit" class="bg-teal-500 text-white px-6 py-2 rounded-lg hover:bg-teal-600 w-full">
-                Register
-            </button>
-        </form>
+    <!-- Nama Lengkap -->
+    <div>
+        <label for="name" class="font-black text-slate-700 uppercase tracking-widest flex items-center gap-2">
+            <span class="material-symbols-outlined text-[20px] text-teal-600">person</span>
+            Nama Lengkap
+        </label>
+        <div class="relative group">
+            <input id="name" type="text" name="name" value="{{ old('name') }}" required autofocus
+                   placeholder="Contoh: Budi Santoso"
+                   class="w-full h-16 px-8 rounded-3xl bg-slate-50 border-2 border-slate-100 text-lg font-bold text-slate-900 focus:outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-600 transition-all">
+        </div>
     </div>
+
+    <!-- Alamat Email -->
+    <div>
+        <label for="email" class="font-black text-slate-700 uppercase tracking-widest flex items-center gap-2">
+            <span class="material-symbols-outlined text-[20px] text-teal-600">mail</span>
+            Alamat Email
+        </label>
+        <div class="relative group">
+            <input id="email" type="email" name="email" value="{{ old('email') }}" required
+                   placeholder="nama@email.com"
+                   class="w-full h-16 px-8 rounded-3xl bg-slate-50 border-2 border-slate-100 text-lg font-bold text-slate-900 focus:outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-600 transition-all">
+        </div>
+    </div>
+
+    <!-- Kata Sandi -->
+    <div>
+        <label for="password" class="font-black text-slate-700 uppercase tracking-widest flex items-center gap-2">
+            <span class="material-symbols-outlined text-[20px] text-teal-600">lock</span>
+            Buat Kata Sandi
+        </label>
+        <div class="relative group">
+            <input id="password" type="password" name="password" required
+                   placeholder="Minimal 8 karakter..."
+                   class="w-full h-16 px-8 rounded-3xl bg-slate-50 border-2 border-slate-100 text-lg font-bold text-slate-900 focus:outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-600 transition-all">
+        </div>
+    </div>
+
+    <!-- Konfirmasi Kata Sandi -->
+    <div>
+        <label for="password_confirmation" class="font-black text-slate-700 uppercase tracking-widest flex items-center gap-2">
+            <span class="material-symbols-outlined text-[20px] text-teal-600">check_circle</span>
+            Ulangi Kata Sandi
+        </label>
+        <div class="relative group">
+            <input id="password_confirmation" type="password" name="password_confirmation" required
+                   placeholder="Masukkan kembali sandi..."
+                   class="w-full h-16 px-8 rounded-3xl bg-slate-50 border-2 border-slate-100 text-lg font-bold text-slate-900 focus:outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-600 transition-all">
+        </div>
+    </div>
+
+    <!-- Submit -->
+    <div class="pt-4">
+        <button type="submit" 
+                class="w-full h-20 bg-teal-600 text-white text-xl font-black uppercase tracking-[0.2em] rounded-[2.5rem] shadow-2xl hover:bg-teal-700 transition-all flex items-center justify-center gap-4">
+            Daftar Sekarang
+            <span class="material-symbols-outlined text-[28px]">app_registration</span>
+        </button>
+    </div>
+
+    <div class="text-center text-lg font-bold text-slate-500 italic">
+        Sudah punya akun? <a href="{{ route('login') }}" class="text-teal-600 hover:underline">Masuk di sini</a>
+    </div>
+
+</form>
 @endsection

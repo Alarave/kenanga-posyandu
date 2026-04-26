@@ -6,45 +6,63 @@ use App\Models\User;
 use App\Http\Requests\UserRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Services\ActivityLogService;
 
 class UserController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::all();
-        return view('admin.user-management.index', compact('users'));
+        $users = User::with('posyandu')
+            ->filter([
+                'search' => $request->search,
+                'role'   => $request->role,
+                'status' => $request->status,
+            ])
+            ->orderBy('name')
+            ->paginate(10)
+            ->withQueryString();
+
+        $totalUsers     = User::count();
+        $totalRoles     = User::distinct('role')->count('role');
+        $inactiveUsers  = User::where('is_active', false)->count();
+        $totalPosyandu  = \App\Models\Posyandu::count();
+
+        return view('livewire.admin.user-management.index', compact(
+            'users', 'totalUsers', 'totalRoles', 'inactiveUsers', 'totalPosyandu'
+        ));
     }
 
     public function create()
     {
-        return view('admin.user-management.create');
+        return view('livewire.admin.user-management.create');
     }
 
-    public function store(UserRequest $request)
+    public function store(UserRequest $request, \App\Services\UserService $userService)
     {
-        User::create($request->validated());
-        return redirect()->route('users.index')->with('success', 'User created successfully.');
+        $userService->createUser($request->validated(), $request->has('is_active'));
+        return redirect()->route('admin.users.index')->with('success', 'Pengguna berhasil ditambahkan.');
     }
 
     public function show(User $user)
     {
-        return view('admin.user-management.details', compact('user'));
+        return view('livewire.admin.user-management.details', compact('user'));
     }
 
     public function edit(User $user)
     {
-        return view('admin.user-management.update', compact('user'));
+        return view('livewire.admin.user-management.update', compact('user'));
     }
 
-    public function update(UserRequest $request, User $user)
+    public function update(UserRequest $request, User $user, \App\Services\UserService $userService)
     {
-        $user->update($request->validated());
-        return redirect()->route('users.index')->with('success', 'User updated successfully.');
+        $userService->updateUser($user, $request->validated(), $request->has('is_active'));
+
+        return redirect()->route('admin.users.index')->with('success', 'Pengguna berhasil diperbarui.');
     }
 
-    public function destroy(User $user)
+    public function destroy(User $user, \App\Services\UserService $userService)
     {
-        $user->delete();
-        return redirect()->route('users.index')->with('success', 'User deleted successfully.');
+        $userService->deleteUser($user);
+        return redirect()->route('admin.users.index')->with('success', 'Pengguna berhasil dihapus.');
     }
 }

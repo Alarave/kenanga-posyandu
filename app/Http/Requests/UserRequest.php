@@ -13,13 +13,15 @@ class UserRequest extends FormRequest
 
     public function rules()
     {
+        $userId = $this->route('user') ? $this->route('user')->id : null;
+        
         return [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $this->route('user'),
-            'username' => 'required|string|max:255|unique:users,username,' . $this->route('user'),
-            'password' => 'required|string|min:8|confirmed',
+            'email' => 'required|email|unique:users,email,' . $userId,
+            'username' => 'required|string|max:255|unique:users,username,' . $userId,
+            'password' => ($userId ? 'nullable' : 'required') . '|string|min:8|confirmed',
             'role' => 'required|string|in:superadmin,admin,coordinator,staff,medical,patient,partner',
-            'is_active' => 'required|boolean',
+            'is_active' => 'sometimes|boolean',
         ];
     }
 

@@ -3,40 +3,54 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use App\Models\Pedukuhan;
+use App\Models\Posyandu;
 
 class PosyanduSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
-        DB::table('posyandus')->insert([
+        $dukuhA    = Pedukuhan::where('name', 'Dukuh A')->firstOrFail();
+        $dukuhB    = Pedukuhan::where('name', 'Dukuh B')->firstOrFail();
+        $dukuhC    = Pedukuhan::where('name', 'Dukuh C')->firstOrFail();
+        $arenJaya  = Pedukuhan::where('name', 'Aren Jaya')->firstOrFail();
+
+        $posyandus = [
             [
-                'pedukuhan_id' => 1,
-                'name' => 'Posyandu Melati',
-                'address' => 'Jl. Melati No. 1, Dukuh A',
-                'unique_code' => 'PSY001',
-                'logo_photo' => 'posyandu-melati.jpg',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'pedukuhan_id' => $dukuhA->id,
+                'name'         => 'Posyandu Melati',
+                'address'      => 'Jl. Melati No. 1, Dukuh A',
+                'unique_code'  => 'PSY001',
+                'logo_photo'   => null,
             ],
             [
-                'pedukuhan_id' => 2,
-                'name' => 'Posyandu Mawar',
-                'address' => 'Jl. Mawar No. 2, Dukuh B',
-                'unique_code' => 'PSY002',
-                'logo_photo' => 'posyandu-mawar.jpg',
-                'created_at' => now(),
-                'updated_at' => now(),
+                'pedukuhan_id' => $dukuhB->id,
+                'name'         => 'Posyandu Mawar',
+                'address'      => 'Jl. Mawar No. 2, Dukuh B',
+                'unique_code'  => 'PSY002',
+                'logo_photo'   => null,
             ],
             [
-                'pedukuhan_id' => 3,
-                'name' => 'Posyandu Anggrek',
-                'address' => 'Jl. Anggrek No. 3, Dukuh C',
-                'unique_code' => 'PSY003',
-                'logo_photo' => 'posyandu-anggrek.jpg',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]
-        ]);
+                'pedukuhan_id' => $dukuhC->id,
+                'name'         => 'Posyandu Anggrek',
+                'address'      => 'Jl. Anggrek No. 3, Dukuh C',
+                'unique_code'  => 'PSY003',
+                'logo_photo'   => null,
+            ],
+            [
+                'pedukuhan_id' => $arenJaya->id,
+                'name'         => 'KENANGA 1',
+                'address'      => 'Aren Jaya, RW 11, Bekasi Timur',
+                'unique_code'  => 'KENANGA1',
+                'logo_photo'   => null,
+            ],
+        ];
+
+        foreach ($posyandus as $data) {
+            Posyandu::updateOrCreate(
+                ['unique_code' => $data['unique_code']],
+                $data
+            );
+        }
     }
 }

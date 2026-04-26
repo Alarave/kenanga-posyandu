@@ -1,121 +1,185 @@
 @extends('layouts.admin-layout')
 
-@section('admin-title')
-    Manajemen Pasien
+@section('admin-title') Data Warga Terdaftar @endsection
+
+@section('admin-actions')
+    @can('create', App\Models\Patient::class)
+    <div class="flex items-center gap-2">
+        <x-button href="{{ route('admin.patients.import') }}" variant="outline" icon="publish">
+            Import Data
+        </x-button>
+        <x-button href="{{ route('admin.patients.create') }}" variant="secondary" icon="person_add">
+            Tambah Warga
+        </x-button>
+    </div>
+    @endcan
 @endsection
 
 @section('admin-content')
-<div class="flex justify-between items-center mb-6">
-    <h2 class="text-2xl font-bold">Daftar Pasien</h2>
-    <x-button href="{{ route('patients.create') }}" icon="plus" variant="primary">
-        Tambah Pasien
-    </x-button>
-</div>
-
-<x-card>
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 space-y-4 md:space-y-0">
-        <x-search-bar placeholder="Cari pasien..." model="search" />
-        
-        <div class="flex space-x-2">
-            <x-dropdown>
-                <x-slot name="trigger">
-                    <x-button variant="outline" icon="funnel">
-                        Filter
-                    </x-button>
-                </x-slot>
-                <x-dropdown.link wire:click="filterByStatus('all')">Semua</x-dropdown.link>
-                <x-dropdown.link wire:click="filterByStatus('active')">Aktif</x-dropdown.link>
-                <x-dropdown.link wire:click="filterByStatus('inactive')">Non-Aktif</x-dropdown.link>
-            </x-dropdown>
-            
-            <x-dropdown>
-                <x-slot name="trigger">
-                    <x-button variant="outline" icon="bars-arrow-down">
-                        Urutkan
-                    </x-button>
-                </x-slot>
-                <x-dropdown.link wire:click="sortBy('name')">Nama (A-Z)</x-dropdown.link>
-                <x-dropdown.link wire:click="sortBy('created_at')">Terbaru</x-dropdown.link>
-                <x-dropdown.link wire:click="sortBy('age')">Umur</x-dropdown.link>
-            </x-dropdown>
+<div class="space-y-6">
+    
+    {{-- ── Summary Cards ── --}}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="bg-white border border-slate-200 rounded-3xl p-5 flex items-center gap-4 shadow-sm group hover:border-teal-500/30 transition-all">
+            <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-[24px]">groups</span>
+            </div>
+            <div>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Total Warga</p>
+                <p class="text-2xl font-black text-slate-900 leading-none">{{ number_format($patients->total()) }}</p>
+            </div>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-3xl p-5 flex items-center gap-4 shadow-sm group hover:border-pink-500/30 transition-all">
+            <div class="w-12 h-12 bg-pink-50 text-pink-600 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-[24px]">pregnant_woman</span>
+            </div>
+            <div>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Ibu Hamil</p>
+                <p class="text-2xl font-black text-slate-900 leading-none">{{ App\Models\Patient::where('category', 'ibu_hamil')->count() }}</p>
+            </div>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-3xl p-5 flex items-center gap-4 shadow-sm group hover:border-amber-500/30 transition-all">
+            <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-[24px]">child_care</span>
+            </div>
+            <div>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Balita</p>
+                <p class="text-2xl font-black text-slate-900 leading-none">{{ App\Models\Patient::where('category', 'balita')->count() }}</p>
+            </div>
+        </div>
+        <div class="bg-white border border-slate-200 rounded-3xl p-5 flex items-center gap-4 shadow-sm group hover:border-teal-500/30 transition-all">
+            <div class="w-12 h-12 bg-teal-50 text-teal-600 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-[24px]">face</span>
+            </div>
+            <div>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Remaja/Lansia</p>
+                <p class="text-2xl font-black text-slate-900 leading-none">{{ App\Models\Patient::whereIn('category', ['remaja', 'lansia'])->count() }}</p>
+            </div>
         </div>
     </div>
 
-    <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NIK</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Umur</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pedukuhan</th>
-                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                    <th scope="col" class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                @foreach($patients as $patient)
-                <tr>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="flex items-center">
-                            <x-avatar :src="$patient->photo_url" :initials="$patient->initials" size="sm" class="mr-3" />
-                            <div>
-                                <div class="font-medium text-gray-900">{{ $patient->name }}</div>
-                                <div class="text-sm text-gray-500">{{ $patient->phone }}</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {{ $patient->nik }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        {{ $patient->age }} tahun
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        {{ $patient->pedukuhan->name }}
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        @if($patient->is_active)
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                Aktif
-                            </span>
-                        @else
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                Non-Aktif
-                            </span>
-                        @endif
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                        <div class="flex space-x-2 justify-end">
-                            <x-button href="{{ route('patients.show', $patient->id) }}" variant="outline" size="sm" icon="eye">
-                                Detail
-                            </x-button>
-                            <x-button href="{{ route('patients.edit', $patient->id) }}" variant="outline" size="sm" icon="pencil">
-                                Edit
-                            </x-button>
-                            <x-button wire:click="confirmDelete({{ $patient->id }})" variant="danger" size="sm" icon="trash">
-                                Hapus
-                            </x-button>
-                        </div>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
+    {{-- ── Search & Filter Bar ── --}}
+    <section class="bg-slate-50/50 p-4 border rounded-3xl border-slate-100">
+        <div class="flex flex-wrap items-center gap-4">
+            {{-- Search Input (Livewire) --}}
+            <div class="flex-1 min-w-[280px] relative group">
+                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-teal-600 transition-colors">search</span>
+                <input type="text" wire:model.live.debounce.300ms="search"
+                       placeholder="Cari NIK atau nama..."
+                       class="w-full h-12 pl-12 pr-4 bg-white border border-slate-200 rounded-2xl text-sm font-medium text-slate-700 placeholder:text-slate-400 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all shadow-sm">
+            </div>
 
-    <div class="mt-4">
+            {{-- Category Filter --}}
+            <div class="w-full sm:w-auto min-w-[200px]">
+                <select wire:model.live="category"
+                        class="w-full h-12 px-4 bg-white border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all appearance-none cursor-pointer shadow-sm">
+                    <option value="all">Semua Kategori</option>
+                    <option value="balita">Balita</option>
+                    <option value="ibu_hamil">Ibu Hamil</option>
+                    <option value="remaja">Remaja</option>
+                    <option value="lansia">Lansia</option>
+                </select>
+            </div>
+
+            @if($search || $category !== 'all')
+            <button wire:click="$set('search', ''); $set('category', 'all');"
+                    class="h-12 px-4 flex items-center gap-2 text-red-500 font-bold text-xs uppercase tracking-widest hover:bg-red-50 rounded-2xl transition-all">
+                <span class="material-symbols-outlined text-[18px]">restart_alt</span>
+                Reset Filter
+            </button>
+            @endif
+        </div>
+    </section>
+
+    {{-- Flash Messages --}}
+    @if(session('success'))
+        <x-alert type="success" :message="session('success')" />
+    @endif
+
+    {{-- ── Data Table ── --}}
+    <x-table>
+        <thead class="bg-slate-50/80 border-b border-slate-100">
+            <tr>
+                <th class="px-6 py-4 text-[11px] font-black text-slate-500 uppercase tracking-[0.15em] text-left">Detail Nama Warga</th>
+                <th class="px-6 py-4 text-[11px] font-black text-slate-500 uppercase tracking-[0.15em] text-left">Kategori</th>
+                <th class="px-6 py-4 text-[11px] font-black text-slate-500 uppercase tracking-[0.15em] text-left">Lokasi Posyandu</th>
+                <th class="px-6 py-4 text-[11px] font-black text-slate-500 uppercase tracking-[0.15em] text-right">Tindakan</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-50">
+            @forelse($patients as $patient)
+            @php
+                $initials = strtoupper(substr($patient->full_name, 0, 2));
+                $catStyles = [
+                    'balita' => 'bg-amber-100 text-amber-700',
+                    'ibu_hamil' => 'bg-pink-100 text-pink-700',
+                    'remaja' => 'bg-indigo-100 text-indigo-700',
+                    'lansia' => 'bg-orange-100 text-orange-700',
+                ];
+            @endphp
+            <tr class="group hover:bg-slate-50/50 transition-colors" wire:key="patient-{{ $patient->id }}">
+                <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                        <div class="h-10 w-10 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center font-black text-xs border border-teal-100">
+                            {{ $initials }}
+                        </div>
+                        <div>
+                            <div class="font-black text-slate-900 text-[15px] leading-tight">{{ $patient->full_name }}</div>
+                            <div class="text-[12px] text-slate-500 font-bold mt-1 tracking-tight">NIK: {{ $patient->id_number }}</div>
+                        </div>
+                    </div>
+                </td>
+                <td class="px-6 py-4">
+                    <span class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider {{ $catStyles[$patient->category] ?? 'bg-slate-100 text-slate-600' }}">
+                        {{ str_replace('_', ' ', $patient->category) }}
+                    </span>
+                </td>
+                <td class="px-6 py-4">
+                    <div class="text-[13px] font-semibold text-slate-600">{{ $patient->posyandu->name ?? '—' }}</div>
+                    <div class="text-[10px] text-slate-400 uppercase tracking-tighter">{{ $patient->age }}</div>
+                </td>
+                <td class="px-6 py-4 text-right">
+                    <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <x-button href="{{ route('admin.patients.show', $patient->id) }}" variant="ghost" size="sm">
+                            <span class="material-symbols-outlined text-[18px]">visibility</span>
+                        </x-button>
+                        
+                        @if($patient->category === 'balita')
+                        <x-button href="{{ route('admin.patients.growth-chart', $patient->id) }}" variant="ghost" size="sm">
+                            <span class="material-symbols-outlined text-[18px] text-blue-600">show_chart</span>
+                        </x-button>
+                        @endif
+
+                        @can('update', $patient)
+                        <x-button href="{{ route('admin.patients.edit', $patient->id) }}" variant="ghost" size="sm">
+                            <span class="material-symbols-outlined text-[18px]">edit</span>
+                        </x-button>
+                        @endcan
+                        @can('delete', $patient)
+                        <button wire:click="confirmDelete({{ $patient->id }})" class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all">
+                            <span class="material-symbols-outlined text-[18px]">delete</span>
+                        </button>
+                        @endcan
+                    </div>
+                </td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="4" class="px-6 py-24 text-center">
+                    <div class="flex flex-col items-center gap-4 text-slate-300">
+                        <span class="material-symbols-outlined text-[64px]">person_off</span>
+                        <p class="text-sm font-bold text-slate-500 uppercase tracking-widest">Tidak ada warga ditemukan</p>
+                    </div>
+                </td>
+            </tr>
+            @endforelse
+        </tbody>
+    </x-table>
+
+    {{-- ── Pagination ── --}}
+    <div class="px-6 py-4 bg-slate-50 rounded-b-3xl">
         {{ $patients->links() }}
     </div>
-</x-card>
 
-<!-- Delete Confirmation Modal -->
-<x-modal id="confirmPatientDeletion" title="Konfirmasi Penghapusan">
-    <p class="text-gray-600 mb-4">Apakah Anda yakin ingin menghapus pasien ini? Data yang dihapus tidak dapat dikembalikan.</p>
-    
-    <div class="flex justify-end space-x-3">
-        <x-button @click="open = false" variant="outline">Batal</x-button>
-        <x-button wire:click="deletePatient" variant="danger" icon="trash">Hapus</x-button>
-    </div>
-</x-modal>
+</div>
 @endsection

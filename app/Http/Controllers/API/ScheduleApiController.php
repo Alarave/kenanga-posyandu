@@ -11,13 +11,13 @@ class ScheduleApiController extends Controller
 {
     public function index()
     {
-        $schedules = Schedule::all();
+        $schedules = Schedule::accessibleBy(auth()->user())->get();
         return response()->json($schedules);
     }
 
-    public function store(ScheduleRequest $request)
+    public function store(ScheduleRequest $request, \App\Services\ScheduleService $scheduleService)
     {
-        $schedule = Schedule::create($request->validated());
+        $schedule = $scheduleService->createSchedule($request->validated(), auth()->user());
         return response()->json($schedule, 201);
     }
 
@@ -26,15 +26,15 @@ class ScheduleApiController extends Controller
         return response()->json($schedule);
     }
 
-    public function update(ScheduleRequest $request, Schedule $schedule)
+    public function update(ScheduleRequest $request, Schedule $schedule, \App\Services\ScheduleService $scheduleService)
     {
-        $schedule->update($request->validated());
+        $scheduleService->updateSchedule($schedule, $request->validated());
         return response()->json($schedule);
     }
 
-    public function destroy(Schedule $schedule)
+    public function destroy(Schedule $schedule, \App\Services\ScheduleService $scheduleService)
     {
-        $schedule->delete();
+        $scheduleService->deleteSchedule($schedule);
         return response()->json(['message' => 'Schedule deleted successfully']);
     }
 }

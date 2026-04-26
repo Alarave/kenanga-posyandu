@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class RegisterController extends Controller
 {
@@ -27,10 +27,12 @@ class RegisterController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'role' => User::ROLE_ADMIN, // Default role for registration
+            'is_active' => true,
         ]);
 
         Auth::login($user);
 
-        return redirect()->route('dashboard')->with('success', 'Registered and logged in successfully.');
+        return redirect()->route('dashboard')->with('success', 'Berhasil mendaftar dan masuk ke sistem.');
     }
 }

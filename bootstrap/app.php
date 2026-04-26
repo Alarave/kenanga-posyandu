@@ -12,7 +12,19 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware) {
-        //
+        $middleware->alias([
+            'user' => \App\Http\Middleware\UserMiddleware::class,
+            'medical' => \App\Http\Middleware\MedicalMiddleware::class,
+            'superadmin' => \App\Http\Middleware\SuperadminMiddleware::class,
+            'coordinator' => \App\Http\Middleware\CoordinatorMiddleware::class,
+            'staff' => \App\Http\Middleware\StaffMiddleware::class,
+            'patient' => \App\Http\Middleware\PatientMiddleware::class,
+            'partner' => \App\Http\Middleware\PartnerMiddleware::class,
+            'role' => \App\Http\Middleware\RoleMiddleware::class,
+            'check.user.status' => \App\Http\Middleware\CheckUserStatus::class,
+            'session.timeout' => \App\Http\Middleware\SessionTimeout::class,
+            'posyandu.scope' => \App\Http\Middleware\PosyanduScopeMiddleware::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

@@ -3,9 +3,40 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Blade;
+use App\Models\Patient;
+use App\Models\MedicalRecord;
+use App\Policies\PatientPolicy;
+use App\Policies\MedicalRecordPolicy;
+use App\Policies\ActivityLogPolicy;
+use App\Policies\ReportPolicy;
+
+use App\View\Components\Layouts\UI\Button;
+use App\View\Components\Layouts\UI\Card;
+use App\View\Components\Layouts\UI\Table;
+use App\View\Components\Layouts\UI\Breadcrumbs;
+use App\View\Components\Layouts\UI\Pagination;
+use App\View\Components\Layouts\UI\Navbar;
+use App\View\Components\Layouts\UI\Footer;
+
+use App\View\Components\Layouts\UI\ProgressBar;
+use App\View\Components\Layouts\UI\Alert;
+use App\View\Components\Layouts\UI\Modal;
+use App\View\Components\Layouts\UI\DataCard;
 
 class AppServiceProvider extends ServiceProvider
 {
+    /**
+     * The policy mappings for the application.
+     *
+     * @var array<class-string, class-string>
+     */
+    protected $policies = [
+        Patient::class => PatientPolicy::class,
+        MedicalRecord::class => MedicalRecordPolicy::class,
+    ];
+
     /**
      * Register any application services.
      */
@@ -19,6 +50,43 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Register model policies
+        Gate::policy(Patient::class, PatientPolicy::class);
+        Gate::policy(MedicalRecord::class, MedicalRecordPolicy::class);
+
+        // Register ability-based policies for non-model resources
+        Gate::define('viewActivityLogs', [ActivityLogPolicy::class, 'viewAny']);
+        Gate::define('deleteActivityLogs', [ActivityLogPolicy::class, 'delete']);
+        Gate::define('viewReports', [ReportPolicy::class, 'viewAny']);
+        Gate::define('exportReports', [ReportPolicy::class, 'export']);
+
+        // ── UI Component Aliases ──────────────────────────────────────
+        Blade::component(Button::class,      'button');
+        Blade::component(Card::class,        'card');
+        Blade::component(Table::class,       'table');
+        Blade::component(Breadcrumbs::class, 'breadcrumb');
+        Blade::component(Pagination::class,  'pagination-ui');
+        Blade::component(Navbar::class,      'ui-navbar');
+        Blade::component(Footer::class,      'ui-footer');
+        Blade::component(ProgressBar::class, 'progress-bar');
+
+        // Class-based registration for consistency
+        Blade::component(Alert::class,    'alert');
+        Blade::component(Modal::class,    'modal');
+        Blade::component(DataCard::class, 'datacard');
+
+        // ── Date-Time Component Aliases ───────────────────────────────
+        Blade::component('components.date-time.datepicker',      'datepicker');
+        Blade::component('components.date-time.datetime-picker', 'datetime-picker');
+
+        // ── Modal Component Aliases ───────────────────────────────────
+        Blade::component('components.modals.confirm-modal', 'confirm-modal');
+        Blade::component('components.modals.form-modal',    'form-modal');
+        Blade::component('components.modals.info-modal',    'info-modal');
+
+        // ── Widget Component Aliases ──────────────────────────────────
+        Blade::component('components.widget.stats-card',     'widget.stats-card');
+        Blade::component('components.widget.dashboard-card', 'widget.dashboard-card');
+        Blade::component('components.widget.chart-widget',   'widget.chart-widget');
     }
 }

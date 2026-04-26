@@ -1,132 +1,156 @@
 @extends('layouts.admin-layout')
 
-@section('admin-title')
-    Edit Rekam Medis
-@endsection
+@section('admin-title') Edit Rekam Medis Bulanan @endsection
 
 @section('admin-content')
-<div class="flex justify-between items-center mb-6">
-    <h2 class="text-2xl font-bold">Edit Rekam Medis</h2>
-    <x-breadcrumb :items="[
-        ['label' => 'Rekam Medis', 'url' => route('medical-records.index')],
-        ['label' => $medicalRecord->patient->name, 'url' => route('medical-records.show', $medicalRecord->id)],
-        ['label' => 'Edit', 'active' => true]
-    ]" />
-</div>
+<div class="max-w-5xl mx-auto space-y-6">
 
-<x-card>
-    <form wire:submit.prevent="updateMedicalRecord">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Kolom 1 -->
-            <div class="space-y-6">
-                <x-select label="Pasien" wire:model.defer="patient_id" required>
-                    <option value="">Pilih Pasien</option>
-                    @foreach($patients as $patient)
-                        <option value="{{ $patient->id }}" @selected($patient_id == $patient->id)>
-                            {{ $patient->name }} ({{ $patient->nik }})
-                        </option>
-                    @endforeach
-                </x-select>
-                
-                <x-input label="Tanggal Pemeriksaan" wire:model.defer="checkup_date" type="date" required />
-                
-                <x-input label="Tinggi Badan (cm)" wire:model.defer="height" type="number" step="0.1" required />
-                
-                <x-input label="Berat Badan (kg)" wire:model.defer="weight" type="number" step="0.1" required />
-                
-                <x-textarea label="Keluhan" wire:model.defer="complaints" placeholder="Keluhan pasien" rows="3" />
-            </div>
+    <form action="{{ route('admin.medical-records.update', ['medicalRecord' => $record->id]) }}" method="POST" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        @csrf
+        @method('PUT')
+
+        {{-- ── Left Column: Main Assessment ── --}}
+        <div class="lg:col-span-2 space-y-6">
             
-            <!-- Kolom 2 -->
-            <div class="space-y-6">
-                <x-select label="Petugas Kesehatan" wire:model.defer="health_worker_id" required>
-                    <option value="">Pilih Petugas</option>
-                    @foreach($healthWorkers as $worker)
-                        <option value="{{ $worker->id }}" @selected($health_worker_id == $worker->id)>
-                            {{ $worker->name }} ({{ $worker->position }})
-                        </option>
-                    @endforeach
-                </x-select>
-                
-                <x-input label="Suhu Tubuh (°C)" wire:model.defer="temperature" type="number" step="0.1" />
-                
-                <x-input label="Tekanan Darah (mmHg)" wire:model.defer="blood_pressure" placeholder="Contoh: 120/80" />
-                
-                <x-textarea label="Diagnosa & Catatan" wire:model.defer="notes" placeholder="Hasil pemeriksaan dan diagnosa" rows="5" required />
-            </div>
-        </div>
-        
-        <!-- Tindakan -->
-        <div class="mt-8">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Tindakan Medis</h3>
-            
-            <div class="space-y-4">
-                @foreach($treatments as $index => $treatment)
-                    <div class="flex items-start space-x-3">
-                        <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-3">
-                            <x-input 
-                                label="Nama Tindakan" 
-                                wire:model.defer="treatments.{{ $index }}.name" 
-                                placeholder="Contoh: Imunisasi DPT" />
-                                
-                            <x-textarea 
-                                label="Keterangan" 
-                                wire:model.defer="treatments.{{ $index }}.notes" 
-                                placeholder="Catatan tambahan" 
-                                rows="2" />
-                        </div>
-                        <button type="button" wire:click="removeTreatment({{ $index }})" class="mt-6 text-red-500 hover:text-red-700">
-                            <x-icon name="trash" class="w-5 h-5" />
-                        </button>
+            {{-- 1. Visit Context --}}
+            <div class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center border border-teal-100">
+                        <span class="material-symbols-outlined text-[20px]">calendar_month</span>
                     </div>
-                @endforeach
-                
-                <x-button type="button" wire:click="addTreatment" variant="outline" size="sm" icon="plus">
-                    Tambah Tindakan
-                </x-button>
-            </div>
-        </div>
-        
-        <!-- Resep Obat -->
-        <div class="mt-8">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Resep Obat</h3>
-            
-            <div class="space-y-4">
-                @foreach($prescriptions as $index => $prescription)
-                    <div class="flex items-start space-x-3">
-                        <div class="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
-                            <x-input 
-                                label="Nama Obat" 
-                                wire:model.defer="prescriptions.{{ $index }}.medicine" 
-                                placeholder="Contoh: Paracetamol" />
-                                
-                            <x-input 
-                                label="Dosis" 
-                                wire:model.defer="prescriptions.{{ $index }}.dosage" 
-                                placeholder="Contoh: 3x1 sehari" />
-                                
-                            <x-textarea 
-                                label="Instruksi" 
-                                wire:model.defer="prescriptions.{{ $index }}.instructions" 
-                                placeholder="Instruksi penggunaan" 
-                                rows="2" />
+                    <h3 class="text-xs font-black text-slate-800 uppercase tracking-widest">Informasi Kunjungan</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {{-- Patient Selection --}}
+                    <div class="md:col-span-2 space-y-2">
+                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Warga / Sasaran</label>
+                        <div class="w-full h-12 px-4 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-400 flex items-center">
+                            {{ $record->patient->full_name }}
                         </div>
-                        <button type="button" wire:click="removePrescription({{ $index }})" class="mt-6 text-red-500 hover:text-red-700">
-                            <x-icon name="trash" class="w-5 h-5" />
-                        </button>
+                        <input type="hidden" name="patient_id" value="{{ $record->patient_id }}">
                     </div>
-                @endforeach
-                
-                <x-button type="button" wire:click="addPrescription" variant="outline" size="sm" icon="plus">
-                    Tambah Resep
-                </x-button>
+
+                    {{-- Visit Date --}}
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Tanggal Periksa <span class="text-red-500">*</span></label>
+                        <input type="date" name="visit_date" value="{{ old('visit_date', $record->visit_date->format('Y-m-d')) }}" required
+                               class="w-full h-12 px-4 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all">
+                    </div>
+
+                    {{-- Nutrition Status --}}
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Kesimpulan Gizi</label>
+                        <select name="nutrition_status"
+                                class="w-full h-12 px-4 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all appearance-none cursor-pointer bg-white">
+                            <option value="Normal" {{ $record->nutrition_status == 'Normal' ? 'selected' : '' }}>✅ Normal</option>
+                            <option value="Gizi Kurang" {{ $record->nutrition_status == 'Gizi Kurang' ? 'selected' : '' }}>⚠️ Kurang</option>
+                            <option value="Gizi Buruk/Stunting" {{ $record->nutrition_status == 'Gizi Buruk/Stunting' ? 'selected' : '' }}>🔴 Buruk</option>
+                            <option value="Gizi Lebih" {{ $record->nutrition_status == 'Gizi Lebih' ? 'selected' : '' }}>⬆️ Lebih</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            {{-- 2. Antropometri --}}
+            <div class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center border border-teal-100">
+                        <span class="material-symbols-outlined text-[20px]">straighten</span>
+                    </div>
+                    <h3 class="text-xs font-black text-slate-800 uppercase tracking-widest">Antropometri</h3>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Berat (kg)</label>
+                        <input type="number" step="0.01" name="weight" value="{{ old('weight', $record->weight) }}"
+                               class="w-full h-12 px-4 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Tinggi (cm)</label>
+                        <input type="number" step="0.1" name="height" value="{{ old('height', $record->height) }}"
+                               class="w-full h-12 px-4 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Lila (cm)</label>
+                        <input type="number" step="0.1" name="head_circumference" value="{{ old('head_circumference', $record->head_circumference) }}"
+                               class="w-full h-12 px-4 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all">
+                    </div>
+                    <div class="md:col-span-3 space-y-2">
+                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Cara Ukur <span class="text-red-500">*</span></label>
+                        <select name="measurement_method" required
+                                class="w-full h-12 px-4 border border-slate-200 rounded-xl text-sm font-bold text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all appearance-none cursor-pointer bg-white">
+                            <option value="recumbent" {{ old('measurement_method', $record->measurement_method) == 'recumbent' ? 'selected' : '' }}>📏 Telentang (Anak < 2 Thn)</option>
+                            <option value="standing" {{ old('measurement_method', $record->measurement_method) == 'standing' ? 'selected' : '' }}>🧍 Berdiri (Anak >= 2 Thn)</option>
+                        </select>
+                        <p class="text-[10px] text-slate-400 italic ml-1">* WHO menyarankan telentang untuk bayi di bawah 2 tahun.</p>
+                    </div>
+                </div>
+            </div>
+
+            {{-- 3. Findings --}}
+            <div class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center border border-teal-100">
+                        <span class="material-symbols-outlined text-[20px]">stethoscope</span>
+                    </div>
+                    <h3 class="text-xs font-black text-slate-800 uppercase tracking-widest">Catatan & Diagnosa</h3>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Keluhan / Temuan</label>
+                        <textarea name="complaint" rows="2"
+                                  class="w-full p-4 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all resize-none">{{ old('complaint', $record->complaint) }}</textarea>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Hasil Akhir <span class="text-red-500">*</span></label>
+                        <textarea name="diagnosis" rows="3" required
+                                  class="w-full p-4 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all resize-none">{{ old('diagnosis', $record->diagnosis) }}</textarea>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <div class="flex justify-end mt-8 space-x-3">
-            <x-button href="{{ route('medical-records.show', $medicalRecord->id) }}" variant="outline">Batal</x-button>
-            <x-button type="submit" variant="primary" icon="check">Update Rekam Medis</x-button>
+        {{-- ── Right Column ── --}}
+        <div class="space-y-6">
+            <div class="bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-10 h-10 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center border border-teal-100">
+                        <span class="material-symbols-outlined text-[20px]">pill</span>
+                    </div>
+                    <h3 class="text-xs font-black text-slate-800 uppercase tracking-widest">Tambahan</h3>
+                </div>
+
+                <div class="space-y-4">
+                    <label class="flex items-center gap-3 p-4 rounded-2xl border border-slate-100 hover:bg-slate-50 transition-all cursor-pointer">
+                        <input type="checkbox" name="vitamin_a" value="1" {{ $record->vitamin_a ? 'checked' : '' }}
+                               class="w-5 h-5 rounded-lg border-slate-300 text-teal-600 focus:ring-teal-500/20">
+                        <div class="text-sm font-bold text-slate-800">Vitamin A</div>
+                    </label>
+
+                    <label class="flex items-center gap-3 p-4 rounded-2xl border border-slate-100 hover:bg-slate-50 transition-all cursor-pointer">
+                        <input type="checkbox" name="pill_fe" value="1" {{ $record->pill_fe ? 'checked' : '' }}
+                               class="w-5 h-5 rounded-lg border-slate-300 text-teal-600 focus:ring-teal-500/20">
+                        <div class="text-sm font-bold text-slate-800">Tablet FE</div>
+                    </label>
+
+                    <label class="flex items-center gap-3 p-4 rounded-2xl border border-slate-100 hover:bg-slate-50 transition-all cursor-pointer">
+                        <input type="checkbox" name="is_exclusive_breastfeeding" value="1" {{ $record->is_exclusive_breastfeeding ? 'checked' : '' }}
+                               class="w-5 h-5 rounded-lg border-slate-300 text-teal-600 focus:ring-teal-500/20">
+                        <div class="text-sm font-bold text-slate-800">ASI Eksklusif</div>
+                    </label>
+                </div>
+            </div>
+
+            <button type="submit" class="w-full h-14 bg-teal-600 text-white rounded-2xl font-black text-sm uppercase tracking-widest hover:bg-teal-700 transition-all shadow-xl shadow-teal-500/10">
+                Update Rekam Medis
+            </button>
+            <a href="{{ route('admin.medical-records.index') }}" class="block w-full h-14 bg-slate-100 text-slate-500 rounded-2xl font-bold text-sm flex items-center justify-center hover:bg-slate-200 transition-all text-center">
+                Batalkan
+            </a>
         </div>
     </form>
-</x-card>
+</div>
 @endsection

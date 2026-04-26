@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web;
 
 use App\Models\Gallery;
+use App\Models\Posyandu;
 use App\Http\Requests\GalleryRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -11,40 +12,42 @@ class GalleryController extends Controller
 {
     public function index()
     {
-        $galleries = Gallery::all();
-        return view('admin.gallery-management.index', compact('galleries'));
+        $galleries = Gallery::accessibleBy(auth()->user())->paginate(10);
+        return view('livewire.admin.gallery-management.index', compact('galleries'));
     }
 
     public function create()
     {
-        return view('admin.gallery-management.create');
+        $posyandus = Posyandu::all();
+        return view('livewire.admin.gallery-management.create', compact('posyandus'));
     }
 
-    public function store(GalleryRequest $request)
+    public function store(GalleryRequest $request, \App\Services\GalleryService $galleryService)
     {
-        Gallery::create($request->validated());
-        return redirect()->route('galleries.index')->with('success', 'Gallery image uploaded successfully.');
+        $galleryService->createGallery($request->validated(), auth()->user());
+        return redirect()->route('admin.gallery.index')->with('success', 'Foto galeri berhasil diunggah.');
     }
 
     public function show(Gallery $gallery)
     {
-        return view('admin.gallery-management.details', compact('gallery'));
+        return view('livewire.admin.gallery-management.details', compact('gallery'));
     }
 
     public function edit(Gallery $gallery)
     {
-        return view('admin.gallery-management.update', compact('gallery'));
+        $posyandus = Posyandu::all();
+        return view('livewire.admin.gallery-management.update', compact('gallery', 'posyandus'));
     }
 
-    public function update(GalleryRequest $request, Gallery $gallery)
+    public function update(GalleryRequest $request, Gallery $gallery, \App\Services\GalleryService $galleryService)
     {
-        $gallery->update($request->validated());
-        return redirect()->route('galleries.index')->with('success', 'Gallery image updated successfully.');
+        $galleryService->updateGallery($gallery, $request->validated());
+        return redirect()->route('admin.gallery.index')->with('success', 'Foto galeri berhasil diperbarui.');
     }
 
-    public function destroy(Gallery $gallery)
+    public function destroy(Gallery $gallery, \App\Services\GalleryService $galleryService)
     {
-        $gallery->delete();
-        return redirect()->route('galleries.index')->with('success', 'Gallery image deleted successfully.');
+        $galleryService->deleteGallery($gallery);
+        return redirect()->route('admin.gallery.index')->with('success', 'Foto galeri berhasil dihapus.');
     }
 }

@@ -17,7 +17,7 @@
     
     <div class="mt-5 flex justify-center space-x-3">
         <x-button @click="open = false" variant="outline">Batal</x-button>
-        <form method="POST" action="{{ route('pedukuhan.destroy', $pedukuhan->id) }}">
+        <form method="POST" action="{{ route('admin.pedukuhans.destroy', $pedukuhan->id) }}">
             @csrf
             @method('DELETE')
             <x-button type="submit" variant="danger" icon="trash">Hapus Pedukuhan</x-button>

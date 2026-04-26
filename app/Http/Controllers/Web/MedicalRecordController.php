@@ -6,45 +6,100 @@ use App\Models\MedicalRecord;
 use App\Http\Requests\MedicalRecordRequest;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Services\ActivityLogService;
 
 class MedicalRecordController extends Controller
 {
     public function index()
     {
-        $records = MedicalRecord::all();
-        return view('admin.medical-record-management.index', compact('records'));
+        $this->authorize('viewAny', MedicalRecord::class);
+
+        $medicalRecords = MedicalRecord::with(['patient', 'user'])
+            ->accessibleBy(auth()->user())
+            ->paginate(10);
+
+        return view('livewire.admin.medical-record-management.index', compact('medicalRecords'));
     }
 
-    public function create()
+    public function create(\App\Services\MedicalRecordService $medicalRecordService)
     {
-        return view('admin.medical-record-management.create');
+        $this->authorize('create', MedicalRecord::class);
+
+        // Scope patients based on user role
+        $user = auth()->user();
+        if ($user->isSuperAdmin()) {
+            $patients = \App\Models\Patient::all();
+        } else {
+            // Admin and Kader can only create records for their posyandu's patients
+            $patients = \App\Models\Patient::where('posyandu_id', $user->posyandu_id)->get();
+        }
+
+        // Check for duplicate Vitamin A and Pill FE in current month if patient_id is provided
+        $duplicateWarnings = null;
+        if (request()->has('patient_id')) {
+            $duplicateWarnings = $medicalRecordService->getDuplicateWarnings((int) request()->get('patient_id'));
+        }
+
+        return view('livewire.admin.medical-record-management.create', compact('patients', 'duplicateWarnings'));
     }
 
-    public function store(MedicalRecordRequest $request)
+    public function store(MedicalRecordRequest $request, \App\Services\MedicalRecordService $medicalRecordService)
     {
-        MedicalRecord::create($request->validated());
-        return redirect()->route('medical-records.index')->with('success', 'Medical record created successfully.');
+        $this->authorize('create', MedicalRecord::class);
+
+        $medicalRecordService->createRecord($request->validated(), auth()->user());
+
+        return redirect()->route('admin.medical-records.index')->with('success', 'Medical record created successfully.');
     }
 
-    public function show(MedicalRecord $record)
+    public function show(MedicalRecord $medicalRecord)
     {
-        return view('admin.medical-record-management.details', compact('record'));
+        $this->authorize('view', $medicalRecord);
+
+        return view('livewire.admin.medical-record-management.details', compact('medicalRecord'));
     }
 
-    public function edit(MedicalRecord $record)
+    public function edit(MedicalRecord $medicalRecord, \App\Services\MedicalRecordService $medicalRecordService)
     {
-        return view('admin.medical-record-management.update', compact('record'));
+        $this->authorize('update', $medicalRecord);
+
+        // Scope patients based on user role
+        $user = auth()->user();
+        if ($user->isSuperAdmin()) {
+            $patients = \App\Models\Patient::all();
+        } else {
+            // Admin and Kader can only edit records for their posyandu's patients
+            $patients = \App\Models\Patient::where('posyandu_id', $user->posyandu_id)->get();
+        }
+
+        // Check for duplicate Vitamin A and Pill FE in current month (excluding current record)
+        $duplicateWarnings = null;
+        if ($medicalRecord->visit_date) {
+            $duplicateWarnings = $medicalRecordService->getDuplicateWarnings(
+                $medicalRecord->patient_id, 
+                $medicalRecord->visit_date, 
+                $medicalRecord->id
+            );
+        }
+
+        return view('livewire.admin.medical-record-management.update', ['record' => $medicalRecord, 'patients' => $patients, 'duplicateWarnings' => $duplicateWarnings]);
     }
 
-    public function update(MedicalRecordRequest $request, MedicalRecord $record)
+    public function update(MedicalRecordRequest $request, MedicalRecord $medicalRecord, \App\Services\MedicalRecordService $medicalRecordService)
     {
-        $record->update($request->validated());
-        return redirect()->route('medical-records.index')->with('success', 'Medical record updated successfully.');
+        $this->authorize('update', $medicalRecord);
+
+        $medicalRecordService->updateRecord($medicalRecord, $request->validated(), auth()->user());
+
+        return redirect()->route('admin.medical-records.index')->with('success', 'Medical record updated successfully.');
     }
 
-    public function destroy(MedicalRecord $record)
+    public function destroy(MedicalRecord $medicalRecord, \App\Services\MedicalRecordService $medicalRecordService)
     {
-        $record->delete();
-        return redirect()->route('medical-records.index')->with('success', 'Medical record deleted successfully.');
+        $this->authorize('delete', $medicalRecord);
+
+        $medicalRecordService->deleteRecord($medicalRecord);
+
+        return redirect()->route('admin.medical-records.index')->with('success', 'Medical record deleted successfully.');
     }
 }

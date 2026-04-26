@@ -11,13 +11,13 @@ class GalleryApiController extends Controller
 {
     public function index()
     {
-        $galleries = Gallery::all();
+        $galleries = Gallery::accessibleBy(auth()->user())->get();
         return response()->json($galleries);
     }
 
-    public function store(GalleryRequest $request)
+    public function store(GalleryRequest $request, \App\Services\GalleryService $galleryService)
     {
-        $gallery = Gallery::create($request->validated());
+        $gallery = $galleryService->createGallery($request->validated(), auth()->user());
         return response()->json($gallery, 201);
     }
 
@@ -26,15 +26,15 @@ class GalleryApiController extends Controller
         return response()->json($gallery);
     }
 
-    public function update(GalleryRequest $request, Gallery $gallery)
+    public function update(GalleryRequest $request, Gallery $gallery, \App\Services\GalleryService $galleryService)
     {
-        $gallery->update($request->validated());
+        $galleryService->updateGallery($gallery, $request->validated());
         return response()->json($gallery);
     }
 
-    public function destroy(Gallery $gallery)
+    public function destroy(Gallery $gallery, \App\Services\GalleryService $galleryService)
     {
-        $gallery->delete();
+        $galleryService->deleteGallery($gallery);
         return response()->json(['message' => 'Gallery image deleted successfully']);
     }
 }

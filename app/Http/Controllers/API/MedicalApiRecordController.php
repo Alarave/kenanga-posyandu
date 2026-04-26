@@ -11,13 +11,13 @@ class MedicalApiRecordController extends Controller
 {
     public function index()
     {
-        $records = MedicalRecord::all();
+        $records = MedicalRecord::accessibleBy(auth()->user())->get();
         return response()->json($records);
     }
 
-    public function store(MedicalRecordRequest $request)
+    public function store(MedicalRecordRequest $request, \App\Services\MedicalRecordService $medicalRecordService)
     {
-        $medicalRecord = MedicalRecord::create($request->validated());
+        $medicalRecord = $medicalRecordService->createMedicalRecord($request->validated());
         return response()->json($medicalRecord, 201);
     }
 
@@ -26,15 +26,15 @@ class MedicalApiRecordController extends Controller
         return response()->json($medicalRecord);
     }
 
-    public function update(MedicalRecordRequest $request, MedicalRecord $medicalRecord)
+    public function update(MedicalRecordRequest $request, MedicalRecord $medicalRecord, \App\Services\MedicalRecordService $medicalRecordService)
     {
-        $medicalRecord->update($request->validated());
+        $medicalRecordService->updateMedicalRecord($medicalRecord, $request->validated());
         return response()->json($medicalRecord);
     }
 
-    public function destroy(MedicalRecord $medicalRecord)
+    public function destroy(MedicalRecord $medicalRecord, \App\Services\MedicalRecordService $medicalRecordService)
     {
-        $medicalRecord->delete();
+        $medicalRecordService->deleteMedicalRecord($medicalRecord);
         return response()->json(['message' => 'Medical record deleted successfully']);
     }
 }

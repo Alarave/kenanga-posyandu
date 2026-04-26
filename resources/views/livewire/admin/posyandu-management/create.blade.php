@@ -1,34 +1,159 @@
-@extends('layouts.admin-layout')
+@extends('layouts.app')
 
-@section('admin-title')
-    Tambah Pedukuhan Baru
-@endsection
+@section('title', 'Tambah Posyandu')
 
-@section('admin-content')
-<div class="flex justify-between items-center mb-6">
-    <h2 class="text-2xl font-bold">Tambah Pedukuhan Baru</h2>
-    <x-breadcrumb :items="[
-        ['label' => 'Pedukuhan', 'url' => route('pedukuhan.index')],
-        ['label' => 'Tambah', 'active' => true]
-    ]" />
+@section('content')
+<div class="max-w-2xl mx-auto space-y-6">
+
+    {{-- Header --}}
+    <div class="flex items-center justify-between">
+        <div>
+            <h1 class="text-xl font-bold text-slate-900">Tambah Posyandu Baru</h1>
+            <p class="text-sm text-slate-500 mt-0.5">Daftarkan unit posyandu baru ke sistem</p>
+        </div>
+        <a href="{{ route('admin.posyandu.index') }}"
+           class="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-slate-800 transition-colors">
+            <span class="material-symbols-outlined text-[18px]">arrow_back</span>
+            Kembali
+        </a>
+    </div>
+
+    {{-- Form Card --}}
+    <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+        <div class="px-6 py-4 border-b border-slate-200 flex items-center gap-3">
+            <div class="w-9 h-9 bg-teal-50 rounded-xl flex items-center justify-center text-teal-600">
+                <span class="material-symbols-outlined text-[20px]">add_home_work</span>
+            </div>
+            <div>
+                <h2 class="text-sm font-bold text-slate-900">Informasi Posyandu</h2>
+                <p class="text-xs text-slate-400">Lengkapi semua field yang diperlukan</p>
+            </div>
+        </div>
+
+        <form action="{{ route('admin.posyandu.store') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-5">
+            @csrf
+
+            @if($errors->any())
+            <div class="flex items-start gap-3 px-4 py-3 bg-red-50 border border-red-200 text-red-800 rounded-xl text-sm">
+                <span class="material-symbols-outlined text-red-500 text-[20px] flex-shrink-0 mt-0.5">error</span>
+                <ul class="space-y-1">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+
+            {{-- Nama Posyandu --}}
+            <div>
+                <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+                    Nama Posyandu <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 text-[18px]">home_health</span>
+                    <input type="text" name="name" value="{{ old('name') }}"
+                           placeholder="Contoh: Posyandu Kenanga 1"
+                           class="w-full h-11 pl-10 pr-4 rounded-xl border border-slate-300 text-sm font-medium text-slate-800 placeholder:text-slate-400
+                                  focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition
+                                  @error('name') border-red-400 bg-red-50 @enderror">
+                </div>
+                @error('name')
+                    <p class="mt-1 text-xs text-red-600 flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[13px]">error</span>{{ $message }}
+                    </p>
+                @enderror
+            </div>
+
+            {{-- Pedukuhan --}}
+            <div>
+                <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+                    Pedukuhan <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 text-[18px]">location_city</span>
+                    <select name="pedukuhan_id"
+                            class="w-full h-11 pl-10 pr-4 rounded-xl border border-slate-300 text-sm font-medium text-slate-700
+                                   focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition appearance-none bg-white cursor-pointer
+                                   @error('pedukuhan_id') border-red-400 bg-red-50 @enderror">
+                        <option value="">Pilih Pedukuhan</option>
+                        @foreach($pedukuhans as $ped)
+                            <option value="{{ $ped->id }}" {{ old('pedukuhan_id') == $ped->id ? 'selected' : '' }}>
+                                {{ $ped->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                @error('pedukuhan_id')
+                    <p class="mt-1 text-xs text-red-600 flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[13px]">error</span>{{ $message }}
+                    </p>
+                @enderror
+            </div>
+
+            {{-- Kode Unik & Alamat --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+                        Kode Unik
+                    </label>
+                    <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 text-[18px]">tag</span>
+                        <input type="text" name="unique_code" value="{{ old('unique_code') }}"
+                               placeholder="Contoh: KENANGA1"
+                               class="w-full h-11 pl-10 pr-4 rounded-xl border border-slate-300 text-sm font-medium text-slate-800 placeholder:text-slate-400
+                                      focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition
+                                      @error('unique_code') border-red-400 bg-red-50 @enderror">
+                    </div>
+                    @error('unique_code')
+                        <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+                        Logo / Foto (Opsional)
+                    </label>
+                    <input type="file" name="logo_photo" accept="image/*"
+                           class="w-full h-11 px-3 py-2 border border-slate-300 rounded-xl text-sm text-slate-600
+                                  file:mr-3 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold
+                                  file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 transition">
+                </div>
+            </div>
+
+            {{-- Alamat --}}
+            <div>
+                <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
+                    Alamat Lengkap <span class="text-red-500">*</span>
+                </label>
+                <div class="relative">
+                    <span class="absolute left-3 top-3 material-symbols-outlined text-slate-400 text-[18px]">location_on</span>
+                    <textarea name="address" rows="3"
+                              placeholder="Alamat lengkap unit posyandu..."
+                              class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 text-sm font-medium text-slate-800 placeholder:text-slate-400
+                                     focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition resize-none
+                                     @error('address') border-red-400 bg-red-50 @enderror">{{ old('address') }}</textarea>
+                </div>
+                @error('address')
+                    <p class="mt-1 text-xs text-red-600 flex items-center gap-1">
+                        <span class="material-symbols-outlined text-[13px]">error</span>{{ $message }}
+                    </p>
+                @enderror
+            </div>
+
+            {{-- Actions --}}
+            <div class="border-t border-slate-100 pt-5 flex items-center justify-between gap-3">
+                <a href="{{ route('admin.posyandu.index') }}"
+                   class="h-11 px-6 flex items-center gap-2 rounded-xl border border-slate-300 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors">
+                    <span class="material-symbols-outlined text-[18px]">close</span>
+                    Batal
+                </a>
+                <button type="submit"
+                        class="h-11 px-8 bg-teal-600 text-white rounded-xl text-sm font-bold hover:bg-teal-700 active:scale-95 transition-all flex items-center gap-2 shadow-sm">
+                    <span class="material-symbols-outlined text-[18px]">check</span>
+                    Simpan Posyandu
+                </button>
+            </div>
+        </form>
+    </div>
+
 </div>
-
-<x-card>
-    <form wire:submit.prevent="savePedukuhan">
-        <div class="space-y-6">
-            <x-input label="Nama Pedukuhan" wire:model.defer="name" placeholder="Nama pedukuhan" required />
-            
-            <x-textarea label="Deskripsi" wire:model.defer="description" placeholder="Deskripsi singkat tentang pedukuhan" rows="3" />
-            
-            <x-input label="Luas Wilayah (km²)" wire:model.defer="area" type="number" step="0.01" placeholder="0.00" />
-            
-            <x-input label="Jumlah Penduduk" wire:model.defer="population" type="number" placeholder="0" />
-        </div>
-
-        <div class="flex justify-end mt-8 space-x-3">
-            <x-button href="{{ route('pedukuhan.index') }}" variant="outline">Batal</x-button>
-            <x-button type="submit" variant="primary" icon="check">Simpan Pedukuhan</x-button>
-        </div>
-    </form>
-</x-card>
 @endsection

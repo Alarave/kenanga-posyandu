@@ -2,31 +2,28 @@
 
 namespace App\Livewire\Admin\Management;
 
-use Livewire\Component;
 use App\Models\Pedukuhan;
+use App\Livewire\Shared\BaseAdminComponent;
 
-class PedukuhanManagement extends Component
+class PedukuhanManagement extends BaseAdminComponent
 {
-    public $pedukuhans, $searchTerm;
+    public string $search = '';
 
-    protected $rules = [
-        'searchTerm' => 'nullable|string|min:3',
+    protected $queryString = [
+        'search' => ['except' => ''],
     ];
-
-    public function mount()
-    {
-        $this->pedukuhans = Pedukuhan::all();
-    }
-
-    public function searchPedukuhans()
-    {
-        $this->validate();
-
-        $this->pedukuhans = Pedukuhan::where('name', 'like', '%' . $this->searchTerm . '%')->get();
-    }
 
     public function render()
     {
-        return view('livewire.admin.pedukuhan-management.index');
+        $query = Pedukuhan::query()
+            ->when($this->search, function($q) {
+                $q->where('name', 'like', '%' . $this->search . '%')
+                  ->orWhere('description', 'like', '%' . $this->search . '%');
+            })
+            ->latest();
+
+        return view('livewire.admin.pedukuhan-management.index', [
+            'pedukuhans' => $query->paginate(10),
+        ]);
     }
 }

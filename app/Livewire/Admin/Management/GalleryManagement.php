@@ -2,31 +2,35 @@
 
 namespace App\Livewire\Admin\Management;
 
-use Livewire\Component;
 use App\Models\Gallery;
+use Livewire\Component;
+use Livewire\WithPagination;
 
+use Livewire\Attributes\Layout;
+
+#[Layout('layouts.admin-layout')]
 class GalleryManagement extends Component
 {
-    public $galleries, $searchTerm;
+    use WithPagination;
 
-    protected $rules = [
-        'searchTerm' => 'nullable|string|min:3',
+    public $search = '';
+
+    protected $queryString = [
+        'search' => ['except' => ''],
     ];
 
-    public function mount()
-    {
-        $this->galleries = Gallery::all();
-    }
-
-    public function searchGalleries()
-    {
-        $this->validate();
-
-        $this->galleries = Gallery::where('title', 'like', '%' . $this->searchTerm . '%')->get();
-    }
+    public function updatingSearch() { $this->resetPage(); }
 
     public function render()
     {
-        return view('livewire.admin.gallery-management.index');
+        $query = Gallery::query()
+            ->when($this->search, function($q) {
+                $q->where('title', 'like', '%' . $this->search . '%');
+            })
+            ->latest();
+
+        return view('livewire.admin.gallery-management.index', [
+            'galleries' => $query->paginate(12),
+        ]);
     }
 }

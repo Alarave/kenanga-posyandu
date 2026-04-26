@@ -1,61 +1,122 @@
 @extends('layouts.admin-layout')
 
-@section('admin-title')
-    Edit Jadwal Posyandu
-@endsection
+@section('admin-title') Edit Jadwal: {{ $schedule->title }} @endsection
 
 @section('admin-content')
-<div class="flex justify-between items-center mb-6">
-    <h2 class="text-2xl font-bold">Edit Jadwal Posyandu</h2>
-    <x-breadcrumb :items="[
-        ['label' => 'Jadwal', 'url' => route('schedules.index')],
-        ['label' => $schedule->title, 'url' => route('schedules.show', $schedule->id)],
-        ['label' => 'Edit', 'active' => true]
-    ]" />
+<div class="max-w-4xl mx-auto py-8 px-4 sm:px-6">
+    <div class="bg-white border border-slate-200 rounded-[2.5rem] shadow-sm overflow-hidden">
+        {{-- Header --}}
+        <div class="px-10 py-8 border-b border-slate-50 bg-slate-50/30 flex items-center justify-between">
+            <div class="flex items-center gap-5">
+                <div class="w-14 h-14 bg-indigo-50 rounded-3xl flex items-center justify-center text-indigo-600 shadow-sm border border-indigo-100">
+                    <span class="material-symbols-outlined text-[28px]">edit_calendar</span>
+                </div>
+                <div>
+                    <h2 class="text-xl font-black text-slate-900 tracking-tight leading-tight">Perbarui Jadwal</h2>
+                    <p class="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] mt-1">ID: #SCH-{{ str_pad($schedule->id, 4, '0', STR_PAD_LEFT) }}</p>
+                </div>
+            </div>
+            <a href="{{ route('admin.schedules.index') }}" 
+               class="w-10 h-10 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:border-indigo-200 transition-all shadow-sm">
+                <span class="material-symbols-outlined text-[20px]">close</span>
+            </a>
+        </div>
+
+        <form wire:submit.prevent="save" class="p-10 space-y-10">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                {{-- Left Column --}}
+                <div class="space-y-8">
+                    <div class="space-y-3">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Judul Agenda <span class="text-red-500">*</span></label>
+                        <input type="text" wire:model="title" placeholder="Contoh: Posyandu Balita RW 01"
+                               class="w-full h-14 px-6 rounded-2xl border border-slate-100 bg-slate-50/50 text-sm font-bold text-slate-800 focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/5 transition-all">
+                        @error('title') <p class="text-[10px] text-red-500 font-bold ml-1 uppercase tracking-wider">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div class="space-y-3">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Deskripsi & Catatan</label>
+                        <textarea wire:model="description" rows="5" placeholder="Detail kegiatan atau instruksi khusus..."
+                                  class="w-full px-6 py-5 rounded-2xl border border-slate-100 bg-slate-50/50 text-sm font-bold text-slate-800 focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/5 transition-all resize-none"></textarea>
+                    </div>
+
+                    <div class="space-y-3">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Unit Pelaksana <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <select wire:model="posyandu_id"
+                                    class="w-full h-14 px-6 rounded-2xl border border-slate-100 bg-slate-50/50 text-sm font-bold text-slate-800 focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/5 transition-all appearance-none cursor-pointer">
+                                <option value="">Pilih Posyandu</option>
+                                @foreach($posyandus as $p)
+                                    <option value="{{ $p->id }}">{{ $p->name }}</option>
+                                @endforeach
+                            </select>
+                            <span class="material-symbols-outlined absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none">expand_more</span>
+                        </div>
+                        @error('posyandu_id') <p class="text-[10px] text-red-500 font-bold ml-1 uppercase tracking-wider">{{ $message }}</p> @enderror
+                    </div>
+                </div>
+
+                {{-- Right Column --}}
+                <div class="space-y-8">
+                    <div class="grid grid-cols-1 gap-8">
+                        <div class="space-y-3">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Waktu Mulai <span class="text-red-500">*</span></label>
+                            <input type="datetime-local" wire:model="start_time"
+                                   class="w-full h-14 px-6 rounded-2xl border border-slate-100 bg-slate-50/50 text-sm font-bold text-slate-800 focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/5 transition-all">
+                            @error('start_time') <p class="text-[10px] text-red-500 font-bold ml-1 uppercase tracking-wider">{{ $message }}</p> @enderror
+                        </div>
+                        <div class="space-y-3">
+                            <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Waktu Selesai <span class="text-red-500">*</span></label>
+                            <input type="datetime-local" wire:model="end_time"
+                                   class="w-full h-14 px-6 rounded-2xl border border-slate-100 bg-slate-50/50 text-sm font-bold text-slate-800 focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/5 transition-all">
+                            @error('end_time') <p class="text-[10px] text-red-500 font-bold ml-1 uppercase tracking-wider">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Lokasi Kegiatan <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-slate-300">location_on</span>
+                            <input type="text" wire:model="location" placeholder="Gedung Posyandu / Balai Desa"
+                                   class="w-full h-14 pl-14 pr-6 rounded-2xl border border-slate-100 bg-slate-50/50 text-sm font-bold text-slate-800 focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/5 transition-all">
+                        </div>
+                        @error('location') <p class="text-[10px] text-red-500 font-bold ml-1 uppercase tracking-wider">{{ $message }}</p> @enderror
+                    </div>
+
+                    <div class="space-y-3">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Status Kegiatan</label>
+                        <div class="relative">
+                            <select wire:model="status"
+                                    class="w-full h-14 px-6 rounded-2xl border border-slate-100 bg-slate-50/50 text-sm font-bold text-slate-800 focus:outline-none focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/5 transition-all appearance-none cursor-pointer">
+                                <option value="upcoming">Mendatang (Upcoming)</option>
+                                <option value="ongoing">Sedang Berlangsung (Ongoing)</option>
+                                <option value="completed">Telah Selesai (Completed)</option>
+                                <option value="cancelled">Dibatalkan (Cancelled)</option>
+                            </select>
+                            <span class="material-symbols-outlined absolute right-5 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none">flag</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-10 border-t border-slate-50 flex flex-col sm:flex-row items-center justify-between gap-6">
+                <div class="flex items-center gap-4 p-4 bg-indigo-50/50 rounded-2xl border border-indigo-100/50 max-w-sm">
+                    <span class="material-symbols-outlined text-indigo-600">notification_important</span>
+                    <p class="text-[10px] font-bold text-indigo-800 uppercase tracking-widest leading-relaxed">Perubahan waktu atau lokasi akan memperbarui jadwal yang dikirimkan melalui WhatsApp pengingat otomatis.</p>
+                </div>
+                <div class="flex items-center gap-4 w-full sm:w-auto">
+                    <a href="{{ route('admin.schedules.index') }}" 
+                       class="flex-1 sm:flex-none h-14 px-10 flex items-center justify-center text-sm font-black text-slate-400 uppercase tracking-widest hover:text-slate-600 transition-colors">
+                        Batalkan
+                    </a>
+                    <button type="submit" wire:loading.attr="disabled"
+                            class="flex-1 sm:flex-none h-14 px-12 bg-indigo-600 text-white rounded-2xl text-sm font-black uppercase tracking-widest hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-500/20 flex items-center justify-center gap-3 active:scale-[0.98]">
+                        <span wire:loading.remove class="material-symbols-outlined text-[20px]">sync</span>
+                        <div wire:loading class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                        <span>Perbarui Jadwal</span>
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
-
-<x-card>
-    <form wire:submit.prevent="updateSchedule">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Kolom 1 -->
-            <div class="space-y-6">
-                <x-input label="Judul Kegiatan" wire:model.defer="title" placeholder="Contoh: Posyandu Bulanan" required />
-                
-                <x-textarea label="Deskripsi" wire:model.defer="description" placeholder="Deskripsi kegiatan" rows="4" />
-                
-                <x-select label="Jenis Kegiatan" wire:model.defer="type" required>
-                    <option value="">Pilih Jenis Kegiatan</option>
-                    <option value="regular" @selected($type === 'regular')>Posyandu Rutin</option>
-                    <option value="vaccination" @selected($type === 'vaccination')>Imunisasi</option>
-                    <option value="health_check" @selected($type === 'health_check')>Pemeriksaan Kesehatan</option>
-                    <option value="education" @selected($type === 'education')>Penyuluhan Kesehatan</option>
-                    <option value="other" @selected($type === 'other')>Lainnya</option>
-                </x-select>
-            </div>
-            
-            <!-- Kolom 2 -->
-            <div class="space-y-6">
-                <x-input label="Tanggal" wire:model.defer="date" type="date" required />
-                
-                <x-input label="Waktu" wire:model.defer="time" type="time" required />
-                
-                <x-input label="Lokasi" wire:model.defer="location" placeholder="Lokasi posyandu" required />
-                
-                <x-select label="Posyandu" wire:model.defer="posyandu_id" required>
-                    <option value="">Pilih Posyandu</option>
-                    @foreach($posyandus as $posyandu)
-                        <option value="{{ $posyandu->id }}" @selected($posyandu_id == $posyandu->id)>
-                            {{ $posyandu->name }}
-                        </option>
-                    @endforeach
-                </x-select>
-            </div>
-        </div>
-
-        <div class="flex justify-end mt-8 space-x-3">
-            <x-button href="{{ route('schedules.show', $schedule->id) }}" variant="outline">Batal</x-button>
-            <x-button type="submit" variant="primary" icon="check">Update Jadwal</x-button>
-        </div>
-    </form>
-</x-card>
 @endsection

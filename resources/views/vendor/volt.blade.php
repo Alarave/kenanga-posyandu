@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Volt External Component</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link href="{{ mix('css/app.css') }}" rel="stylesheet">
+    @vite('resources/css/app.css')
     <!-- External Volt CSS -->
     <link href="https://cdn.jsdelivr.net/npm/volt.css@1.1.1/dist/volt.min.css" rel="stylesheet">
 </head>
@@ -26,6 +26,6 @@
     <script src="https://cdn.jsdelivr.net/npm/volt.js@1.1.1/dist/volt.min.js"></script>
 
     <!-- Application JS -->
-    <script src="{{ mix('js/app.js') }}"></script>
+    @vite('resources/js/app.js')
 </body>
 </html>

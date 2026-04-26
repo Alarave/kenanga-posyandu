@@ -9,42 +9,59 @@ use App\Http\Controllers\Controller;
 
 class ArticleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $articles = Article::all();
-        return view('admin.article-management.index', compact('articles'));
+        $search = $request->get('search', '');
+        $status = $request->get('status', '');
+        $sort   = $request->get('sort', 'latest');
+
+        $articles = Article::with(['user', 'category'])
+            ->filter([
+                'search' => $search,
+                'status' => $status,
+                'sort'   => $sort,
+            ])
+            ->paginate(10)
+            ->withQueryString();
+
+        return view('livewire.admin.article-management.index', compact('articles', 'search', 'status', 'sort'));
     }
 
     public function create()
     {
-        return view('admin.article-management.create');
+        $categories = \App\Models\Category::all();
+        return view('livewire.admin.article-management.create', compact('categories'));
     }
 
-    public function store(ArticleRequest $request)
+    public function store(ArticleRequest $request, \App\Services\ArticleService $articleService)
     {
-        Article::create($request->validated());
-        return redirect()->route('articles.index')->with('success', 'Article created successfully.');
+        $articleService->createArticle($request->validated(), auth()->id());
+        
+        return redirect()->route('admin.articles.index')->with('success', 'Artikel berhasil dibuat.');
     }
 
     public function show(Article $article)
     {
-        return view('admin.article-management.details', compact('article'));
+        return view('livewire.admin.article-management.details', compact('article'));
     }
 
     public function edit(Article $article)
     {
-        return view('admin.article-management.update', compact('article'));
+        $categories = \App\Models\Category::all();
+        return view('livewire.admin.article-management.update', compact('article', 'categories'));
     }
 
-    public function update(ArticleRequest $request, Article $article)
+    public function update(ArticleRequest $request, Article $article, \App\Services\ArticleService $articleService)
     {
-        $article->update($request->validated());
-        return redirect()->route('articles.index')->with('success', 'Article updated successfully.');
+        $articleService->updateArticle($article, $request->validated());
+        
+        return redirect()->route('admin.articles.index')->with('success', 'Artikel berhasil diperbarui.');
     }
 
-    public function destroy(Article $article)
+    public function destroy(Article $article, \App\Services\ArticleService $articleService)
     {
-        $article->delete();
-        return redirect()->route('articles.index')->with('success', 'Article deleted successfully.');
+        $articleService->deleteArticle($article);
+        
+        return redirect()->route('admin.articles.index')->with('success', 'Artikel berhasil dihapus.');
     }
 }

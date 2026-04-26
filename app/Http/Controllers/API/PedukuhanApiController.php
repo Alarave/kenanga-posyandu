@@ -11,13 +11,13 @@ class PedukuhanApiController extends Controller
 {
     public function index()
     {
-        $pedukuhans = Pedukuhan::all();
+        $pedukuhans = Pedukuhan::withCount('posyandus')->get();
         return response()->json($pedukuhans);
     }
 
-    public function store(PedukuhanRequest $request)
+    public function store(PedukuhanRequest $request, \App\Services\PedukuhanService $pedukuhanService)
     {
-        $pedukuhan = Pedukuhan::create($request->validated());
+        $pedukuhan = $pedukuhanService->createPedukuhan($request->validated());
         return response()->json($pedukuhan, 201);
     }
 
@@ -26,15 +26,15 @@ class PedukuhanApiController extends Controller
         return response()->json($pedukuhan);
     }
 
-    public function update(PedukuhanRequest $request, Pedukuhan $pedukuhan)
+    public function update(PedukuhanRequest $request, Pedukuhan $pedukuhan, \App\Services\PedukuhanService $pedukuhanService)
     {
-        $pedukuhan->update($request->validated());
+        $pedukuhanService->updatePedukuhan($pedukuhan, $request->validated());
         return response()->json($pedukuhan);
     }
 
-    public function destroy(Pedukuhan $pedukuhan)
+    public function destroy(Pedukuhan $pedukuhan, \App\Services\PedukuhanService $pedukuhanService)
     {
-        $pedukuhan->delete();
+        $pedukuhanService->deletePedukuhan($pedukuhan);
         return response()->json(['message' => 'Pedukuhan deleted successfully']);
     }
 }
