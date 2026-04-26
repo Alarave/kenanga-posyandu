@@ -4,12 +4,21 @@ namespace App\Http\Controllers\Web;
 
 use App\Models\Patient;
 use App\Http\Requests\PatientRequest;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\ActivityLogService;
+use App\Services\PatientService;
+use Illuminate\Http\Request;
 
 class PatientController extends Controller
 {
+    public function __construct(
+        private PatientService $patientService,
+        private ActivityLogService $activityLogService
+    ) {}
+
+    /**
+     * Display a listing of patients.
+     */
     public function index(Request $request)
     {
         $this->authorize('viewAny', Patient::class);
@@ -27,30 +36,28 @@ class PatientController extends Controller
         return view('livewire.admin.patient-management.index', compact('patients'));
     }
 
+    /**
+     * Show the form for creating a new patient.
+     */
     public function create()
     {
         $this->authorize('create', Patient::class);
 
         $pedukuhans = \App\Models\Pedukuhan::all();
-        
-        // Scope posyandu selection based on user role
-        $user = auth()->user();
-        if ($user->isSuperAdmin()) {
-            $posyandus = \App\Models\Posyandu::all();
-        } else {
-            // Admin and Kader can only create for their posyandu
-            $posyandus = \App\Models\Posyandu::where('id', $user->posyandu_id)->get();
-        }
+        $posyandus = $this->getAvailablePosyandus();
 
         return view('livewire.admin.patient-management.create', compact('pedukuhans', 'posyandus'));
     }
 
-    public function store(PatientRequest $request, \App\Services\PatientService $patientService)
+    /**
+     * Store a newly created patient.
+     */
+    public function store(PatientRequest $request)
     {
         $this->authorize('create', Patient::class);
 
         try {
-            $patientService->createPatient($request->validated(), auth()->user());
+            $this->patientService->createPatient($request->validated(), auth()->user());
             return redirect()->route('admin.patients.index')->with('success', 'Data warga berhasil disimpan.');
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->back()
@@ -59,13 +66,15 @@ class PatientController extends Controller
         }
     }
 
+    /**
+     * Display the specified patient with medical records history.
+     */
     public function show(Patient $patient)
     {
         $this->authorize('view', $patient);
 
         $patient->load(['posyandu']);
 
-        // Data paginasi untuk tabel histori
         $medicalRecords = $patient->medicalRecords()
             ->with('user')
             ->latest('visit_date')
@@ -74,30 +83,28 @@ class PatientController extends Controller
         return view('livewire.admin.patient-management.details', compact('patient', 'medicalRecords'));
     }
 
+    /**
+     * Show the form for editing the specified patient.
+     */
     public function edit(Patient $patient)
     {
         $this->authorize('update', $patient);
 
         $pedukuhans = \App\Models\Pedukuhan::all();
-        
-        // Scope posyandu selection based on user role
-        $user = auth()->user();
-        if ($user->isSuperAdmin()) {
-            $posyandus = \App\Models\Posyandu::all();
-        } else {
-            // Admin and Kader can only edit for their posyandu
-            $posyandus = \App\Models\Posyandu::where('id', $user->posyandu_id)->get();
-        }
+        $posyandus = $this->getAvailablePosyandus();
 
         return view('livewire.admin.patient-management.update', compact('patient', 'pedukuhans', 'posyandus'));
     }
 
-    public function update(PatientRequest $request, Patient $patient, \App\Services\PatientService $patientService)
+    /**
+     * Update the specified patient.
+     */
+    public function update(PatientRequest $request, Patient $patient)
     {
         $this->authorize('update', $patient);
 
         try {
-            $patientService->updatePatient($patient, $request->validated(), auth()->user());
+            $this->patientService->updatePatient($patient, $request->validated(), auth()->user());
             return redirect()->route('admin.patients.index')->with('success', 'Data warga berhasil diperbarui.');
         } catch (\Illuminate\Validation\ValidationException $e) {
             return redirect()->back()
@@ -106,34 +113,34 @@ class PatientController extends Controller
         }
     }
 
-    public function destroy(Patient $patient, \App\Services\PatientService $patientService)
+    /**
+     * Remove the specified patient.
+     */
+    public function destroy(Patient $patient)
     {
         $this->authorize('delete', $patient);
 
-        $patientService->deletePatient($patient);
+        $this->patientService->deletePatient($patient);
 
         return redirect()->route('admin.patients.index')->with('success', 'Data warga berhasil dihapus.');
     }
 
     /**
-     * Show import form
+     * Show import form.
      */
     public function importForm()
     {
         $this->authorize('create', Patient::class);
 
-        $user = auth()->user();
-        $posyandus = $user->isSuperAdmin()
-            ? \App\Models\Posyandu::orderBy('name')->get()
-            : \App\Models\Posyandu::where('id', $user->posyandu_id)->get();
+        $posyandus = $this->getAvailablePosyandus();
 
         return view('livewire.admin.patient-management.import', compact('posyandus'));
     }
 
     /**
-     * Process CSV/Excel import
+     * Process CSV/Excel import.
      */
-    public function import(Request $request, ActivityLogService $activityLogService)
+    public function import(Request $request)
     {
         $this->authorize('create', Patient::class);
 
@@ -148,45 +155,17 @@ class PatientController extends Controller
         ]);
 
         $user = auth()->user();
-
-        // Enforce posyandu for non-superadmin
-        $posyanduId = $user->isSuperAdmin()
-            ? (int) $request->posyandu_id
-            : $user->posyandu_id;
+        $posyanduId = $user->isSuperAdmin() ? (int) $request->posyandu_id : $user->posyandu_id;
 
         try {
             $import = new \App\Imports\PatientImport($posyanduId, $user->id);
             $import->import($request->file('file'));
 
-            // Log activity
-            $posyandu = \App\Models\Posyandu::find($posyanduId);
-            $activityLogService->log(
-                'create_patient',
-                "Import data warga: {$import->imported} berhasil, {$import->skipped} dilewati — Posyandu {$posyandu?->name}",
-                $posyanduId,
-                'Patient'
-            );
-
-            $message = "Import selesai: {$import->imported} warga berhasil diimpor";
-            if ($import->recordsImported > 0) {
-                $message .= ", {$import->recordsImported} rekam medis tersimpan";
-            }
-            $message .= ".";
-            if ($import->skipped > 0) {
-                $message .= " {$import->skipped} baris dilewati.";
-            }
-
-            // Tambahkan info header yang terdeteksi ke debug errors
-            if (!empty($import->debugHeaders)) {
-                $import->errors = array_merge(
-                    ['[DEBUG] Header terdeteksi: ' . implode(' | ', $import->debugHeaders)],
-                    $import->errors
-                );
-            }
+            $this->logImportActivity($import, $posyanduId);
 
             return redirect()->route('admin.patients.index')
-                ->with('success', $message)
-                ->with('import_errors', $import->errors);
+                ->with('success', $this->buildImportSuccessMessage($import))
+                ->with('import_errors', $this->buildImportErrors($import));
 
         } catch (\Exception $e) {
             \Log::error('Patient import failed: ' . $e->getMessage());
@@ -196,7 +175,7 @@ class PatientController extends Controller
     }
 
     /**
-     * Download import template
+     * Download import template.
      */
     public function downloadTemplate()
     {
@@ -205,22 +184,100 @@ class PatientController extends Controller
             'Content-Disposition' => 'attachment; filename="template_import_warga_posyandu.csv"',
         ];
 
-        $rows = [
-            // Header — sesuai format Excel posyandu asli
+        $rows = $this->getTemplateRows();
+
+        return response()->stream(function () use ($rows) {
+            $file = fopen('php://output', 'w');
+            fputs($file, "\xEF\xBB\xBF"); // BOM UTF-8
+            foreach ($rows as $row) {
+                fputcsv($file, $row);
+            }
+            fclose($file);
+        }, 200, $headers);
+    }
+
+    /**
+     * Get available posyandus based on user role.
+     */
+    private function getAvailablePosyandus()
+    {
+        $user = auth()->user();
+
+        return $user->isSuperAdmin()
+            ? \App\Models\Posyandu::orderBy('name')->get()
+            : \App\Models\Posyandu::where('id', $user->posyandu_id)->get();
+    }
+
+    /**
+     * Log import activity.
+     */
+    private function logImportActivity($import, int $posyanduId): void
+    {
+        $posyandu = \App\Models\Posyandu::find($posyanduId);
+        
+        $this->activityLogService->log(
+            'create_patient',
+            "Import data warga: {$import->imported} berhasil, {$import->skipped} dilewati — Posyandu {$posyandu?->name}",
+            $posyanduId,
+            'Patient'
+        );
+    }
+
+    /**
+     * Build success message for import.
+     */
+    private function buildImportSuccessMessage($import): string
+    {
+        $message = "Import selesai: {$import->imported} warga berhasil diimpor";
+        
+        if ($import->recordsImported > 0) {
+            $message .= ", {$import->recordsImported} rekam medis tersimpan";
+        }
+        
+        $message .= ".";
+        
+        if ($import->skipped > 0) {
+            $message .= " {$import->skipped} baris dilewati.";
+        }
+
+        return $message;
+    }
+
+    /**
+     * Build errors array for import.
+     */
+    private function buildImportErrors($import): array
+    {
+        $errors = $import->errors;
+
+        if (!empty($import->debugHeaders)) {
+            $errors = array_merge(
+                ['[DEBUG] Header terdeteksi: ' . implode(' | ', $import->debugHeaders)],
+                $errors
+            );
+        }
+
+        return $errors;
+    }
+
+    /**
+     * Get template rows for CSV download.
+     */
+    private function getTemplateRows(): array
+    {
+        return [
             [
                 'NIK', 'nama_anak', 'tgl_lahir', 'jk',
                 'nm_ortu', 'RT', 'RW', 'ALAMAT',
                 'TANGGAL UKUR', 'BERAT', 'TINGGI', 'LILA', 'lingkar_kepala',
                 'CARA UKUR', 'vitamin', 'asi_bulan_0', 'Imunisasi',
             ],
-            // Contoh baris 1 — balita laki-laki
             [
                 '3275010608224411', 'A. ZAFRAN. U.R', '2022-08-06', 'L',
                 'RYAN. R. R', '4', '11', 'JL. P. NUSANTARA',
                 '2026-03-15', '12.5', '85.0', '14.5', '48.0',
                 'Berdiri', 'Ya', '', 'DPT-HB-Hib 3',
             ],
-            // Contoh baris 2 — balita perempuan (tanpa NIK)
             [
                 '', 'AISYAH HANIN.K', '2022-01-11', 'P',
                 'YUNIAR. P', '3', '11', 'JL. P. MADURA',
@@ -228,16 +285,5 @@ class PatientController extends Controller
                 'Berdiri', '', '', 'Campak MR',
             ],
         ];
-
-        $callback = function () use ($rows) {
-            $file = fopen('php://output', 'w');
-            fputs($file, "\xEF\xBB\xBF"); // BOM UTF-8 agar Excel baca dengan benar
-            foreach ($rows as $row) {
-                fputcsv($file, $row);
-            }
-            fclose($file);
-        };
-
-        return response()->stream($callback, 200, $headers);
     }
 }
