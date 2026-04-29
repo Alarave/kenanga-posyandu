@@ -34,7 +34,6 @@ class MedicalRecordController extends Controller
     public function __construct(MedicalRecordService $medicalRecordService)
     {
         $this->medicalRecordService = $medicalRecordService;
-        $this->middleware('auth');
     }
 
     /**

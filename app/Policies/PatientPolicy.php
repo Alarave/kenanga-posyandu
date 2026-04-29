@@ -95,7 +95,7 @@ class PatientPolicy
             return true;
         }
 
-        // Coordinator and Kader cannot update (read-only)
+        // Coordinator and Kader cannot update (read-only per user request)
         if ($user->isCoordinator() || $user->isKader()) {
             $this->logUnauthorizedAccess($user, 'update', 'Patient', $patient->id);
             return false;
@@ -119,24 +119,9 @@ class PatientPolicy
      */
     public function delete(User $user, Patient $patient): bool
     {
-        // Superadmin can delete any patient
+        // ONLY Superadmin can delete patients (per user request)
         if ($user->isSuperAdmin()) {
             return true;
-        }
-
-        // Coordinator cannot delete (read-only)
-        if ($user->isCoordinator()) {
-            $this->logUnauthorizedAccess($user, 'delete', 'Patient', $patient->id);
-            return false;
-        }
-
-        // Only Admin can delete patients from their posyandu (not Kader)
-        if ($user->isAdmin()) {
-            $canDelete = $user->posyandu_id === $patient->posyandu_id;
-            if (!$canDelete) {
-                $this->logUnauthorizedAccess($user, 'delete', 'Patient', $patient->id);
-            }
-            return $canDelete;
         }
 
         $this->logUnauthorizedAccess($user, 'delete', 'Patient', $patient->id);

@@ -11,6 +11,8 @@ use App\Policies\PatientPolicy;
 use App\Policies\MedicalRecordPolicy;
 use App\Policies\ActivityLogPolicy;
 use App\Policies\ReportPolicy;
+use App\Policies\SchedulePolicy;
+use App\Policies\ArticlePolicy;
 
 use App\View\Components\Layouts\UI\Button;
 use App\View\Components\Layouts\UI\Card;
@@ -35,6 +37,8 @@ class AppServiceProvider extends ServiceProvider
     protected $policies = [
         Patient::class => PatientPolicy::class,
         MedicalRecord::class => MedicalRecordPolicy::class,
+        \App\Models\Schedule::class => SchedulePolicy::class,
+        \App\Models\Article::class => ArticlePolicy::class,
     ];
 
     /**
@@ -53,6 +57,8 @@ class AppServiceProvider extends ServiceProvider
         // Register model policies
         Gate::policy(Patient::class, PatientPolicy::class);
         Gate::policy(MedicalRecord::class, MedicalRecordPolicy::class);
+        Gate::policy(\App\Models\Schedule::class, SchedulePolicy::class);
+        Gate::policy(\App\Models\Article::class, ArticlePolicy::class);
 
         // Register ability-based policies for non-model resources
         Gate::define('viewActivityLogs', [ActivityLogPolicy::class, 'viewAny']);

@@ -71,12 +71,12 @@ class MedicalRecordPolicy
             return true;
         }
 
-        // Admin and Kader can create medical records for their posyandu
-        if ($user->isAdmin() || $user->isKader()) {
+        // Only Admin can create medical records for their posyandu (Kader is read-only)
+        if ($user->isAdmin()) {
             return $user->posyandu_id !== null;
         }
 
-        // Coordinator cannot create (read-only)
+        // Coordinator and Kader cannot create (read-only per user request)
         $this->logUnauthorizedAccess($user, 'create', 'MedicalRecord');
         return false;
     }
@@ -91,14 +91,14 @@ class MedicalRecordPolicy
             return true;
         }
 
-        // Coordinator cannot update (read-only)
-        if ($user->isCoordinator()) {
+        // Coordinator and Kader cannot update (read-only per user request)
+        if ($user->isCoordinator() || $user->isKader()) {
             $this->logUnauthorizedAccess($user, 'update', 'MedicalRecord', $medicalRecord->id);
             return false;
         }
 
-        // Admin and Kader can only update medical records from their posyandu
-        if ($user->isAdmin() || $user->isKader()) {
+        // Only Admin can update medical records from their posyandu
+        if ($user->isAdmin()) {
             $canUpdate = $user->posyandu_id === $medicalRecord->patient->posyandu_id;
             if (!$canUpdate) {
                 $this->logUnauthorizedAccess($user, 'update', 'MedicalRecord', $medicalRecord->id);
@@ -115,24 +115,9 @@ class MedicalRecordPolicy
      */
     public function delete(User $user, MedicalRecord $medicalRecord): bool
     {
-        // Superadmin can delete any medical record
+        // ONLY Superadmin can delete medical records (per user request)
         if ($user->isSuperAdmin()) {
             return true;
-        }
-
-        // Coordinator cannot delete (read-only)
-        if ($user->isCoordinator()) {
-            $this->logUnauthorizedAccess($user, 'delete', 'MedicalRecord', $medicalRecord->id);
-            return false;
-        }
-
-        // Only Admin can delete medical records from their posyandu (not Kader)
-        if ($user->isAdmin()) {
-            $canDelete = $user->posyandu_id === $medicalRecord->patient->posyandu_id;
-            if (!$canDelete) {
-                $this->logUnauthorizedAccess($user, 'delete', 'MedicalRecord', $medicalRecord->id);
-            }
-            return $canDelete;
         }
 
         $this->logUnauthorizedAccess($user, 'delete', 'MedicalRecord', $medicalRecord->id);
