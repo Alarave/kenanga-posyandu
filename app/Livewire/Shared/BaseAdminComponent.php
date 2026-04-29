@@ -11,7 +11,6 @@ use Livewire\WithPagination;
  * Base class untuk seluruh komponen Livewire di area Admin.
  * Menggabungkan trait umum, layout, dan helper fungsionalitas.
  */
-#[Layout('layouts.admin-layout')]
 abstract class BaseAdminComponent extends Component
 {
     use WithPagination, HasPosyanduScope;

@@ -15,19 +15,12 @@ class DashboardController extends Controller
 
         $user = Auth::user();
 
-        // Redirect berdasarkan role pengguna
-        if ($user->isSuperAdmin() || $user->isAdmin() || $user->isCoordinator() || $user->isKader()) {
-            // Admin, coordinator, staff, dan medical ke admin dashboard
+        // Redirect based on user role
+        if ($user->isSuperAdmin() || $user->isAdmin() || $user->isKader()) {
             return view('admin.dashboard');
-        } elseif ($user->isPatient()) {
-            // Patient ke patient dashboard (jika ada)
-            return view('patient.dashboard');
-        } elseif ($user->isPartner()) {
-            // Partner ke partner dashboard (jika ada)
-            return view('partner.dashboard');
         }
 
-        // Default fallback
+        // Default fallback to admin dashboard for now, or logout if invalid
         return view('admin.dashboard');
     }
 }

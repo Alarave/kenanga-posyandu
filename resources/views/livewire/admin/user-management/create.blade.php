@@ -65,11 +65,12 @@
                     <label for="role" class="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Peran / Role</label>
                     <div class="relative">
                         <select name="role" id="role" class="w-full px-6 py-4 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 transition-all font-medium text-slate-700 appearance-none cursor-pointer" required>
-                            <option value="admin" {{ old('role') == 'admin' ? 'selected' : '' }}>Admin</option>
+                            <option value="" disabled selected>Pilih Peran</option>
+                            <option value="admin1" {{ old('role') == 'admin1' ? 'selected' : '' }}>Admin 1 (Kenanga 1)</option>
+                            <option value="admin2" {{ old('role') == 'admin2' ? 'selected' : '' }}>Admin 2 (Kenanga 2)</option>
+                            <option value="kader1" {{ old('role') == 'kader1' ? 'selected' : '' }}>Kader 1 (Kenanga 1)</option>
+                            <option value="kader2" {{ old('role') == 'kader2' ? 'selected' : '' }}>Kader 2 (Kenanga 2)</option>
                             <option value="superadmin" {{ old('role') == 'superadmin' ? 'selected' : '' }}>Super Admin</option>
-                            <option value="coordinator" {{ old('role') == 'coordinator' ? 'selected' : '' }}>Koordinator</option>
-                            <option value="staff" {{ old('role') == 'staff' ? 'selected' : '' }}>Staff</option>
-                            <option value="medical" {{ old('role') == 'medical' ? 'selected' : '' }}>Tenaga Medis</option>
                         </select>
                         <div class="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
                             <i class="fas fa-chevron-down text-xs"></i>

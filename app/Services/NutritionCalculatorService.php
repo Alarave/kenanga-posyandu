@@ -97,22 +97,30 @@ class NutritionCalculatorService
     {
         $normalizedGender = $this->normalizeGender($gender);
         if ($normalizedGender === null) return null;
-
+ 
         $reference = WhoWeightForAge::getReference($normalizedGender, $ageInMonths);
         if (!$reference) return null;
-
+ 
         $median = (float) $reference->median;
-
+ 
         // Pilih SD berdasarkan posisi relatif terhadap median
         if ($weight >= $median) {
             $sd = (float) $reference->sd_plus2 - $median;
         } else {
             $sd = $median - (float) $reference->sd_minus2;
         }
-
+ 
         if ($sd == 0) return null;
-
+ 
         return round(($weight - $median) / $sd, 2);
+    }
+ 
+    /**
+     * Alias untuk calculateZScore (Weight-for-Age).
+     */
+    public function calculateWeightForAge(float $weight, int $ageInMonths, string $gender): ?float
+    {
+        return $this->calculateZScore($weight, $ageInMonths, $gender);
     }
 
     /**

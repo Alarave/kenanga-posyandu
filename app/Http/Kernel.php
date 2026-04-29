@@ -55,12 +55,7 @@ class Kernel extends HttpKernel
         // Middleware for authentication and roles
         'auth' => \App\Http\Middleware\Authenticate::class, // Authentication middleware
         'user' => \App\Http\Middleware\UserMiddleware::class, // Middleware to ensure user access
-        'medical' => \App\Http\Middleware\MedicalMiddleware::class, // Middleware for medical staff
         'superadmin' => \App\Http\Middleware\SuperadminMiddleware::class, // Middleware for superadmins
-        'coordinator' => \App\Http\Middleware\CoordinatorMiddleware::class, // Middleware for coordinators
-        'staff' => \App\Http\Middleware\StaffMiddleware::class, // Middleware for staff role
-        'patient' => \App\Http\Middleware\PatientMiddleware::class, // Middleware for patient role
-        'partner' => \App\Http\Middleware\PartnerMiddleware::class, // Middleware for partner role
 
         // Middleware for account verification and user status
         'check.user.status' => \App\Http\Middleware\CheckUserStatus::class, // Middleware for checking account status

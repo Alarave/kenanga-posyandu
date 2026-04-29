@@ -18,18 +18,11 @@ class PatientPolicy
             return true;
         }
 
-        // Coordinator can view patients (read-only across RW)
-        if ($user->isCoordinator()) {
-            return true;
-        }
-
-        // Admin, staff, and medical can view patients from their posyandu
+        // Admin and kader can view patients from their posyandu
         if ($user->isAdmin() || $user->isKader()) {
             return $user->posyandu_id !== null;
         }
 
-        // Log unauthorized access
-        $this->logUnauthorizedAccess($user, 'viewAny', 'Patient');
         return false;
     }
 
@@ -43,25 +36,11 @@ class PatientPolicy
             return true;
         }
 
-        // Coordinator can view any patient in their RW
-        if ($user->isCoordinator()) {
-            $canView = $user->posyandu && $patient->posyandu && $user->posyandu->pedukuhan_id === $patient->posyandu->pedukuhan_id;
-            if (!$canView) {
-                $this->logUnauthorizedAccess($user, 'view', 'Patient', $patient->id);
-            }
-            return $canView;
-        }
-
-        // Admin, staff, and medical can only view patients from their posyandu
+        // Admin and kader can only view patients from their posyandu
         if ($user->isAdmin() || $user->isKader()) {
-            $canView = $user->posyandu_id === $patient->posyandu_id;
-            if (!$canView) {
-                $this->logUnauthorizedAccess($user, 'view', 'Patient', $patient->id);
-            }
-            return $canView;
+            return $user->posyandu_id === $patient->posyandu_id;
         }
 
-        $this->logUnauthorizedAccess($user, 'view', 'Patient', $patient->id);
         return false;
     }
 
@@ -70,18 +49,16 @@ class PatientPolicy
      */
     public function create(User $user): bool
     {
-        // Superadmin can create patients
+        // Superadmin and Admin can create patients
         if ($user->isSuperAdmin()) {
             return true;
         }
 
-        // Only Admin can create patients for their posyandu (Kader is read-only)
         if ($user->isAdmin()) {
             return $user->posyandu_id !== null;
         }
 
-        // Coordinator and Kader cannot create (read-only)
-        $this->logUnauthorizedAccess($user, 'create', 'Patient');
+        // Kader cannot create (read-only per user request)
         return false;
     }
 
@@ -95,22 +72,12 @@ class PatientPolicy
             return true;
         }
 
-        // Coordinator and Kader cannot update (read-only per user request)
-        if ($user->isCoordinator() || $user->isKader()) {
-            $this->logUnauthorizedAccess($user, 'update', 'Patient', $patient->id);
-            return false;
-        }
-
         // Only Admin can update patients from their posyandu
         if ($user->isAdmin()) {
-            $canUpdate = $user->posyandu_id === $patient->posyandu_id;
-            if (!$canUpdate) {
-                $this->logUnauthorizedAccess($user, 'update', 'Patient', $patient->id);
-            }
-            return $canUpdate;
+            return $user->posyandu_id === $patient->posyandu_id;
         }
 
-        $this->logUnauthorizedAccess($user, 'update', 'Patient', $patient->id);
+        // Kader cannot update (read-only)
         return false;
     }
 
@@ -119,12 +86,15 @@ class PatientPolicy
      */
     public function delete(User $user, Patient $patient): bool
     {
-        // ONLY Superadmin can delete patients (per user request)
+        // ONLY Superadmin and Admin (scoped) can delete patients
         if ($user->isSuperAdmin()) {
             return true;
         }
 
-        $this->logUnauthorizedAccess($user, 'delete', 'Patient', $patient->id);
+        if ($user->isAdmin()) {
+            return $user->posyandu_id === $patient->posyandu_id;
+        }
+
         return false;
     }
 

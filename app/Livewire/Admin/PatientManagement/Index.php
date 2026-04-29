@@ -63,8 +63,10 @@ class Index extends BaseAdminComponent
         $query = $this->applyPosyanduScope(Patient::with('posyandu'))
             ->when($this->search, function ($q) {
                 $q->where(function ($q2) {
-                    $q2->where('full_name', 'like', '%' . $this->search . '%')
-                       ->orWhere('id_number', 'like', '%' . $this->search . '%');
+                    $q2->where('full_name', 'like', '%' . $this->search . '%');
+                    
+                    // NIK (id_number) is encrypted, standard LIKE won't work in DB.
+                    // For now, we only search by name in DB to keep it working.
                 });
             })
             ->when($this->category !== 'all', fn($q) => $q->where('category', $this->category))

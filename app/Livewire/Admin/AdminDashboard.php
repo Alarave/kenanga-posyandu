@@ -13,12 +13,16 @@ class AdminDashboard extends BaseAdminComponent
     // Properties untuk statistik
     public $totalBalita;
     public $totalIbuHamil;
+    public $totalRemaja;
+    public $totalLansia;
     public $jadwalAktif;
     public $kunjunganBaru;
     public $balitaStunting;
     public $nutritionStatusDistribution;
     public $monthlyWeighingData;
     public $upcomingSchedule;
+    public $recentActivities;
+    public $posyanduStats = [];
 
     public function mount()
     {
@@ -38,6 +42,8 @@ class AdminDashboard extends BaseAdminComponent
         // Statistik Utama
         $this->totalBalita = (clone $patientQuery)->where('category', 'balita')->count();
         $this->totalIbuHamil = (clone $patientQuery)->where('category', 'ibu_hamil')->count();
+        $this->totalRemaja = (clone $patientQuery)->where('category', 'remaja')->count();
+        $this->totalLansia = (clone $patientQuery)->where('category', 'lansia')->count();
         
         $this->jadwalAktif = (clone $scheduleQuery)
             ->whereMonth('start_time', $currentMonth)
@@ -72,6 +78,21 @@ class AdminDashboard extends BaseAdminComponent
             ->where('start_time', '>=', Carbon::now())
             ->orderBy('start_time')
             ->first();
+
+        // Aktivitas Terkini
+        $this->recentActivities = (clone $medicalRecordQuery)
+            ->with(['patient', 'patient.posyandu', 'user'])
+            ->latest('visit_date')
+            ->latest('created_at')
+            ->limit(5)
+            ->get();
+
+        // Breakdown per Posyandu (khusus SuperAdmin)
+        if (auth()->user()->isSuperAdmin()) {
+            $this->posyanduStats = \App\Models\Posyandu::withCount(['patients' => function($query) {
+                // Bisa ditambahkan filter jika perlu
+            }])->get();
+        }
     }
 
     protected function getNutritionStatusDistribution($medicalRecordQuery)

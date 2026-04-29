@@ -33,8 +33,10 @@ class ArticlePolicy
             return true;
         }
 
-        // Admins can edit their own articles or any if superadmin
-        return $user->isAdmin() && $user->id === $article->user_id;
+        // Admins can edit any, Kader can edit their own
+        if ($user->isAdmin()) return true;
+        
+        return $user->isKader() && $user->id === $article->user_id;
     }
 
     /**
@@ -42,7 +44,11 @@ class ArticlePolicy
      */
     public function delete(User $user, Article $article): bool
     {
-        // ONLY Superadmin can delete
-        return $user->isSuperAdmin();
+        // Superadmin can delete any, Kader/Admin can delete their own
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        return ($user->isAdmin() || $user->isKader()) && $user->id === $article->user_id;
     }
 }

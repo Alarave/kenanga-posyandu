@@ -9,19 +9,19 @@
 
     $role = 'Admin';
     if ($user) {
-        if ($user->isSuperAdmin())      $role = 'Super Admin';
-        elseif ($user->isAdmin())       $role = 'Admin Posyandu';
-        elseif ($user->isCoordinator()) $role = 'Koordinator RW';
-        elseif ($user->role === 'kader') $role = 'Moderator ' . ($user->posyandu?->name ?? 'Posyandu');
-        elseif ($user->isKader())       $role = 'Kader';
+        $role = $user->display_role_name;
+        // Format for display: admin1 -> Admin 1, superadmin -> Super Admin
+        if ($role === 'superadmin') {
+            $role = 'Super Admin';
+        } else {
+            $role = ucfirst(substr($role, 0, -1)) . ' ' . substr($role, -1);
+        }
     }
 
     // Role badge colour
     $badgeClass = match(true) {
         $user?->isSuperAdmin()          => 'bg-violet-100 text-violet-700',
         $user?->isAdmin()               => 'bg-blue-100 text-blue-700',
-        $user?->isCoordinator()         => 'bg-amber-100 text-amber-700',
-        $user?->role === 'kader'        => 'bg-teal-100 text-teal-700',
         $user?->isKader()               => 'bg-emerald-100 text-emerald-700',
         default                         => 'bg-slate-100 text-slate-600',
     };
@@ -30,8 +30,6 @@
     $avatarGrad = match(true) {
         $user?->isSuperAdmin()          => 'linear-gradient(135deg,#7c3aed 0%,#a78bfa 100%)',
         $user?->isAdmin()               => 'linear-gradient(135deg,#1e40af 0%,#3b82f6 100%)',
-        $user?->isCoordinator()         => 'linear-gradient(135deg,#b45309 0%,#f59e0b 100%)',
-        $user?->role === 'kader'        => 'linear-gradient(135deg,#0f766e 0%,#2dd4bf 100%)',
         $user?->isKader()               => 'linear-gradient(135deg,#065f46 0%,#10b981 100%)',
         default                         => 'linear-gradient(135deg,#1e293b 0%,#475569 100%)',
     };

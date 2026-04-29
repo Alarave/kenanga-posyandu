@@ -66,8 +66,18 @@
                     <label for="role" class="text-xs font-black text-slate-400 uppercase tracking-widest ml-1">Peran / Role</label>
                     <div class="relative">
                         <select name="role" id="role" class="w-full px-6 py-4 bg-slate-50 border-transparent rounded-2xl focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 transition-all font-medium text-slate-700 appearance-none cursor-pointer" required>
-                            @foreach(['admin', 'superadmin', 'coordinator', 'staff', 'medical', 'patient', 'partner'] as $role)
-                                <option value="{{ $role }}" {{ old('role', $user->role) == $role ? 'selected' : '' }}>{{ ucfirst($role == 'medical' ? 'Tenaga Medis' : $role) }}</option>
+                            @php
+                                $currentDisplayRole = $user->display_role_name;
+                                $availableRoles = [
+                                    'admin1' => 'Admin 1 (Kenanga 1)',
+                                    'admin2' => 'Admin 2 (Kenanga 2)',
+                                    'kader1' => 'Kader 1 (Kenanga 1)',
+                                    'kader2' => 'Kader 2 (Kenanga 2)',
+                                    'superadmin' => 'Super Admin',
+                                ];
+                            @endphp
+                            @foreach($availableRoles as $val => $label)
+                                <option value="{{ $val }}" {{ old('role', $currentDisplayRole) == $val ? 'selected' : '' }}>{{ $label }}</option>
                             @endforeach
                         </select>
                         <div class="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">

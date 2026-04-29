@@ -19,7 +19,7 @@
         </div>
         <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
             <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Kader Aktif</div>
-            <div class="text-3xl font-black text-slate-900">{{ App\Models\User::where('role', 'staff')->where('is_active', true)->count() }}</div>
+            <div class="text-3xl font-black text-slate-900">{{ App\Models\User::where('role', 'kader')->where('is_active', true)->count() }}</div>
         </div>
         <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
             <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Unit Terdaftar</div>
@@ -100,7 +100,15 @@
                 </td>
                 <td class="px-6 py-4">
                     <span class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider bg-slate-100 text-slate-600 border border-slate-200">
-                        {{ $user->role }}
+                        @php
+                            $roleName = $user->display_role_name;
+                            if ($roleName === 'superadmin') {
+                                $label = 'Super Admin';
+                            } else {
+                                $label = ucfirst(substr($roleName, 0, -1)) . ' ' . substr($roleName, -1);
+                            }
+                        @endphp
+                        {{ $label }}
                     </span>
                 </td>
                 <td class="px-6 py-4">

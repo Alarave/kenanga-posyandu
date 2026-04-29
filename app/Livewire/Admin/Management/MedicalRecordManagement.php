@@ -21,8 +21,8 @@ class MedicalRecordManagement extends BaseAdminComponent
         $query = $this->applyPosyanduScope(MedicalRecord::with(['patient.posyandu', 'user']))
             ->when($this->search, function($q) {
                 $q->whereHas('patient', function($sq) {
-                    $sq->where('full_name', 'like', '%' . $this->search . '%')
-                       ->orWhere('id_number', 'like', '%' . $this->search . '%');
+                    $sq->where('full_name', 'like', '%' . $this->search . '%');
+                    // NIK (id_number) is encrypted, standard LIKE won't work in DB.
                 });
             })
             ->when($this->posyandu_id, function($q) {

@@ -1,15 +1,15 @@
 @extends('layouts.admin-layout')
 
-<div>
-    @section('admin-title') Grafik Pertumbuhan: {{ $patient->full_name }} @endsection
+@section('admin-title') Grafik Pertumbuhan: {{ $patient->full_name }} @endsection
 
-    @section('admin-actions')
-        <x-button href="{{ route('admin.patients.index') }}" variant="outline" icon="arrow_back">
-            Kembali
-        </x-button>
-    @endsection
+@section('admin-actions')
+    <x-button href="{{ route('admin.patients.index') }}" variant="outline" icon="arrow_back">
+        Kembali
+    </x-button>
+@endsection
 
-    @section('admin-content')
+@section('admin-content')
+<div wire:key="growth-chart-root">
     <div class="p-6">
         <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-8">
             <div>
@@ -70,7 +70,6 @@
             </div>
         </div>
     </div>
-    @endsection
 
     @script
     <script>
@@ -170,3 +169,4 @@
     </script>
     @endscript
 </div>
+@endsection

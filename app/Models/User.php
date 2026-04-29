@@ -61,12 +61,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     const ROLE_SUPERADMIN = 'superadmin';
     const ROLE_ADMIN = 'admin';
-    const ROLE_COORDINATOR = 'coordinator';
     const ROLE_KADER = 'kader';
-    const ROLE_STAFF = 'staff';
-    const ROLE_MEDICAL = 'medical';
-    const ROLE_PATIENT = 'patient';
-    const ROLE_PARTNER = 'partner';
 
     /**
      * Get available roles
@@ -76,12 +71,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             self::ROLE_SUPERADMIN,
             self::ROLE_ADMIN,
-            self::ROLE_COORDINATOR,
             self::ROLE_KADER,
-            self::ROLE_STAFF,
-            self::ROLE_MEDICAL,
-            self::ROLE_PATIENT,
-            self::ROLE_PARTNER,
         ];
     }
 
@@ -90,27 +80,14 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->role === $role;
     }
 
-    /**
-     * Check if user is SuperAdmin
-     */    public function isSuperAdmin(): bool
+    public function isSuperAdmin(): bool
     {
         return $this->role === self::ROLE_SUPERADMIN;
     }
 
-    /**
-     * Check if user is Admin
-     */
     public function isAdmin(): bool
     {
         return $this->role === self::ROLE_ADMIN;
-    }
-
-    /**
-     * Check if user is Coordinator
-     */
-    public function isCoordinator(): bool
-    {
-        return $this->role === self::ROLE_COORDINATOR;
     }
 
     /**
@@ -121,46 +98,9 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->posyandu?->pedukuhan_id;
     }
 
-    /**
-     * Check if user is Staff
-     */
-    public function isStaff(): bool
-    {
-        return $this->role === self::ROLE_STAFF;
-    }
-
-    /**
-     * Check if user is Medical
-     */
-    public function isMedical(): bool
-    {
-        return $this->role === self::ROLE_MEDICAL;
-    }
-
-    /**
-     * Check if user is Patient
-     */
-    public function isPatient(): bool
-    {
-        return $this->role === self::ROLE_PATIENT;
-    }
-
-    /**
-     * Check if user is Partner
-     */
-    public function isPartner(): bool
-    {
-        return $this->role === self::ROLE_PARTNER;
-    }
-
-    /**
-     * Check if user is Kader (dedicated kader role, or legacy staff/medical)
-     */
     public function isKader(): bool
     {
-        return $this->role === self::ROLE_KADER
-            || $this->role === self::ROLE_STAFF
-            || $this->role === self::ROLE_MEDICAL;
+        return $this->role === self::ROLE_KADER;
     }
 
     /**
@@ -175,6 +115,25 @@ class User extends Authenticatable implements MustVerifyEmail
                 ->map(fn ($word) => Str::substr($word, 0, 1))
                 ->implode('')
         );
+    }
+
+    /**
+     * Get unit-specific display role name (e.g., admin1, kader2)
+     */
+    public function getDisplayRoleNameAttribute(): string
+    {
+        if ($this->isSuperAdmin()) {
+            return 'superadmin';
+        }
+
+        $unitSuffix = '';
+        if ($this->posyandu_id == 3) {
+            $unitSuffix = '1';
+        } elseif ($this->posyandu_id == 2) {
+            $unitSuffix = '2';
+        }
+
+        return $this->role . $unitSuffix;
     }
 
     /**

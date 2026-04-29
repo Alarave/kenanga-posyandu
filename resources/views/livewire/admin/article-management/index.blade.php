@@ -164,12 +164,15 @@
                                 <span class="material-symbols-outlined text-[18px]">visibility</span>
                             </a>
                             
+                            @can('update', $article)
                             <a href="{{ route('admin.articles.edit', $article->id) }}"
                                class="w-9 h-9 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-indigo-600 hover:border-indigo-200 hover:shadow-md transition-all"
                                title="Edit">
                                 <span class="material-symbols-outlined text-[18px]">edit</span>
                             </a>
+                            @endcan
 
+                            @can('delete', $article)
                             <div x-data="{ open: false }" class="relative inline-block">
                                 <button @click="open = true"
                                         class="w-9 h-9 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-red-600 hover:border-red-200 hover:shadow-md transition-all"
@@ -178,6 +181,7 @@
                                 </button>
                                 @include('livewire.admin.article-management.delete')
                             </div>
+                            @endcan
                         </div>
                     </td>
                 </tr>

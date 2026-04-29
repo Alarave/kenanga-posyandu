@@ -60,7 +60,7 @@
             $items = [];
             
             // Data Warga - accessible by all authenticated users
-            if (auth()->user()->isSuperAdmin() || auth()->user()->isAdmin() || auth()->user()->isKader() || auth()->user()->isCoordinator()) {
+            if (auth()->user()->isSuperAdmin() || auth()->user()->isAdmin() || auth()->user()->isKader()) {
                 $items[] = ['route' => 'admin.patients.index', 'pattern' => 'admin.patients.*', 'icon' => 'fa-users', 'label' => 'Data Warga'];
             }
             
@@ -70,12 +70,12 @@
             }
             
             // Jadwal Kegiatan - accessible by all authenticated users
-            if (auth()->user()->isSuperAdmin() || auth()->user()->isAdmin() || auth()->user()->isKader() || auth()->user()->isCoordinator()) {
+            if (auth()->user()->isSuperAdmin() || auth()->user()->isAdmin() || auth()->user()->isKader()) {
                 $items[] = ['route' => 'admin.schedules.index', 'pattern' => 'admin.schedules.*', 'icon' => 'fa-calendar-days', 'label' => 'Jadwal Kegiatan'];
             }
             
             // Rekam Medis - accessible by all authenticated users
-            if (auth()->user()->isSuperAdmin() || auth()->user()->isAdmin() || auth()->user()->isKader() || auth()->user()->isCoordinator()) {
+            if (auth()->user()->isSuperAdmin() || auth()->user()->isAdmin() || auth()->user()->isKader()) {
                 $items[] = ['route' => 'admin.medical-records.index', 'pattern' => 'admin.medical-records.*', 'icon' => 'fa-notes-medical', 'label' => 'Rekam Medis'];
             }
         @endphp
@@ -89,7 +89,7 @@
         @endforeach
 
         {{-- Section: Laporan --}}
-        @if(auth()->user()->isSuperAdmin() || auth()->user()->isAdmin() || auth()->user()->isCoordinator())
+        @if(auth()->user()->isSuperAdmin() || auth()->user()->isAdmin() || auth()->user()->isKader())
         <div class="sidebar-section-label mt-6 mb-2 px-3">
             <span class="text-slate-500 font-black" style="font-size:11px; letter-spacing:.12em; text-transform:uppercase;">Laporan & Riwayat</span>
         </div>
@@ -110,7 +110,7 @@
         @endif
 
         {{-- Section: Konten --}}
-        @if(auth()->user()->isSuperAdmin() || auth()->user()->isAdmin())
+        @if(auth()->user()->isSuperAdmin() || auth()->user()->isAdmin() || auth()->user()->isKader())
         <div class="sidebar-section-label mt-5 mb-1 px-2">
             <span class="text-slate-400 font-bold" style="font-size:9.5px; letter-spacing:.12em; text-transform:uppercase;">Konten</span>
         </div>
@@ -156,19 +156,15 @@
             <div class="sidebar-text flex-1 min-w-0">
                 <p class="text-slate-800 font-bold truncate leading-tight" style="font-size:11px;">{{ Auth::user()->name ?? 'Admin' }}</p>
                 <p class="text-slate-400 truncate" style="font-size:10px;">
-                    @if(auth()->user()->isSuperAdmin())
-                        Super Admin
-                    @elseif(auth()->user()->isAdmin())
-                        Admin Posyandu
-                    @elseif(auth()->user()->isCoordinator())
-                        Koordinator RW
-                    @elseif(auth()->user()->role === 'kader')
-                        Moderator {{ auth()->user()->posyandu?->name ?? 'Posyandu' }}
-                    @elseif(auth()->user()->isKader())
-                        Kader
-                    @else
-                        {{ ucfirst(auth()->user()->role) }}
-                    @endif
+                    @php
+                        $roleName = auth()->user()->display_role_name;
+                        if ($roleName === 'superadmin') {
+                            $label = 'Super Admin';
+                        } else {
+                            $label = ucfirst(substr($roleName, 0, -1)) . ' ' . substr($roleName, -1);
+                        }
+                    @endphp
+                    {{ $label }}
                 </p>
             </div>
 

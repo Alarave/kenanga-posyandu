@@ -3,9 +3,11 @@
 @section('admin-title') Jadwal & Kegiatan @endsection
 
 @section('admin-actions')
+    @can('create', App\Models\Schedule::class)
     <x-button href="{{ route('admin.schedules.create') }}" variant="secondary" icon="calendar_add_on">
         Tambah Jadwal
     </x-button>
+    @endcan
 @endsection
 
 @section('admin-content')

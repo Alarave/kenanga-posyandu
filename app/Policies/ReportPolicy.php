@@ -12,15 +12,15 @@ class ReportPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isSuperAdmin() || $user->isAdmin() || $user->isCoordinator();
+        return $user->isSuperAdmin() || $user->isAdmin() || $user->isKader();
     }
 
     /**
      * Determine if the user can export reports.
-     * Superadmin, admin, and coordinator can export reports.
+     * Superadmin, admin, and kader can export reports.
      */
     public function export(User $user): bool
     {
-        return $user->isSuperAdmin() || $user->isAdmin() || $user->isCoordinator();
+        return $user->isSuperAdmin() || $user->isAdmin() || $user->isKader();
     }
 }

@@ -18,18 +18,11 @@ class MedicalRecordPolicy
             return true;
         }
 
-        // Coordinator can view medical records (read-only across RW)
-        if ($user->isCoordinator()) {
-            return true;
-        }
-
-        // Admin, staff, and medical can view medical records from their posyandu
+        // Admin and kader can view medical records from their posyandu
         if ($user->isAdmin() || $user->isKader()) {
             return $user->posyandu_id !== null;
         }
 
-        // Log unauthorized access
-        $this->logUnauthorizedAccess($user, 'viewAny', 'MedicalRecord');
         return false;
     }
 
@@ -43,21 +36,11 @@ class MedicalRecordPolicy
             return true;
         }
 
-        // Coordinator can view any medical record (read-only)
-        if ($user->isCoordinator()) {
-            return true;
-        }
-
-        // Admin, staff, and medical can only view medical records from their posyandu
+        // Admin and kader can only view medical records from their posyandu
         if ($user->isAdmin() || $user->isKader()) {
-            $canView = $user->posyandu_id === $medicalRecord->patient->posyandu_id;
-            if (!$canView) {
-                $this->logUnauthorizedAccess($user, 'view', 'MedicalRecord', $medicalRecord->id);
-            }
-            return $canView;
+            return $user->posyandu_id === $medicalRecord->patient->posyandu_id;
         }
 
-        $this->logUnauthorizedAccess($user, 'view', 'MedicalRecord', $medicalRecord->id);
         return false;
     }
 
@@ -66,18 +49,16 @@ class MedicalRecordPolicy
      */
     public function create(User $user): bool
     {
-        // Superadmin can create medical records
+        // Superadmin and Admin can create medical records
         if ($user->isSuperAdmin()) {
             return true;
         }
 
-        // Only Admin can create medical records for their posyandu (Kader is read-only)
         if ($user->isAdmin()) {
             return $user->posyandu_id !== null;
         }
 
-        // Coordinator and Kader cannot create (read-only per user request)
-        $this->logUnauthorizedAccess($user, 'create', 'MedicalRecord');
+        // Kader cannot create (read-only per user request)
         return false;
     }
 
@@ -91,22 +72,12 @@ class MedicalRecordPolicy
             return true;
         }
 
-        // Coordinator and Kader cannot update (read-only per user request)
-        if ($user->isCoordinator() || $user->isKader()) {
-            $this->logUnauthorizedAccess($user, 'update', 'MedicalRecord', $medicalRecord->id);
-            return false;
-        }
-
         // Only Admin can update medical records from their posyandu
         if ($user->isAdmin()) {
-            $canUpdate = $user->posyandu_id === $medicalRecord->patient->posyandu_id;
-            if (!$canUpdate) {
-                $this->logUnauthorizedAccess($user, 'update', 'MedicalRecord', $medicalRecord->id);
-            }
-            return $canUpdate;
+            return $user->posyandu_id === $medicalRecord->patient->posyandu_id;
         }
 
-        $this->logUnauthorizedAccess($user, 'update', 'MedicalRecord', $medicalRecord->id);
+        // Kader cannot update (read-only per user request)
         return false;
     }
 
@@ -115,12 +86,15 @@ class MedicalRecordPolicy
      */
     public function delete(User $user, MedicalRecord $medicalRecord): bool
     {
-        // ONLY Superadmin can delete medical records (per user request)
+        // ONLY Superadmin and Admin (scoped) can delete medical records
         if ($user->isSuperAdmin()) {
             return true;
         }
 
-        $this->logUnauthorizedAccess($user, 'delete', 'MedicalRecord', $medicalRecord->id);
+        if ($user->isAdmin()) {
+            return $user->posyandu_id === $medicalRecord->patient->posyandu_id;
+        }
+
         return false;
     }
 

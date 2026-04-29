@@ -307,7 +307,7 @@ class MedicalRecordService
     private function calculateNutritionTrend(Patient $patient, array $data): string
     {
         $previousRecord = MedicalRecord::where('patient_id', $patient->id)
-            ->where('visit_date', '<', $data['visit_date'])
+            ->where('visit_date', '<', Carbon::parse($data['visit_date']))
             ->whereNotNull('nutrition_status')
             ->orderBy('visit_date', 'desc')
             ->first();
@@ -398,7 +398,7 @@ class MedicalRecordService
      */
     private function checkTwoTAlert(Patient $patient, array $data): void
     {
-        $recentRecords = $this->getPreviousRecords($patient, $data['visit_date'], 2);
+        $recentRecords = $this->getPreviousRecords($patient, Carbon::parse($data['visit_date']), 2);
 
         if ($recentRecords->count() < 2) {
             return;

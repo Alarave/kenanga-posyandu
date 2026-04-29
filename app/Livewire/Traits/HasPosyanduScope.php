@@ -22,22 +22,7 @@ trait HasPosyanduScope
             return $query;
         }
 
-        if ($user->isCoordinator()) {
-            $pedukuhanId = Posyandu::find($user->posyandu_id)?->pedukuhan_id;
-            
-            if ($pedukuhanId) {
-                $posyanduIds = Posyandu::where('pedukuhan_id', $pedukuhanId)->pluck('id');
-                
-                // Jika tabel medical_records, scope via patient_id
-                if ($query->getModel() instanceof \App\Models\MedicalRecord) {
-                    return $query->whereHas('patient', fn($q) => $q->whereIn('posyandu_id', $posyanduIds));
-                }
-                
-                return $query->whereIn('posyandu_id', $posyanduIds);
-            }
-        }
-
-        // Default: Staff/Kader/Admin hanya melihat posyandu mereka
+        // Default: Admin/Kader hanya melihat posyandu mereka
         if ($query->getModel() instanceof \App\Models\MedicalRecord) {
             return $query->whereHas('patient', fn($q) => $q->where('posyandu_id', $user->posyandu_id));
         }
@@ -54,13 +39,6 @@ trait HasPosyanduScope
 
         if ($user->isSuperAdmin()) {
             return Posyandu::all();
-        }
-
-        if ($user->isCoordinator()) {
-            $pedukuhanId = Posyandu::find($user->posyandu_id)?->pedukuhan_id;
-            if ($pedukuhanId) {
-                return Posyandu::where('pedukuhan_id', $pedukuhanId)->get();
-            }
         }
 
         return Posyandu::where('id', $user->posyandu_id)->get();

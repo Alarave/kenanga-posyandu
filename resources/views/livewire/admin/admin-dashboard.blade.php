@@ -37,77 +37,84 @@
         $posyanduName = $user->posyandu?->name ?? 'Posyandu';
     @endphp
 
-    {{-- Hero Banner - Lebih Besar dan Jelas untuk Ibu-Iibu --}}
-    <section class="rounded-3xl p-6 md:p-10 text-white relative overflow-hidden shadow-lg mb-8 card-mobile"
-             style="background: linear-gradient(135deg, #006a61 0%, #00897b 60%, #00b0a0 100%);">
-        {{-- Decorative circle --}}
-        <div class="absolute right-0 top-0 w-64 h-64 md:w-72 md:h-72 rounded-full opacity-15"
-             style="background: rgba(255,255,255,0.4); transform: translate(40%, -30%);"></div>
-        <div class="absolute right-12 bottom-0 w-32 h-32 md:w-40 md:h-40 rounded-full opacity-10"
-             style="background: rgba(255,255,255,0.5); transform: translateY(50%);"></div>
+    {{-- Hero Banner - More Compact --}}
+    <section class="rounded-[2rem] p-6 md:p-8 text-white relative overflow-hidden shadow-xl shadow-teal-900/10 mb-8 card-mobile"
+             style="background: radial-gradient(circle at top right, #00897b, #004d40);">
+        {{-- Decorative elements --}}
+        <div class="absolute right-0 top-0 w-80 h-80 bg-white/5 rounded-full blur-3xl -mr-24 -mt-24"></div>
+        <div class="absolute left-0 bottom-0 w-48 h-48 bg-teal-400/10 rounded-full blur-3xl -ml-24 -mb-24"></div>
 
         <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div>
-                <h2 class="font-bold text-white mb-2 text-2xl md:text-3xl" style="letter-spacing:-0.01em;">
-                    {{ $sapa }}, {{ explode(' ', $user->name)[0] }} 👋
-                </h2>
-                <p class="text-green-50 font-semibold text-lg md:text-xl-base" style="line-height:1.6;">
-                    <span class="material-symbols-outlined align-middle mr-1" style="font-size:20px; vertical-align:-2px;">location_on</span>
+            <div class="space-y-3">
+                <div class="inline-flex items-center px-3 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-[10px] font-bold tracking-widest uppercase">
                     {{ $posyanduName }}
-                    @if($user->posyandu?->pedukuhan)
-                        <span class="mx-2">·</span> {{ $user->posyandu->pedukuhan->name }}
-                    @endif
+                </div>
+                <h2 class="font-black text-white text-3xl md:text-4xl leading-tight tracking-tighter">
+                    {{ $sapa }}, <span class="text-teal-300">{{ explode(' ', $user->name)[0] }}</span>
+                </h2>
+                @if($user->posyandu?->pedukuhan)
+                <p class="text-teal-50/70 font-medium text-base flex items-center gap-2">
+                    <span class="material-symbols-outlined text-teal-300" style="font-size:20px;">location_on</span>
+                    {{ $user->posyandu->pedukuhan->name }}
                 </p>
+                @endif
             </div>
             <div class="flex flex-col sm:flex-row gap-3 flex-shrink-0">
                 @can('create', App\Models\Patient::class)
                 <a href="{{ route('admin.patients.create') }}"
-                   class="bg-white font-bold px-6 py-4 rounded-2xl hover:bg-green-50 transition-all shadow-md flex items-center justify-center gap-2 text-base md:text-lg-base btn-mobile"
-                   style="color:#00685f; min-height: 56px;">
-                    <span class="material-symbols-outlined" style="font-size:24px;">person_add</span>
+                   class="bg-white group text-teal-900 font-black px-6 py-4 rounded-2xl hover:bg-teal-50 transition-all shadow-lg shadow-teal-950/10 flex items-center justify-center gap-2 text-xs tracking-widest uppercase btn-mobile">
+                    <span class="material-symbols-outlined text-[20px] group-hover:scale-110 transition-transform">person_add</span>
                     Tambah Warga
                 </a>
                 @endcan
                 @can('create', App\Models\Patient::class)
                 <a href="{{ route('admin.medical-records.create') }}"
-                   class="border-2 border-white/60 text-white font-bold px-6 py-4 rounded-2xl hover:bg-white/15 transition-all shadow-md flex items-center justify-center gap-2 text-base md:text-lg-base btn-mobile"
-                   style="min-height: 56px;">
-                    <span class="material-symbols-outlined" style="font-size:24px;">note_add</span>
+                   class="bg-teal-700/30 backdrop-blur-md border border-white/30 text-white font-black px-6 py-4 rounded-2xl hover:bg-white/10 transition-all flex items-center justify-center gap-2 text-xs tracking-widest uppercase btn-mobile">
+                    <span class="material-symbols-outlined text-[20px]">note_add</span>
                     Input Rekam Medis
                 </a>
                 @endcan
             </div>
         </div>
     </section>
+    
 
     {{-- KPI Stats Grid - Lebih Besar dan Mudah Dibaca --}}
-    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-8 stats-grid-mobile">
+    <section class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-5 mb-8 stats-grid-mobile">
         @php
         $stats = [
             [
-                'label' => 'Total Balita',
+                'label' => 'Balita',
                 'value' => $totalBalita,
                 'icon'  => 'child_care',
-                'badge' => 'Terdata',
-                'badge_class' => 'bg-blue-50 text-blue-600',
                 'icon_bg' => '#dbeafe',
                 'icon_color' => '#2563eb',
             ],
             [
-                'label' => 'Total Ibu Hamil',
+                'label' => 'Ibu Hamil',
                 'value' => $totalIbuHamil,
                 'icon'  => 'pregnant_woman',
-                'badge' => 'Terdata',
-                'badge_class' => 'bg-pink-50 text-pink-600',
                 'icon_bg' => '#fce7f3',
                 'icon_color' => '#db2777',
             ],
             [
-                'label' => 'Kunjungan Bulan Ini',
+                'label' => 'Remaja',
+                'value' => $totalRemaja,
+                'icon'  => 'groups',
+                'icon_bg' => '#e0e7ff',
+                'icon_color' => '#4f46e5',
+            ],
+            [
+                'label' => 'Lansia',
+                'value' => $totalLansia,
+                'icon'  => 'elderly',
+                'icon_bg' => '#ffedd5',
+                'icon_color' => '#ea580c',
+            ],
+            [
+                'label' => 'Kunjungan',
                 'value' => $kunjunganBaru,
                 'icon'  => 'how_to_reg',
-                'badge' => 'Bulan Ini',
-                'badge_class' => 'bg-teal-50 text-teal-600',
                 'icon_bg' => '#d1fae5',
                 'icon_color' => '#059669',
             ],
@@ -115,8 +122,6 @@
                 'label' => 'Jadwal Aktif',
                 'value' => $jadwalAktif,
                 'icon'  => 'event_available',
-                'badge' => 'Aktif',
-                'badge_class' => 'bg-green-100 text-green-700',
                 'icon_bg' => '#f0fdf4',
                 'icon_color' => '#16a34a',
             ],
@@ -124,19 +129,20 @@
         @endphp
 
         @foreach($stats as $s)
-        <div class="bg-white rounded-2xl border p-5 md:p-6 shadow-sm hover:shadow-md transition-shadow card-mobile"
-             style="border-color:#CBD5E1;">
-            <div class="flex items-start justify-between mb-4">
-                <div class="w-14 h-14 md:w-12 md:h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                     style="background:{{ $s['icon_bg'] }}; color:{{ $s['icon_color'] }};">
-                    <span class="material-symbols-outlined" style="font-size:28px;">{{ $s['icon'] }}</span>
+        <div class="bg-white rounded-2xl border-0 p-5 md:p-6 shadow-lg shadow-slate-200/40 hover:shadow-xl hover:shadow-slate-300/50 transition-all duration-500 group card-mobile relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-20 h-20 -mr-10 -mt-10 rounded-full transition-transform group-hover:scale-150 duration-700" 
+                 style="background: {{ $s['icon_bg'] }}; opacity: 0.15;"></div>
+            
+            <div class="relative z-10">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="w-12 h-12 rounded-xl flex items-center justify-center shadow-inner"
+                         style="background:{{ $s['icon_bg'] }}; color:{{ $s['icon_color'] }};">
+                        <span class="material-symbols-outlined text-[24px]">{{ $s['icon'] }}</span>
+                    </div>
                 </div>
-                <span class="text-xs md:text-sm font-bold px-3 py-1.5 rounded-full {{ $s['badge_class'] }}" style="line-height:1.4;">
-                    {{ $s['badge'] }}
-                </span>
+                <p class="text-slate-400 text-[10px] font-black uppercase tracking-widest mb-1">{{ $s['label'] }}</p>
+                <h3 class="font-black text-slate-900 text-3xl md:text-4xl tracking-tighter leading-none">{{ $s['value'] }}</h3>
             </div>
-            <p class="text-slate-600 text-sm md:text-base font-bold uppercase tracking-wide mb-2">{{ $s['label'] }}</p>
-            <h3 class="font-black text-slate-900 text-4xl md:text-5xl" style="line-height:1;">{{ $s['value'] }}</h3>
         </div>
         @endforeach
     </section>
@@ -144,75 +150,117 @@
     {{-- Main Content: Table + Sidebar --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
 
-        {{-- Nutrition Alert Table (2/3) - Tabel Responsif untuk Ibu-Ibu --}}
-        <section class="lg:col-span-2 bg-white rounded-2xl border shadow-sm overflow-hidden flex flex-col card-mobile" style="border-color:#CBD5E1;">
-            <div class="px-4 md:px-6 py-5 border-b flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3" style="border-color:#E2E8F0; background:#F8FAFC;">
-                <div>
-                    <h3 class="font-black text-slate-900 flex items-center gap-2 text-xl md:text-2xl" style="letter-spacing:-0.02em;">
-                        <span class="material-symbols-outlined text-amber-500" style="font-size:32px;">warning</span>
-                        Status Gizi Perlu Perhatian
-                    </h3>
-                    <p class="text-slate-600 text-sm md:text-base font-bold mt-1" style="line-height:1.5;">Daftar balita dengan status Stunting atau Gizi Buruk</p>
+        {{-- Activity Records Table (2/3) --}}
+        <section class="lg:col-span-2 flex flex-col gap-6">
+            {{-- Status Gizi Alert (Existing) --}}
+            <div class="bg-white rounded-2xl border shadow-sm overflow-hidden flex flex-col card-mobile" style="border-color:#CBD5E1;">
+                <div class="px-4 md:px-6 py-5 border-b flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3" style="border-color:#E2E8F0; background:#F8FAFC;">
+                    <div>
+                        <h3 class="font-black text-slate-900 flex items-center gap-2 text-xl md:text-2xl" style="letter-spacing:-0.02em;">
+                            <span class="material-symbols-outlined text-amber-500" style="font-size:32px;">warning</span>
+                            Status Gizi Perlu Perhatian
+                        </h3>
+                        <p class="text-slate-600 text-sm md:text-base font-bold mt-1" style="line-height:1.5;">Daftar balita dengan status Stunting atau Gizi Buruk</p>
+                    </div>
                 </div>
-                <a href="{{ route('admin.patients.index', ['category' => 'balita']) }}"
-                   class="text-teal-700 hover:text-teal-900 text-base md:text-lg font-bold transition inline-flex items-center gap-1">
-                   Lihat Semua 
-                   <span class="material-symbols-outlined" style="font-size:18px;">arrow_forward</span>
-                </a>
+
+                <div class="overflow-x-auto flex-1 table-responsive-mobile">
+                    <table class="min-w-full divide-y divide-gray-100">
+                        <thead class="bg-slate-50 text-xs md:text-sm font-black text-slate-600 uppercase tracking-wide">
+                            <tr>
+                                <th class="px-4 md:px-6 py-4 text-left whitespace-nowrap">Nama Lengkap</th>
+                                <th class="px-4 md:px-6 py-4 text-left whitespace-nowrap">Usia</th>
+                                <th class="px-4 md:px-6 py-4 text-left whitespace-nowrap">Status Gizi</th>
+                                <th class="px-4 md:px-6 py-4 text-right whitespace-nowrap">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100 text-sm md:text-base">
+                            @forelse($balitaStunting as $balita)
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="px-4 md:px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 md:w-8 md:h-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
+                                             style="background:#fee2e2; color:#dc2626;">
+                                            {{ strtoupper(substr($balita->full_name, 0, 2)) }}
+                                        </div>
+                                        <span class="font-bold text-gray-900">{{ $balita->full_name }}</span>
+                                    </div>
+                                </td>
+                                <td class="px-4 md:px-6 py-4 text-gray-700 font-semibold">{{ $balita->age }}</td>
+                                <td class="px-4 md:px-6 py-4">
+                                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-bold"
+                                          style="background:#fef2f2; color:#991b1b; border:2px solid #f87171;">
+                                        <span class="material-symbols-outlined" style="font-size:18px;">priority_high</span>
+                                        Stunting
+                                    </span>
+                                </td>
+                                <td class="px-4 md:px-6 py-4 text-right">
+                                    <a href="{{ route('admin.patients.show', $balita->id) }}"
+                                       class="text-teal-700 hover:text-teal-900 font-bold text-sm md:text-base transition inline-flex items-center gap-1">
+                                       Detail 
+                                       <span class="material-symbols-outlined" style="font-size:16px;">arrow_forward</span>
+                                    </a>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="4" class="px-4 md:px-6 py-10 text-center">
+                                    <p class="text-sm font-bold text-gray-500">Tidak ada data saat ini.</p>
+                                </td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
-            <div class="overflow-x-auto flex-1 table-responsive-mobile">
-                <table class="min-w-full divide-y divide-gray-100">
-                    <thead class="bg-slate-50 text-xs md:text-sm font-black text-slate-600 uppercase tracking-wide">
-                        <tr>
-                            <th class="px-4 md:px-6 py-4 text-left whitespace-nowrap">Nama Lengkap</th>
-                            <th class="px-4 md:px-6 py-4 text-left whitespace-nowrap">Usia</th>
-                            <th class="px-4 md:px-6 py-4 text-left whitespace-nowrap">Status Gizi</th>
-                            <th class="px-4 md:px-6 py-4 text-left whitespace-nowrap hidden sm:table-cell">Terakhir Periksa</th>
-                            <th class="px-4 md:px-6 py-4 text-right whitespace-nowrap">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-100 text-sm md:text-base">
-                        @forelse($balitaStunting as $balita)
-                        <tr class="hover:bg-gray-50 transition">
-                            <td class="px-4 md:px-6 py-4">
-                                <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 md:w-8 md:h-8 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0"
-                                         style="background:#fee2e2; color:#dc2626;">
-                                        {{ strtoupper(substr($balita->full_name, 0, 2)) }}
+            {{-- Ringkasan Aktivitas Terkini (NEW) --}}
+            <div class="bg-white rounded-2xl border shadow-sm overflow-hidden flex flex-col card-mobile" style="border-color:#CBD5E1;">
+                <div class="px-4 md:px-6 py-5 border-b flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3" style="border-color:#E2E8F0; background:#F8FAFC;">
+                    <div>
+                        <h3 class="font-black text-slate-900 flex items-center gap-2 text-xl md:text-2xl" style="letter-spacing:-0.02em;">
+                            <span class="material-symbols-outlined text-teal-600" style="font-size:32px;">history</span>
+                            Ringkasan Aktivitas Terkini
+                        </h3>
+                        <p class="text-slate-600 text-sm md:text-base font-bold mt-1" style="line-height:1.5;">Catatan rekam medis terbaru di sistem</p>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto flex-1 table-responsive-mobile">
+                    <table class="min-w-full divide-y divide-gray-100">
+                        <thead class="bg-slate-50 text-xs md:text-sm font-black text-slate-600 uppercase tracking-wide">
+                            <tr>
+                                <th class="px-4 md:px-6 py-4 text-left whitespace-nowrap">Warga</th>
+                                <th class="px-4 md:px-6 py-4 text-left whitespace-nowrap">Tgl Kunjungan</th>
+                                <th class="px-4 md:px-6 py-4 text-left whitespace-nowrap">Posyandu</th>
+                                <th class="px-4 md:px-6 py-4 text-left whitespace-nowrap">Kader</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100 text-sm md:text-base">
+                            @forelse($recentActivities as $activity)
+                            <tr class="hover:bg-gray-50 transition">
+                                <td class="px-4 md:px-6 py-4">
+                                    <div class="flex flex-col">
+                                        <span class="font-bold text-gray-900">{{ $activity->patient->full_name }}</span>
+                                        <span class="text-xs text-slate-500 font-medium capitalize">{{ $activity->patient->category }}</span>
                                     </div>
-                                    <span class="font-bold text-gray-900">{{ $balita->full_name }}</span>
-                                </div>
-                            </td>
-                            <td class="px-4 md:px-6 py-4 text-gray-700 font-semibold">{{ $balita->age }}</td>
-                            <td class="px-4 md:px-6 py-4">
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-bold"
-                                      style="background:#fef2f2; color:#991b1b; border:2px solid #f87171;">
-                                    <span class="material-symbols-outlined" style="font-size:18px;">priority_high</span>
-                                    Stunting
-                                </span>
-                            </td>
-                            <td class="px-4 md:px-6 py-4 text-gray-600 font-medium hidden sm:table-cell">
-                                {{ $balita->medicalRecords->first()?->visit_date?->format('d M Y') ?? '-' }}
-                            </td>
-                            <td class="px-4 md:px-6 py-4 text-right">
-                                <a href="{{ route('admin.patients.show', $balita->id) }}"
-                                   class="text-teal-700 hover:text-teal-900 font-bold text-sm md:text-base transition inline-flex items-center gap-1">
-                                   Detail 
-                                   <span class="material-symbols-outlined" style="font-size:16px;">arrow_forward</span>
-                                </a>
-                            </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="5" class="px-4 md:px-6 py-14 text-center">
-                                <span class="material-symbols-outlined text-green-500 block mb-3" style="font-size:48px;">check_circle</span>
-                                <p class="text-base md:text-lg font-bold text-gray-600">Bagus! Tidak ada balita dengan status Stunting saat ini.</p>
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                                </td>
+                                <td class="px-4 md:px-6 py-4 text-gray-700 font-semibold">{{ $activity->visit_date->format('d/m/Y') }}</td>
+                                <td class="px-4 md:px-6 py-4">
+                                    <span class="px-2 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">
+                                        {{ $activity->patient->posyandu->name }}
+                                    </span>
+                                </td>
+                                <td class="px-4 md:px-6 py-4 text-gray-600 font-medium">{{ $activity->user->name ?? '-' }}</td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="4" class="px-4 md:px-6 py-14 text-center text-gray-500 font-bold">Belum ada aktivitas terekam.</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </section>
 
@@ -280,6 +328,29 @@
                     <canvas id="nutritionStatusChart"></canvas>
                 </div>
             </div>
+            {{-- Breakdown per Unit (khusus SuperAdmin) --}}
+            @if(auth()->user()->isSuperAdmin())
+            <div class="bg-white rounded-2xl border shadow-sm p-5 md:p-6 card-mobile" style="border-color:#CBD5E1;">
+                <h3 class="font-black text-slate-900 mb-4 flex items-center gap-2 text-lg md:text-xl">
+                    <span class="material-symbols-outlined text-indigo-600 text-[28px]">domain</span>
+                    Sasaran per Unit
+                </h3>
+                <div class="space-y-3">
+                    @foreach($posyanduStats as $pStat)
+                    <div class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-200">
+                        <div>
+                            <p class="font-bold text-slate-800 text-sm md:text-base">{{ $pStat->name }}</p>
+                            <p class="text-xs text-slate-500 font-medium">{{ $pStat->pedukuhan->name ?? 'Wilayah Luar' }}</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-lg font-black text-slate-900">{{ $pStat->patients_count }}</span>
+                            <p class="text-[10px] uppercase font-black text-slate-400 tracking-tighter">Warga</p>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            @endif
         </aside>
     </div>
 
