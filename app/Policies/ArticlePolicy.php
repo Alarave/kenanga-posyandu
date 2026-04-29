@@ -20,8 +20,8 @@ class ArticlePolicy
      */
     public function create(User $user): bool
     {
-        // Only Superadmin and potentially high-level admins can manage articles
-        return $user->isSuperAdmin() || $user->isAdmin();
+        // Superadmin, Admin, and Kader can create articles
+        return $user->isSuperAdmin() || $user->isAdmin() || $user->isKader();
     }
 
     /**

@@ -38,7 +38,12 @@
     /* ── Outline ── */
     --color-outline:                   #6d7a77;
     --color-outline-variant:           #bcc9c6;
-    --color-border-high-contrast:      #CBD5E1;
+    --color-border-high-contrast:      #475569;
+
+    /* ── Accessibility: High Contrast Text Colors ── */
+    --color-text-primary:              #1e293b;      /* Slate 800 - kontras tinggi untuk teks utama */
+    --color-text-secondary:            #334155;     /* Slate 700 - kontras baik untuk teks sekunder */
+    --color-text-muted:                #475569;     /* Slate 600 - kontras cukup untuk teks redup */
 
     /* ── Primary ── */
     --color-primary:                   #00685f;
@@ -131,6 +136,18 @@
         font-family: 'Public Sans', ui-sans-serif, system-ui, sans-serif;
     }
 
+    /* Accessibility: Ensure minimum touch target size of 44x44px */
+    button, a[role="button"], input[type="button"], input[type="submit"] {
+        min-height: 44px;
+        min-width: 44px;
+    }
+
+    /* Accessibility: Improve focus visibility for keyboard navigation */
+    *:focus-visible {
+        outline: 3px solid var(--color-primary);
+        outline-offset: 2px;
+    }
+
     /* Slim scrollbar */
     ::-webkit-scrollbar          { width: 4px; height: 4px; }
     ::-webkit-scrollbar-track    { background: transparent; }
@@ -183,30 +200,35 @@ select:focus[data-flux-control] {
         font-size: 48px;
         font-weight: 700;
         line-height: 1.2;
+        color: var(--color-text-primary);
     }
     .text-headline-lg {
         font-family: 'Public Sans', sans-serif;
         font-size: 32px;
         font-weight: 700;
         line-height: 1.3;
+        color: var(--color-text-primary);
     }
     .text-headline-md {
         font-family: 'Public Sans', sans-serif;
         font-size: 24px;
         font-weight: 600;
         line-height: 1.4;
+        color: var(--color-text-primary);
     }
     .text-body-lg {
         font-family: 'Public Sans', sans-serif;
         font-size: 18px;
         font-weight: 400;
         line-height: 1.6;
+        color: var(--color-text-secondary);
     }
     .text-body-md {
         font-family: 'Public Sans', sans-serif;
         font-size: 16px;
         font-weight: 400;
         line-height: 1.6;
+        color: var(--color-text-secondary);
     }
     .text-label-lg {
         font-family: 'Public Sans', sans-serif;
@@ -214,12 +236,23 @@ select:focus[data-flux-control] {
         font-weight: 600;
         line-height: 1.2;
         letter-spacing: 0.02em;
+        color: var(--color-text-primary);
     }
     .text-data-tabular {
         font-family: 'Public Sans', sans-serif;
         font-size: 16px;
         font-weight: 500;
         line-height: 1.4;
+        color: var(--color-text-secondary);
+    }
+
+    /* Accessibility: High contrast text utilities */
+    .text-high-contrast {
+        color: var(--color-text-primary);
+    }
+    
+    .text-contrast-safe {
+        color: var(--color-text-secondary);
     }
 
     /* Line clamp utilities */

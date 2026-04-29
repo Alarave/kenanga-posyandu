@@ -1,7 +1,7 @@
 @props(['variant' => 'primary', 'size' => 'md', 'type' => 'button', 'icon' => null])
 
 @php
-    $baseClasses = 'inline-flex items-center justify-center font-bold transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none';
+    $baseClasses = 'inline-flex items-center justify-center font-bold transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none min-h-[44px] min-w-[44px]';
     
     $variants = [
         'primary' => 'bg-teal-600 text-white hover:bg-teal-700 shadow-sm',
@@ -12,17 +12,17 @@
     ];
     
     $sizes = [
-        'xs' => 'px-2 py-1 text-[10px] rounded-lg h-7',
-        'sm' => 'px-3 py-1.5 text-xs rounded-lg h-9',
-        'md' => 'px-5 py-2.5 text-sm rounded-xl h-11',
-        'lg' => 'px-6 py-3 text-base rounded-2xl h-14',
+        'xs' => 'px-3 py-2 text-sm rounded-lg',
+        'sm' => 'px-4 py-2.5 text-sm rounded-lg',
+        'md' => 'px-6 py-3 text-base rounded-xl',
+        'lg' => 'px-8 py-4 text-lg rounded-2xl',
     ];
     
     $classes = "{$baseClasses} {$variants[$variant]} {$sizes[$size]}";
 @endphp
 
 @if($attributes->has('href'))
-    <a {{ $attributes->merge(['class' => $classes]) }}>
+    <a {{ $attributes->merge(['class' => $classes]) }} role="button" aria-label="{{ $slot }}">
         @if($icon)
             <span class="material-symbols-outlined mr-2" style="font-size: 1.25em;">{{ $icon }}</span>
         @endif

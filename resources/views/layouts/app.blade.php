@@ -42,7 +42,7 @@
         @include('components.layouts.app.sidebar')
         
         <!-- Main Content Wrapper -->
-        <div id="mainContent" class="flex-1 flex flex-col min-h-screen transition-all duration-300 ease-in-out relative overflow-y-auto lg:ml-[260px]">
+        <div id="mainContent" class="flex-1 flex flex-col min-h-screen transition-all duration-300 ease-in-out relative overflow-y-auto lg:ml-[260px]" style="width: calc(100% - 260px);">
             
             <!-- Navbar (Now part of the right-side flow) -->
             @php
@@ -83,6 +83,79 @@
 
     <!-- WAJIB: Livewire Scripts -->
     @livewireScripts
+    
+    <!-- Flash Messages (Success & Error) -->
+    @if (session('success'))
+        <div 
+            x-data="{ show: true }" 
+            x-show="show" 
+            x-init="setTimeout(() => show = false, 5000)"
+            class="fixed bottom-4 right-4 z-50 max-w-sm w-full bg-green-50 border-l-4 border-green-500 rounded-r-lg shadow-lg p-4 flex items-start gap-3 transition-all duration-300"
+            role="alert"
+            aria-live="polite"
+        >
+            <span class="material-symbols-outlined text-green-600 text-xl">check_circle</span>
+            <div class="flex-1">
+                <p class="text-sm font-bold text-green-800">Berhasil!</p>
+                <p class="text-sm text-green-700">{{ session('success') }}</p>
+            </div>
+            <button 
+                @click="show = false"
+                class="text-green-500 hover:text-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 rounded"
+                aria-label="Tutup pesan"
+            >
+                <span class="material-symbols-outlined text-lg">close</span>
+            </button>
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div 
+            x-data="{ show: true }" 
+            x-show="show" 
+            x-init="setTimeout(() => show = false, 5000)"
+            class="fixed bottom-4 right-4 z-50 max-w-sm w-full bg-red-50 border-l-4 border-red-500 rounded-r-lg shadow-lg p-4 flex items-start gap-3 transition-all duration-300"
+            role="alert"
+            aria-live="assertive"
+        >
+            <span class="material-symbols-outlined text-red-600 text-xl">error</span>
+            <div class="flex-1">
+                <p class="text-sm font-bold text-red-800">Kesalahan!</p>
+                <p class="text-sm text-red-700">{{ session('error') }}</p>
+            </div>
+            <button 
+                @click="show = false"
+                class="text-red-500 hover:text-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 rounded"
+                aria-label="Tutup pesan"
+            >
+                <span class="material-symbols-outlined text-lg">close</span>
+            </button>
+        </div>
+    @endif
+
+    @if (session('warning'))
+        <div 
+            x-data="{ show: true }" 
+            x-show="show" 
+            x-init="setTimeout(() => show = false, 5000)"
+            class="fixed bottom-4 right-4 z-50 max-w-sm w-full bg-yellow-50 border-l-4 border-yellow-500 rounded-r-lg shadow-lg p-4 flex items-start gap-3 transition-all duration-300"
+            role="alert"
+            aria-live="polite"
+        >
+            <span class="material-symbols-outlined text-yellow-600 text-xl">warning</span>
+            <div class="flex-1">
+                <p class="text-sm font-bold text-yellow-800">Peringatan!</p>
+                <p class="text-sm text-yellow-700">{{ session('warning') }}</p>
+            </div>
+            <button 
+                @click="show = false"
+                class="text-yellow-500 hover:text-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500 rounded"
+                aria-label="Tutup pesan"
+            >
+                <span class="material-symbols-outlined text-lg">close</span>
+            </button>
+        </div>
+    @endif
     
     @stack('scripts')
     

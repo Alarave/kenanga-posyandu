@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Concerns\HasPosyanduAccess;
+use App\Traits\LogsActivity;
 
 class MedicalRecord extends Model
 {
-    use HasFactory, HasPosyanduAccess;
+    use HasFactory, HasPosyanduAccess, LogsActivity;
 
     protected $fillable = [
         'patient_id', 'user_id', 'visit_date', 'weight', 'height',

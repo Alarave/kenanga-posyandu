@@ -14,16 +14,17 @@ return new class extends Migration
         if (!Schema::hasTable('activity_logs')) {
             Schema::create('activity_logs', function (Blueprint $table) {
                 $table->id();
-                $table->foreignId('user_id')->constrained('users')->onDelete('restrict');
-                $table->string('user_name');
-                $table->string('role', 50);
+                $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
+                $table->string('user_name')->nullable();
+                $table->string('role', 50)->nullable();
                 $table->string('action_type', 100);
-                $table->text('description');
+                $table->text('description')->nullable();
                 $table->string('entity_type', 100)->nullable();
                 $table->unsignedBigInteger('entity_id')->nullable();
                 $table->json('old_values')->nullable();
                 $table->json('new_values')->nullable();
-                $table->string('ip_address', 45);
+                $table->string('ip_address', 45)->nullable();
+                $table->text('user_agent')->nullable();
                 $table->timestamp('created_at')->useCurrent();
                 
                 // Indexes for efficient querying

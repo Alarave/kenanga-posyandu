@@ -135,14 +135,14 @@ describe('validasi rentang tinggi badan', function () {
         $response->assertSessionHasErrors('height');
     });
 
-    it('menolak tinggi badan lebih dari 250 cm', function () {
+    it('menolak tinggi badan lebih dari 300 cm', function () {
         $this->actingAs($this->admin);
 
         $response = $this->post('/admin/medical-records', [
             'patient_id' => $this->patient->id,
             'visit_date' => now()->format('Y-m-d'),
             'weight' => 10.0,
-            'height' => 251.0, // Too high
+            'height' => 301.0, // Too high
         ]);
 
         $response->assertSessionHasErrors('height');
@@ -161,14 +161,14 @@ describe('validasi rentang tinggi badan', function () {
         $response->assertSessionDoesntHaveErrors('height');
     });
 
-    it('menerima tinggi badan 250 cm (batas maksimal)', function () {
+    it('menerima tinggi badan 300 cm (batas maksimal)', function () {
         $this->actingAs($this->admin);
 
         $response = $this->post('/admin/medical-records', [
             'patient_id' => $this->patient->id,
             'visit_date' => now()->format('Y-m-d'),
             'weight' => 100.0,
-            'height' => 250.0,
+            'height' => 300.0,
         ]);
 
         $response->assertSessionDoesntHaveErrors('height');

@@ -219,8 +219,10 @@
 
         if (main && window.innerWidth >= 1024) {
             main.style.marginLeft = collapsed ? COL : EXP;
+            main.style.width = collapsed ? 'calc(100% - ' + COL + ')' : 'calc(100% - ' + EXP + ')';
         } else if (main) {
             main.style.marginLeft = '0';
+            main.style.width = '100%';
         }
 
         if (overlay) overlay.classList.toggle('hidden', collapsed || window.innerWidth >= 1024);

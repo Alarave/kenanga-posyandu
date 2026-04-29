@@ -138,10 +138,12 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // ---------------------------------------------------------
-    // 8. ACTIVITY LOGS (LIVEWIRE)
+    // 8. ACTIVITY LOGS (CONTROLLER)
     // ---------------------------------------------------------
-    Route::middleware(['role:superadmin,admin'])->group(function () {
-        Route::get('admin/activity-logs', ActivityLogViewer::class)->name('admin.activity-logs.index');
+    Route::middleware(['superadmin'])->group(function () {
+        Route::get('admin/activity-logs', [App\Http\Controllers\Web\ActivityLogController::class, 'index'])->name('admin.activity-logs.index');
+        Route::get('admin/activity-logs/{activityLog}', [App\Http\Controllers\Web\ActivityLogController::class, 'show'])->name('admin.activity-logs.show');
+        Route::get('admin/activity-logs/statistics', [App\Http\Controllers\Web\ActivityLogController::class, 'statistics'])->name('admin.activity-logs.statistics');
     });
 
     // ---------------------------------------------------------

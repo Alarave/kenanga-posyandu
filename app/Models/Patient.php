@@ -7,10 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use App\Casts\EncryptedCast;
 use App\Models\Concerns\HasPosyanduAccess;
+use App\Traits\LogsActivity;
 
 class Patient extends Model
 {
-    use HasFactory, HasPosyanduAccess;
+    use HasFactory, HasPosyanduAccess, LogsActivity;
 
     protected $fillable = [
         'posyandu_id', 'category', 'parent_name', 'id_number', 'full_name',
