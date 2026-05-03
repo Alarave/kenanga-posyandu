@@ -135,8 +135,9 @@ class GrowthChartService
         })->toArray();
     }
 
-    private function normalizeGender(string $gender): string
+    private function normalizeGender(?string $gender): string
     {
+        if (!$gender) return 'M';
         $gender = strtoupper($gender);
         return ($gender === 'L' || $gender === 'M') ? 'M' : 'F';
     }
