@@ -23,6 +23,7 @@ class GrowthChart extends BaseAdminComponent
 
     public function switchChart(string $type): void
     {
+        \Illuminate\Support\Facades\Log::info("Switching chart to: " . $type);
         $this->activeChart = $type;
         $this->chartData = $this->getChartData(app(GrowthChartService::class));
         $this->dispatch('chart-updated', $this->chartData);

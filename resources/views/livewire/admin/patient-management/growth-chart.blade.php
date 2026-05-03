@@ -65,18 +65,20 @@
                         <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Pantau tumbuh kembang setiap bulan</p>
                     </div>
                     
-                    <div class="flex bg-slate-100 p-1.5 rounded-2xl w-full sm:w-auto shadow-inner">
+                    <div class="flex bg-slate-100 p-1.5 rounded-2xl w-full sm:w-auto shadow-inner" x-data="{ active: '{{ $activeChart }}' }">
                         <button 
-                            wire:click="switchChart('wfa')" 
-                            wire:key="btn-switch-wfa"
-                            class="flex-1 px-5 py-2 text-[10px] font-black uppercase tracking-[0.15em] rounded-xl transition-all duration-300 {{ $activeChart === 'wfa' ? 'bg-white shadow-md text-teal-600' : 'text-slate-500 hover:bg-white/50' }}"
+                            type="button"
+                            x-on:click="active = 'wfa'; $wire.switchChart('wfa')" 
+                            :class="active === 'wfa' ? 'bg-white shadow-md text-teal-600' : 'text-slate-500 hover:bg-white/50'"
+                            class="flex-1 px-5 py-2 text-[10px] font-black uppercase tracking-[0.15em] rounded-xl transition-all duration-300"
                         >
                             BB / U
                         </button>
                         <button 
-                            wire:click="switchChart('hfa')" 
-                            wire:key="btn-switch-hfa"
-                            class="flex-1 px-5 py-2 text-[10px] font-black uppercase tracking-[0.15em] rounded-xl transition-all duration-300 {{ $activeChart === 'hfa' ? 'bg-white shadow-md text-teal-600' : 'text-slate-500 hover:bg-white/50' }}"
+                            type="button"
+                            x-on:click="active = 'hfa'; $wire.switchChart('hfa')" 
+                            :class="active === 'hfa' ? 'bg-white shadow-md text-teal-600' : 'text-slate-500 hover:bg-white/50'"
+                            class="flex-1 px-5 py-2 text-[10px] font-black uppercase tracking-[0.15em] rounded-xl transition-all duration-300"
                         >
                             TB / U
                         </button>
