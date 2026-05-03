@@ -153,11 +153,15 @@
                     {{ $initials }}
                 </div>
 
-                {{-- Name + role (hidden on small screens) --}}
-                <div class="hidden md:flex flex-col items-start leading-none gap-0.5">
-                    <span class="text-slate-900 font-black text-[13px] tracking-tight">{{ Str::limit($name, 18) }}</span>
-                    <span class="text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md {{ $badgeClass }}">{{ $role }}</span>
+                {{-- Name + role + email (hidden for Super Admin or on small screens) --}}
+                @if(!$user?->isSuperAdmin())
+                <div class="hidden md:flex flex-col items-start leading-tight gap-0">
+                    <span class="text-slate-900 font-black text-[12.5px] tracking-tight">
+                        {{ $name }} <span class="text-slate-400 font-bold">({{ $role }})</span>
+                    </span>
+                    <span class="text-slate-500 font-medium text-[10.5px] tracking-tight">{{ $user?->email }}</span>
                 </div>
+                @endif
 
                 <i class="fas fa-chevron-down text-slate-400 group-hover:text-slate-600 transition-all duration-200 hidden md:block"
                    style="font-size:9px;" id="profileChevron"></i>
