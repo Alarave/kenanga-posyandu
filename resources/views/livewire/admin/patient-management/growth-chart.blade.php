@@ -66,8 +66,20 @@
                     </div>
                     
                     <div class="flex bg-slate-100 p-1.5 rounded-2xl w-full sm:w-auto shadow-inner">
-                        <button wire:click="switchChart('wfa')" class="flex-1 px-5 py-2 text-[10px] font-black uppercase tracking-[0.15em] rounded-xl transition-all duration-300 {{ $activeChart === 'wfa' ? 'bg-white shadow-md text-teal-600' : 'text-slate-500' }}">BB / U</button>
-                        <button wire:click="switchChart('hfa')" class="flex-1 px-5 py-2 text-[10px] font-black uppercase tracking-[0.15em] rounded-xl transition-all duration-300 {{ $activeChart === 'hfa' ? 'bg-white shadow-md text-teal-600' : 'text-slate-500' }}">TB / U</button>
+                        <button 
+                            wire:click="switchChart('wfa')" 
+                            wire:key="btn-switch-wfa"
+                            class="flex-1 px-5 py-2 text-[10px] font-black uppercase tracking-[0.15em] rounded-xl transition-all duration-300 {{ $activeChart === 'wfa' ? 'bg-white shadow-md text-teal-600' : 'text-slate-500 hover:bg-white/50' }}"
+                        >
+                            BB / U
+                        </button>
+                        <button 
+                            wire:click="switchChart('hfa')" 
+                            wire:key="btn-switch-hfa"
+                            class="flex-1 px-5 py-2 text-[10px] font-black uppercase tracking-[0.15em] rounded-xl transition-all duration-300 {{ $activeChart === 'hfa' ? 'bg-white shadow-md text-teal-600' : 'text-slate-500 hover:bg-white/50' }}"
+                        >
+                            TB / U
+                        </button>
                     </div>
                 </div>
 
@@ -250,8 +262,13 @@
         };
 
         initChart($wire.chartData);
+
         $wire.on('chart-updated', (data) => {
-            initChart(data[0]);
+            // Livewire v3 passes data as an array of arguments
+            const chartData = Array.isArray(data) ? data[0] : data;
+            if (chartData) {
+                initChart(chartData);
+            }
         });
     </script>
     @endscript
