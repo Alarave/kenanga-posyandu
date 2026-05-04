@@ -19,7 +19,8 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
 
     public function __construct(
         public ?int $posyanduId = null,
-        public int $year = 0
+        public int $year = 0,
+        public ?int $month = null
     ) {
         $this->year = $year ?: (int) now()->year;
     }
@@ -31,8 +32,10 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
             'dashboard_stats' => $this->computeDashboardStats(),
         ];
 
+        $key = "year_{$this->year}" . ($this->month ? "_month_{$this->month}" : "");
+
         AnalyticsSnapshot::updateOrCreate(
-            ['posyandu_id' => $this->posyanduId, 'key' => "year_{$this->year}"],
+            ['posyandu_id' => $this->posyanduId, 'key' => $key],
             ['data' => $data, 'last_computed_at' => now()]
         );
     }
@@ -48,13 +51,32 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
         }
 
         // --- Copied logic from Analytics.php ---
-        $totalBalita = (clone $patientQuery)->where('category', 'balita')->count();
+        $year = $this->year;
+        $month = $this->month; // Note: Ensure the class has public ?int $month property
 
-        $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+        // Determination date for age calculation
+        $determinationDate = $month 
+            ? Carbon::create($year, $month)->endOfMonth()
+            : Carbon::create($year)->endOfYear();
+
+        $basePatientFilter = fn($q) => $q->whereYear('visit_date', $year)
+            ->when($month, fn($mq) => $mq->whereMonth('visit_date', $month));
+
+        // Total Balita who had at least one visit in the target period
+        $totalBalita = (clone $patientQuery)
+            ->where('category', 'balita')
+            ->whereHas('medicalRecords', $basePatientFilter)
+            ->count();
+
+        // Stunting rate: latest record per patient WITHIN the target period
+        $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')
+            ->whereYear('visit_date', $year)
+            ->when($month, fn($q) => $q->whereMonth('visit_date', $month))
+            ->groupBy('patient_id');
 
         $baseBalitaWithRecords = (clone $patientQuery)
             ->where('category', 'balita')
-            ->whereHas('medicalRecords');
+            ->whereHas('medicalRecords', $basePatientFilter);
 
         $totalWithRecord = (clone $baseBalitaWithRecords)->count();
 
@@ -63,7 +85,9 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
                 $q->whereIn('nutrition_status', [
                     MedicalRecord::NUTRITION_STUNTING,
                     MedicalRecord::NUTRITION_GIZI_BURUK
-                ])->whereIn('id', $latestRecordSubquery)
+                ])->whereYear('visit_date', $year)
+                  ->when($month, fn($mq) => $mq->whereMonth('visit_date', $month))
+                  ->whereIn('id', $latestRecordSubquery)
             )
             ->count();
 
@@ -73,7 +97,8 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
             ->whereHas('patient', fn($q) => $q->where('category', 'balita'))
             ->whereNotNull('immunization')
             ->where('immunization', '!=', '')
-            ->whereYear('visit_date', $this->year)
+            ->whereYear('visit_date', $year)
+            ->when($month, fn($q) => $q->whereMonth('visit_date', $month))
             ->distinct('patient_id')
             ->count('patient_id');
 
@@ -86,7 +111,7 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
 
         $records = (clone $medicalRecordQuery)
             ->whereHas('patient', fn($q) => $q->where('category', 'balita'))
-            ->whereYear('visit_date', $this->year)
+            ->whereYear('visit_date', $year)
             ->select('id', 'visit_date', 'nutrition_status')
             ->get();
             
@@ -100,14 +125,15 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
 
         $trendLabels = []; $trendNormal = []; $trendStunting = [];
         for ($m = 1; $m <= 12; $m++) {
-            $trendLabels[] = Carbon::create($this->year, $m)->translatedFormat('M');
+            $trendLabels[] = Carbon::create($year, $m)->translatedFormat('M');
             $trendNormal[] = $trends->get($m)->normal_count ?? 0;
             $trendStunting[] = $trends->get($m)->stunting_count ?? 0;
         }
 
         $dist = (clone $medicalRecordQuery)
             ->whereHas('patient', fn($q) => $q->where('category', 'balita'))
-            ->whereYear('visit_date', $this->year)
+            ->whereYear('visit_date', $year)
+            ->when($month, fn($q) => $q->whereMonth('visit_date', $month))
             ->whereNotNull('nutrition_status')
             ->select('nutrition_status', DB::raw('COUNT(*) as total'))
             ->groupBy('nutrition_status')
@@ -121,7 +147,7 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
 
             $totalsPerPosyandu = Patient::whereIn('posyandu_id', $posyanduIds)
                 ->where('category', 'balita')
-                ->whereHas('medicalRecords')
+                ->whereHas('medicalRecords', $basePatientFilter)
                 ->select('posyandu_id', DB::raw('COUNT(*) as count'))
                 ->groupBy('posyandu_id')
                 ->pluck('count', 'posyandu_id');
@@ -130,6 +156,8 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
                 ->where('category', 'balita')
                 ->whereHas('medicalRecords', fn($q) =>
                     $q->whereIn('nutrition_status', [MedicalRecord::NUTRITION_STUNTING, MedicalRecord::NUTRITION_GIZI_BURUK])
+                      ->whereYear('visit_date', $year)
+                      ->when($month, fn($mq) => $mq->whereMonth('visit_date', $month))
                       ->whereIn('id', $latestRecordSubquery)
                 )
                 ->select('posyandu_id', DB::raw('COUNT(*) as count'))
@@ -151,31 +179,32 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
 
         $balitas = (clone $patientQuery)
             ->where('category', 'balita')
+            ->where('birth_date', '<=', $determinationDate->format('Y-m-d'))
+            ->whereHas('medicalRecords', $basePatientFilter)
             ->select('id', 'birth_date')
             ->get();
             
         $bayis = 0; $badutas = 0; $balitasCount = 0;
         foreach ($balitas as $b) {
-            $months = Carbon::parse($b->birth_date)->diffInMonths(now());
+            $months = Carbon::parse($b->birth_date)->diffInMonths($determinationDate);
             if ($months <= 11) $bayis++;
             elseif ($months <= 23) $badutas++;
             else $balitasCount++;
         }
-
         return [
-            'totalBalita' => $totalBalita,
-            'stuntingRate' => $stuntingRate,
+            'totalBalita'      => $totalBalita,
+            'stuntingRate'     => $stuntingRate,
             'cakupanImunisasi' => $cakupanImunisasi,
-            'kaderAktif' => $kaderAktif,
-            'trendLabels' => $trendLabels,
-            'trendNormal' => $trendNormal,
-            'trendStunting' => $trendStunting,
-            'nutritionLabels' => array_keys($dist),
-            'nutritionData' => array_values($dist),
+            'kaderAktif'       => $kaderAktif,
+            'trendLabels'      => $trendLabels,
+            'trendNormal'      => $trendNormal,
+            'trendStunting'    => $trendStunting,
+            'nutritionLabels'  => array_keys($dist),
+            'nutritionData'    => array_values($dist),
             'stuntingByPosyandu' => $stuntingByPosyandu,
-            'usia0_12' => $bayis,
-            'usia12_24' => $badutas,
-            'usia24plus' => $balitasCount,
+            'usia0_12'         => $bayis,
+            'usia12_24'        => $badutas,
+            'usia24plus'       => $balitasCount,
         ];
     }
 

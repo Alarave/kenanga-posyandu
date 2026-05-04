@@ -29,7 +29,7 @@ trait HasPosyanduAccess
     /**
      * Scope untuk coordinator (akses berdasarkan pedukuhan)
      */
-    private function scopeByCoordinator(Builder $query, User $user): Builder
+    protected function scopeByCoordinator(Builder $query, User $user): Builder
     {
         $pedukuhanId = $user->getPedukuhanId();
 
@@ -45,7 +45,7 @@ trait HasPosyanduAccess
     /**
      * Scope untuk user dengan akses posyandu tunggal
      */
-    private function scopeByPosyandu(Builder $query, User $user): Builder
+    protected function scopeByPosyandu(Builder $query, User $user): Builder
     {
         if (!$user->posyandu_id) {
             return $query->whereNull('id');

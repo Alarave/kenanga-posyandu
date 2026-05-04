@@ -168,14 +168,6 @@
                                 <span class="material-symbols-outlined text-[18px]">visibility</span>
                             </a>
                             
-                            {{-- Growth Chart (Balita Only) --}}
-                            @if($patient->category === 'balita')
-                            <a href="{{ route('admin.patients.growth-chart', $patient->id) }}" 
-                               class="w-9 h-9 flex items-center justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white hover:shadow-lg hover:shadow-blue-600/30 transition-all duration-300"
-                               title="Grafik Pertumbuhan">
-                                <span class="material-symbols-outlined text-[18px]">show_chart</span>
-                            </a>
-                            @endif
 
                             {{-- Edit Record --}}
                             @can('update', $patient)

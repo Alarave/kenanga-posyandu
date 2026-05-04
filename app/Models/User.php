@@ -30,7 +30,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'verified_email',
         'attempt_login',
         'block_expires',
-        'email_verified_at'
+        'email_verified_at',
+        'last_notifications_read_at'
     ];
 
     /**
@@ -54,6 +55,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'is_active' => 'boolean',
         'verified_email' => 'boolean',
         'block_expires' => 'datetime',
+        'last_notifications_read_at' => 'datetime',
     ];
 
     /**

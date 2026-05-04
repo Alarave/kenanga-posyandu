@@ -74,7 +74,7 @@ class MedicalRecord extends Model
     /**
      * Override scopeByPosyandu untuk MedicalRecord (akses melalui patient)
      */
-    private function scopeByPosyandu($query, $user)
+    protected function scopeByPosyandu($query, $user)
     {
         if (!$user->posyandu_id) {
             return $query->whereNull('id');
@@ -88,7 +88,7 @@ class MedicalRecord extends Model
     /**
      * Override scopeByCoordinator untuk MedicalRecord (akses melalui patient.posyandu.pedukuhan)
      */
-    private function scopeByCoordinator($query, $user)
+    protected function scopeByCoordinator($query, $user)
     {
         $pedukuhanId = $user->getPedukuhanId();
 

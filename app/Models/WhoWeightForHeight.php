@@ -32,6 +32,13 @@ class WhoWeightForHeight extends Model
     ];
 
     /**
+     * Static cache to store reference data within the request lifecycle.
+     *
+     * @var array
+     */
+    protected static $cache = [];
+
+    /**
      * Dapatkan referensi LMS untuk gender dan tinggi badan tertentu.
      * Menggunakan rounding ke 0.5 cm terdekat sesuai tabel WHO.
      *
@@ -43,9 +50,14 @@ class WhoWeightForHeight extends Model
         // WHO WFH table menggunakan step 0.5 cm
         $rounded = round($heightCm * 2) / 2;
         $rounded = max(45.0, min(120.0, $rounded));
+        $cacheKey = "{$gender}_{$rounded}";
 
-        return self::where('gender', $gender)
-            ->where('height_cm', $rounded)
-            ->first();
+        if (!isset(self::$cache[$cacheKey])) {
+            self::$cache[$cacheKey] = self::where('gender', $gender)
+                ->where('height_cm', $rounded)
+                ->first();
+        }
+
+        return self::$cache[$cacheKey];
     }
 }

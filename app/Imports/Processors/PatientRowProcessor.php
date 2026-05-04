@@ -101,6 +101,13 @@ class PatientRowProcessor
                 $hasValidNik, $nikClean, $nama, $birthDate, $namaOrtu, $fullAddress, $gender
             );
 
+            // Detailed Debugging: If placeholder was used, let's find out why
+            if (!$hasValidNik && $nama !== '') {
+                $rawNik = $get('nik');
+                $colNames = implode(', ', array_keys($colMap));
+                $this->errors[] = "DEBUG Baris {$rowNum}: NIK asli='{$rawNik}', NIK bersih='{$nikClean}', Panjang=" . strlen($nikClean) . ". Kolom terdeteksi: [{$colNames}]";
+            }
+
             if ($berat !== '' || $tinggi !== '') {
                 $this->saveMedicalRecord($patient, $berat, $tinggi, $lingkarKepala, $vitamin, $imunisasi, $birthDate, $tglUkur, $gender, $rowNum);
             }
@@ -124,11 +131,18 @@ class PatientRowProcessor
         $existing = $this->findExistingPatient($hasValidNik, $nikClean, $nama, $birthDate);
 
         if ($existing) {
-            $existing->update([
+            $updateData = [
                 'parent_name' => $namaOrtu ?: $existing->parent_name,
                 'address'     => $fullAddress ?: $existing->address,
                 'gender'      => $gender ?? $existing->gender,
-            ]);
+            ];
+
+            // If existing has a placeholder NIK (9999...) and we now have a valid one, update it
+            if (str_starts_with($existing->id_number, '9999') && $hasValidNik) {
+                $updateData['id_number'] = $nikClean;
+            }
+
+            $existing->update($updateData);
             return $existing;
         }
 
@@ -269,7 +283,15 @@ class PatientRowProcessor
             if ($idx === null) {
                 return '';
             }
-            return trim((string) ($row[$idx] ?? ''));
+            
+            $val = $row[$idx] ?? '';
+            
+            // Handle scientific notation (e.g. 3.57E+15) commonly found in Excel for NIK
+            if (is_numeric($val) && str_contains(strtoupper((string)$val), 'E')) {
+                $val = sprintf("%.0f", (float)$val);
+            }
+            
+            return trim((string) $val);
         };
     }
 

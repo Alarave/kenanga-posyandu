@@ -28,6 +28,7 @@ class Analytics extends BaseAdminComponent
     public array $trendLabels  = [];
     public array $trendNormal  = [];
     public array $trendStunting = [];
+    public array $trendRisk = [];
 
     // Nutrition distribution
     public array $nutritionLabels = [];
@@ -43,6 +44,7 @@ class Analytics extends BaseAdminComponent
 
     // Recent records
     public $recentRecords;
+    public ?int $selectedMonth = null; // null means full year
 
     public function mount(): void
     {
@@ -56,21 +58,20 @@ class Analytics extends BaseAdminComponent
         $this->loadData();
     }
 
+    public function updatedSelectedMonth(): void
+    {
+        $this->loadData();
+    }
+
     /**
      * Refresh data manually (clears cache)
      */
-    public function refreshStats(): void
-    {
-        $user = Auth::user();
-        ComputeAnalyticsSnapshot::dispatch($user->isSuperAdmin() ? null : $user->posyandu_id, $this->selectedYear);
-        $this->notify('Proses pembaruan data dimulai di latar belakang');
-    }
 
     protected function loadData(): void
     {
         $user = Auth::user();
         $posyanduId = $user->isSuperAdmin() ? null : $user->posyandu_id;
-        $key = "year_{$this->selectedYear}";
+        $key = "year_{$this->selectedYear}" . ($this->selectedMonth ? "_month_{$this->selectedMonth}" : "");
 
         $snapshot = \App\Models\AnalyticsSnapshot::where('posyandu_id', $posyanduId)
             ->where('key', $key)
@@ -85,17 +86,33 @@ class Analytics extends BaseAdminComponent
             $this->lastUpdated = 'Live (Memproses Snapshot...)';
             
             // Dispatch job to create snapshot for next time
-            ComputeAnalyticsSnapshot::dispatch($posyanduId, $this->selectedYear);
+            ComputeAnalyticsSnapshot::dispatch($posyanduId, $this->selectedYear, $this->selectedMonth);
         }
 
-        foreach ($data as $key => $value) {
-            if (property_exists($this, $key)) {
-                $this->{$key} = $value;
+        foreach ($data as $k => $value) {
+            if (property_exists($this, $k)) {
+                $this->{$k} = $value;
             }
         }
 
-        // Recent records (not snapshotted as they are real-time)
-        $medicalRecordQuery = $this->applyPosyanduScope(MedicalRecord::query());
+        // Dispatch event to update charts in frontend
+        $this->dispatch('charts-updated', 
+            trendLabels: $this->trendLabels,
+            trendNormal: $this->trendNormal,
+            trendStunting: $this->trendStunting,
+            trendRisk: $this->trendRisk,
+            nutritionLabels: $this->nutritionLabels,
+            nutritionData: $this->nutritionData
+        );
+
+        // Recent records (filtered by month/year)
+        $medicalRecordQuery = $this->applyPosyanduScope(MedicalRecord::query())
+            ->whereYear('visit_date', $this->selectedYear);
+            
+        if ($this->selectedMonth) {
+            $medicalRecordQuery->whereMonth('visit_date', $this->selectedMonth);
+        }
+
         $this->recentRecords = $medicalRecordQuery
             ->with(['patient.posyandu'])
             ->whereHas('patient', fn($q) => $q->where('category', 'balita'))
@@ -111,15 +128,32 @@ class Analytics extends BaseAdminComponent
         $medicalRecordQuery = $this->applyPosyanduScope(MedicalRecord::query());
 
         // ── Overview Stats ──────────────────────────────────────────
-        $totalBalita = (clone $patientQuery)->where('category', 'balita')->count();
+        $selectedYear = $this->selectedYear;
+        $selectedMonth = $this->selectedMonth;
 
-        // Stunting rate: latest record per patient
+        // Determination date for age calculation (end of year or end of selected month)
+        $determinationDate = $selectedMonth 
+            ? Carbon::create($selectedYear, $selectedMonth)->endOfMonth()
+            : Carbon::create($selectedYear)->endOfYear();
+
+        // Total Balita who had at least one visit in the selected period
+        $basePatientFilter = fn($q) => $q->whereYear('visit_date', $selectedYear)
+            ->when($selectedMonth, fn($mq) => $mq->whereMonth('visit_date', $selectedMonth));
+
+        $totalBalita = (clone $patientQuery)
+            ->where('category', 'balita')
+            ->whereHas('medicalRecords', $basePatientFilter)
+            ->count();
+
+        // Stunting rate: latest record per patient WITHIN the selected period
         $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')
+            ->whereYear('visit_date', $selectedYear)
+            ->when($selectedMonth, fn($q) => $q->whereMonth('visit_date', $selectedMonth))
             ->groupBy('patient_id');
 
         $baseBalitaWithRecords = (clone $patientQuery)
             ->where('category', 'balita')
-            ->whereHas('medicalRecords');
+            ->whereHas('medicalRecords', $basePatientFilter);
 
         $totalWithRecord = (clone $baseBalitaWithRecords)->count();
 
@@ -139,13 +173,14 @@ class Analytics extends BaseAdminComponent
             ->whereHas('patient', fn($q) => $q->where('category', 'balita'))
             ->whereNotNull('immunization')
             ->where('immunization', '!=', '')
-            ->whereYear('visit_date', $this->selectedYear)
+            ->whereYear('visit_date', $selectedYear)
+            ->when($selectedMonth, fn($q) => $q->whereMonth('visit_date', $selectedMonth))
             ->distinct('patient_id')
             ->count('patient_id');
 
         $cakupanImunisasi = $totalBalita > 0 ? round(($balitaWithImunisasi / $totalBalita) * 100, 1) : 0;
 
-        // Kader Aktif
+        // Kader Aktif (Global, but we keep it)
         $kaderAktif = User::where('is_active', true)
             ->whereIn('role', ['staff', 'medical', 'admin'])
             ->when(!$user->isSuperAdmin() && $user->posyandu_id, fn($q) =>
@@ -153,7 +188,7 @@ class Analytics extends BaseAdminComponent
             )
             ->count();
 
-        // ── Trend 12 Bulan (Optimized to single query) ───────────────
+        // ── Trend 12 Bulan ───────────────────────────────────────────
         $records = (clone $medicalRecordQuery)
             ->whereHas('patient', fn($q) => $q->where('category', 'balita'))
             ->whereYear('visit_date', $this->selectedYear)
@@ -165,37 +200,40 @@ class Analytics extends BaseAdminComponent
         })->map(function($group) {
             $normal = $group->whereIn('nutrition_status', [MedicalRecord::NUTRITION_NORMAL, MedicalRecord::NUTRITION_GIZI_BAIK])->count();
             $stunting = $group->whereIn('nutrition_status', [MedicalRecord::NUTRITION_STUNTING, MedicalRecord::NUTRITION_GIZI_BURUK])->count();
-            return clone (object) ['normal_count' => $normal, 'stunting_count' => $stunting];
+            $risk = $group->whereIn('nutrition_status', [MedicalRecord::NUTRITION_GIZI_LEBIH, 'Risiko', 'Obesitas'])->count();
+            return clone (object) [
+                'normal_count' => $normal, 
+                'stunting_count' => $stunting,
+                'risk_count' => $risk
+            ];
         });
 
-        $trendLabels  = [];
-        $trendNormal  = [];
-        $trendStunting = [];
-
+        $trendLabels  = []; $trendNormal  = []; $trendStunting = []; $trendRisk = [];
         for ($m = 1; $m <= 12; $m++) {
             $trendLabels[] = Carbon::create($this->selectedYear, $m)->translatedFormat('M');
             $trendNormal[] = $trends->get($m)->normal_count ?? 0;
             $trendStunting[] = $trends->get($m)->stunting_count ?? 0;
+            $trendRisk[] = $trends->get($m)->risk_count ?? 0;
         }
 
         // ── Distribusi Status Gizi ───────────────────────────────────
         $dist = (clone $medicalRecordQuery)
             ->whereHas('patient', fn($q) => $q->where('category', 'balita'))
             ->whereYear('visit_date', $this->selectedYear)
+            ->when($selectedMonth, fn($q) => $q->whereMonth('visit_date', $selectedMonth))
             ->whereNotNull('nutrition_status')
             ->select('nutrition_status', DB::raw('COUNT(*) as total'))
             ->groupBy('nutrition_status')
             ->pluck('total', 'nutrition_status')
             ->toArray();
 
-        // ── Stunting per Posyandu (Optimized) ─────────────────────────
+        // ── Stunting per Posyandu ─────────────────────────────────────
         $posyandus = $this->getAllowedPosyandus();
         $posyanduIds = $posyandus->pluck('id');
 
-        // Fetch aggregates in one query per metric
         $totalsPerPosyandu = Patient::whereIn('posyandu_id', $posyanduIds)
             ->where('category', 'balita')
-            ->whereHas('medicalRecords')
+            ->whereHas('medicalRecords', $basePatientFilter)
             ->select('posyandu_id', DB::raw('COUNT(*) as count'))
             ->groupBy('posyandu_id')
             ->pluck('count', 'posyandu_id');
@@ -204,6 +242,8 @@ class Analytics extends BaseAdminComponent
             ->where('category', 'balita')
             ->whereHas('medicalRecords', fn($q) =>
                 $q->whereIn('nutrition_status', [MedicalRecord::NUTRITION_STUNTING, MedicalRecord::NUTRITION_GIZI_BURUK])
+                  ->whereYear('visit_date', $selectedYear)
+                  ->when($selectedMonth, fn($mq) => $mq->whereMonth('visit_date', $selectedMonth))
                   ->whereIn('id', $latestRecordSubquery)
             )
             ->select('posyandu_id', DB::raw('COUNT(*) as count'))
@@ -227,15 +267,17 @@ class Analytics extends BaseAdminComponent
             ];
         }
 
-        // ── Demographics ─────────────────────────────────────────────
+        // ── Demographics (Ages relative to the period) ───────────────
         $balitas = (clone $patientQuery)
             ->where('category', 'balita')
+            ->where('birth_date', '<=', $determinationDate->format('Y-m-d'))
+            ->whereHas('medicalRecords', $basePatientFilter)
             ->select('id', 'birth_date')
             ->get();
             
         $bayis = 0; $badutas = 0; $balitasCount = 0;
         foreach ($balitas as $b) {
-            $months = Carbon::parse($b->birth_date)->diffInMonths(now());
+            $months = Carbon::parse($b->birth_date)->diffInMonths($determinationDate);
             if ($months <= 11) $bayis++;
             elseif ($months <= 23) $badutas++;
             else $balitasCount++;
@@ -249,6 +291,7 @@ class Analytics extends BaseAdminComponent
             'trendLabels'      => $trendLabels,
             'trendNormal'      => $trendNormal,
             'trendStunting'    => $trendStunting,
+            'trendRisk'        => $trendRisk,
             'nutritionLabels'  => array_keys($dist),
             'nutritionData'    => array_values($dist),
             'stuntingByPosyandu' => $stuntingByPosyandu,

@@ -3,120 +3,125 @@
 @section('title', 'Masuk - Dashboard Posyandu')
 
 @section('content')
-<div class="mb-10 text-center md:text-left">
-    <div class="inline-flex items-center gap-2 px-4 py-2 bg-teal-50 text-teal-700 rounded-full text-xs font-black uppercase tracking-widest mb-6">
+{{-- ── Modern Header Section ── --}}
+<div class="mb-12 text-center md:text-left">
+    <div class="inline-flex items-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-700 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] mb-8 border border-indigo-100">
         <span class="relative flex h-2 w-2">
-            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
-            <span class="relative inline-flex rounded-full h-2 w-2 bg-teal-500"></span>
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-600"></span>
         </span>
-        Sistem Informasi Posyandu
+        Akses Petugas & Kader
     </div>
-    <h2 class="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-[0.9] mb-4">
+    
+    <h2 class="text-5xl md:text-6xl font-black text-slate-900 tracking-tighter leading-[0.85] mb-6">
         Selamat Datang <br> <span class="text-teal-600 italic">Kembali.</span>
     </h2>
-    <p class="text-lg font-bold text-slate-500 tracking-tight">Silakan masukkan Email dan Kata Sandi Anda untuk masuk ke sistem.</p>
+    <p class="text-lg font-bold text-slate-400 tracking-tight leading-relaxed max-w-sm">
+        Gunakan akun resmi Anda untuk mengelola data Posyandu.
+    </p>
 </div>
 
-<form method="POST" action="{{ route('login') }}" class="space-y-6">
+<form method="POST" action="{{ route('login') }}" class="space-y-8">
     @csrf
 
-    @if($errors->any())
-    <div class="p-6 bg-red-50 border-2 border-red-100 rounded-[2rem] animate-in slide-in-from-top-4 duration-300">
-        <div class="flex gap-3 text-red-800">
-            <span class="material-symbols-outlined text-[24px]">error</span>
-            <div class="text-sm font-bold">
-                <p class="mb-1">Maaf, ada kesalahan:</p>
-                <ul class="list-disc list-inside opacity-80">
-                    @foreach($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+    {{-- ── Email Input Field ── --}}
+    <div class="group">
+        <label for="email" class="ml-4 font-black text-slate-500 uppercase tracking-[0.3em] text-[10px] flex items-center gap-2 mb-3 group-focus-within:text-teal-600 transition-colors">
+            <span class="material-symbols-outlined text-[18px]">alternate_email</span>
+            Alamat Email Resmi
+        </label>
+        <div class="relative">
+            <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
+                   placeholder="nama@posyandu.com"
+                   class="w-full h-20 px-8 rounded-[2rem] bg-slate-50 border-4 border-transparent text-xl font-black text-slate-900 placeholder:text-slate-300 focus:outline-none focus:bg-white focus:border-teal-500/10 focus:ring-[12px] focus:ring-teal-500/5 transition-all shadow-inner group-hover:bg-slate-100">
+            <div class="absolute inset-y-0 right-8 flex items-center text-slate-300 group-focus-within:text-teal-500 transition-colors">
+                <span class="material-symbols-outlined text-[28px]">verified_user</span>
             </div>
         </div>
     </div>
-    @endif
 
-    <!-- Alamat Email -->
-    <div class="space-y-3">
-        <label for="email" class="ml-2 font-black text-slate-700 uppercase tracking-[0.2em] text-[11px] flex items-center gap-2">
-            <span class="material-symbols-outlined text-[18px] text-teal-600">person</span>
-            Email Anda
-        </label>
-        <div class="relative group">
-            <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
-                   placeholder="Contoh: arimbi@posyandu.com"
-                   class="w-full h-20 px-8 rounded-[2rem] bg-white border-4 border-slate-50 text-xl font-black text-slate-900 placeholder:text-slate-300 focus:outline-none focus:ring-8 focus:ring-teal-500/5 focus:border-teal-600 transition-all shadow-sm">
-        </div>
-    </div>
-
-    <!-- Kata Sandi -->
-    <div class="space-y-3">
-        <div class="flex justify-between items-center px-2">
-            <label for="password" class="font-black text-slate-700 uppercase tracking-[0.2em] text-[11px] flex items-center gap-2">
-                <span class="material-symbols-outlined text-[18px] text-teal-600">lock</span>
-                Kata Sandi
+    {{-- ── Password Input Field ── --}}
+    <div class="group">
+        <div class="flex justify-between items-center px-4 mb-3">
+            <label for="password" class="font-black text-slate-500 uppercase tracking-[0.3em] text-[10px] flex items-center gap-2 group-focus-within:text-teal-600 transition-colors">
+                <span class="material-symbols-outlined text-[18px]">key</span>
+                Kata Sandi Akun
             </label>
         </div>
-        <div class="relative group">
+        <div class="relative">
             <input id="password" type="password" name="password" required
-                   placeholder="Masukkan sandi..."
-                   class="w-full h-20 px-8 pr-20 rounded-[2rem] bg-white border-4 border-slate-50 text-xl font-black text-slate-900 placeholder:text-slate-300 focus:outline-none focus:ring-8 focus:ring-teal-50/5 focus:border-teal-600 transition-all shadow-sm">
+                   placeholder="••••••••"
+                   class="w-full h-20 px-8 pr-24 rounded-[2rem] bg-slate-50 border-4 border-transparent text-2xl font-black text-slate-900 placeholder:text-slate-200 focus:outline-none focus:bg-white focus:border-teal-500/10 focus:ring-[12px] focus:ring-teal-500/5 transition-all shadow-inner group-hover:bg-slate-100 tracking-widest">
             
             <button type="button" onclick="togglePassword()" id="toggleBtn"
-                    class="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center text-slate-400 hover:text-teal-600 transition-colors">
+                    class="absolute right-6 top-1/2 -translate-y-1/2 w-14 h-14 flex items-center justify-center rounded-2xl text-slate-400 hover:bg-white hover:text-teal-600 hover:shadow-lg transition-all active:scale-95">
                 <span class="material-symbols-outlined text-[24px]" id="toggleIcon">visibility</span>
             </button>
         </div>
     </div>
 
-    <!-- Opsi Tambahan -->
-    <div class="flex items-center justify-between px-2 py-2">
-        <label class="relative flex items-center gap-3 cursor-pointer group">
-            <input id="remember_me" type="checkbox" name="remember" 
-                   class="w-7 h-7 text-teal-600 border-4 border-slate-100 rounded-xl focus:ring-teal-500/20 transition-all cursor-pointer">
-            <span class="text-sm font-black text-slate-600 group-hover:text-teal-600 transition-colors">Tetap Masuk</span>
+    {{-- ── Advanced Options ── --}}
+    <div class="flex items-center justify-between px-4">
+        <label class="relative flex items-center gap-3 cursor-pointer group select-none">
+            <div class="relative">
+                <input id="remember_me" type="checkbox" name="remember" 
+                       class="sr-only peer">
+                <div class="w-10 h-6 bg-slate-200 rounded-full peer peer-checked:bg-teal-500 transition-all after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-4"></div>
+            </div>
+            <span class="text-sm font-black text-slate-600 group-hover:text-teal-600 transition-colors">Ingat Perangkat</span>
         </label>
+        
+        @if (Route::has('password.request'))
+            <a href="{{ route('password.request') }}" class="text-sm font-black text-teal-600 hover:text-teal-800 underline decoration-2 underline-offset-4 transition-colors">
+                Lupa Sandi?
+            </a>
+        @endif
     </div>
 
-    <!-- Tombol Masuk -->
-    <div class="pt-2">
+    {{-- ── Submission ── --}}
+    <div class="pt-4">
         <button type="submit" id="submitBtn"
-                class="w-full h-24 bg-teal-600 text-white text-2xl font-black uppercase tracking-[0.2em] rounded-[2.5rem] shadow-2xl shadow-teal-900/30 hover:bg-teal-700 hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-4 group">
-            Login
-            <span class="material-symbols-outlined text-[32px] group-hover:translate-x-2 transition-transform">login</span>
+                class="w-full h-24 bg-teal-600 text-white text-2xl font-black uppercase tracking-[0.2em] rounded-[2.5rem] shadow-[0_20px_50px_rgba(13,148,136,0.3)] hover:bg-teal-700 hover:shadow-[0_25px_60px_rgba(13,148,136,0.4)] hover:-translate-y-1 active:translate-y-0 active:scale-[0.98] transition-all flex items-center justify-center gap-5 group">
+            <span>Masuk</span>
+            <span class="material-symbols-outlined text-[36px] group-hover:translate-x-2 transition-transform">arrow_forward</span>
         </button>
     </div>
 
-    {{-- Support / Help Section --}}
-    <div class="mt-12 p-8 bg-slate-50 rounded-[2.5rem] border-2 border-dashed border-slate-200">
-        <div class="flex flex-col items-center text-center gap-4">
-            <div class="w-12 h-12 bg-white rounded-2xl flex items-center justify-center shadow-sm text-teal-600">
-                <span class="material-symbols-outlined text-[28px]">contact_support</span>
+    {{-- ── High-Trust Support Section ── --}}
+    <div class="mt-16 p-10 bg-gradient-to-br from-slate-900 to-slate-800 rounded-[3rem] text-white relative overflow-hidden group shadow-2xl">
+        <div class="absolute -right-10 -top-10 w-40 h-40 bg-white/5 rounded-full blur-3xl group-hover:bg-white/10 transition-colors"></div>
+        
+        <div class="relative z-10 flex flex-col items-center text-center gap-6">
+            <div class="w-16 h-16 bg-white/10 rounded-[1.5rem] flex items-center justify-center backdrop-blur-xl border border-white/10 text-teal-400">
+                <span class="material-symbols-outlined text-[32px]">support_agent</span>
             </div>
-            <div>
-                <p class="text-sm font-black text-slate-800">Kesulitan Masuk?</p>
-                <p class="text-xs font-bold text-slate-500 mt-1">Jangan khawatir! Hubungi Ketua Kader untuk reset sandi atau bantuan lainnya.</p>
+            <div class="space-y-2">
+                <p class="text-sm font-black uppercase tracking-[0.3em] text-teal-400">Pusat Bantuan</p>
+                <p class="text-base font-bold text-slate-300">Butuh bantuan akses atau reset sandi?</p>
             </div>
             <a href="https://wa.me/6281234567890" target="_blank"
-               class="inline-flex items-center gap-2 px-6 py-3 bg-white border border-slate-200 rounded-2xl text-xs font-black text-slate-700 hover:bg-slate-100 transition-all shadow-sm">
-                <span class="material-symbols-outlined text-[18px] text-green-500">chat</span>
-                Chat WhatsApp Admin
+               class="w-full h-16 inline-flex items-center justify-center gap-4 bg-white text-slate-900 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-teal-400 transition-all active:scale-95">
+                <span class="material-symbols-outlined text-[20px] text-teal-600">chat_bubble</span>
+                Hubungi Kami
             </a>
         </div>
     </div>
-
 </form>
 
 <script>
     function togglePassword() {
         const passInput = document.getElementById('password');
         const icon = document.getElementById('toggleIcon');
+        const btn = document.getElementById('toggleBtn');
+        
         if (passInput.type === 'password') {
             passInput.type = 'text';
             icon.textContent = 'visibility_off';
+            btn.classList.add('bg-white', 'text-teal-600', 'shadow-lg');
         } else {
             passInput.type = 'password';
             icon.textContent = 'visibility';
+            btn.classList.remove('bg-white', 'text-teal-600', 'shadow-lg');
         }
     }
 
@@ -124,11 +129,8 @@
         const btn = document.getElementById('submitBtn');
         btn.disabled = true;
         btn.innerHTML = `
-            <svg class="animate-spin h-8 w-8 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-            </svg>
-            <span class="font-black uppercase tracking-[0.2em]">Sedang Masuk...</span>
+            <div class="w-10 h-10 border-4 border-white/30 border-t-white rounded-full animate-spin"></div>
+            <span class="font-black uppercase tracking-[0.2em]">Memverifikasi...</span>
         `;
     });
 </script>

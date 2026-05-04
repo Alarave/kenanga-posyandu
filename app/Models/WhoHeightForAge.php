@@ -31,6 +31,13 @@ class WhoHeightForAge extends Model
     ];
 
     /**
+     * Static cache to store reference data within the request lifecycle.
+     *
+     * @var array
+     */
+    protected static $cache = [];
+
+    /**
      * Dapatkan referensi LMS untuk gender dan usia tertentu.
      *
      * @param string $gender 'M' atau 'F'
@@ -38,8 +45,15 @@ class WhoHeightForAge extends Model
      */
     public static function getReference(string $gender, int $ageMonths): ?self
     {
-        return self::where('gender', $gender)
-            ->where('age_months', min($ageMonths, 60))
-            ->first();
+        $ageMonths = min($ageMonths, 60);
+        $cacheKey = "{$gender}_{$ageMonths}";
+
+        if (!isset(self::$cache[$cacheKey])) {
+            self::$cache[$cacheKey] = self::where('gender', $gender)
+                ->where('age_months', $ageMonths)
+                ->first();
+        }
+
+        return self::$cache[$cacheKey];
     }
 }

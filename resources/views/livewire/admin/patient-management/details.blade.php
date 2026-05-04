@@ -196,7 +196,7 @@
 
     {{-- GRAFIK PERTUMBUHAN (Only for Balita) --}}
     @if($patient->category === 'balita')
-        <livewire:admin.patient-management.growth-chart :patient-id="$patient->id" />
+        <livewire:admin.patient-management.growth-chart :patient="$patient" />
     @endif
 
     {{-- TABEL HISTORI KESEHATAN ── --}}

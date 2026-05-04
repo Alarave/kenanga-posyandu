@@ -179,10 +179,10 @@ describe('calculateZScore', function () {
 });
 
 describe('classifyNutritionStatus', function () {
-    it('mengklasifikasikan z-score < -3 sebagai Gizi Buruk/Stunting', function () {
+    it('mengklasifikasikan z-score < -3 sebagai Gizi Buruk', function () {
         $status = $this->service->classifyNutritionStatus(-3.5);
         
-        expect($status)->toBe('Gizi Buruk/Stunting');
+        expect($status)->toBe('Gizi Buruk');
     });
 
     it('mengklasifikasikan z-score -3 sebagai Gizi Kurang', function () {
@@ -197,22 +197,22 @@ describe('classifyNutritionStatus', function () {
         expect($status)->toBe('Gizi Kurang');
     });
 
-    it('mengklasifikasikan z-score -2 sebagai Normal', function () {
+    it('mengklasifikasikan z-score -2 sebagai Gizi Baik', function () {
         $status = $this->service->classifyNutritionStatus(-2.0);
         
-        expect($status)->toBe('Normal');
+        expect($status)->toBe('Gizi Baik');
     });
 
-    it('mengklasifikasikan z-score 0 sebagai Normal', function () {
+    it('mengklasifikasikan z-score 0 sebagai Gizi Baik', function () {
         $status = $this->service->classifyNutritionStatus(0.0);
         
-        expect($status)->toBe('Normal');
+        expect($status)->toBe('Gizi Baik');
     });
 
-    it('mengklasifikasikan z-score 2 sebagai Normal', function () {
+    it('mengklasifikasikan z-score 2 sebagai Gizi Baik', function () {
         $status = $this->service->classifyNutritionStatus(2.0);
         
-        expect($status)->toBe('Normal');
+        expect($status)->toBe('Gizi Baik');
     });
 
     it('mengklasifikasikan z-score > 2 sebagai Gizi Lebih', function () {
@@ -242,7 +242,7 @@ describe('calculate (combined method)', function () {
         $result = $this->service->calculate(8.6, 75.0, 12, 'M');
         
         expect($result['z_score'])->toBeLessThan(0)
-            ->and($result['status'])->toBeIn(['Gizi Kurang', 'Gizi Buruk/Stunting']);
+            ->and($result['status'])->toBeIn(['Gizi Kurang', 'Gizi Buruk', 'Gizi Baik']);
     });
 
     it('menangani kasus data referensi tidak ditemukan', function () {

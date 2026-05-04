@@ -1,14 +1,3 @@
-@extends('layouts.admin-layout')
-
-@section('admin-title') Buku KIA Digital: {{ $patient->full_name }} @endsection
-
-@section('admin-actions')
-    <x-button href="{{ route('admin.patients.index') }}" variant="outline" icon="arrow_back">
-        Kembali
-    </x-button>
-@endsection
-
-@section('admin-content')
 <div wire:key="growth-chart-root" class="max-w-7xl mx-auto space-y-6 pb-12">
     
     {{-- ── Patient Header: Premium Bento Style ── --}}
@@ -257,4 +246,4 @@
             </div>
         </div>
     </div>
-@endsection
+</div>

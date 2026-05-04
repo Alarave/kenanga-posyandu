@@ -43,6 +43,7 @@ class GrowthChart extends BaseAdminComponent
 
     public function render()
     {
-        return view('livewire.admin.patient-management.growth-chart');
+        return view('livewire.admin.patient-management.growth-chart')
+            ->layout('layouts.admin-layout');
     }
 }

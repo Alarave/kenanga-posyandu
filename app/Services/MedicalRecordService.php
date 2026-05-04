@@ -80,15 +80,17 @@ class MedicalRecordService
      */
     public function createRecord(array $data, User $user): MedicalRecord
     {
-        $patient = $this->getPatientOrFail($data['patient_id']);
-        $this->verifyPatientAccess($patient, $user);
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($data, $user) {
+            $patient = $this->getPatientOrFail($data['patient_id']);
+            $this->verifyPatientAccess($patient, $user);
 
-        $preparedData = $this->prepareRecordData($data, $patient, $user);
-        $medicalRecord = MedicalRecord::create($preparedData);
+            $preparedData = $this->prepareRecordData($data, $patient, $user);
+            $medicalRecord = MedicalRecord::create($preparedData);
 
-        $this->logActivity('create_medical_record', $patient, $medicalRecord, null, $preparedData);
+            $this->logActivity('create_medical_record', $patient, $medicalRecord, null, $preparedData);
 
-        return $medicalRecord;
+            return $medicalRecord;
+        });
     }
 
     /**
@@ -105,23 +107,25 @@ class MedicalRecordService
         array $data,
         User $user
     ): MedicalRecord {
-        $oldValues = $medicalRecord->toArray();
-        $patient = $this->getPatientOrFail($data['patient_id']);
-        
-        $this->verifyPatientAccess($patient, $user);
+        return \Illuminate\Support\Facades\DB::transaction(function () use ($medicalRecord, $data, $user) {
+            $oldValues = $medicalRecord->toArray();
+            $patient = $this->getPatientOrFail($data['patient_id']);
+            
+            $this->verifyPatientAccess($patient, $user);
 
-        $preparedData = $this->prepareUpdateData($data, $patient, $medicalRecord, $oldValues);
-        $medicalRecord->update($preparedData);
+            $preparedData = $this->prepareUpdateData($data, $patient, $medicalRecord, $oldValues);
+            $medicalRecord->update($preparedData);
 
-        $this->logActivity(
-            'update_medical_record',
-            $patient,
-            $medicalRecord->fresh(),
-            $oldValues,
-            $medicalRecord->fresh()->toArray()
-        );
+            $this->logActivity(
+                'update_medical_record',
+                $patient,
+                $medicalRecord->fresh(),
+                $oldValues,
+                $medicalRecord->fresh()->toArray()
+            );
 
-        return $medicalRecord;
+            return $medicalRecord;
+        });
     }
 
     /**
@@ -274,7 +278,7 @@ class MedicalRecordService
             $patient->gender
         );
         
-        $data = array_merge($data, $nutritionResult);
+        $data = array_merge($data, $nutritionResult->toArray());
         $data['nutrition_trend'] = $this->calculateNutritionTrend($patient, $data);
 
         $this->checkGrowthTrends($patient, $data);

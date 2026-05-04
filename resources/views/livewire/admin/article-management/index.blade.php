@@ -1,181 +1,164 @@
-<div class="space-y-6">
-    {{-- Header Section (Replicated style) --}}
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-        <div>
-            <nav class="flex text-xs text-slate-400 mb-1.5 gap-1.5 items-center">
-                <a href="{{ route('dashboard') }}" class="hover:text-teal-600 transition-colors">Beranda</a>
-                <span class="material-symbols-outlined text-[12px]">chevron_right</span>
-                <span class="text-teal-600 font-semibold">Konten & Edukasi</span>
-            </nav>
-            <h1 class="text-2xl font-bold text-slate-900">Manajemen Artikel & Berita</h1>
-            <p class="text-sm text-slate-500 mt-0.5">Kelola artikel kesehatan, berita kegiatan, dan tips gizi.</p>
-        </div>
-        
-        <div class="flex flex-wrap gap-3 items-center">
-            @can('create', App\Models\Article::class)
-                <x-button href="{{ route('admin.articles.create') }}" variant="secondary" icon="add">
-                    Buat Artikel
-                </x-button>
-            @endcan
-        </div>
-    </div>
+{{-- ── Articles Management — Ultra-Premium UI ── --}}
+<div class="max-w-[1440px] mx-auto space-y-10 pb-20">
 
-    {{-- ── Header Section & Stats --}}
-    <div class="mb-8">
-        {{-- Stat Card --}}
-        <div class="bg-white rounded-[2rem] border border-slate-100 p-6 shadow-sm flex items-center justify-between relative overflow-hidden group">
-            <div class="absolute right-0 top-0 w-32 h-32 bg-teal-50 rounded-full -mr-10 -mt-10 transition-transform group-hover:scale-110"></div>
-            
-            <div class="relative z-10">
-                <div class="flex items-center gap-3 mb-2">
-                    <div class="w-8 h-8 rounded-xl bg-teal-100 text-teal-600 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-[18px]">article</span>
-                    </div>
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Publikasi</span>
+    {{-- ── Modern Header with Mesh Gradient ── --}}
+    <div class="relative rounded-[3rem] p-8 md:p-12 overflow-hidden bg-slate-900 text-white shadow-2xl">
+        {{-- Mesh Gradient Background --}}
+        <div class="absolute inset-0 opacity-30 pointer-events-none">
+            <div class="absolute -top-24 -left-24 w-96 h-96 bg-indigo-500 rounded-full blur-[120px]"></div>
+            <div class="absolute top-1/2 -right-24 w-80 h-80 bg-blue-600 rounded-full blur-[100px]"></div>
+        </div>
+
+        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
+            <div class="space-y-4">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-[11px] font-black uppercase tracking-[0.2em] text-indigo-300">
+                    <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
+                    Content & Education
                 </div>
-                <div class="text-3xl font-black text-slate-900 tracking-tighter">{{ $articles->total() }}</div>
-                <p class="text-[10px] font-medium text-slate-400 mt-1">Artikel terdaftar di sistem</p>
+                <h1 class="text-4xl md:text-5xl font-black tracking-tight leading-tight">Manajemen Artikel</h1>
+                <p class="text-lg text-slate-300 font-medium max-w-2xl">
+                    Kelola materi edukasi kesehatan, berita kegiatan, dan informasi penting untuk warga Posyandu.
+                </p>
             </div>
-            
-            <div class="hidden sm:block relative z-10">
-                 <a href="{{ route('admin.articles.create') }}" class="text-teal-600 hover:text-teal-700 text-xs font-bold uppercase tracking-widest flex items-center gap-1">
-                    Tulis Baru <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
-                 </a>
+
+            <div class="flex items-center gap-4">
+                @can('create', App\Models\Article::class)
+                <a href="{{ route('admin.articles.create') }}"
+                   class="h-16 px-8 flex items-center gap-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-sm font-black uppercase tracking-widest shadow-xl shadow-indigo-600/30 transition-all active:scale-95">
+                    <span class="material-symbols-outlined text-[28px]">add_circle</span>
+                    Tulis Artikel Baru
+                </a>
+                @endcan
             </div>
         </div>
     </div>
 
-    {{-- ── Search & Filter Bar --}}
-    <div class="bg-white rounded-[2rem] border border-slate-100 p-4 shadow-sm mb-6">
-        <div class="flex flex-col md:flex-row items-center gap-4">
-            
-            {{-- Search Input --}}
-            <div class="relative w-full md:flex-1 group">
-                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-teal-600 transition-colors pointer-events-none text-[20px]">search</span>
-                <input type="text" wire:model.live.debounce.300ms="search"
-                      placeholder="Cari judul, isi, atau kategori..."
-                      class="search-input-premium w-full">
-            </div>
+    {{-- ── Search & Advanced Filters (High Contrast) ── --}}
+    <div class="bg-white rounded-[2.5rem] p-6 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 flex flex-col lg:flex-row items-center gap-6">
+        {{-- Search Input --}}
+        <div class="relative flex-1 w-full group">
+            <span class="material-symbols-outlined absolute left-6 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-indigo-600 transition-colors text-[24px]">search</span>
+            <input type="text" wire:model.live.debounce.300ms="search"
+                  placeholder="Cari judul, kategori, atau penulis..."
+                  class="w-full h-16 pl-16 pr-8 bg-slate-50 border-none rounded-3xl text-lg font-bold text-slate-900 placeholder:text-slate-400 focus:ring-4 focus:ring-indigo-500/10 transition-all">
+        </div>
 
-            {{-- Filters Group --}}
-            <div class="flex w-full md:w-auto gap-3 overflow-x-auto pb-2 md:pb-0 no-scrollbar">
-                {{-- Status Filter --}}
+        {{-- Filters Group --}}
+        <div class="flex items-center gap-4 w-full lg:w-auto">
+            <div class="flex items-center bg-slate-50 h-16 rounded-3xl px-6 gap-3 border border-transparent focus-within:border-indigo-100 transition-all">
+                <span class="material-symbols-outlined text-slate-400 text-[22px]">filter_list</span>
                 <select wire:model.live="status"
-                       class="h-12 px-4 min-w-[140px] border border-slate-100 rounded-2xl text-xs font-bold uppercase tracking-wide text-slate-600 focus:outline-none focus:border-teal-500 transition-all appearance-none cursor-pointer bg-slate-50/50 hover:bg-white">
+                        class="bg-transparent border-none focus:ring-0 text-sm font-black text-slate-700 p-0 pr-8 cursor-pointer uppercase tracking-widest">
                     <option value="">Semua Status</option>
                     <option value="published">Terbit</option>
                     <option value="draft">Draft</option>
                 </select>
+            </div>
 
-                {{-- Sort --}}
+            <div class="flex items-center bg-slate-50 h-16 rounded-3xl px-6 gap-3 border border-transparent focus-within:border-indigo-100 transition-all">
+                <span class="material-symbols-outlined text-slate-400 text-[22px]">swap_vert</span>
                 <select wire:model.live="sort"
-                       class="h-12 px-4 min-w-[140px] border border-slate-100 rounded-2xl text-xs font-bold uppercase tracking-wide text-slate-600 focus:outline-none focus:border-teal-500 transition-all appearance-none cursor-pointer bg-slate-50/50 hover:bg-white">
+                        class="bg-transparent border-none focus:ring-0 text-sm font-black text-slate-700 p-0 pr-8 cursor-pointer uppercase tracking-widest">
                     <option value="latest">Terbaru</option>
                     <option value="oldest">Terlama</option>
                 </select>
-                
-                {{-- Reset Button (Mobile Friendly) --}}
-                @if($search || $status || $sort !== 'latest')
-                <button wire:click="$set('search', ''); $set('status', ''); $set('sort', 'latest');"
-                       class="h-12 px-4 rounded-2xl bg-red-50 text-red-600 hover:bg-red-100 transition-colors flex items-center justify-center" title="Reset Filter">
-                    <span class="material-symbols-outlined text-[20px]">close</span>
-                </button>
-                @endif
             </div>
+
+            @if($search || $status || $sort !== 'latest')
+            <button wire:click="$set('search', ''); $set('status', ''); $set('sort', 'latest');"
+                    class="h-16 w-16 flex items-center justify-center bg-red-50 text-red-600 rounded-3xl hover:bg-red-100 transition-colors shadow-sm" title="Reset Filter">
+                <span class="material-symbols-outlined text-[24px]">close</span>
+            </button>
+            @endif
         </div>
     </div>
 
-    {{-- ── Articles Table / List --}}
-    <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
+    {{-- ── Articles Bento List ── --}}
+    <div class="bg-white rounded-[3rem] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
         <div class="overflow-x-auto">
-            <table class="w-full min-w-[800px]">
-                <thead class="bg-slate-50/80 border-b border-slate-100">
-                    <tr>
-                        <th class="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest w-1/2">Informasi Konten</th>
-                        <th class="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">Penulis</th>
-                        <th class="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
-                        <th class="px-8 py-5 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">Aksi</th>
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="bg-slate-50/50 border-b border-slate-100">
+                        <th class="px-10 py-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Informasi Konten</th>
+                        <th class="px-10 py-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Status & Waktu</th>
+                        <th class="px-10 py-8 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] text-right">Tindakan</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50">
                     @forelse($articles as $article)
-                    <tr class="group hover:bg-slate-50/50 transition-colors duration-200" wire:key="article-{{ $article->id }}">
-                        {{-- Content Info --}}
-                        <td class="px-8 py-5">
-                            <div class="flex items-center gap-5">
-                                <div class="w-14 h-14 rounded-2xl overflow-hidden bg-slate-100 flex-shrink-0 border border-slate-100 shadow-sm">
+                    <tr class="group hover:bg-slate-50/80 transition-all duration-300">
+                        {{-- Content Section --}}
+                        <td class="px-10 py-8">
+                            <div class="flex items-center gap-8">
+                                <div class="w-24 h-24 rounded-[2rem] overflow-hidden bg-slate-100 flex-shrink-0 border-4 border-white shadow-xl group-hover:scale-105 transition-transform duration-500">
                                     @if($article->thumbnail)
                                         <img src="{{ asset('storage/'.$article->thumbnail) }}" class="w-full h-full object-cover" alt="Thumbnail">
                                     @else
-                                        <div class="w-full h-full flex items-center justify-center text-slate-300">
-                                            <span class="material-symbols-outlined text-[28px]">image</span>
+                                        <div class="w-full h-full flex items-center justify-center bg-slate-100 text-slate-300">
+                                            <span class="material-symbols-outlined text-[40px]">image</span>
                                         </div>
                                     @endif
                                 </div>
-                                <div class="min-w-0">
-                                    <div class="font-bold text-slate-900 text-sm leading-snug mb-1 truncate pr-4" title="{{ $article->title }}">
-                                        {{ $article->title }}
-                                    </div>
-                                    <div class="flex flex-wrap items-center gap-2">
-                                        <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wider bg-teal-50 text-teal-700 border border-teal-100">
+                                <div class="space-y-2 max-w-xl">
+                                    <div class="flex items-center gap-3">
+                                        <span class="px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-black uppercase tracking-widest border border-indigo-100">
                                             {{ $article->category->name ?? 'Umum' }}
                                         </span>
-                                        <span class="text-slate-400 text-[10px] font-medium">
-                                            {{ \Carbon\Carbon::parse($article->published_at ?? $article->created_at)->translatedFormat('d M Y') }}
-                                        </span>
+                                        <div class="flex items-center gap-2 text-slate-400">
+                                            <div class="w-6 h-6 rounded-full bg-slate-200 flex items-center justify-center text-[8px] font-black text-slate-500 uppercase">
+                                                {{ substr($article->user->name ?? 'A', 0, 1) }}
+                                            </div>
+                                            <span class="text-[11px] font-bold uppercase tracking-tight">{{ $article->user->name ?? 'Admin' }}</span>
+                                        </div>
                                     </div>
+                                    <h3 class="text-xl font-black text-slate-900 leading-tight group-hover:text-indigo-600 transition-colors line-clamp-2">
+                                        {{ $article->title }}
+                                    </h3>
                                 </div>
                             </div>
                         </td>
 
-                        {{-- Author --}}
-                        <td class="px-8 py-5">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-indigo-50 flex items-center justify-center text-[10px] font-black text-indigo-500 uppercase ring-2 ring-white shadow-sm">
-                                    {{ substr($article->user->name ?? 'A', 0, 1) }}
-                                </div>
-                                <span class="text-xs font-semibold text-slate-600 truncate max-w-[120px]">
-                                    {{ $article->user->name ?? 'Admin' }}
-                                </span>
+                        {{-- Status & Time Section --}}
+                        <td class="px-10 py-8">
+                            <div class="flex flex-col gap-3">
+                                @if($article->status === 'published')
+                                    <span class="inline-flex items-center gap-2 w-fit px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-600 border border-emerald-100">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                        Sudah Terbit
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-2 w-fit px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest bg-amber-50 text-amber-600 border border-amber-100">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                                        Draf Simpanan
+                                    </span>
+                                @endif
+                                <p class="text-[11px] text-slate-400 font-bold uppercase tracking-widest flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[16px]">calendar_today</span>
+                                    {{ \Carbon\Carbon::parse($article->published_at ?? $article->created_at)->translatedFormat('d F Y') }}
+                                </p>
                             </div>
                         </td>
 
-                        {{-- Status Badge --}}
-                        <td class="px-8 py-5 text-center">
-                            @if($article->status === 'published')
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-600 border border-emerald-100">
-                                    Terbit
-                                </span>
-                            @else
-                                <span class="inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest bg-amber-50 text-amber-600 border border-amber-100">
-                                    Draft
-                                </span>
-                            @endif
-                        </td>
-
-                        {{-- Actions --}}
-                        <td class="px-8 py-5 text-right">
-                            <div class="flex items-center justify-end gap-2">
+                        {{-- Action Controls --}}
+                        <td class="px-10 py-8">
+                            <div class="flex items-center justify-end gap-3">
                                 <a href="{{ route('admin.articles.show', $article->id) }}"
-                                   class="w-9 h-9 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-teal-600 hover:border-teal-200 hover:shadow-md transition-all"
-                                   title="Lihat">
-                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                   class="w-14 h-14 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-400 hover:bg-indigo-600 hover:text-white transition-all shadow-sm hover:shadow-indigo-500/20 group/btn">
+                                    <span class="material-symbols-outlined text-[24px]">visibility</span>
                                 </a>
                                 
                                 @can('update', $article)
                                 <a href="{{ route('admin.articles.edit', $article->id) }}"
-                                   class="w-9 h-9 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-indigo-600 hover:border-indigo-200 hover:shadow-md transition-all"
-                                   title="Edit">
-                                    <span class="material-symbols-outlined text-[18px]">edit</span>
+                                   class="w-14 h-14 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-400 hover:bg-blue-600 hover:text-white transition-all shadow-sm hover:shadow-blue-500/20 group/btn">
+                                    <span class="material-symbols-outlined text-[24px]">edit</span>
                                 </a>
                                 @endcan
 
                                 @can('delete', $article)
                                 <button wire:click="deleteArticle({{ $article->id }})"
-                                        wire:confirm="Yakin ingin menghapus artikel ini permanen?"
-                                        class="w-9 h-9 flex items-center justify-center rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-red-600 hover:border-red-200 hover:shadow-md transition-all"
-                                        title="Hapus">
-                                    <span class="material-symbols-outlined text-[18px]">delete</span>
+                                        wire:confirm="Hapus artikel ini secara permanen?"
+                                        class="w-14 h-14 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-400 hover:bg-red-600 hover:text-white transition-all shadow-sm hover:shadow-red-500/20 group/btn">
+                                    <span class="material-symbols-outlined text-[24px]">delete</span>
                                 </button>
                                 @endcan
                             </div>
@@ -183,20 +166,19 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="4" class="px-8 py-20 text-center">
-                            <div class="flex flex-col items-center justify-center text-slate-400">
-                                <div class="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
-                                    <span class="material-symbols-outlined text-[40px] text-slate-300">article</span>
+                        <td colspan="3" class="px-10 py-32 text-center">
+                            <div class="flex flex-col items-center gap-6">
+                                <div class="w-24 h-24 rounded-full bg-slate-50 flex items-center justify-center text-slate-200">
+                                    <span class="material-symbols-outlined text-[64px]">article</span>
                                 </div>
-                                <h3 class="text-lg font-bold text-slate-700 mb-1">Belum ada artikel</h3>
-                                <p class="text-sm text-slate-500 mb-6 max-w-xs mx-auto">Mulai bagikan informasi bermanfaat dengan membuat artikel pertama Anda.</p>
-                                
-                                @can('create', App\Models\Article::class)
-                                <a href="{{ route('admin.articles.create') }}" class="inline-flex items-center px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold uppercase tracking-widest rounded-xl transition-all shadow-lg shadow-indigo-500/20">
-                                    <span class="material-symbols-outlined text-[18px] mr-2">add</span>
-                                    Buat Artikel Pertama
-                                </a>
-                                @endcan
+                                <div>
+                                    <p class="text-[11px] font-black uppercase tracking-[0.3em] text-slate-300">Belum ada konten publikasi</p>
+                                    @can('create', App\Models\Article::class)
+                                    <a href="{{ route('admin.articles.create') }}" class="mt-8 inline-flex items-center gap-3 text-indigo-600 font-black uppercase tracking-widest text-xs hover:text-indigo-800 transition-colors">
+                                        Mulai Menulis Artikel Pertama <span class="material-symbols-outlined">arrow_forward</span>
+                                    </a>
+                                    @endcan
+                                </div>
                             </div>
                         </td>
                     </tr>
@@ -205,9 +187,9 @@
             </table>
         </div>
 
-        {{-- Pagination --}}
+        {{-- Enhanced Pagination --}}
         @if($articles->hasPages())
-        <div class="px-8 py-6 border-t border-slate-100 bg-slate-50/30">
+        <div class="px-10 py-8 border-t border-slate-50 bg-slate-50/30">
             {{ $articles->links() }}
         </div>
         @endif

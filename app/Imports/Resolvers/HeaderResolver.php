@@ -18,6 +18,7 @@ class HeaderResolver
      */
     private const ALIASES = [
         'nama_anak'      => ['nama', 'full_name', 'nama_lengkap'],
+        'nik'            => ['nomor_nik', 'no_nik', 'nik_balita', 'nomor_induk_kependudukan', 'id_number'],
         'tgl_lahir'      => ['tanggal_lahir', 'birth_date', 'tgl_lahir_anak'],
         'jk'             => ['jenis_kelamin', 'gender', 'kelamin'],
         'nm_ortu'        => ['nama_ortu', 'parent_name', 'orang_tua', 'nama_orang_tua'],

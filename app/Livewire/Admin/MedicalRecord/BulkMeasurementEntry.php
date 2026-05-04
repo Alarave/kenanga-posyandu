@@ -23,7 +23,7 @@ class BulkMeasurementEntry extends Component
         'visit_date' => 'required|date',
         'measurements.*.weight' => 'nullable|numeric|min:0.1|max:50',
         'measurements.*.height' => 'nullable|numeric|min:30|max:150',
-        'measurements.*.measurement_method' => 'required|in:Berdiri,Terlentang',
+        'measurements.*.measurement_method' => 'required|in:standing,recumbent',
     ];
 
     public function mount()
@@ -79,7 +79,7 @@ class BulkMeasurementEntry extends Component
                 'last_height' => $lastRecord?->height ?? '-',
                 'weight' => '',
                 'height' => '',
-                'measurement_method' => $patient->age_in_months >= 24 ? 'Berdiri' : 'Terlentang',
+                'measurement_method' => $patient->age_in_months >= 24 ? 'standing' : 'recumbent',
             ];
         }
 
@@ -105,32 +105,24 @@ class BulkMeasurementEntry extends Component
         if ($field === 'weight' || $field === 'height') {
             $m = $this->measurements[$index];
             
-            // Hitung hanya jika kedua data ada (BB/TB butuh keduanya, BB/U butuh BB)
             if (!empty($m['weight'])) {
                 $nutritionService = new NutritionCalculatorService();
                 
-                // Kalkulasi BB/U
-                $zWfa = $nutritionService->calculateWeightForAge(
+                // Use the new DTO-based calculateAll for consistency
+                $results = $nutritionService->calculateAll(
                     (float)$m['weight'], 
+                    (float)($m['height'] ?: 0), 
                     (int)$m['age_months'], 
                     $m['gender']
                 );
-                $this->measurements[$index]['status_bbu'] = $nutritionService->classifyNutritionStatus($zWfa);
 
-                // Kalkulasi BB/TB (Jika ada TB)
-                if (!empty($m['height'])) {
-                    $zWfh = $nutritionService->calculateWeightForHeight(
-                        (float)$m['weight'], 
-                        (float)$m['height'], 
-                        $m['gender']
-                    );
-                    $this->measurements[$index]['status_bbtb'] = $nutritionService->classifyWastingStatus($zWfh);
-                } else {
-                    $this->measurements[$index]['status_bbtb'] = null;
-                }
+                $this->measurements[$index]['status_bbu'] = $results->nutrition_status;
+                $this->measurements[$index]['status_bbtb'] = $results->wasting_status;
+                $this->measurements[$index]['status_tbu'] = $results->stunting_status;
             } else {
                 $this->measurements[$index]['status_bbu'] = null;
                 $this->measurements[$index]['status_bbtb'] = null;
+                $this->measurements[$index]['status_tbu'] = null;
             }
         }
     }
@@ -157,7 +149,7 @@ class BulkMeasurementEntry extends Component
                 (float)$m['height'],
                 (int)$m['age_months'],
                 $m['gender']
-            );
+            )->toArray();
 
             MedicalRecord::create([
                 'patient_id' => $m['patient_id'],

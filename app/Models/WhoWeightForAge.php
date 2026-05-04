@@ -53,6 +53,13 @@ class WhoWeightForAge extends Model
     ];
 
     /**
+     * Static cache to store reference data within the request lifecycle.
+     *
+     * @var array
+     */
+    protected static $cache = [];
+
+    /**
      * Get WHO reference data for specific gender and age
      *
      * @param string $gender 'M' for male, 'F' for female
@@ -61,8 +68,14 @@ class WhoWeightForAge extends Model
      */
     public static function getReference(string $gender, int $ageMonths): ?self
     {
-        return self::where('gender', $gender)
-            ->where('age_months', $ageMonths)
-            ->first();
+        $cacheKey = "{$gender}_{$ageMonths}";
+
+        if (!isset(self::$cache[$cacheKey])) {
+            self::$cache[$cacheKey] = self::where('gender', $gender)
+                ->where('age_months', $ageMonths)
+                ->first();
+        }
+
+        return self::$cache[$cacheKey];
     }
 }

@@ -33,36 +33,27 @@ class NutritionCalculatorService
      * @param float  $height     Tinggi badan dalam cm (0 jika tidak diukur)
      * @param int    $ageMonths  Usia dalam bulan (0–59)
      * @param string $gender     'L'/'M' atau 'P'/'F'
-     * @return array {
-     *   z_score: float|null,           // BB/U
-     *   nutrition_status: string,       // Status gizi BB/U
-     *   z_score_hfa: float|null,        // TB/U
-     *   stunting_status: string,        // Status stunting
-     *   z_score_wfh: float|null,        // BB/TB
-     *   wasting_status: string,         // Status wasting
-     *   z_score_bfa: float|null,        // IMT/U
-     *   bmi_status: string,             // Status IMT
-     * }
+     * @return \App\DataTransferObjects\NutritionResult
      */
-    public function calculateAll(float $weight, float $height, int $ageMonths, string $gender): array
+    public function calculateAll(float $weight, float $height, int $ageMonths, string $gender): \App\DataTransferObjects\NutritionResult
     {
         $gender = $this->normalizeGender($gender);
-
+ 
         $zWfa  = $this->calculateWeightForAge($weight, $ageMonths, $gender);
         $zHfa  = $height > 0 ? $this->calculateHeightForAge($height, $ageMonths, $gender) : null;
         $zWfh  = ($weight > 0 && $height > 0) ? $this->calculateWeightForHeight($weight, $height, $gender) : null;
         $zBfa  = ($weight > 0 && $height > 0 && $height > 45) ? $this->calculateBmiForAge($weight, $height, $ageMonths, $gender) : null;
-
-        return [
-            'z_score'          => $zWfa,
-            'nutrition_status' => $this->classifyNutritionStatus($zWfa),
-            'z_score_hfa'      => $zHfa,
-            'stunting_status'  => $this->classifyStuntingStatus($zHfa),
-            'z_score_wfh'      => $zWfh,
-            'wasting_status'   => $this->classifyWastingStatus($zWfh),
-            'z_score_bfa'      => $zBfa,
-            'bmi_status'       => $this->classifyBmiStatus($zBfa),
-        ];
+ 
+        return new \App\DataTransferObjects\NutritionResult(
+            $zWfa,
+            $this->classifyNutritionStatus($zWfa),
+            $zHfa,
+            $this->classifyStuntingStatus($zHfa),
+            $zWfh,
+            $this->classifyWastingStatus($zWfh),
+            $zBfa,
+            $this->classifyBmiStatus($zBfa)
+        );
     }
 
     /**

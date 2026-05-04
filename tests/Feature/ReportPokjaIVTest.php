@@ -39,12 +39,15 @@ class ReportPokjaIVTest extends TestCase
         $reportData = $this->reportService->generateMonthlyReport($this->posyandu->id, now()->month, now()->year);
 
         $this->assertArrayHasKey('pokja_iv', $reportData);
-        $this->assertEquals(1, $reportData['pokja_iv']['age_groups']['male']['0-5']);
-        $this->assertEquals(1, $reportData['pokja_iv']['age_groups']['male']['6-11']);
-        $this->assertEquals(1, $reportData['pokja_iv']['age_groups']['male']['12-23']);
-        $this->assertEquals(1, $reportData['pokja_iv']['age_groups']['male']['24-59']);
+        $this->assertArrayHasKey('rows', $reportData['pokja_iv']);
         
-        $this->assertEquals(2, $reportData['pokja_iv']['age_groups']['female']['0-5']);
+        // Row D represents Datang (Visits in current month)
+        $this->assertEquals(1, $reportData['pokja_iv']['rows']['D']['male']['0-5']);
+        $this->assertEquals(1, $reportData['pokja_iv']['rows']['D']['male']['6-11']);
+        $this->assertEquals(1, $reportData['pokja_iv']['rows']['D']['male']['12-23']);
+        $this->assertEquals(1, $reportData['pokja_iv']['rows']['D']['male']['24-59']);
+        
+        $this->assertEquals(2, $reportData['pokja_iv']['rows']['D']['female']['0-5']);
     }
 
     public function test_it_counts_kader_correctly()

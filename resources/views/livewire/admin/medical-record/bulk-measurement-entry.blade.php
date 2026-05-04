@@ -1,214 +1,228 @@
 <div>
     @section('admin-title') 
         <div class="flex items-center gap-3">
-            <span class="material-symbols-outlined text-teal-500">assignment_turned_in</span>
-            <span>Bulan Penimbangan Balita</span>
+            <div class="w-10 h-10 rounded-2xl bg-teal-50 flex items-center justify-center text-teal-600 shadow-sm border border-teal-100">
+                <span class="material-symbols-outlined">analytics</span>
+            </div>
+            <div>
+                <h1 class="text-lg font-black text-slate-900 leading-tight">Penimbangan Massal</h1>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Entry Cepat Data Antropometri</p>
+            </div>
         </div>
     @endsection
 
     @section('admin-actions')
-        <x-button href="{{ route('admin.medical-records.index') }}" variant="outline" icon="arrow_back">
+        <x-button href="{{ route('admin.medical-records.index') }}" variant="outline" size="sm" icon="arrow_back">
             Kembali
         </x-button>
-        <button wire:click="save" class="flex items-center gap-2 px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white text-xs font-black uppercase tracking-widest rounded-xl shadow-lg shadow-teal-200 transition-all active:scale-95">
-            <span class="material-symbols-outlined text-[18px]">save</span>
-            Simpan Semua Data
-        </button>
     @endsection
 
-    <div class="space-y-6">
-        {{-- Filters & Search Bento Card --}}
-        <div class="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 p-6 bg-slate-50/50 rounded-3xl border border-dashed border-slate-200">
-                <div class="space-y-2">
-                    <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 flex items-center gap-1.5">
-                        <span class="material-symbols-outlined text-[14px]">calendar_month</span>
-                        Tanggal
-                    </label>
-                    <input type="date" wire:model.live="visit_date" class="w-full bg-white border-slate-200 rounded-2xl text-sm font-bold focus:ring-teal-500 focus:border-teal-500 transition-all shadow-sm">
-                </div>
-                <div class="space-y-2">
-                    <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 flex items-center gap-1.5">
-                        <span class="material-symbols-outlined text-[14px]">location_on</span>
-                        Posyandu
-                    </label>
-                    <select wire:model.live="posyandu_id" class="w-full bg-white border-slate-200 rounded-2xl text-sm font-bold focus:ring-teal-500 focus:border-teal-500 transition-all shadow-sm">
-                        <option value="">-- Semua --</option>
-                        @foreach($posyandus as $p)
-                            <option value="{{ $p->id }}">{{ $p->name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="space-y-2 md:col-span-2 relative">
-                    <label class="text-[10px] font-black text-slate-500 uppercase tracking-widest ml-1 flex items-center gap-1.5">
-                        <span class="material-symbols-outlined text-[14px]">search</span>
-                        Cari Balita (Nama / NIK)
-                    </label>
-                    <div class="relative">
-                        <input type="text" wire:model.live.debounce.300ms="search" placeholder="Ketik nama balita untuk menambahkan ke daftar..." 
-                            class="w-full bg-white border-slate-200 rounded-2xl text-sm font-bold focus:ring-teal-500 focus:border-teal-500 transition-all shadow-sm pl-10">
-                        <div class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
-                            <span class="material-symbols-outlined text-[20px]">person_search</span>
-                        </div>
+    <div class="space-y-8 pb-32">
+        {{-- Search & Global Filters Section --}}
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            <div class="lg:col-span-4 space-y-4">
+                <div class="bg-white p-6 rounded-[2.5rem] shadow-sm border border-slate-100 space-y-4">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[14px]">calendar_month</span>
+                            Tanggal Kunjungan
+                        </label>
+                        <input type="date" wire:model.live="visit_date" 
+                            class="w-full bg-slate-50 border-slate-100 rounded-2xl text-sm font-black focus:ring-teal-500 focus:border-teal-500 transition-all">
                     </div>
-                    
-                    @if(count($searchResults) > 0)
-                        <div class="absolute z-50 left-0 right-0 mt-2 bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden ring-4 ring-teal-500/10">
-                            @foreach($searchResults as $result)
-                                <button wire:click="addPatient({{ $result->id }})" class="w-full flex items-center justify-between p-4 hover:bg-teal-50 text-left transition-colors border-b border-slate-50 last:border-0 group">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center text-teal-600 group-hover:scale-110 transition-transform">
-                                            <span class="material-symbols-outlined text-[18px]">child_care</span>
-                                        </div>
-                                        <div>
-                                            <p class="text-sm font-black text-slate-900">{{ $result->full_name }}</p>
-                                            <p class="text-[10px] font-bold text-slate-400">NIK: {{ $result->id_number }} | Ortu: {{ $result->parent_name }}</p>
-                                        </div>
-                                    </div>
-                                    <span class="material-symbols-outlined text-teal-500 group-hover:scale-125 transition-transform">add_circle</span>
-                                </button>
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[14px]">location_on</span>
+                            Posyandu
+                        </label>
+                        <select wire:model.live="posyandu_id" 
+                            class="w-full bg-slate-50 border-slate-100 rounded-2xl text-sm font-black focus:ring-teal-500 focus:border-teal-500 transition-all">
+                            <option value="">-- Pilih Posyandu --</option>
+                            @foreach($posyandus as $p)
+                                <option value="{{ $p->id }}">{{ $p->name }}</option>
                             @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-8">
+                <div class="bg-slate-900 p-8 rounded-[3rem] shadow-xl relative group">
+                    <div class="absolute top-0 right-0 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl -mr-32 -mt-32 group-hover:bg-teal-500/20 transition-all duration-700 pointer-events-none"></div>
+                    
+                    <div class="relative space-y-4">
+                        <label class="text-[10px] font-black text-teal-400 uppercase tracking-widest flex items-center gap-2">
+                            <span class="material-symbols-outlined text-[16px]">person_search</span>
+                            Cari & Tambah Balita ke Daftar
+                        </label>
+                        <div class="relative">
+                            <input type="text" wire:model.live.debounce.300ms="search" 
+                                placeholder="Ketik nama atau NIK balita..." 
+                                class="w-full bg-white/10 border-white/10 rounded-3xl text-white placeholder-white/30 text-lg font-bold focus:ring-teal-500 focus:border-teal-500 py-4 pl-14 shadow-2xl transition-all">
+                            <div class="absolute left-5 top-1/2 -translate-y-1/2 text-white/50">
+                                <span class="material-symbols-outlined text-[24px]">search</span>
+                            </div>
                         </div>
-                    @endif
+
+                        @if(count($searchResults) > 0)
+                            <div class="absolute z-50 left-0 right-0 mt-4 bg-white rounded-[2rem] shadow-2xl border border-slate-100 overflow-hidden ring-8 ring-teal-500/5">
+                                @foreach($searchResults as $result)
+                                    <button wire:click="addPatient({{ $result->id }})" class="w-full flex items-center justify-between p-5 hover:bg-teal-50 text-left transition-all border-b border-slate-50 last:border-0 group">
+                                        <div class="flex items-center gap-4">
+                                            <div class="w-12 h-12 rounded-2xl bg-teal-100/50 flex items-center justify-center text-teal-600 group-hover:rotate-12 transition-transform">
+                                                <span class="material-symbols-outlined text-[24px]">child_care</span>
+                                            </div>
+                                            <div>
+                                                <p class="text-sm font-black text-slate-900 leading-tight">{{ $result->full_name }}</p>
+                                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter">NIK: {{ $result->id_number }} • {{ $result->gender === 'male' ? 'Laki-laki' : 'Perempuan' }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400 group-hover:bg-teal-500 group-hover:text-white transition-all">
+                                            <span class="material-symbols-outlined">add</span>
+                                        </div>
+                                    </button>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
                 </div>
             </div>
         </div>
 
-        {{-- Main Table Bento Card --}}
-        <div class="bg-white rounded-[2.5rem] shadow-sm border border-slate-100 overflow-hidden">
-            <div class="overflow-x-auto">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-slate-900 text-white">
-                            <th class="py-5 px-6 text-[9px] font-black uppercase tracking-widest text-center w-12">No</th>
-                            <th class="py-5 px-6 text-[9px] font-black uppercase tracking-widest">Identitas Balita</th>
-                            <th class="py-5 px-6 text-[9px] font-black uppercase tracking-widest text-center">Usia</th>
-                            <th class="py-5 px-6 text-[9px] font-black uppercase tracking-widest">Ref (Terakhir)</th>
-                            <th class="py-5 px-6 text-[9px] font-black uppercase tracking-widest text-center">BB Baru (Kg)</th>
-                            <th class="py-5 px-6 text-[9px] font-black uppercase tracking-widest text-center">TB Baru (cm)</th>
-                                <th class="py-5 px-6 text-[9px] font-black uppercase tracking-widest">Cara Ukur</th>
-                                <th class="py-5 px-6 text-[9px] font-black uppercase tracking-widest text-center">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-50">
-                            @forelse($measurements as $index => $m)
-                                <tr class="hover:bg-slate-50/50 transition-all group">
-                                    <td class="py-4 px-6 text-xs font-black text-slate-300 text-center">{{ $index + 1 }}</td>
-                                    <td class="py-4 px-6">
-                                        <div class="flex flex-col">
-                                            <span class="text-sm font-black text-slate-900 group-hover:text-teal-600 transition-colors">{{ $m['full_name'] }}</span>
-                                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-tight">Ortu: {{ $m['parent_name'] }}</span>
-                                        </div>
-                                    </td>
-                                    <td class="py-4 px-6 text-center">
-                                        <span class="inline-flex px-3 py-1 rounded-lg bg-teal-50 text-teal-600 text-[10px] font-black border border-teal-100">
-                                            {{ $m['age_months'] }} <span class="ml-0.5 text-[8px] opacity-70">Bln</span>
-                                        </span>
-                                    </td>
-                                    <td class="py-4 px-6">
-                                        <div class="flex gap-3">
-                                            <div class="text-[9px] font-black px-2 py-0.5 rounded bg-slate-100 text-slate-500 uppercase tracking-tighter">
-                                                BB: <span class="text-slate-900">{{ $m['last_weight'] }}</span>
-                                            </div>
-                                            <div class="text-[9px] font-black px-2 py-0.5 rounded bg-slate-100 text-slate-500 uppercase tracking-tighter">
-                                                TB: <span class="text-slate-900">{{ $m['last_height'] }}</span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="py-4 px-6 text-center">
-                                        <div class="flex flex-col items-center gap-2">
-                                            <input type="number" step="0.01" wire:model.live.debounce.500ms="measurements.{{ $index }}.weight" 
-                                                class="w-20 bg-slate-50 border-slate-200 rounded-xl text-xs font-black focus:ring-teal-500 focus:border-teal-500 text-center transition-all hover:border-teal-300"
-                                                placeholder="0.00">
-                                            
-                                            @if(isset($m['status_bbu']))
-                                                <span @class([
-                                                    'text-[7px] font-black uppercase px-1.5 py-0.5 rounded-md border',
-                                                    'bg-emerald-50 text-emerald-600 border-emerald-100' => str_contains($m['status_bbu'], 'Baik'),
-                                                    'bg-amber-50 text-amber-600 border-amber-100' => str_contains($m['status_bbu'], 'Kurang'),
-                                                    'bg-red-50 text-red-600 border-red-100' => str_contains($m['status_bbu'], 'Buruk'),
-                                                    'bg-blue-50 text-blue-600 border-blue-100' => str_contains($m['status_bbu'], 'Lebih'),
-                                                ])>
-                                                    BB/U: {{ $m['status_bbu'] }}
-                                                </span>
-                                            @endif
-                                        </div>
-                                    </td>
-                                    <td class="py-4 px-6 text-center">
-                                        <div class="flex flex-col items-center gap-2">
-                                            <input type="number" step="0.1" wire:model.live.debounce.500ms="measurements.{{ $index }}.height" 
-                                                class="w-20 bg-slate-50 border-slate-200 rounded-xl text-xs font-black focus:ring-teal-500 focus:border-teal-500 text-center transition-all hover:border-teal-300"
-                                                placeholder="0.0">
-                                            
-                                            @if(isset($m['status_bbtb']))
-                                                <span @class([
-                                                    'text-[7px] font-black uppercase px-1.5 py-0.5 rounded-md border',
-                                                    'bg-emerald-50 text-emerald-600 border-emerald-100' => str_contains($m['status_bbtb'], 'Normal'),
-                                                    'bg-amber-50 text-amber-600 border-amber-100' => str_contains($m['status_bbtb'], 'Kurus'),
-                                                    'bg-red-50 text-red-600 border-red-100' => str_contains($m['status_bbtb'], 'Sangat Kurus'),
-                                                    'bg-purple-50 text-purple-600 border-purple-100' => str_contains($m['status_bbtb'], 'Gemuk'),
-                                                ])>
-                                                    BB/TB: {{ $m['status_bbtb'] }}
-                                                </span>
-                                            @endif
-                                        </div>
-                                    </td>
-                                    <td class="py-4 px-6">
-                                        <select wire:model="measurements.{{ $index }}.measurement_method" 
-                                            class="bg-slate-50 border-slate-200 rounded-xl text-[9px] font-black uppercase focus:ring-teal-500 focus:border-teal-500 transition-all hover:border-teal-300">
-                                            <option value="Terlentang">Terlentang</option>
-                                            <option value="Berdiri">Berdiri</option>
-                                        </select>
-                                    </td>
-                                    <td class="py-4 px-6 text-center">
-                                        <button wire:click="removePatient({{ $index }})" class="w-8 h-8 rounded-lg bg-red-50 text-red-500 hover:bg-red-500 hover:text-white transition-all flex items-center justify-center mx-auto group/del">
-                                            <span class="material-symbols-outlined text-[18px] group-hover/del:scale-110 transition-transform">delete</span>
-                                        </button>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="8" class="py-32 text-center">
-                                        <div class="flex flex-col items-center gap-6">
-                                            <div class="relative">
-                                                <div class="w-24 h-24 rounded-[2rem] bg-teal-50 flex items-center justify-center text-teal-200 animate-pulse">
-                                                    <span class="material-symbols-outlined text-[48px]">child_care</span>
-                                                </div>
-                                                <div class="absolute -right-2 -bottom-2 w-10 h-10 rounded-2xl bg-white shadow-xl flex items-center justify-center text-teal-500">
-                                                    <span class="material-symbols-outlined text-[20px]">search</span>
-                                                </div>
-                                            </div>
-                                            <div class="max-w-xs">
-                                                <p class="text-base font-black text-slate-800">Daftar Masih Kosong</p>
-                                                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-2 leading-relaxed">
-                                                    Cari nama balita di atas untuk menambahkannya ke dalam daftar penimbangan massal.
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforelse
-                    </tbody>
-                </table>
-            </div>
-            
-            @if(count($measurements) > 0)
-                <div class="p-8 bg-slate-900 text-white flex items-center justify-between">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center">
-                            <span class="material-symbols-outlined text-teal-400">info</span>
+        {{-- Entry Cards Grid --}}
+        <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            @forelse($measurements as $index => $m)
+                <div class="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100 relative group hover:border-teal-200 hover:shadow-xl hover:shadow-teal-500/5 transition-all duration-500 animate-in fade-in slide-in-from-bottom-4">
+                    <button wire:click="removePatient({{ $index }})" class="absolute top-6 right-6 w-8 h-8 rounded-xl bg-slate-50 text-slate-300 hover:bg-red-50 hover:text-red-500 transition-all flex items-center justify-center group/del">
+                        <span class="material-symbols-outlined text-[18px]">close</span>
+                    </button>
+
+                    <div class="flex items-center gap-4 mb-8">
+                        <div @class([
+                            'w-14 h-14 rounded-[1.25rem] flex items-center justify-center shadow-inner border',
+                            'bg-blue-50 text-blue-500 border-blue-100' => $m['gender'] === 'male',
+                            'bg-rose-50 text-rose-500 border-rose-100' => $m['gender'] === 'female',
+                        ])>
+                            <span class="material-symbols-outlined text-[32px]">
+                                {{ $m['gender'] === 'male' ? 'boy' : 'girl' }}
+                            </span>
                         </div>
                         <div>
-                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Informasi</p>
-                            <p class="text-xs font-bold text-slate-300">Pastikan semua data sudah terisi dengan benar sebelum menekan tombol simpan.</p>
+                            <h3 class="text-sm font-black text-slate-900 group-hover:text-teal-600 transition-colors">{{ $m['full_name'] }}</h3>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="text-[10px] font-black px-2 py-0.5 rounded-lg bg-teal-50 text-teal-600 border border-teal-100 uppercase">
+                                    {{ $m['age_months'] }} Bulan
+                                </span>
+                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest italic">
+                                    {{ $m['parent_name'] }}
+                                </span>
+                            </div>
                         </div>
                     </div>
-                    <button wire:click="save" class="group flex items-center gap-3 px-8 py-3 bg-teal-500 hover:bg-teal-400 text-white text-xs font-black uppercase tracking-widest rounded-2xl shadow-xl shadow-teal-500/20 transition-all active:scale-95">
-                        Simpan Semua ({{ count($measurements) }} Data)
-                        <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
-                    </button>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Berat (kg)</label>
+                            <input type="number" step="0.01" wire:model.live.debounce.500ms="measurements.{{ $index }}.weight" 
+                                class="w-full bg-slate-50 border-slate-100 rounded-3xl text-xl font-black focus:ring-teal-500 focus:border-teal-500 py-4 text-center placeholder-slate-200 transition-all hover:bg-slate-100/50"
+                                placeholder="0.00">
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Tinggi (cm)</label>
+                            <input type="number" step="0.1" wire:model.live.debounce.500ms="measurements.{{ $index }}.height" 
+                                class="w-full bg-slate-50 border-slate-100 rounded-3xl text-xl font-black focus:ring-teal-500 focus:border-teal-500 py-4 text-center placeholder-slate-200 transition-all hover:bg-slate-100/50"
+                                placeholder="0.0">
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex flex-wrap gap-2">
+                        @if(isset($m['status_bbu']))
+                            <div @class([
+                                'px-3 py-1.5 rounded-2xl text-[9px] font-black uppercase tracking-tighter border shadow-sm',
+                                'bg-emerald-50 text-emerald-600 border-emerald-100' => str_contains($m['status_bbu'], 'Baik'),
+                                'bg-amber-50 text-amber-600 border-amber-100' => str_contains($m['status_bbu'], 'Kurang'),
+                                'bg-red-50 text-red-600 border-red-100' => str_contains($m['status_bbu'], 'Buruk'),
+                                'bg-blue-50 text-blue-600 border-blue-100' => str_contains($m['status_bbu'], 'Lebih'),
+                            ])>
+                                BB/U: {{ $m['status_bbu'] }}
+                            </div>
+                        @endif
+                        @if(isset($m['status_bbtb']))
+                            <div @class([
+                                'px-3 py-1.5 rounded-2xl text-[9px] font-black uppercase tracking-tighter border shadow-sm',
+                                'bg-emerald-50 text-emerald-600 border-emerald-100' => str_contains($m['status_bbtb'], 'Normal'),
+                                'bg-amber-50 text-amber-600 border-amber-100' => str_contains($m['status_bbtb'], 'Kurus'),
+                                'bg-red-50 text-red-600 border-red-100' => str_contains($m['status_bbtb'], 'Sangat Kurus'),
+                                'bg-purple-50 text-purple-600 border-purple-100' => str_contains($m['status_bbtb'], 'Gemuk'),
+                            ])>
+                                BB/TB: {{ $m['status_bbtb'] }}
+                            </div>
+                        @endif
+                    </div>
+
+                    <div class="mt-6 pt-6 border-t border-slate-50 flex items-center justify-between">
+                        <select wire:model="measurements.{{ $index }}.measurement_method" 
+                            class="bg-transparent border-none p-0 text-[10px] font-black text-slate-400 uppercase focus:ring-0 cursor-pointer hover:text-teal-600 transition-colors">
+                            <option value="recumbent">Posisi: Terlentang</option>
+                            <option value="standing">Posisi: Berdiri</option>
+                        </select>
+                        <div class="flex items-center gap-2">
+                            <p class="text-[9px] font-bold text-slate-300 uppercase tracking-widest">Sesi Sebelumnya:</p>
+                            <p class="text-[10px] font-black text-slate-500">{{ $m['last_weight'] }}kg / {{ $m['last_height'] }}cm</p>
+                        </div>
+                    </div>
                 </div>
-            @endif
+            @empty
+                <div class="col-span-full bg-white rounded-[3rem] p-20 shadow-sm border border-slate-100 text-center">
+                    <div class="relative w-32 h-32 mx-auto mb-8">
+                        <div class="w-full h-full rounded-[3rem] bg-slate-50 flex items-center justify-center text-slate-200">
+                            <span class="material-symbols-outlined text-[64px]">inventory</span>
+                        </div>
+                        <div class="absolute -right-2 -bottom-2 w-12 h-12 rounded-3xl bg-white shadow-xl flex items-center justify-center text-teal-500 border border-teal-50">
+                            <span class="material-symbols-outlined text-[24px]">search</span>
+                        </div>
+                    </div>
+                    <h2 class="text-xl font-black text-slate-800">Daftar Pengukuran Kosong</h2>
+                    <p class="mt-4 text-xs font-bold text-slate-400 uppercase tracking-widest max-w-sm mx-auto leading-loose">
+                        Silahkan cari nama balita menggunakan kotak pencarian di atas untuk mulai memasukkan data penimbangan.
+                    </p>
+                </div>
+            @endforelse
         </div>
     </div>
+
+    {{-- Floating Action Bar --}}
+    @if(count($measurements) > 0)
+        <div class="fixed bottom-10 left-1/2 -translate-x-1/2 w-full max-w-2xl px-6 z-50">
+            <div class="bg-slate-900/90 backdrop-blur-2xl rounded-[3rem] p-4 shadow-2xl shadow-teal-500/20 border border-white/10 flex items-center justify-between">
+                <div class="flex items-center gap-4 pl-4">
+                    <div class="flex -space-x-3">
+                        @foreach(array_slice($measurements, 0, 3) as $m)
+                            <div @class([
+                                'w-10 h-10 rounded-full border-4 border-slate-900 flex items-center justify-center text-[14px]',
+                                'bg-blue-500 text-white' => $m['gender'] === 'male',
+                                'bg-rose-500 text-white' => $m['gender'] === 'female',
+                            ])>
+                                <span class="material-symbols-outlined">{{ $m['gender'] === 'male' ? 'boy' : 'girl' }}</span>
+                            </div>
+                        @endforeach
+                        @if(count($measurements) > 3)
+                            <div class="w-10 h-10 rounded-full border-4 border-slate-900 bg-slate-800 text-white flex items-center justify-center text-[10px] font-black">
+                                +{{ count($measurements) - 3 }}
+                            </div>
+                        @endif
+                    </div>
+                    <div>
+                        <p class="text-xs font-black text-white leading-tight">{{ count($measurements) }} Balita Siap Simpan</p>
+                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Total Sesi: {{ date('F Y') }}</p>
+                    </div>
+                </div>
+
+                <button wire:click="save" class="group bg-teal-500 hover:bg-teal-400 text-white px-8 py-4 rounded-[2rem] text-xs font-black uppercase tracking-widest shadow-xl transition-all active:scale-95 flex items-center gap-3">
+                    Simpan Sekarang
+                    <span class="material-symbols-outlined group-hover:translate-x-2 transition-transform">arrow_forward</span>
+                </button>
+            </div>
+        </div>
+    @endif
 </div>
