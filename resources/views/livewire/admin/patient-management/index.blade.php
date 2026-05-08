@@ -1,22 +1,43 @@
 <div class="space-y-6">
     {{-- Admin Header (Replicated from admin-layout for reactivity) --}}
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-        <div>
-            <h1 class="text-2xl font-bold text-slate-900">Data Warga Terdaftar</h1>
-            <p class="text-sm text-slate-500 mt-1">Kelola data pasien posyandu di wilayah Anda</p>
-        </div>
+    {{-- Premium Header Section --}}
+    <div class="relative mb-10">
+        {{-- Decorative Background Element --}}
+        <div class="absolute -top-10 -left-10 w-64 h-64 bg-teal-500/5 rounded-full blur-3xl pointer-events-none"></div>
         
-        <div class="flex flex-wrap gap-3 items-center">
-            @can('create', App\Models\Patient::class)
-            <div class="flex items-center gap-2">
-                <x-button href="{{ route('admin.patients.import') }}" variant="outline" icon="publish">
-                    Import Data
-                </x-button>
-                <x-button href="{{ route('admin.patients.create') }}" variant="secondary" icon="person_add">
-                    Tambah Warga
-                </x-button>
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative">
+            <div class="space-y-2">
+
+                {{-- Title & Subtitle with Accent --}}
+                <div class="flex items-start gap-4">
+                    <div class="w-1.5 h-12 bg-gradient-to-b from-teal-500 to-emerald-400 rounded-full mt-1 hidden sm:block"></div>
+                    <div>
+                        <h1 class="text-3xl font-black tracking-tight leading-none text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">
+                            Data Warga Terdaftar
+                        </h1>
+                        <p class="text-sm font-bold text-slate-900 mt-2">
+                            Kelola data pasien posyandu di wilayah Anda secara komprehensif.
+                        </p>
+                    </div>
+                </div>
             </div>
-            @endcan
+            
+            {{-- Action Buttons with Better Styling --}}
+            <div class="flex flex-wrap gap-3 items-center ml-auto">
+                @can('create', App\Models\Patient::class)
+                <a href="{{ route('admin.patients.import') }}" 
+                   class="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-white border border-slate-100 text-xs font-black uppercase tracking-widest text-slate-900 hover:text-teal-600 hover:border-teal-200 hover:shadow-lg hover:shadow-teal-500/5 transition-all group/btn">
+                    <span class="material-symbols-outlined text-[20px] text-slate-400 group-hover/btn:text-teal-500 transition-colors">publish</span>
+                    Import Data
+                </a>
+                
+                <a href="{{ route('admin.patients.create') }}" 
+                   class="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-br from-teal-600 to-emerald-500 text-slate-900 text-xs font-black uppercase tracking-widest shadow-xl shadow-teal-200 hover:shadow-teal-300 hover:-translate-y-0.5 transition-all group/add">
+                    <span class="material-symbols-outlined text-[20px] text-slate-900">person_add</span>
+                    Tambah Warga
+                </a>
+                @endcan
+            </div>
         </div>
     </div>
 
@@ -28,7 +49,7 @@
                 <span class="material-symbols-outlined text-[24px]">baby_changing_station</span>
             </div>
             <div>
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Bayi (0-11 bln)</p>
+                <p class="text-[10px] font-black text-slate-900 uppercase tracking-widest leading-none mb-1">Bayi (0-11 bln)</p>
                 <p class="text-2xl font-black text-slate-900 leading-none">{{ App\Models\Patient::where('category', 'bayi')->count() }}</p>
             </div>
         </div>
@@ -39,7 +60,7 @@
                 <span class="material-symbols-outlined text-[24px]">child_friendly</span>
             </div>
             <div>
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Baduta (12-23 bln)</p>
+                <p class="text-[10px] font-black text-slate-900 uppercase tracking-widest leading-none mb-1">Baduta (12-23 bln)</p>
                 <p class="text-2xl font-black text-slate-900 leading-none">{{ App\Models\Patient::where('category', 'baduta')->count() }}</p>
             </div>
         </div>
@@ -50,7 +71,7 @@
                 <span class="material-symbols-outlined text-[24px]">child_care</span>
             </div>
             <div>
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Balita (24-59 bln)</p>
+                <p class="text-[10px] font-black text-slate-900 uppercase tracking-widest leading-none mb-1">Balita (24-59 bln)</p>
                 <p class="text-2xl font-black text-slate-900 leading-none">{{ App\Models\Patient::where('category', 'balita')->count() }}</p>
             </div>
         </div>
@@ -61,7 +82,7 @@
                 <span class="material-symbols-outlined text-[24px]">school</span>
             </div>
             <div>
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Anak Sekolah (5-9 thn)</p>
+                <p class="text-[10px] font-black text-slate-900 uppercase tracking-widest leading-none mb-1">Anak Sekolah (5-9 thn)</p>
                 <p class="text-2xl font-black text-slate-900 leading-none">{{ App\Models\Patient::where('category', 'anak_sekolah')->count() }}</p>
             </div>
         </div>
@@ -72,7 +93,7 @@
                 <span class="material-symbols-outlined text-[24px]">pregnant_woman</span>
             </div>
             <div>
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Ibu Hamil</p>
+                <p class="text-[10px] font-black text-slate-900 uppercase tracking-widest leading-none mb-1">Ibu Hamil</p>
                 <p class="text-2xl font-black text-slate-900 leading-none">{{ App\Models\Patient::where('category', 'ibu_hamil')->count() }}</p>
             </div>
         </div>
@@ -83,7 +104,7 @@
                 <span class="material-symbols-outlined text-[24px]">emoji_people</span>
             </div>
             <div>
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Remaja</p>
+                <p class="text-[10px] font-black text-slate-900 uppercase tracking-widest leading-none mb-1">Remaja</p>
                 <p class="text-2xl font-black text-slate-900 leading-none">{{ App\Models\Patient::where('category', 'remaja')->count() }}</p>
             </div>
         </div>
@@ -94,7 +115,7 @@
                 <span class="material-symbols-outlined text-[24px]">elderly</span>
             </div>
             <div>
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Lansia</p>
+                <p class="text-[10px] font-black text-slate-900 uppercase tracking-widest leading-none mb-1">Lansia</p>
                 <p class="text-2xl font-black text-slate-900 leading-none">{{ App\Models\Patient::where('category', 'lansia')->count() }}</p>
             </div>
         </div>

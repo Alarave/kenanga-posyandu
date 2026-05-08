@@ -1,46 +1,87 @@
-<div class="max-w-7xl mx-auto space-y-8 pb-20">
-
-    {{-- ── Header ── --}}
-    <div class="flex items-center justify-between px-2">
-        <div>
-            <h2 class="text-3xl font-black text-slate-800 tracking-tight">Manajemen Posyandu</h2>
-            <p class="text-sm text-slate-400 font-medium mt-1">Kelola data unit posyandu dan wilayah binaan.</p>
-        </div>
-        <x-button href="{{ route('admin.posyandu.create') }}" variant="secondary" icon="add_home_work">Tambah Unit</x-button>
-    </div>
-
-    {{-- ── Summary Cards (Minimalist) ── --}}
+<div class="space-y-8 p-6 md:p-8 pt-2 md:pt-4">
     @php
         $totalPosyandu  = $posyandus->total();
         $totalPedukuhan = \App\Models\Pedukuhan::count();
         $totalWarga     = \App\Models\Patient::count();
     @endphp
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white border border-slate-100 rounded-[32px] p-7 flex items-center gap-5 transition-all">
-            <div class="w-14 h-14 bg-teal-50 text-teal-600 rounded-2xl flex items-center justify-center flex-shrink-0">
-                <span class="material-symbols-outlined text-[28px]" style="font-variation-settings:'FILL' 1;">home_health</span>
-            </div>
-            <div>
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-2">Total Posyandu</p>
-                <p class="text-3xl font-black text-slate-900 leading-none">{{ $totalPosyandu }}</p>
-            </div>
-        </div>
-        <div class="bg-white border border-slate-100 rounded-[32px] p-7 flex items-center gap-5 transition-all">
-            <div class="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center flex-shrink-0">
-                <span class="material-symbols-outlined text-[28px]" style="font-variation-settings:'FILL' 1;">location_city</span>
-            </div>
-            <div>
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-2">Pedukuhan</p>
-                <p class="text-3xl font-black text-slate-900 leading-none">{{ $totalPedukuhan }}</p>
+    {{-- Header Section --}}
+    <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+        <div class="relative pl-6">
+            {{-- Vertical Bar --}}
+            <div class="absolute left-0 top-1 bottom-1 w-1.5 bg-gradient-to-b from-teal-500 via-emerald-400 to-transparent rounded-full"></div>
+            
+            <div class="flex flex-col gap-4">
+
+                <div>
+                    <h1 class="text-4xl font-black tracking-tight leading-none text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">
+                        Unit & Wilayah
+                    </h1>
+                    <p class="text-sm font-bold text-slate-900 mt-3">Kelola data unit posyandu dan wilayah binaan secara terpusat.</p>
+                </div>
             </div>
         </div>
-        <div class="bg-white border border-slate-100 rounded-[32px] p-7 flex items-center gap-5 transition-all">
-            <div class="w-14 h-14 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center flex-shrink-0">
-                <span class="material-symbols-outlined text-[28px]" style="font-variation-settings:'FILL' 1;">groups</span>
+        
+        <div class="flex flex-wrap gap-3 items-center">
+            @can('create', App\Models\Posyandu::class)
+            <a href="{{ route('admin.posyandu.create') }}" class="h-16 px-8 bg-primary text-white rounded-[1.5rem] font-black text-xs uppercase tracking-widest flex items-center gap-3 hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 group">
+                <span class="material-symbols-outlined text-[20px] group-hover:rotate-90 transition-transform">add_home_work</span>
+                Tambah Unit Baru
+            </a>
+            @endcan
+        </div>
+    </div>
+
+    {{-- ── Summary Bento & Highlight Banner ── --}}
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        {{-- Stats Bento --}}
+        <div class="lg:col-span-5 grid grid-cols-2 gap-4">
+            <div class="bg-white rounded-[1.5rem] border border-slate-100 p-5 shadow-sm flex flex-col justify-between group hover:border-primary/20 transition-all">
+                <div class="w-9 h-9 rounded-xl bg-slate-50 text-slate-400 group-hover:bg-primary group-hover:text-white flex items-center justify-center transition-all">
+                    <span class="material-symbols-outlined text-[18px]">home_health</span>
+                </div>
+                <div class="mt-4">
+                    <span class="text-[11px] font-black text-slate-900 uppercase tracking-widest block mb-1">Total Unit</span>
+                    <p class="text-2xl font-black text-slate-900 tracking-tighter">{{ $totalPosyandu }}</p>
+                </div>
             </div>
-            <div>
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-2">Total Warga</p>
-                <p class="text-3xl font-black text-slate-900 leading-none">{{ number_format($totalWarga) }}</p>
+            <div class="bg-white rounded-[1.5rem] border border-slate-100 p-5 shadow-sm flex flex-col justify-between group hover:border-indigo-500/20 transition-all">
+                <div class="w-9 h-9 rounded-xl bg-slate-50 text-slate-400 group-hover:bg-indigo-600 group-hover:text-white flex items-center justify-center transition-all">
+                    <span class="material-symbols-outlined text-[18px]">location_city</span>
+                </div>
+                <div class="mt-4">
+                    <span class="text-[11px] font-black text-slate-900 uppercase tracking-widest block mb-1">Pedukuhan</span>
+                    <p class="text-2xl font-black text-slate-900 tracking-tighter">{{ $totalPedukuhan }}</p>
+                </div>
+            </div>
+            <div class="col-span-2 bg-emerald-500 rounded-[1.5rem] p-5 text-white shadow-xl shadow-emerald-100 flex flex-col justify-between relative overflow-hidden group">
+                <div class="absolute -bottom-8 -left-8 w-28 h-28 bg-white/10 rounded-full blur-3xl"></div>
+                <div class="relative z-10 flex items-center justify-between">
+                    <div>
+                        <span class="text-[11px] font-black text-emerald-50 uppercase tracking-widest block mb-1">Total Warga Binaaan</span>
+                        <p class="text-3xl font-black tracking-tighter">{{ number_format($totalWarga) }}</p>
+                    </div>
+                    <div class="w-12 h-12 rounded-[1.25rem] bg-white/20 backdrop-blur-md flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[24px]">groups</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Hero Mesh Highlight Banner --}}
+        <div class="lg:col-span-7">
+            <div class="h-full rounded-[2rem] p-6 md:p-8 relative overflow-hidden text-white group shadow-2xl shadow-emerald-100"
+                 style="background-color: #064e3b; background-image: radial-gradient(at 0% 0%, hsla(161, 84%, 39%, 0.5) 0px, transparent 50%), radial-gradient(at 50% 0%, hsla(168, 76%, 36%, 0.5) 0px, transparent 50%), radial-gradient(at 100% 0%, hsla(172, 66%, 50%, 0.3) 0px, transparent 50%);">
+                <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-5"></div>
+                <div class="relative z-10 flex flex-col h-full justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="px-3 py-1 rounded-full bg-white/10 text-white text-[10px] font-black uppercase tracking-[0.2em] border border-white/10 backdrop-blur-md">Pusat Informasi</span>
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-black leading-tight mb-3 tracking-tighter text-white">Infrastruktur <br>Kesehatan Digital</h2>
+                        <p class="text-[13px] text-white/70 font-medium max-w-md leading-relaxed">Pantau distribusi unit posyandu dan wilayah binaan untuk pemerataan layanan kesehatan warga.</p>
+                    </div>
+                </div>
+                <div class="absolute -right-20 -bottom-20 w-40 h-40 bg-teal-500/20 rounded-full blur-3xl"></div>
             </div>
         </div>
     </div>
@@ -60,10 +101,10 @@
             <table class="w-full text-left">
                 <thead>
                     <tr class="bg-slate-50/50">
-                        <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Detail Unit</th>
-                        <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Kode Unik</th>
-                        <th class="px-6 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest">Wilayah</th>
-                        <th class="px-8 py-5 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Tindakan</th>
+                        <th class="px-8 py-5 text-[10px] font-black text-slate-900 uppercase tracking-widest text-center">Detail Unit</th>
+                        <th class="px-6 py-5 text-[10px] font-black text-slate-900 uppercase tracking-widest text-center">Kode Unik</th>
+                        <th class="px-6 py-5 text-[10px] font-black text-slate-900 uppercase tracking-widest text-center">Wilayah</th>
+                        <th class="px-8 py-5 text-[10px] font-black text-slate-900 uppercase tracking-widest text-center">Tindakan</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50">

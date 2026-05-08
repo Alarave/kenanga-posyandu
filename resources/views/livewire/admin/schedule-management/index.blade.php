@@ -1,21 +1,27 @@
-<div class="space-y-8 p-6 md:p-8">
+<div class="space-y-8 p-6 md:p-8 pt-2 md:pt-4">
     {{-- Header Section --}}
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-            <nav class="flex text-xs text-slate-400 mb-1.5 gap-1.5 items-center">
-                <a href="{{ route('dashboard') }}" class="hover:text-teal-600 transition-colors">Beranda</a>
-                <span class="material-symbols-outlined text-[12px]">chevron_right</span>
-                <span class="text-teal-600 font-semibold">Jadwal & Kegiatan</span>
-            </nav>
-            <h1 class="text-2xl font-bold text-slate-900">Manajemen Jadwal</h1>
-            <p class="text-sm text-slate-500 mt-0.5">Atur jadwal kegiatan posyandu dan imunisasi.</p>
+    <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+        <div class="relative pl-6">
+            {{-- Vertical Bar --}}
+            <div class="absolute left-0 top-1 bottom-1 w-1.5 bg-gradient-to-b from-teal-500 via-emerald-400 to-transparent rounded-full"></div>
+            
+            <div class="flex flex-col gap-4">
+
+                <div>
+                    <h1 class="text-4xl font-black tracking-tight leading-none text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">
+                        Jadwal & Kegiatan
+                    </h1>
+                    <p class="text-sm font-bold text-slate-900 mt-3">Atur jadwal kegiatan posyandu dan imunisasi secara efisien.</p>
+                </div>
+            </div>
         </div>
         
         <div class="flex flex-wrap gap-3 items-center">
             @can('create', App\Models\Schedule::class)
-            <x-button href="{{ route('admin.schedules.create') }}" variant="secondary" icon="calendar_add_on">
-                Tambah Jadwal
-            </x-button>
+            <a href="{{ route('admin.schedules.create') }}" class="h-16 px-8 bg-primary text-white rounded-[1.5rem] font-black text-xs uppercase tracking-widest flex items-center gap-3 hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 group">
+                <span class="material-symbols-outlined text-[20px] group-hover:rotate-90 transition-transform">calendar_add_on</span>
+                Tambah Jadwal Baru
+            </a>
             @endcan
         </div>
     </div>
@@ -53,32 +59,53 @@
 
         {{-- Next Agenda Highlight --}}
         <div class="lg:col-span-8">
-            <div class="h-full bg-slate-900 rounded-[2.5rem] p-8 md:p-10 relative overflow-hidden text-white group shadow-xl shadow-slate-200">
-                <div class="relative z-10">
-                    <div class="flex items-center gap-3 mb-6">
-                        <span class="px-4 py-1.5 rounded-full bg-teal-500/20 text-teal-400 text-[10px] font-black uppercase tracking-widest border border-teal-500/20">Agenda Terdekat</span>
-                    </div>
-                    @if($agendaTerdekat)
-                        <h2 class="text-3xl md:text-4xl font-black leading-tight mb-4">{{ $agendaTerdekat->title }}</h2>
-                        <div class="flex flex-wrap gap-6 text-slate-400">
-                            <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-[20px] text-teal-50">calendar_month</span>
-                                <span class="text-sm font-bold">{{ \Carbon\Carbon::parse($agendaTerdekat->start_time)->translatedFormat('d F Y') }}</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-[20px] text-teal-50">schedule</span>
-                                <span class="text-sm font-bold">{{ \Carbon\Carbon::parse($agendaTerdekat->start_time)->format('H:i') }} WIB</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-[20px] text-teal-50">location_on</span>
-                                <span class="text-sm font-bold">{{ $agendaTerdekat->location ?: 'Posyandu Unit' }}</span>
-                            </div>
+            <div class="h-full rounded-[2.5rem] p-10 md:p-12 relative overflow-hidden text-white group shadow-2xl shadow-emerald-100" 
+                 style="background-color: #064e3b; background-image: radial-gradient(at 0% 0%, hsla(161, 84%, 39%, 0.5) 0px, transparent 50%), radial-gradient(at 50% 0%, hsla(168, 76%, 36%, 0.5) 0px, transparent 50%), radial-gradient(at 100% 0%, hsla(172, 66%, 50%, 0.3) 0px, transparent 50%);">
+                <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-5"></div>
+                <div class="relative z-10 flex flex-col h-full justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 mb-8">
+                            <span class="px-5 py-2 rounded-full bg-teal-500/20 text-teal-100 text-[11px] font-black uppercase tracking-[0.2em] border border-teal-500/20 backdrop-blur-md">Agenda Terdekat</span>
                         </div>
-                    @else
-                        <p class="text-slate-500 font-bold">Belum ada agenda mendatang.</p>
-                    @endif
+                        @if($agendaTerdekat)
+                            <h2 class="text-4xl md:text-5xl font-black leading-tight mb-8 tracking-tighter">{{ $agendaTerdekat->title }}</h2>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-8">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-[24px] text-teal-300">calendar_month</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] font-black text-teal-100/50 uppercase tracking-widest">Tanggal</p>
+                                        <p class="text-base font-black">{{ \Carbon\Carbon::parse($agendaTerdekat->start_time)->translatedFormat('d F Y') }}</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-[24px] text-teal-300">schedule</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] font-black text-teal-100/50 uppercase tracking-widest">Waktu</p>
+                                        <p class="text-base font-black">{{ \Carbon\Carbon::parse($agendaTerdekat->start_time)->format('H:i') }} WIB</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center">
+                                        <span class="material-symbols-outlined text-[24px] text-teal-300">location_on</span>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] font-black text-teal-100/50 uppercase tracking-widest">Lokasi</p>
+                                        <p class="text-base font-black truncate max-w-[150px]">{{ $agendaTerdekat->location ?: 'Posyandu Unit' }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        @else
+                            <div class="py-12">
+                                <p class="text-teal-100/50 font-black text-xl italic">Belum ada agenda mendatang.</p>
+                            </div>
+                        @endif
+                    </div>
                 </div>
-                <div class="absolute -right-20 -bottom-20 w-64 h-64 bg-teal-500/10 rounded-full blur-3xl"></div>
+                <div class="absolute -right-20 -bottom-20 w-64 h-64 bg-teal-500/20 rounded-full blur-3xl"></div>
             </div>
         </div>
     </div>

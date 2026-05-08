@@ -17,7 +17,7 @@ class MedicalRecordRequest extends FormRequest
             'patient_id' => 'required|exists:patients,id',
             'visit_date' => 'required|date|before_or_equal:today',
             'weight' => 'required|numeric|min:0.5|max:200',
-            'height' => 'required|numeric|min:30|max:300',
+            'height' => 'required|numeric|min:20|max:300',
             'head_circumference' => 'nullable|numeric|min:20|max:70',
             'upper_arm_circumference' => 'nullable|numeric|min:5|max:40',
             'measurement_method' => 'required|in:recumbent,standing',
@@ -36,6 +36,25 @@ class MedicalRecordRequest extends FormRequest
             'is_basic_immunization_complete' => 'nullable|boolean',
             'vitamin_a_color' => 'nullable|in:biru,merah,none',
             'deworming_medicine' => 'nullable|boolean',
+            
+            // New UI Integration Fields
+            'weight_status' => 'nullable|in:N,T,2T',
+            'kpsp_status' => 'nullable|in:Lengkap,Tidak Lengkap',
+            'tbc_screening_cough' => 'nullable|boolean',
+            'tbc_screening_fever' => 'nullable|boolean',
+            'tbc_screening_contact' => 'nullable|boolean',
+            'tbc_screening_lethargy' => 'nullable|boolean',
+            'tbc_screening_lumps' => 'nullable|boolean',
+            'other_symptoms' => 'nullable|string',
+            'pmt_given' => 'nullable|string|max:255',
+            'counseling_notes' => 'nullable|string',
+            'referral_type' => 'nullable|in:None,Pustu,Puskesmas,RS',
+
+            // Patient Identity Fields (if updated during record creation)
+            'father_name' => 'nullable|string|max:255',
+            'mother_name' => 'nullable|string|max:255',
+            'weight_at_birth' => 'nullable|numeric|min:0.5|max:10',
+            'height_at_birth' => 'nullable|numeric|min:30|max:60',
             
             // KPSP (Child Development) fields
             'kpsp_age_group' => 'nullable|integer',
@@ -61,7 +80,7 @@ class MedicalRecordRequest extends FormRequest
             'weight.max' => 'Berat badan maksimal 200 kg.',
             'height.required' => 'Tinggi badan wajib diisi.',
             'height.numeric' => 'Tinggi badan harus berupa angka.',
-            'height.min' => 'Tinggi badan minimal 30 cm.',
+            'height.min' => 'Tinggi badan minimal 20 cm.',
             'height.max' => 'Tinggi badan maksimal 300 cm.',
             'measurement_method.required' => 'Cara ukur wajib dipilih.',
             'measurement_method.in' => 'Cara ukur harus Telentang (Recumbent) atau Berdiri (Standing).',

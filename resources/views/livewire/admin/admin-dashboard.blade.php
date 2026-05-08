@@ -54,10 +54,7 @@
             
             <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-12">
                 <div class="max-w-2xl">
-                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-[9px] font-black tracking-[0.3em] uppercase mb-8">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                        Sistem Kendali Utama • {{ $posyanduName }}
-                    </div>
+
                     <h1 class="text-display text-5xl md:text-7xl text-white mb-6 leading-none">
                         {{ $sapa }}, <br/>
                         <span class="text-emerald-300 drop-shadow-sm">{{ explode(' ', $user->name)[0] }}!</span>

@@ -36,13 +36,22 @@
         }
 
         @media (min-width: 1024px) {
-            #mainContent { 
-                margin-left: var(--sidebar-width) !important; 
-                width: calc(100% - var(--sidebar-width)) !important; 
+            .app-grid {
+                display: grid;
+                grid-template-columns: var(--sidebar-width, 260px) 1fr;
+                min-height: 100vh;
             }
             #sidebar { 
+                position: sticky !important;
+                top: 0;
+                height: 100vh;
                 width: var(--sidebar-width) !important; 
-                background: #FFFFFF !important;
+            }
+            #mainContent {
+                width: 100% !important;
+                min-width: 0;
+                display: flex;
+                flex-direction: column;
             }
         }
 
@@ -60,42 +69,18 @@
 </head>
 <body class="font-sans antialiased bg-slate-50 text-slate-900">
 
-    <div class="min-h-screen flex overflow-hidden bg-dashboard">
+    <div class="min-h-screen app-grid bg-dashboard">
         <!-- Sidebar -->
         @include('components.layouts.app.sidebar')
         
         <!-- Main Content Wrapper -->
-        <div id="mainContent" class="flex-1 flex flex-col min-h-screen transition-all duration-300 ease-in-out relative overflow-y-auto">
+        <div id="mainContent" class="flex-1 flex-shrink-0 flex flex-col min-h-screen transition-all duration-300 ease-in-out relative overflow-y-auto">
             
             <!-- Navbar (Now part of the right-side flow) -->
-            @php
-                $routeTitles = [
-                    'dashboard'                  => ['Dashboard',        'Ringkasan data posyandu'],
-                    'admin.analytics'            => ['Analytics',        'Statistik & grafik data'],
-                    'admin.patients.*'           => ['Data Warga',       'Kelola data pasien posyandu'],
-                    'admin.posyandu.*'           => ['Data Posyandu',    'Kelola unit posyandu'],
-                    'admin.schedules.*'          => ['Jadwal Kegiatan',  'Kelola jadwal posyandu'],
-                    'admin.medical-records.*'    => ['Rekam Medis',      'Data pemeriksaan pasien'],
-                    'admin.reports.*'            => ['Laporan Bulanan',  'Laporan & ekspor data'],
-                    'admin.activity-logs.*'      => ['Log Aktivitas',    'Riwayat aktivitas sistem'],
-                    'admin.articles.*'           => ['Artikel & Berita', 'Kelola konten edukasi'],
-                    'admin.gallery.*'            => ['Galeri',           'Kelola foto & media'],
-                    'admin.pedukuhans.*'         => ['Data Pedukuhan',   'Kelola data wilayah'],
-                    'admin.users.*'              => ['Manajemen User',   'Kelola akun pengguna'],
-                ];
-                $pageTitle    = 'Dashboard';
-                $pageSubtitle = 'Sistem Informasi Posyandu';
-                foreach ($routeTitles as $pattern => $labels) {
-                    if (request()->routeIs($pattern)) {
-                        [$pageTitle, $pageSubtitle] = $labels;
-                        break;
-                    }
-                }
-            @endphp
-            @include('components.layouts.ui.navbar', compact('pageTitle', 'pageSubtitle'))
+            <x-layouts.app.navbar />
             
             <!-- Main Content Area -->
-            <main class="flex-1 p-4 md:p-8">
+            <main class="flex-1 w-full p-4 md:px-8 md:pt-1 md:pb-8">
                 @yield('content')
             </main>
             

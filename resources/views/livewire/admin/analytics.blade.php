@@ -1,13 +1,23 @@
-{{-- ── Analytics & Insights — Premium Senior-Friendly UI ── --}}
+@push('styles')
+<style>
+    .hero-mesh {
+        background-color: #064e3b;
+        background-image: 
+            radial-gradient(at 0% 0%, hsla(161, 84%, 39%, 0.5) 0px, transparent 50%),
+            radial-gradient(at 50% 0%, hsla(168, 76%, 36%, 0.5) 0px, transparent 50%),
+            radial-gradient(at 100% 0%, hsla(172, 66%, 50%, 0.3) 0px, transparent 50%);
+    }
+</style>
+@endpush
+
 <div class="max-w-[1440px] mx-auto space-y-10 pb-20">
 
     {{-- ── Modern Header with Mesh Gradient ── --}}
-    <div class="relative rounded-[3rem] p-8 md:p-12 overflow-hidden bg-slate-900 text-white shadow-2xl">
-        {{-- Mesh Gradient Background --}}
-        <div class="absolute inset-0 opacity-40 pointer-events-none">
-            <div class="absolute -top-24 -left-24 w-96 h-96 bg-teal-500 rounded-full blur-[120px]"></div>
-            <div class="absolute top-1/2 -right-24 w-80 h-80 bg-blue-600 rounded-full blur-[100px]"></div>
-            <div class="absolute -bottom-24 left-1/3 w-64 h-64 bg-indigo-500 rounded-full blur-[80px]"></div>
+    <div class="relative rounded-[3rem] p-8 md:p-12 overflow-hidden hero-mesh text-white shadow-2xl">
+        {{-- Decorative Glow Elements --}}
+        <div class="absolute inset-0 opacity-20 pointer-events-none">
+            <div class="absolute -top-24 -left-24 w-96 h-96 bg-white/20 rounded-full blur-[120px]"></div>
+            <div class="absolute top-1/2 -right-24 w-80 h-80 bg-emerald-400/20 rounded-full blur-[100px]"></div>
         </div>
 
         <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">

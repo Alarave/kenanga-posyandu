@@ -19,7 +19,7 @@
 </head>
 <body class="antialiased overflow-x-hidden">
     <!-- Header -->
-    <header class="fixed top-2 left-1/2 -translate-x-1/2 w-[95%] max-w-7xl z-50 glass-header px-6 md:px-10 py-4 rounded-[2rem] transition-all duration-500" id="mainHeader">
+    <header class="fixed top-0 left-0 w-full z-50 glass-header px-6 md:px-10 py-4 border-b border-white/10 transition-all duration-500" id="mainHeader">
         <div class="flex justify-between items-center">
             <!-- Logo -->
             <a href="{{ route('public.home') }}" class="flex items-center space-x-3 group">
@@ -33,11 +33,11 @@
             </a>
 
             <!-- Nav -->
-            <nav class="hidden lg:flex items-center space-x-2">
+            <nav class="hidden lg:flex items-center space-x-1">
                 @php $navs = ['Home' => 'public.home', 'Artikel' => 'public.articles.index', 'Tentang' => 'public.about', 'Kontak' => 'public.contact']; @endphp
                 @foreach($navs as $label => $route)
                     <a href="{{ route($route) }}" 
-                       class="px-5 py-2 text-[12px] font-black uppercase tracking-widest rounded-xl transition-all
+                       class="px-3.5 py-2 text-[12px] font-black uppercase tracking-widest rounded-xl transition-all
                               {{ request()->routeIs($route) ? 'bg-primary text-white shadow-md' : 'text-on-surface-variant hover:bg-surface-container hover:text-primary' }}">
                         {{ $label }}
                     </a>
@@ -66,60 +66,74 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-on-surface text-white py-24 px-6 md:px-12 mt-20 relative overflow-hidden">
-        {{-- Decorative background --}}
-        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2"></div>
-        <div class="absolute bottom-0 left-0 w-[300px] h-[300px] bg-white/5 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/2"></div>
-
+    <footer class="bg-[#0f172a] text-white pt-12 pb-8 px-6 md:px-12 mt-12 relative overflow-hidden">
+        {{-- Decorative background elements --}}
+        <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-primary/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3 opacity-40"></div>
+        
         <div class="max-w-7xl mx-auto relative z-10">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-16 mb-20">
-                <div class="md:col-span-1">
-                    <div class="flex items-center space-x-3 mb-8">
-                        <div class="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center text-primary backdrop-blur-md">
-                            <span class="material-symbols-outlined text-[24px]">favorite</span>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 bg-gradient-to-tr from-primary to-teal-500 rounded-lg flex items-center justify-center text-white shadow-lg rotate-3">
+                            <span class="material-symbols-outlined text-[20px]">health_and_safety</span>
                         </div>
-                        <span class="text-xl font-black tracking-tight font-jakarta uppercase">Posyandu <span class="text-primary">Digital</span></span>
+                        <div class="flex flex-col">
+                            <span class="text-base font-black tracking-tight font-jakarta uppercase leading-none">Posyandu <span class="text-primary">Digital</span></span>
+                            <span class="text-[6px] text-white/40 font-black uppercase tracking-[0.3em] mt-1">Bekasi Timur</span>
+                        </div>
                     </div>
-                    <p class="text-sm text-white/60 font-medium leading-loose mb-8">
-                        Mewujudkan masyarakat cerdas dan sehat melalui transformasi layanan kesehatan digital yang inklusif.
+                    <p class="text-[12px] text-white/50 font-medium leading-relaxed">
+                        Platform digital terintegrasi untuk layanan kesehatan ibu dan anak yang modern dan efisien.
                     </p>
-                    <div class="flex gap-4">
-                        <a href="#" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-primary hover:border-primary transition-all"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-primary hover:border-primary transition-all"><i class="fab fa-whatsapp"></i></a>
+                    <div class="flex gap-2.5">
+                        <a href="#" class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-primary transition-all group">
+                            <i class="fab fa-instagram text-white/60 group-hover:text-white text-[10px]"></i>
+                        </a>
+                        <a href="#" class="w-8 h-8 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center hover:bg-primary transition-all group">
+                            <i class="fab fa-whatsapp text-white/60 group-hover:text-white text-sm"></i>
+                        </a>
                     </div>
                 </div>
                 
                 <div>
-                    <h4 class="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] mb-8">Perusahaan</h4>
-                    <ul class="space-y-4 text-sm font-bold text-white/80">
-                        <li><a href="{{ route('public.about') }}" class="hover:text-primary transition-colors">Tentang Kami</a></li>
-                        <li><a href="{{ route('public.contact') }}" class="hover:text-primary transition-colors">Hubungi Kami</a></li>
-                        <li><a href="{{ route('public.articles.index') }}" class="hover:text-primary transition-colors">Update Berita</a></li>
+                    <h4 class="text-[9px] font-black text-white uppercase tracking-[0.3em] mb-6 flex items-center gap-2">
+                        <span class="w-4 h-px bg-primary"></span>
+                        Informasi
+                    </h4>
+                    <ul class="space-y-3">
+                        <li><a href="{{ route('public.about') }}" class="text-white/60 hover:text-primary transition-all flex items-center gap-2 group text-[11px] font-bold">Tentang Kami</a></li>
+                        <li><a href="{{ route('public.contact') }}" class="text-white/60 hover:text-primary transition-all flex items-center gap-2 group text-[11px] font-bold">Hubungi Kami</a></li>
+                        <li><a href="{{ route('public.articles.index') }}" class="text-white/60 hover:text-primary transition-all flex items-center gap-2 group text-[11px] font-bold">Update Berita</a></li>
                     </ul>
                 </div>
 
                 <div>
-                    <h4 class="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] mb-8">Layanan</h4>
-                    <ul class="space-y-4 text-sm font-bold text-white/80">
-                        <li><a href="{{ route('public.articles.index') }}" class="hover:text-primary transition-colors">Portal Edukasi</a></li>
-                        <li><a href="{{ route('public.home') }}#jadwal" class="hover:text-primary transition-colors">Jadwal Posyandu</a></li>
-                        <li><a href="{{ route('login') }}" class="hover:text-primary transition-colors">Area Kader</a></li>
+                    <h4 class="text-[9px] font-black text-white uppercase tracking-[0.3em] mb-6 flex items-center gap-2">
+                        <span class="w-4 h-px bg-primary"></span>
+                        Layanan
+                    </h4>
+                    <ul class="space-y-3">
+                        <li><a href="{{ route('public.articles.index') }}" class="text-white/60 hover:text-primary transition-all flex items-center gap-2 group text-[11px] font-bold">Portal Edukasi</a></li>
+                        <li><a href="{{ route('public.home') }}#jadwal" class="text-white/60 hover:text-primary transition-all flex items-center gap-2 group text-[11px] font-bold">Jadwal Posyandu</a></li>
+                        <li><a href="{{ route('login') }}" class="text-white/60 hover:text-primary transition-all flex items-center gap-2 group text-[11px] font-bold">Sistem Kader</a></li>
                     </ul>
                 </div>
 
-                <div class="flex flex-col items-start md:items-end">
-                    <h4 class="text-[10px] font-black text-white/40 uppercase tracking-[0.3em] mb-8">Bantuan</h4>
-                    <p class="text-[13px] font-medium text-white/50 mb-6 text-left md:text-right">Butuh bantuan seputar layanan kami? Tim kami siap membantu kapan saja.</p>
-                    <a href="{{ route('public.contact') }}" class="px-8 py-3 bg-white text-on-surface text-[10px] font-black uppercase tracking-widest rounded-full hover:bg-primary hover:text-white transition-all">Support Center</a>
+                <div class="relative group">
+                    <div class="relative p-5 rounded-xl bg-white/5 border border-white/10 backdrop-blur-sm">
+                        <h4 class="text-[9px] font-black text-white uppercase tracking-[0.3em] mb-3">Butuh Bantuan?</h4>
+                        <a href="{{ route('public.contact') }}" class="w-full py-2.5 bg-white text-[#0f172a] text-[8px] font-black uppercase tracking-widest rounded-lg hover:bg-primary hover:text-white transition-all text-center block shadow-lg shadow-white/5">
+                            Hubungi Support
+                        </a>
+                    </div>
                 </div>
             </div>
             
-            <div class="border-t border-white/10 pt-10 flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0 text-[10px] font-black text-white/30 uppercase tracking-[0.2em]">
-                <p>&copy; {{ date('Y') }} POSYANDU DIGITAL BEKASI TIMUR. ALL RIGHTS RESERVED.</p>
-                <div class="flex gap-8">
-                    <a href="#" class="hover:text-white transition-all underline decoration-white/10">Privacy</a>
-                    <a href="#" class="hover:text-white transition-all underline decoration-white/10">Terms</a>
-                    <a href="#" class="hover:text-white transition-all underline decoration-white/10">Cookies</a>
+            <div class="pt-6 border-t border-white/5 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
+                <p class="text-[8px] font-black text-white/30 uppercase tracking-[0.2em]">&copy; {{ date('Y') }} POSYANDU DIGITAL BEKASI TIMUR. ALL RIGHTS RESERVED.</p>
+                <div class="flex gap-5 text-[8px] font-black text-white/30 uppercase tracking-[0.2em]">
+                    <a href="#" class="hover:text-white transition-all">Privacy</a>
+                    <a href="#" class="hover:text-white transition-all">Terms</a>
                 </div>
             </div>
         </div>

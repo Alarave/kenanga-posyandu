@@ -209,14 +209,14 @@ describe('classifyNutritionStatus', function () {
         expect($status)->toBe('Gizi Baik');
     });
 
-    it('mengklasifikasikan z-score 2 sebagai Gizi Baik', function () {
-        $status = $this->service->classifyNutritionStatus(2.0);
+    it('mengklasifikasikan z-score 1 sebagai Gizi Baik', function () {
+        $status = $this->service->classifyNutritionStatus(1.0);
 
         expect($status)->toBe('Gizi Baik');
     });
 
-    it('mengklasifikasikan z-score > 2 sebagai Gizi Lebih', function () {
-        $status = $this->service->classifyNutritionStatus(2.5);
+    it('mengklasifikasikan z-score > 1 sebagai Gizi Lebih', function () {
+        $status = $this->service->classifyNutritionStatus(1.5);
 
         expect($status)->toBe('Gizi Lebih');
     });

@@ -1,31 +1,46 @@
-{{-- ── Articles Management — Ultra-Premium UI ── --}}
-<div class="max-w-[1440px] mx-auto space-y-10 pb-20">
+<div class="space-y-8 p-6 md:p-8 pt-2 md:pt-4">
+    {{-- Header Section --}}
+    <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
+        <div class="relative pl-6">
+            {{-- Vertical Bar --}}
+            <div class="absolute left-0 top-1 bottom-1 w-1.5 bg-gradient-to-b from-[#065f46] via-[#065f46]/60 to-transparent rounded-full"></div>
+            
+            <div class="flex flex-col gap-4">
 
-    {{-- ── Modern Header with Mesh Gradient ── --}}
-    <div class="relative rounded-[3rem] p-8 md:p-12 overflow-hidden bg-slate-900 text-white shadow-2xl">
-        {{-- Mesh Gradient Background --}}
-        <div class="absolute inset-0 opacity-30 pointer-events-none">
-            <div class="absolute -top-24 -left-24 w-96 h-96 bg-indigo-500 rounded-full blur-[120px]"></div>
-            <div class="absolute top-1/2 -right-24 w-80 h-80 bg-blue-600 rounded-full blur-[100px]"></div>
+                <div>
+                    <h1 class="text-4xl font-black text-[#0f172a] tracking-tight leading-none">
+                        Artikel <span class="text-[#065f46]">& Berita</span>
+                    </h1>
+                    <p class="text-sm font-medium text-slate-500 mt-3">Kelola konten edukasi kesehatan dan informasi penting posyandu.</p>
+                </div>
+            </div>
         </div>
+    </div>
 
-        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
-            <div class="space-y-4">
-                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-[11px] font-black uppercase tracking-[0.2em] text-indigo-300">
+    {{-- ── Modern Header with Hero Mesh Banner ── --}}
+    <div class="relative rounded-[3rem] p-10 md:p-14 overflow-hidden text-white shadow-2xl shadow-emerald-100"
+         style="background-color: #064e3b; background-image: radial-gradient(at 0% 0%, hsla(161, 84%, 39%, 0.5) 0px, transparent 50%), radial-gradient(at 50% 0%, hsla(168, 76%, 36%, 0.5) 0px, transparent 50%), radial-gradient(at 100% 0%, hsla(172, 66%, 50%, 0.3) 0px, transparent 50%);">
+        {{-- Decorative Elements --}}
+        <div class="absolute -right-20 -top-20 w-80 h-80 bg-white/10 rounded-full blur-[100px] animate-pulse"></div>
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-5"></div>
+
+        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-12">
+            <div class="space-y-6">
+                <div class="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-[10px] font-black uppercase tracking-[0.3em] text-indigo-200">
                     <span class="w-2 h-2 rounded-full bg-indigo-400 animate-pulse"></span>
                     Content & Education
                 </div>
-                <h1 class="text-4xl md:text-5xl font-black tracking-tight leading-tight">Manajemen Artikel</h1>
-                <p class="text-lg text-slate-300 font-medium max-w-2xl">
-                    Kelola materi edukasi kesehatan, berita kegiatan, dan informasi penting untuk warga Posyandu.
+                <h1 class="text-5xl md:text-6xl font-black tracking-tight leading-tight">Manajemen Artikel</h1>
+                <p class="text-lg text-indigo-100/70 font-medium max-w-2xl leading-relaxed">
+                    Kelola materi edukasi kesehatan, berita kegiatan, dan informasi penting untuk warga Posyandu secara profesional.
                 </p>
             </div>
 
-            <div class="flex items-center gap-4">
+            <div class="flex items-center">
                 @can('create', App\Models\Article::class)
                 <a href="{{ route('admin.articles.create') }}"
-                   class="h-16 px-8 flex items-center gap-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl text-sm font-black uppercase tracking-widest shadow-xl shadow-indigo-600/30 transition-all active:scale-95">
-                    <span class="material-symbols-outlined text-[28px]">add_circle</span>
+                   class="h-16 px-10 flex items-center gap-4 bg-gradient-to-r from-indigo-500 to-violet-600 hover:from-indigo-600 hover:to-violet-700 text-white rounded-[1.5rem] text-xs font-black uppercase tracking-[0.2em] shadow-2xl shadow-indigo-500/40 transition-all hover:-translate-y-1 active:scale-95 group">
+                    <span class="material-symbols-outlined text-[24px] group-hover:rotate-90 transition-transform">add_circle</span>
                     Tulis Artikel Baru
                 </a>
                 @endcan

@@ -53,15 +53,7 @@
             <i class="fas fa-bars" style="font-size:14px;"></i>
         </button>
 
-        {{-- Page title / breadcrumb area --}}
-        <div class="hidden sm:flex flex-col justify-center min-w-0">
-            <h1 class="text-slate-900 font-extrabold leading-tight truncate" style="font-size:18px; letter-spacing:-0.02em;">
-                {{ $pageTitle ?? 'Dashboard' }}
-            </h1>
-            <p class="text-slate-500 font-bold leading-none mt-1 truncate" style="font-size:12.5px;">
-                {{ $pageSubtitle ?? 'Sistem Informasi Posyandu' }}
-            </p>
-        </div>
+        {{-- Page title / breadcrumb area removed as requested --}}
     </div>
 
     {{-- ── RIGHT: Search · Notif · Profile ── --}}

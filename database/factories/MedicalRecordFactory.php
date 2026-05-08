@@ -29,6 +29,15 @@ class MedicalRecordFactory extends Factory
             'nutrition_status' => fake()->randomElement(['Gizi Baik', 'Gizi Kurang', 'Gizi Lebih', 'Gizi Buruk']),
             'z_score' => fake()->randomFloat(2, -4.0, 3.0),
             'nutrition_trend' => fake()->randomElement(['naik', 'turun', 'tetap']),
+            'weight_status' => fake()->randomElement(['N', 'T', '2T']),
+            'kpsp_status' => fake()->randomElement(['Lengkap', 'Tidak Lengkap']),
+            'tbc_screening_cough' => fake()->boolean(10),
+            'tbc_screening_fever' => fake()->boolean(10),
+            'tbc_screening_contact' => fake()->boolean(5),
+            'other_symptoms' => fake()->optional()->sentence(),
+            'pmt_given' => fake()->optional()->word(),
+            'counseling_notes' => fake()->optional()->paragraph(),
+            'referral_type' => fake()->randomElement(['None', 'Pustu', 'Puskesmas', 'RS']),
         ];
     }
 

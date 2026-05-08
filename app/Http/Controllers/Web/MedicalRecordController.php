@@ -53,13 +53,15 @@ class MedicalRecordController extends Controller
         $this->authorize('create', MedicalRecord::class);
 
         $patients = $this->getAvailablePatients();
+        $selectedPatient = request()->has('patient_id') ? Patient::find(request('patient_id')) : null;
+        
         $duplicateWarnings = $this->checkDuplicateWarnings(
             request()->get('patient_id'),
             null,
             null
         );
 
-        return view('livewire.admin.medical-record-management.create', compact('patients', 'duplicateWarnings'));
+        return view('livewire.admin.medical-record-management.create', compact('patients', 'duplicateWarnings', 'selectedPatient'));
     }
 
     /**
@@ -153,7 +155,11 @@ class MedicalRecordController extends Controller
         }
 
         // Admin, Kader, dan Staff hanya bisa akses pasien di posyandu mereka
-        return Patient::where('posyandu_id', $user->posyandu_id)->get();
+        return Patient::where('posyandu_id', $user->posyandu_id)
+            ->with(['medicalRecords' => function($q) {
+                $q->orderBy('visit_date', 'desc')->limit(2);
+            }])
+            ->get();
     }
 
     /**

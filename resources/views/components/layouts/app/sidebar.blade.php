@@ -1,6 +1,6 @@
 {{-- Sidebar Component --}}
 <aside id="sidebar"
-    class="flex-shrink-0 flex flex-col h-screen fixed top-0 left-0 z-30 overflow-hidden transition-all duration-300 ease-in-out"
+    class="flex-shrink-0 flex flex-col h-screen fixed lg:sticky top-0 left-0 z-30 overflow-hidden transition-all duration-300 ease-in-out"
     style="width:260px; background:#FFFFFF; border-right:1px solid #F1F5F9;">
 
     {{-- ── Logo & Toggle ── --}}

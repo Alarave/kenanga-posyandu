@@ -15,6 +15,7 @@ class Patient extends Model
 
     protected $fillable = [
         'posyandu_id', 'category', 'parent_name', 'id_number', 'full_name',
+        'father_name', 'mother_name', 'weight_at_birth', 'height_at_birth',
         'birth_date', 'gender', 'address', 'phone_number', 'profile_photo',
         'last_notifications_read_at', 'place_of_birth', 'head_of_family_name',
         'mother_nik', 'kia_book_ownership', 'guardian_status', 'education',

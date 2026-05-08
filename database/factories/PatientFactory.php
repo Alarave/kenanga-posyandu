@@ -23,6 +23,10 @@ class PatientFactory extends Factory
             'address' => fake()->address(),
             'phone_number' => fake()->phoneNumber(),
             'profile_photo' => null,
+            'father_name' => fake()->name('male'),
+            'mother_name' => fake()->name('female'),
+            'weight_at_birth' => fake()->randomFloat(2, 2.5, 4.5),
+            'height_at_birth' => fake()->randomFloat(2, 45.0, 55.0),
         ];
     }
 

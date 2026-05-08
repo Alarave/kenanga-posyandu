@@ -1,281 +1,232 @@
-<div wire:key="growth-chart-root" class="max-w-7xl mx-auto space-y-6 pb-12">
+<div wire:key="growth-chart-root" class="w-full space-y-12">
     
     @php
         $isMale = strtoupper($patient->gender) === 'L' || strtoupper($patient->gender) === 'M';
         $themeColor = $isMale ? 'bg-sky-600' : 'bg-pink-600';
-        $accentColor = $isMale ? 'teal' : 'pink';
-        $chartBg = $isMale ? '#0284c7' : '#db2777';
     @endphp
 
-    @if(!$isEmbedded)
-    {{-- ── Patient Header: Premium Bento Style ── --}}
-    <div class="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 relative overflow-hidden group">
-        <div class="absolute -right-12 -top-12 w-48 h-48 {{ $isMale ? 'bg-sky-50' : 'bg-pink-50' }} rounded-full opacity-50 transition-transform group-hover:scale-110 duration-700"></div>
+    {{-- ── Section 1: Riwayat Pemeriksaan (Top Section) ── --}}
+    <div class="bg-white rounded-[3rem] p-10 shadow-[0_8px_30px_rgb(0,0,0,0.02)] border border-slate-100">
+        <div class="flex items-center justify-between mb-8">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400">
+                    <span class="material-symbols-outlined text-[24px]">history</span>
+                </div>
+                <div>
+                    <h3 class="text-sm font-black text-slate-800 uppercase tracking-[0.2em]">Riwayat Pemeriksaan</h3>
+                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Data Antropometri Berkala</p>
+                </div>
+            </div>
+            <a href="#" class="px-6 py-2.5 bg-slate-50 hover:bg-slate-100 rounded-full text-[10px] font-black text-slate-500 uppercase tracking-widest transition-all">Lihat Selengkapnya →</a>
+        </div>
         
-        <div class="relative z-10 flex flex-col lg:flex-row items-center gap-6">
-            <div class="w-20 h-20 rounded-2xl {{ $isMale ? 'bg-sky-50 text-sky-600 border-sky-100' : 'bg-pink-50 text-pink-600 border-pink-100' }} flex items-center justify-center shadow-inner border flex-shrink-0">
-                <span class="material-symbols-outlined text-[40px]">{{ $isMale ? 'boy' : 'girl' }}</span>
-            </div>
-            
-            <div class="flex-1 text-center lg:text-left">
-                <div class="flex flex-wrap items-center justify-center lg:justify-start gap-3 mb-1">
-                    <h2 class="text-2xl font-black text-slate-900 tracking-tight">{{ $patient->full_name }}</h2>
-                    <span @class([
-                        'px-3 py-0.5 rounded-full text-white text-[9px] font-black uppercase tracking-widest shadow-sm',
-                        'bg-sky-600' => $isMale,
-                        'bg-pink-600' => !$isMale
-                    ])>
-                        {{ str_replace('_', ' ', $patient->category) }}
-                    </span>
-                </div>
-                <div class="flex flex-wrap justify-center lg:justify-start gap-4 text-slate-500 text-[11px] font-bold">
-                    <div class="flex items-center gap-1.5">
-                        <span class="material-symbols-outlined text-[16px] {{ $isMale ? 'text-sky-500/60' : 'text-pink-500/60' }}">fingerprint</span>
-                        {{ $patient->id_number }}
-                    </div>
-                    <div class="flex items-center gap-1.5">
-                        <span class="material-symbols-outlined text-[16px] {{ $isMale ? 'text-sky-500/60' : 'text-pink-500/60' }}">cake</span>
-                        {{ \Carbon\Carbon::parse($patient->birth_date)->translatedFormat('d M Y') }}
-                    </div>
-                </div>
-            </div>
-
-            <div class="flex items-center gap-4 bg-slate-50 p-2 rounded-2xl border border-slate-100">
-                <div class="px-4 py-2 text-center">
-                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Status Gizi</p>
-                    <p @class([
-                        'text-sm font-black',
-                        'text-sky-600' => $isMale,
-                        'text-pink-600' => !$isMale
-                    ])>Normal</p>
-                </div>
-                <div class="w-px h-8 bg-slate-200"></div>
-                <div class="px-4 py-2 text-center">
-                    <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Posyandu</p>
-                    <p class="text-sm font-black text-slate-700">{{ $patient->posyandu->name ?? '-' }}</p>
-                </div>
-            </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left">
+                <thead>
+                    <tr class="border-b border-slate-50">
+                        <th class="pb-6 text-[10px] font-black text-slate-400 uppercase tracking-widest pl-4">Tanggal Kunjungan</th>
+                        <th class="pb-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Berat Badan</th>
+                        <th class="pb-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Tinggi Badan</th>
+                        <th class="pb-6 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest pr-4">Status Gizi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-50">
+                    @forelse($patient->medicalRecords()->latest()->limit(5)->get() as $record)
+                    <tr class="group hover:bg-slate-50/50 transition-colors">
+                        <td class="py-6 pl-4">
+                            <p class="text-[12px] font-black text-slate-700 mb-0.5">{{ \Carbon\Carbon::parse($record->visit_date)->translatedFormat('d F Y') }}</p>
+                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Pemeriksaan Rutin</p>
+                        </td>
+                        <td class="py-6">
+                            <div class="flex items-baseline gap-1">
+                                <span class="text-lg font-black text-slate-900">{{ $record->weight }}</span>
+                                <span class="text-[10px] font-black text-slate-400 uppercase">kg</span>
+                            </div>
+                        </td>
+                        <td class="py-6">
+                            <div class="flex items-baseline gap-1">
+                                <span class="text-lg font-black text-slate-900">{{ $record->height }}</span>
+                                <span class="text-[10px] font-black text-slate-400 uppercase">cm</span>
+                            </div>
+                        </td>
+                        <td class="py-6 text-right pr-4">
+                            <span @class([
+                                'px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest inline-block shadow-sm',
+                                'bg-emerald-50 text-emerald-600 border border-emerald-100' => str_contains($record->nutrition_status ?? '', 'Normal') || str_contains($record->nutrition_status ?? '', 'Baik'),
+                                'bg-amber-50 text-amber-600 border border-amber-100' => str_contains($record->nutrition_status ?? '', 'Kurang'),
+                                'bg-red-50 text-red-600 border border-red-100' => str_contains($record->nutrition_status ?? '', 'Buruk'),
+                                'bg-slate-50 text-slate-400 border border-slate-100' => !$record->nutrition_status,
+                            ])>
+                                {{ $record->nutrition_status ?: 'Data N/A' }}
+                            </span>
+                        </td>
+                    </tr>
+                    @empty
+                    <tr><td colspan="4" class="py-12 text-center text-[11px] text-slate-400 font-bold uppercase tracking-[0.3em]">Belum ada data pemeriksaan</td></tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
-    @endif
 
-    {{-- ── Dashboard Grid ── --}}
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
-        {{-- Left: Main Chart Card --}}
-        <div class="lg:col-span-8 space-y-6">
-            <div class="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100">
-                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6">
-                    <div>
-                        <h3 class="text-md font-black text-slate-800 tracking-tight uppercase">Grafik Pertumbuhan</h3>
-                        <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Standar Antropometri WHO</p>
-                    </div>
-                    
-                    <div class="flex items-center p-1 bg-slate-100 rounded-xl">
-                        <button wire:click="switchChart('wfa')" 
-                            @class([
-                                'px-6 py-2 text-[10px] font-black uppercase tracking-wider rounded-lg transition-all',
-                                'bg-white shadow-sm text-teal-600' => $activeChart === 'wfa',
-                                'text-slate-500 hover:text-slate-700' => $activeChart !== 'wfa'
-                            ])>BB/U</button>
-                        <button wire:click="switchChart('hfa')" 
-                            @class([
-                                'px-6 py-2 text-[10px] font-black uppercase tracking-wider rounded-lg transition-all',
-                                'bg-white shadow-sm text-teal-600' => $activeChart === 'hfa',
-                                'text-slate-500 hover:text-slate-700' => $activeChart !== 'hfa'
-                            ])>TB/U</button>
-                    </div>
-                </div>
-
-                <script>var initialGrowthData = @json($chartData);</script>
-                <div class="relative {{ $themeColor }} rounded-[2rem] p-6 shadow-xl transition-all duration-500" 
-                     style="height: 550px;"
-                     x-data="{ 
-                        chart: null,
-                        hasData: true,
-                        initChart(chartData) {
-                            const ctx = document.getElementById('growthChart');
-                            if (!ctx || !window.Chart) return;
-                            if (this.chart) this.chart.destroy();
-                            
-                            const data = chartData || null;
-                            if (!data || !data.datasets || data.datasets.length === 0) {
-                                this.hasData = false;
-                                return;
-                            }
-
-                            this.hasData = true;
-                            this.chart = new Chart(ctx, {
-                                type: 'line',
-                                data: data,
-                                options: {
-                                    responsive: true,
-                                    maintainAspectRatio: false,
-                                    animation: { duration: 800 },
-                                    interaction: { intersect: false, mode: 'index' },
-                                    scales: {
-                                        x: { 
-                                            grid: { color: 'rgba(255,255,255,0.2)' }, 
-                                            ticks: { color: '#ffffff', font: { size: 10, weight: '700' }, maxRotation: 0, minRotation: 0 },
-                                            title: { display: true, text: data.labels.length > 30 && data.datasets.length > 5 ? 'Umur (bulan dan tahun penuh)' : 'Umur (bulan penuh)', color: '#ffffff', font: { weight: '800', size: 11 } }
-                                        },
-                                        y: { 
-                                            grid: { color: 'rgba(255,255,255,0.2)' }, 
-                                            ticks: { color: '#ffffff', font: { size: 10, weight: '700' } },
-                                            suggestedMin: data.datasets.some(d => d.label.includes('Tinggi')) ? 40 : 0,
-                                            title: { 
-                                                display: true, 
-                                                text: data.datasets.some(d => d.label.includes('Tinggi')) ? 'Tinggi Badan (cm)' : 'Berat Badan (kg)', 
-                                                color: '#ffffff', 
-                                                font: { weight: '800', size: 11 } 
-                                            }
-                                        }
-                                    },
-                                    plugins: {
-                                        legend: { position: 'bottom', labels: { boxWidth: 12, color: '#ffffff', font: { weight: '700', size: 10 } } },
-                                        tooltip: { backgroundColor: '#1e293b', padding: 12, cornerRadius: 8 }
-                                    }
-                                }
-                            });
-                        }
-                     }"
-                     x-init="
-                        setTimeout(() => { if (typeof initialGrowthData !== 'undefined') initChart(initialGrowthData); }, 300);
-                        $wire.on('chart-updated', (data) => {
-                            const rawData = Array.isArray(data) ? data[0] : data;
-                            initChart(rawData);
-                        });
-                     "
-                >
-                    <div class="relative w-full h-full z-10" wire:ignore>
-                        <canvas id="growthChart" x-show="hasData"></canvas>
-                    </div>
-                    
-                    <div x-show="!hasData" class="absolute inset-0 flex flex-col items-center justify-center p-8 text-center z-20">
-                        <div class="w-16 h-16 rounded-2xl bg-slate-100 flex items-center justify-center text-slate-300 mb-4">
-                            <span class="material-symbols-outlined text-[32px]">query_stats</span>
-                        </div>
-                        <h4 class="text-sm font-black text-slate-800">Belum ada data pengukuran untuk ditampilkan di grafik</h4>
-                        <p class="text-[10px] text-slate-500 font-bold max-w-[200px]">Data pemeriksaan balita akan muncul di sini setelah ditambahkan.</p>
-                    </div>
-
-                    <div wire:loading wire:target="switchChart" class="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center z-30 rounded-2xl">
-                        <div class="flex flex-col items-center gap-3">
-                            <div class="animate-spin rounded-full h-8 w-8 border-3 border-teal-500 border-t-transparent"></div>
-                            <p class="text-[9px] font-black text-teal-600 uppercase tracking-widest">Loading...</p>
-                        </div>
-                    </div>
-                </div>
+    {{-- ── Section 2: Quick Stats Row ── --}}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-sm flex items-center gap-6 group">
+            <div class="w-16 h-16 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-inner group-hover:scale-110 transition-transform">
+                <span class="material-symbols-outlined text-[32px]">vaccines</span>
             </div>
-
-            {{-- History Mini-Table --}}
-            <div class="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-xs font-black text-slate-800 uppercase tracking-wider">Riwayat Pemeriksaan</h3>
-                    <a href="#" class="text-[9px] font-black text-teal-600 uppercase tracking-widest">Selengkapnya →</a>
-                </div>
-                
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left">
-                        <thead>
-                            <tr class="border-b border-slate-50">
-                                <th class="pb-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Tgl Kunjungan</th>
-                                <th class="pb-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Berat</th>
-                                <th class="pb-4 text-[9px] font-black text-slate-400 uppercase tracking-widest">Tinggi</th>
-                                <th class="pb-4 text-right text-[9px] font-black text-slate-400 uppercase tracking-widest">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-50">
-                            @forelse($patient->medicalRecords()->latest()->limit(5)->get() as $record)
-                            <tr class="group hover:bg-slate-50/50">
-                                <td class="py-4 text-[11px] font-bold text-slate-600">
-                                    {{ \Carbon\Carbon::parse($record->visit_date)->translatedFormat('d M Y') }}
-                                </td>
-                                <td class="py-4">
-                                    <span class="text-[11px] font-black text-slate-900">{{ $record->weight }}</span>
-                                    <span class="text-[8px] font-bold text-slate-400 uppercase ml-0.5">kg</span>
-                                </td>
-                                <td class="py-4">
-                                    <span class="text-[11px] font-black text-slate-900">{{ $record->height }}</span>
-                                    <span class="text-[8px] font-bold text-slate-400 uppercase ml-0.5">cm</span>
-                                </td>
-                                <td class="py-4 text-right">
-                                    <span @class([
-                                        'px-2 py-0.5 rounded-md text-[8px] font-black uppercase tracking-wider',
-                                        'bg-emerald-50 text-emerald-600' => str_contains($record->nutrition_status ?? '', 'Normal') || str_contains($record->nutrition_status ?? '', 'Baik'),
-                                        'bg-amber-50 text-amber-600' => str_contains($record->nutrition_status ?? '', 'Kurang'),
-                                        'bg-red-50 text-red-600' => str_contains($record->nutrition_status ?? '', 'Buruk'),
-                                        'bg-slate-50 text-slate-400' => !$record->nutrition_status,
-                                    ])>
-                                        {{ $record->nutrition_status ?: 'Data N/A' }}
-                                    </span>
-                                </td>
-                            </tr>
-                            @empty
-                            <tr><td colspan="4" class="py-8 text-center text-[10px] text-slate-400 font-bold uppercase tracking-widest">Belum ada riwayat</td></tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
+            <div>
+                <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-1">Capaian Imunisasi</p>
+                <p class="text-2xl font-black text-slate-800">8 <span class="text-sm text-slate-400">/ 12</span></p>
             </div>
         </div>
 
-        {{-- Right: Quick Stats --}}
-        <div class="lg:col-span-4 space-y-6">
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
-                <div class="p-6 bg-emerald-50 rounded-[2rem] border border-emerald-100 flex items-center gap-4 group">
-                    <div class="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-emerald-600 group-hover:scale-110 transition-transform">
-                        <span class="material-symbols-outlined">cake</span>
+        <div class="bg-slate-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-2xl group">
+            <div class="absolute -right-16 -bottom-16 w-48 h-48 bg-teal-500/10 rounded-full blur-3xl"></div>
+            <div class="relative z-10 flex items-center justify-between">
+                <div class="space-y-4">
+                    <div class="px-3 py-1 bg-white/10 backdrop-blur-md rounded-lg border border-white/10 w-fit">
+                        <span class="text-[9px] font-black uppercase tracking-[0.2em] text-teal-400">Digital Pass</span>
                     </div>
                     <div>
-                        <p class="text-[9px] font-black text-emerald-600/60 uppercase tracking-widest">Usia Anak</p>
-                        <p class="text-xl font-black text-emerald-900">{{ $patient->age_in_months }} <span class="text-[10px]">Bln</span></p>
+                        <p class="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">Terakhir Diperiksa</p>
+                        <p class="text-sm font-black italic text-slate-200">
+                            {{ $patient->medicalRecords()->latest()->first()?->visit_date ? \Carbon\Carbon::parse($patient->medicalRecords()->latest()->first()->visit_date)->translatedFormat('d F Y') : 'N/A' }}
+                        </p>
                     </div>
                 </div>
-                <div class="p-6 bg-blue-50 rounded-[2rem] border border-blue-100 flex items-center gap-4 group">
-                    <div class="w-12 h-12 rounded-2xl bg-white shadow-sm flex items-center justify-center text-blue-600 group-hover:scale-110 transition-transform">
-                        <span class="material-symbols-outlined">vaccines</span>
-                    </div>
-                    <div>
-                        <p class="text-[9px] font-black text-blue-600/60 uppercase tracking-widest">Imunisasi</p>
-                        <p class="text-xl font-black text-blue-900">8 <span class="text-[10px]">/ 12</span></p>
-                    </div>
-                </div>
+                <span class="material-symbols-outlined text-teal-400 text-[40px] opacity-40">qr_code_2</span>
             </div>
+        </div>
 
-            <div class="bg-slate-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden shadow-xl">
-                <div class="absolute -right-8 -top-8 w-32 h-32 bg-teal-500/10 rounded-full blur-2xl"></div>
-                <div class="relative z-10">
-                    <div class="flex items-center justify-between mb-8">
-                        <span class="px-2 py-0.5 bg-white/10 rounded-md text-[8px] font-black uppercase tracking-widest text-slate-300">Digital Pass</span>
-                        <span class="material-symbols-outlined text-teal-400 text-[24px]">qr_code_2</span>
-                    </div>
-                    <div class="space-y-4">
-                        <div>
-                            <p class="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">Terakhir Diperiksa</p>
-                            <p class="text-sm font-black italic">{{ $patient->medicalRecords()->latest()->first()?->visit_date ? \Carbon\Carbon::parse($patient->medicalRecords()->latest()->first()->visit_date)->translatedFormat('d M Y') : 'Belum Ada' }}</p>
-                        </div>
-                        <div class="flex items-center justify-between pt-4 border-t border-white/5">
-                            <p class="text-[10px] font-bold text-teal-400">Petugas: {{ explode(' ', $patient->medicalRecords()->latest()->first()?->user?->name ?? 'Sistem')[0] }}</p>
-                            <div class="w-8 h-8 rounded-lg bg-teal-500 flex items-center justify-center">
-                                <i class="fas fa-user-nurse text-white text-[12px]"></i>
-                            </div>
-                        </div>
-                    </div>
+        <div class="bg-gradient-to-br from-amber-50 to-orange-50 border border-orange-100 rounded-[2.5rem] p-8 relative overflow-hidden group shadow-sm flex items-center gap-6">
+            <div class="w-16 h-16 rounded-2xl bg-white text-orange-500 flex items-center justify-center shadow-md shrink-0">
+                <span class="material-symbols-outlined text-[32px]">lightbulb</span>
+            </div>
+            <p class="text-[12px] text-orange-900 leading-relaxed font-bold italic relative z-10">"Pemberian MP-ASI bergizi setelah 6 bulan krusial."</p>
+        </div>
+    </div>
+
+    {{-- ── Section 3: Grafik Pertumbuhan (Bottom Section) ── --}}
+    <div class="bg-white rounded-[3rem] p-10 shadow-[0_8px_30px_rgb(0,0,0,0.02)] border border-slate-100 overflow-hidden relative group">
+        <div class="absolute -right-20 -top-20 w-80 h-80 bg-teal-500/5 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
+
+        <div class="flex flex-col md:flex-row items-center justify-between gap-8 mb-10 relative z-10">
+            <div>
+                <div class="flex items-center gap-3 mb-1">
+                    <div class="w-2 h-8 bg-gradient-to-b from-teal-500 to-emerald-600 rounded-full"></div>
+                    <h3 class="text-xl font-black text-slate-800 tracking-tight uppercase">Grafik Analisis Pertumbuhan WHO</h3>
                 </div>
+                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.3em] ml-5">Visualisasi Tren Antropometri Anak</p>
             </div>
             
-            <div class="bg-amber-50 border border-amber-100 rounded-[2.5rem] p-8 relative overflow-hidden">
-                <div class="absolute -left-10 -bottom-10 w-24 h-24 bg-amber-200/20 rounded-full blur-2xl"></div>
-                <div class="flex items-center gap-3 mb-4">
-                    <div class="w-10 h-10 rounded-xl bg-white shadow-sm text-amber-500 flex items-center justify-center">
-                        <span class="material-symbols-outlined text-[20px]">lightbulb</span>
-                    </div>
-                    <h4 class="font-black text-slate-800 text-[10px] uppercase tracking-widest">Tips Kesehatan</h4>
+            <div class="flex items-center p-1.5 bg-slate-50/50 backdrop-blur-md rounded-[2rem] border border-slate-100 shadow-inner">
+                <button wire:click="switchChart('wfa')" 
+                    @class([
+                        'flex items-center gap-3 px-8 py-3 text-[11px] font-black uppercase tracking-widest rounded-full transition-all duration-500',
+                        'bg-white shadow-[0_4px_15px_rgba(0,0,0,0.05)] text-teal-600 ring-1 ring-slate-100 scale-100' => $activeChart === 'wfa',
+                        'text-slate-400 hover:text-slate-600 hover:bg-white/40 scale-95 opacity-70' => $activeChart !== 'wfa'
+                    ])>
+                    <span @class([
+                        'w-8 h-8 rounded-xl flex items-center justify-center transition-colors',
+                        'bg-teal-50 text-teal-600' => $activeChart === 'wfa',
+                        'bg-slate-100 text-slate-400' => $activeChart !== 'wfa'
+                    ])>
+                        <span class="material-symbols-outlined text-[20px]">monitor_weight</span>
+                    </span>
+                    BB/U
+                </button>
+                <button wire:click="switchChart('hfa')" 
+                    @class([
+                        'flex items-center gap-3 px-8 py-3 text-[11px] font-black uppercase tracking-widest rounded-full transition-all duration-500',
+                        'bg-white shadow-[0_4px_15px_rgba(0,0,0,0.05)] text-teal-600 ring-1 ring-slate-100 scale-100' => $activeChart === 'hfa',
+                        'text-slate-400 hover:text-slate-600 hover:bg-white/40 scale-95 opacity-70' => $activeChart !== 'hfa'
+                    ])>
+                    <span @class([
+                        'w-8 h-8 rounded-xl flex items-center justify-center transition-colors',
+                        'bg-teal-50 text-teal-600' => $activeChart === 'hfa',
+                        'bg-slate-100 text-slate-400' => $activeChart !== 'hfa'
+                    ])>
+                        <span class="material-symbols-outlined text-[20px]">straighten</span>
+                    </span>
+                    TB/U
+                </button>
+            </div>
+        </div>
+
+        <script>var initialGrowthData = @json($chartData);</script>
+        <div class="relative rounded-[3rem] p-10 shadow-2xl transition-all duration-700 overflow-hidden" 
+             style="height: 900px; background: {{ $isMale ? 'radial-gradient(circle at 0% 0%, #0f172a 0%, #1e3a8a 100%)' : 'radial-gradient(circle at 0% 0%, #4c0519 0%, #831843 100%)' }};"
+             x-data="{ 
+                chart: null,
+                hasData: true,
+                initChart(chartData) {
+                    const ctx = document.getElementById('growthChartBottom');
+                    if (!ctx || !window.Chart) return;
+                    if (this.chart) this.chart.destroy();
+                    
+                    const data = chartData || null;
+                    if (!data || !data.datasets || data.datasets.length === 0) {
+                        this.hasData = false;
+                        return;
+                    }
+
+                    this.hasData = true;
+                    this.chart = new Chart(ctx, {
+                        type: 'line',
+                        data: data,
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            animation: { duration: 2000, easing: 'easeOutQuart' },
+                            interaction: { intersect: false, mode: 'index' },
+                            scales: {
+                                x: { 
+                                    grid: { color: 'rgba(255,255,255,0.1)', drawBorder: false }, 
+                                    ticks: { color: '#ffffff', font: { size: 11, weight: '800' } },
+                                    title: { display: true, text: 'UMUR (BULAN)', color: '#ffffff', font: { weight: '900', size: 12, family: 'Inter' } }
+                                },
+                                y: { 
+                                    grid: { color: 'rgba(255,255,255,0.1)', drawBorder: false }, 
+                                    ticks: { color: '#ffffff', font: { size: 11, weight: '800' } },
+                                    suggestedMin: data.datasets.some(d => d.label.includes('Tinggi')) ? 40 : 0,
+                                    title: { display: true, text: data.datasets.some(d => d.label.includes('Tinggi')) ? 'TINGGI (CM)' : 'BERAT (KG)', color: '#ffffff', font: { weight: '900', size: 12, family: 'Inter' } }
+                                }
+                            },
+                            plugins: {
+                                legend: { position: 'bottom', labels: { boxWidth: 12, boxHeight: 12, usePointStyle: true, pointStyle: 'circle', color: '#ffffff', padding: 40, font: { weight: '800', size: 11 } } },
+                                tooltip: { backgroundColor: 'rgba(15, 23, 42, 1)', padding: 20, cornerRadius: 20, usePointStyle: true, titleFont: { size: 16, weight: '900' }, bodyFont: { size: 14, weight: '700' } }
+                            }
+                        }
+                    });
+                }
+             }"
+             x-init="
+                setTimeout(() => { if (typeof initialGrowthData !== 'undefined') initChart(initialGrowthData); }, 300);
+                $wire.on('chart-updated', (data) => {
+                    const rawData = Array.isArray(data) ? data[0] : data;
+                    initChart(rawData);
+                });
+             "
+        >
+            <div class="absolute inset-0 opacity-20 pointer-events-none" style="background-image: radial-gradient(at 0% 0%, hsla(161, 84%, 39%, 0.5) 0px, transparent 50%), radial-gradient(at 100% 0%, hsla(188, 86%, 53%, 0.5) 0px, transparent 50%);"></div>
+            <div class="relative w-full h-full z-10" wire:ignore>
+                <canvas id="growthChartBottom" x-show="hasData"></canvas>
+            </div>
+            
+            <div x-show="!hasData" class="absolute inset-0 flex flex-col items-center justify-center p-12 text-center z-20">
+                <div class="w-24 h-24 rounded-[2.5rem] bg-white/10 backdrop-blur-md flex items-center justify-center text-white/30 mb-8 border border-white/10">
+                    <span class="material-symbols-outlined text-[48px]">query_stats</span>
                 </div>
-                <p class="text-[11px] text-slate-600 leading-relaxed font-bold italic">
-                    "Pemberian MP-ASI bergizi setelah usia 6 bulan sangat krusial untuk mencegah keterlambatan pertumbuhan."
-                </p>
+                <h4 class="text-xl font-black text-white tracking-tight">Belum Ada Data Pengukuran</h4>
+                <p class="text-xs text-white/50 font-bold max-w-[300px] mt-3 leading-relaxed">Grafik pertumbuhan akan tersedia setelah data antropometri ditambahkan.</p>
+            </div>
+
+            <div wire:loading wire:target="switchChart" class="absolute inset-0 bg-slate-900/60 backdrop-blur-xl flex items-center justify-center z-30 rounded-[3rem]">
+                <div class="flex flex-col items-center gap-5">
+                    <div class="w-16 h-16 border-4 border-teal-400 border-t-transparent rounded-full animate-spin"></div>
+                    <p class="text-[11px] font-black text-white uppercase tracking-[0.4em]">Sinkronisasi Analisis...</p>
+                </div>
             </div>
         </div>
     </div>

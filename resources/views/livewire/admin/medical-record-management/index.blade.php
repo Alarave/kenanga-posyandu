@@ -1,25 +1,42 @@
-<div class="space-y-8 p-6 md:p-8" wire:key="medical-records-root">
+<div class="space-y-6" wire:key="medical-records-root">
     {{-- Header Section (Replicated style) --}}
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-        <div>
-            <nav class="flex text-xs text-slate-400 mb-1.5 gap-1.5 items-center">
-                <a href="{{ route('dashboard') }}" class="hover:text-teal-600 transition-colors">Beranda</a>
-                <span class="material-symbols-outlined text-[12px]">chevron_right</span>
-                <span class="text-teal-600 font-semibold">Rekam Medis</span>
-            </nav>
-            <h1 class="text-2xl font-bold text-slate-900">Manajemen Rekam Medis</h1>
-            <p class="text-sm text-slate-500 mt-0.5">Kelola data kunjungan dan rekam kesehatan warga.</p>
-        </div>
+    <div class="relative mb-10">
+        {{-- Decorative Background Element --}}
+        <div class="absolute -top-10 -left-10 w-64 h-64 bg-teal-500/5 rounded-full blur-3xl pointer-events-none"></div>
         
-        <div class="flex flex-wrap gap-3 items-center">
-            <x-button href="{{ route('admin.medical-records.bulk') }}" variant="outline" icon="assignment_turned_in">
-                Bulan Penimbangan
-            </x-button>
-            @can('create', App\Models\MedicalRecord::class)
-            <x-button href="{{ route('admin.medical-records.create') }}" variant="secondary" icon="note_add">
-                Tambah Rekam Medis
-            </x-button>
-            @endcan
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative">
+            <div class="space-y-2">
+
+                {{-- Title & Subtitle with Accent --}}
+                <div class="flex items-start gap-4">
+                    <div class="w-1.5 h-12 bg-gradient-to-b from-teal-500 to-teal-100 rounded-full mt-1 hidden sm:block"></div>
+                    <div>
+                        <h1 class="text-3xl font-black text-slate-900 tracking-tight leading-none">
+                            Manajemen <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">Rekam Medis</span>
+                        </h1>
+                        <p class="text-sm font-bold text-slate-400 mt-2 flex items-center gap-2">
+                            Kelola data kunjungan dan rekam kesehatan warga secara sistematis.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            {{-- Action Buttons with Better Styling --}}
+            <div class="flex flex-wrap gap-3 items-center ml-auto">
+                <a href="{{ route('admin.medical-records.bulk') }}" 
+                   class="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-white border border-slate-100 text-xs font-black uppercase tracking-widest text-slate-600 hover:text-teal-600 hover:border-teal-200 hover:shadow-lg hover:shadow-teal-500/5 transition-all group/btn">
+                    <span class="material-symbols-outlined text-[20px] text-slate-400 group-hover/btn:text-teal-500 transition-colors">assignment_turned_in</span>
+                    Bulan Penimbangan
+                </a>
+                
+                @can('create', App\Models\MedicalRecord::class)
+                <a href="{{ route('admin.medical-records.create') }}" 
+                   class="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-br from-teal-600 to-emerald-500 text-white text-xs font-black uppercase tracking-widest shadow-xl shadow-teal-200 hover:shadow-teal-300 hover:-translate-y-0.5 transition-all group/add">
+                    <span class="material-symbols-outlined text-[20px] group-hover/add:rotate-90 transition-transform duration-500">add_circle</span>
+                    Tambah Rekam Medis
+                </a>
+                @endcan
+            </div>
         </div>
     </div>
 
@@ -27,7 +44,7 @@
     <div class="bg-white rounded-[2.5rem] border border-slate-100 p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div class="flex flex-wrap items-center gap-3 flex-1">
             {{-- Search Input --}}
-            <div class="relative min-w-[300px] flex-1 md:flex-none group">
+            <div class="relative min-w-[600px] flex-1 md:flex-none group">
                 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-teal-500 transition-colors pointer-events-none text-[20px]">search</span>
                 <input type="text" wire:model.live.debounce.150ms="search" 
                        placeholder="Cari nama warga atau NIK..."
@@ -64,11 +81,11 @@
             <table class="w-full">
                 <thead>
                     <tr class="bg-slate-50/50 border-b border-slate-100">
-                        <th class="px-8 py-5 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest">Waktu Kunjungan</th>
-                        <th class="px-8 py-5 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest">Pasien</th>
-                        <th class="px-8 py-5 text-left text-[10px] font-black text-slate-500 uppercase tracking-widest">Antropometri</th>
-                        <th class="px-8 py-5 text-center text-[10px] font-black text-slate-500 uppercase tracking-widest">Petugas</th>
-                        <th class="px-8 py-5 text-right text-[10px] font-black text-slate-500 uppercase tracking-widest">Aksi</th>
+                        <th class="px-8 py-5 text-left text-[10px] font-black text-slate-900 uppercase tracking-widest">Waktu Kunjungan</th>
+                        <th class="px-8 py-5 text-left text-[10px] font-black text-slate-900 uppercase tracking-widest">Pasien</th>
+                        <th class="px-8 py-5 text-left text-[10px] font-black text-slate-900 uppercase tracking-widest">Antropometri</th>
+                        <th class="px-8 py-5 text-center text-[10px] font-black text-slate-900 uppercase tracking-widest">Petugas</th>
+                        <th class="px-8 py-5 text-center text-[10px] font-black text-slate-900 uppercase tracking-widest">Aksi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50">
@@ -119,8 +136,8 @@
                                 <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Kader</span>
                             </div>
                         </td>
-                        <td class="px-8 py-6 text-right">
-                            <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-x-2 group-hover:translate-x-0">
+                        <td class="px-8 py-6 text-center">
+                            <div class="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-1 group-hover:translate-y-0">
                                 <a href="{{ route('admin.medical-records.show', $record->id) }}" 
                                    class="w-10 h-10 flex items-center justify-center rounded-2xl bg-white border border-slate-100 text-slate-400 hover:text-teal-600 hover:border-teal-200 hover:shadow-lg transition-all">
                                     <span class="material-symbols-outlined text-[20px]">visibility</span>

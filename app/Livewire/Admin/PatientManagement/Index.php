@@ -8,7 +8,6 @@ use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 
 #[Layout('components.layouts.app')]
-#[Title('Data Warga Terdaftar')]
 class Index extends BaseAdminComponent
 {
     public string $search = '';
@@ -92,6 +91,6 @@ class Index extends BaseAdminComponent
 
         return view('livewire.admin.patient-management.index', [
             'patients' => $query->paginate(10),
-        ]);
+        ])->title('Data Warga Terdaftar');
     }
 }

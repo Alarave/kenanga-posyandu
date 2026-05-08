@@ -44,6 +44,10 @@ class MedicalRecord extends Model
 
     protected $fillable = [
         'patient_id', 'user_id', 'visit_date', 'weight', 'height',
+        'weight_status', 'kpsp_status', 'tbc_screening_cough', 'tbc_screening_fever',
+        'tbc_screening_contact', 'tbc_screening_lethargy', 'tbc_screening_lumps', 
+        'other_symptoms', 'pmt_given', 'counseling_notes',
+        'referral_type',
         'blood_pressure', 'measurement_method', 'head_circumference', 'upper_arm_circumference', 'immunization',
         'vitamin_a', 'pill_fe', 'is_exclusive_breastfeeding', 'mp_asi',
         'complaint', 'diagnosis', 'disease_history', 'health_note',
@@ -67,6 +71,11 @@ class MedicalRecord extends Model
         'mp_asi' => 'boolean',
         'deworming_medicine' => 'boolean',
         'is_basic_immunization_complete' => 'boolean',
+        'tbc_screening_cough' => 'boolean',
+        'tbc_screening_fever' => 'boolean',
+        'tbc_screening_contact' => 'boolean',
+        'tbc_screening_lethargy' => 'boolean',
+        'tbc_screening_lumps' => 'boolean',
         'weight' => 'decimal:2',
         'height' => 'decimal:2',
         'head_circumference' => 'decimal:2',

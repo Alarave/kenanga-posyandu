@@ -1,4 +1,21 @@
-<div class="space-y-6">
+<div class="space-y-8 p-6 md:p-8 pt-2 md:pt-4">
+    {{-- Header Section --}}
+    <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-6">
+        <div class="relative pl-6">
+            {{-- Vertical Bar --}}
+            <div class="absolute left-0 top-1 bottom-1 w-1.5 bg-gradient-to-b from-[#065f46] via-[#065f46]/60 to-transparent rounded-full"></div>
+            
+            <div class="flex flex-col gap-4">
+
+                <div>
+                    <h1 class="text-4xl font-black text-[#0f172a] tracking-tight leading-none">
+                        Rekap <span class="text-[#065f46]">& Laporan</span>
+                    </h1>
+                    <p class="text-sm font-medium text-slate-500 mt-3">Analisis data kunjungan dan status kesehatan warga secara komprehensif.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     {{-- Flash Messages --}}
     @if(session('success'))

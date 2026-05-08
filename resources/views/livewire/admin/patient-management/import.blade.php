@@ -192,18 +192,7 @@
                 </div>
             </div>
 
-            {{-- Support & Support --}}
-            <div class="bg-teal-50 rounded-[3rem] p-10 border border-teal-100 flex gap-6">
-                <div class="w-14 h-14 bg-teal-200/50 rounded-2xl flex items-center justify-center flex-shrink-0">
-                    <span class="material-symbols-outlined text-teal-700 text-[32px]">verified</span>
-                </div>
-                <div>
-                    <h4 class="text-lg font-black text-teal-900 mb-2">Bisa Pakai Excel Lama</h4>
-                    <p class="text-sm text-teal-800/70 leading-relaxed font-medium">
-                        Kabar baik! Sekarang Ibu Kader bisa langsung mengunggah file Excel format lama <strong>(.xls)</strong> tanpa harus diubah-ubah lagi.
-                    </p>
-                </div>
-            </div>
+
         </div>
     </div>
 

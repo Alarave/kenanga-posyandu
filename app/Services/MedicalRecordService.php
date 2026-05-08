@@ -183,6 +183,8 @@ class MedicalRecordService
      */
     private function prepareRecordData(array $data, Patient $patient, User $user): array
     {
+        $this->updatePatientData($patient, $data);
+
         $data = $this->calculateNutrition($data, $patient);
 
         $data['user_id'] = $user->id;
@@ -190,6 +192,11 @@ class MedicalRecordService
         $data['complaint'] = $data['complaint'] ?? '—';
         $data['vitamin_a_color'] = $data['vitamin_a_color'] ?? 'none';
         $data['deworming_medicine'] = $data['deworming_medicine'] ?? false;
+        
+        // Defaults for TBC screening
+        $data['tbc_screening_cough'] = $data['tbc_screening_cough'] ?? false;
+        $data['tbc_screening_fever'] = $data['tbc_screening_fever'] ?? false;
+        $data['tbc_screening_contact'] = $data['tbc_screening_contact'] ?? false;
 
         return $data;
     }
@@ -203,6 +210,8 @@ class MedicalRecordService
         MedicalRecord $medicalRecord,
         array $oldValues
     ): array {
+        $this->updatePatientData($patient, $data);
+
         $weightChanged = isset($data['weight']) && $data['weight'] != $oldValues['weight'];
         $heightChanged = isset($data['height']) && $data['height'] != $oldValues['height'];
 
@@ -216,6 +225,25 @@ class MedicalRecordService
         $data['deworming_medicine'] = $data['deworming_medicine'] ?? $medicalRecord->deworming_medicine ?? false;
 
         return $data;
+    }
+
+    /**
+     * Update data dasar pasien jika dikirimkan bersama rekam medis
+     */
+    private function updatePatientData(Patient $patient, array $data): void
+    {
+        $patientFields = ['father_name', 'mother_name', 'weight_at_birth', 'height_at_birth'];
+        $updateData = [];
+
+        foreach ($patientFields as $field) {
+            if (isset($data[$field]) && ! empty($data[$field])) {
+                $updateData[$field] = $data[$field];
+            }
+        }
+
+        if (! empty($updateData)) {
+            $patient->update($updateData);
+        }
     }
 
     /**
