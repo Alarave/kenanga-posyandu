@@ -55,15 +55,6 @@ class Schedule extends Model
             return $query;
         }
 
-        if ($user->isCoordinator()) {
-            $pedukuhanId = Posyandu::find($user->posyandu_id)?->pedukuhan_id;
-            if ($pedukuhanId) {
-                // Get all posyandu IDs in this pedukuhan
-                $ids = Posyandu::where('pedukuhan_id', $pedukuhanId)->pluck('id');
-
-                return $query->whereIn('posyandu_id', $ids);
-            }
-        }
 
         // Default or other roles just see their own posyandu
         return $query->where('posyandu_id', $user->posyandu_id);

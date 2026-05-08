@@ -13,8 +13,8 @@ class SchedulePolicy
      */
     public function viewAny(User $user): bool
     {
-        // Superadmin and Coordinator can view multiple schedules
-        if ($user->isSuperAdmin() || $user->isCoordinator()) {
+        // Superadmin can view multiple schedules
+        if ($user->isSuperAdmin()) {
             return true;
         }
 
@@ -31,9 +31,6 @@ class SchedulePolicy
             return true;
         }
 
-        if ($user->isCoordinator()) {
-            return $user->posyandu && $schedule->posyandu && $user->posyandu->pedukuhan_id === $schedule->posyandu->pedukuhan_id;
-        }
 
         return $user->posyandu_id === $schedule->posyandu_id;
     }

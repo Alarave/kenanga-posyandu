@@ -171,7 +171,7 @@ class MedicalRecordService
      */
     private function verifyPatientAccess(Patient $patient, User $user): void
     {
-        if (! $user->isSuperAdmin() && ! $user->isCoordinator()) {
+        if (! $user->isSuperAdmin()) {
             if ($patient->posyandu_id !== $user->posyandu_id) {
                 abort(403, 'Anda tidak memiliki akses untuk membuat rekam medis untuk pasien ini.');
             }
@@ -190,6 +190,8 @@ class MedicalRecordService
         $data['user_id'] = $user->id;
         $data['immunization'] = $data['immunization'] ?? 'Tidak ada';
         $data['complaint'] = $data['complaint'] ?? '—';
+        $data['diagnosis'] = $data['diagnosis'] ?? 'Sehat';
+        $data['nutrition_status'] = $data['nutrition_status'] ?? 'Belum Dihitung';
         $data['vitamin_a_color'] = $data['vitamin_a_color'] ?? 'none';
         $data['deworming_medicine'] = $data['deworming_medicine'] ?? false;
         
@@ -197,6 +199,8 @@ class MedicalRecordService
         $data['tbc_screening_cough'] = $data['tbc_screening_cough'] ?? false;
         $data['tbc_screening_fever'] = $data['tbc_screening_fever'] ?? false;
         $data['tbc_screening_contact'] = $data['tbc_screening_contact'] ?? false;
+        $data['tbc_screening_lethargy'] = $data['tbc_screening_lethargy'] ?? false;
+        $data['tbc_screening_lumps'] = $data['tbc_screening_lumps'] ?? false;
 
         return $data;
     }
@@ -221,8 +225,24 @@ class MedicalRecordService
 
         $data['immunization'] = $data['immunization'] ?? $medicalRecord->immunization ?? 'Tidak ada';
         $data['complaint'] = $data['complaint'] ?? $medicalRecord->complaint ?? '—';
+        $data['diagnosis'] = $data['diagnosis'] ?? $medicalRecord->diagnosis ?? 'Sehat';
+        $data['nutrition_status'] = $data['nutrition_status'] ?? $medicalRecord->nutrition_status ?? 'Belum Dihitung';
         $data['vitamin_a_color'] = $data['vitamin_a_color'] ?? $medicalRecord->vitamin_a_color ?? 'none';
-        $data['deworming_medicine'] = $data['deworming_medicine'] ?? $medicalRecord->deworming_medicine ?? false;
+        
+        // Ensure booleans are always set
+        $data['vitamin_a'] = $data['vitamin_a'] ?? false;
+        $data['pill_fe'] = $data['pill_fe'] ?? false;
+        $data['deworming_medicine'] = $data['deworming_medicine'] ?? false;
+        $data['is_exclusive_breastfeeding'] = $data['is_exclusive_breastfeeding'] ?? false;
+        $data['mp_asi'] = $data['mp_asi'] ?? false;
+        $data['is_basic_immunization_complete'] = $data['is_basic_immunization_complete'] ?? false;
+
+        // TBC Screening
+        $data['tbc_screening_cough'] = $data['tbc_screening_cough'] ?? false;
+        $data['tbc_screening_fever'] = $data['tbc_screening_fever'] ?? false;
+        $data['tbc_screening_contact'] = $data['tbc_screening_contact'] ?? false;
+        $data['tbc_screening_lethargy'] = $data['tbc_screening_lethargy'] ?? false;
+        $data['tbc_screening_lumps'] = $data['tbc_screening_lumps'] ?? false;
 
         return $data;
     }

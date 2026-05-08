@@ -151,7 +151,7 @@ class MonthlyReport extends BaseAdminComponent
     protected function getEffectivePosyanduId(): ?int
     {
         $user = Auth::user();
-        if ($user->isSuperAdmin() || $user->isCoordinator()) {
+        if ($user->isSuperAdmin()) {
             return $this->selectedPosyanduId;
         }
 

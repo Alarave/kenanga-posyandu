@@ -18,7 +18,7 @@ trait HasPosyanduScope
     {
         $user = Auth::user();
 
-        if ($user->isSuperAdmin() || $user->isCoordinator()) {
+        if ($user->isSuperAdmin()) {
             return $query;
         }
 
@@ -37,7 +37,7 @@ trait HasPosyanduScope
     {
         $user = Auth::user();
 
-        if ($user->isSuperAdmin() || $user->isCoordinator()) {
+        if ($user->isSuperAdmin()) {
             return Posyandu::all();
         }
 

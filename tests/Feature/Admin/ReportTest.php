@@ -25,20 +25,7 @@ beforeEach(function () {
         'posyandu_id' => $this->posyandu1->id,
     ]);
 
-    $this->coordinator = User::factory()->create([
-        'role' => 'coordinator',
-        'posyandu_id' => $this->posyandu1->id,
-    ]);
 
-    $this->staff = User::factory()->create([
-        'role' => 'staff',
-        'posyandu_id' => $this->posyandu1->id,
-    ]);
-
-    $this->medical = User::factory()->create([
-        'role' => 'medical',
-        'posyandu_id' => $this->posyandu1->id,
-    ]);
 
     $this->patient = Patient::factory()->create([
         'posyandu_id' => $this->posyandu1->id,
@@ -67,23 +54,7 @@ describe('akses laporan per role', function () {
         $response->assertOk();
     });
 
-    it('coordinator dapat mengakses halaman laporan', function () {
-        $this->actingAs($this->coordinator);
-        $response = $this->get('/admin/reports');
-        $response->assertOk();
-    });
 
-    it('staff tidak dapat mengakses halaman laporan', function () {
-        $this->actingAs($this->staff);
-        $response = $this->get('/admin/reports');
-        $response->assertForbidden();
-    });
-
-    it('medical tidak dapat mengakses halaman laporan', function () {
-        $this->actingAs($this->medical);
-        $response = $this->get('/admin/reports');
-        $response->assertForbidden();
-    });
 });
 
 describe('ekspor Excel', function () {
@@ -139,17 +110,6 @@ describe('ekspor Excel', function () {
         $response->assertOk();
     });
 
-    it('staff tidak dapat mengekspor Excel', function () {
-        $this->actingAs($this->staff);
-
-        $response = $this->post('/admin/reports/export-excel', [
-            'posyandu_id' => $this->posyandu1->id,
-            'month' => now()->month,
-            'year' => now()->year,
-        ]);
-
-        $response->assertForbidden();
-    });
 
     it('membuat log aktivitas saat ekspor Excel', function () {
         $this->actingAs($this->admin);

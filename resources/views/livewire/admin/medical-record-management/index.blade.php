@@ -9,12 +9,12 @@
 
                 {{-- Title & Subtitle with Accent --}}
                 <div class="flex items-start gap-4">
-                    <div class="w-1.5 h-12 bg-gradient-to-b from-teal-500 to-teal-100 rounded-full mt-1 hidden sm:block"></div>
+                    <div class="w-1.5 h-12 bg-gradient-to-b from-teal-500 to-emerald-400 rounded-full mt-1 hidden sm:block"></div>
                     <div>
-                        <h1 class="text-3xl font-black text-slate-900 tracking-tight leading-none">
-                            Manajemen <span class="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">Rekam Medis</span>
+                        <h1 class="text-3xl font-black tracking-tight leading-none text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">
+                            Manajemen Rekam Medis
                         </h1>
-                        <p class="text-sm font-bold text-slate-400 mt-2 flex items-center gap-2">
+                        <p class="text-sm font-bold text-slate-900 mt-2 flex items-center gap-2">
                             Kelola data kunjungan dan rekam kesehatan warga secara sistematis.
                         </p>
                     </div>
@@ -22,7 +22,7 @@
             </div>
             
             {{-- Action Buttons with Better Styling --}}
-            <div class="flex flex-wrap gap-3 items-center ml-auto">
+            <div class="flex flex-wrap gap-3 items-center justify-end flex-1">
                 <a href="{{ route('admin.medical-records.bulk') }}" 
                    class="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-white border border-slate-100 text-xs font-black uppercase tracking-widest text-slate-600 hover:text-teal-600 hover:border-teal-200 hover:shadow-lg hover:shadow-teal-500/5 transition-all group/btn">
                     <span class="material-symbols-outlined text-[20px] text-slate-400 group-hover/btn:text-teal-500 transition-colors">assignment_turned_in</span>

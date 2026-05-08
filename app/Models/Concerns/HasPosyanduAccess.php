@@ -19,28 +19,9 @@ trait HasPosyanduAccess
             return $query;
         }
 
-        if ($user->isCoordinator()) {
-            return $this->scopeByCoordinator($query, $user);
-        }
-
         return $this->scopeByPosyandu($query, $user);
     }
 
-    /**
-     * Scope untuk coordinator (akses berdasarkan pedukuhan)
-     */
-    protected function scopeByCoordinator(Builder $query, User $user): Builder
-    {
-        $pedukuhanId = $user->getPedukuhanId();
-
-        if (! $pedukuhanId) {
-            return $query->whereNull('id');
-        }
-
-        return $query->whereHas('posyandu', function (Builder $q) use ($pedukuhanId) {
-            $q->where('pedukuhan_id', $pedukuhanId);
-        });
-    }
 
     /**
      * Scope untuk user dengan akses posyandu tunggal

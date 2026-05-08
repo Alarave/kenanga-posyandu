@@ -72,7 +72,7 @@ class ReportController extends Controller
         ]);
 
         $user = Auth::user();
-        $posyanduId = $user->isSuperAdmin() || $user->isCoordinator()
+        $posyanduId = $user->isSuperAdmin()
             ? $request->posyandu_id
             : $user->posyandu_id;
 

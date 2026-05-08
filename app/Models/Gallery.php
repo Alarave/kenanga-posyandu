@@ -39,14 +39,6 @@ class Gallery extends Model
             return $query;
         }
 
-        if ($user->isCoordinator()) {
-            $pedukuhanId = Posyandu::find($user->posyandu_id)?->pedukuhan_id;
-            if ($pedukuhanId) {
-                $ids = Posyandu::where('pedukuhan_id', $pedukuhanId)->pluck('id');
-
-                return $query->whereIn('posyandu_id', $ids);
-            }
-        }
 
         return $query->where('posyandu_id', $user->posyandu_id);
     }

@@ -8,7 +8,7 @@ Berikut adalah pembaruan file **`README.md`** tanpa bagian **Lisensi**:
 
 **Posyandu** adalah aplikasi web berbasis Laravel yang dirancang untuk mempermudah pengelolaan data rekam medis di posyandu. Sistem ini memberikan kemudahan bagi petugas kesehatan dan administrator dalam mengelola dan merekap data pasien, jadwal layanan, artikel edukasi, galeri, serta informasi lainnya yang berkaitan dengan layanan posyandu.
 
-Dengan menggunakan aplikasi ini, para petugas dan pengelola posyandu dapat dengan cepat mengakses dan memanipulasi data pasien, jadwal pemeriksaan, serta berbagai informasi medis lainnya. Selain itu, sistem ini juga menyediakan fitur otentikasi yang memungkinkan akses terbatas berdasarkan peran pengguna seperti **superadmin**, **admin**, **coordinator**, **staff**, **medical**, **patient**, dan **partner**.
+Dengan menggunakan aplikasi ini, para petugas dan pengelola posyandu dapat dengan cepat mengakses dan memanipulasi data pasien, jadwal pemeriksaan, serta berbagai informasi medis lainnya. Selain itu, sistem ini juga menyediakan fitur otentikasi yang memungkinkan akses terbatas berdasarkan peran pengguna seperti **superadmin**, **admin**, dan **kader**.
 
 Aplikasi ini dibangun dengan menggunakan **Laravel** untuk backend dan **Tailwind CSS** untuk styling frontend.
 
@@ -40,7 +40,7 @@ Aplikasi ini dibangun dengan menggunakan **Laravel** untuk backend dan **Tailwin
    - Verifikasi email dan reset password untuk keamanan pengguna.
 7. **Role-Based Access Control (RBAC)**:
    
-   - Pengelolaan akses berdasarkan peran pengguna (misal: superadmin, admin, coordinator, staff, medical, patient, dan partner).
+   - Pengelolaan akses berdasarkan peran pengguna (misal: superadmin, admin, dan kader).
 8. **Livewire Components**:
    
    - Menggunakan Livewire untuk mengelola interaksi dinamis pada antarmuka pengguna.

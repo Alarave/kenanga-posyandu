@@ -144,7 +144,7 @@ Route::middleware(['auth'])->group(function () {
     // ---------------------------------------------------------
     // 9. REPORTS (MONTHLY REPORTS - Livewire)
     // ---------------------------------------------------------
-    Route::middleware(['role:superadmin,admin,coordinator,kader'])->group(function () {
+    Route::middleware(['role:superadmin,admin,kader'])->group(function () {
         Route::get('admin/reports', [\App\Http\Controllers\Web\ReportController::class, 'index'])->name('admin.reports.index');
         Route::post('admin/reports/export-excel', [\App\Http\Controllers\Web\ReportController::class, 'exportExcel'])->name('admin.reports.export-excel');
         Route::post('admin/reports/export-pdf', [\App\Http\Controllers\Web\ReportController::class, 'exportPdf'])->name('admin.reports.export-pdf');

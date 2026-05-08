@@ -13,7 +13,7 @@
 <div class="max-w-[1440px] mx-auto space-y-10 pb-20">
 
     {{-- ── Modern Header with Mesh Gradient ── --}}
-    <div class="relative rounded-[3rem] p-8 md:p-12 overflow-hidden hero-mesh text-white shadow-2xl">
+    <div class="relative rounded-[2rem] p-6 md:p-10 overflow-hidden hero-mesh text-white shadow-2xl">
         {{-- Decorative Glow Elements --}}
         <div class="absolute inset-0 opacity-20 pointer-events-none">
             <div class="absolute -top-24 -left-24 w-96 h-96 bg-white/20 rounded-full blur-[120px]"></div>
@@ -21,27 +21,27 @@
         </div>
 
         <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
-            <div class="space-y-3">
-                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-[11px] font-black uppercase tracking-[0.2em] text-teal-300">
-                    <span class="w-2 h-2 rounded-full bg-teal-400 animate-pulse"></span>
+            <div class="space-y-2">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-[9px] font-black uppercase tracking-[0.2em] text-teal-300">
+                    <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse"></span>
                     Live Data Analysis
                 </div>
-                <h1 class="text-4xl md:text-5xl font-black tracking-tight leading-tight">Analitik & Wawasan Kesehatan</h1>
-                <p class="text-lg text-slate-300 font-medium max-w-2xl">
+                <h1 class="text-3xl md:text-4xl font-black tracking-tight leading-tight text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">Analitik & Wawasan Kesehatan</h1>
+                <p class="text-base text-slate-300 font-medium max-w-2xl">
                     Pemantauan agregat periode Januari – Desember {{ $selectedYear }} 
                     @if(auth()->user()->posyandu) · <span class="text-white font-bold">{{ auth()->user()->posyandu->name }}</span> @endif
                 </p>
                 @if($lastUpdated)
-                <p class="text-[11px] font-black uppercase tracking-widest text-slate-500 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[14px]">history</span>
+                <p class="text-[10px] font-black uppercase tracking-widest text-slate-500 flex items-center gap-2">
+                    <span class="material-symbols-outlined text-[12px]">history</span>
                     Data diperbarui terakhir pada: {{ $lastUpdated }}
                 </p>
                 @endif
             </div>
 
             <div class="flex items-center gap-4 flex-wrap">
-                <div class="flex items-center bg-white h-14 rounded-2xl px-5 gap-3 shadow-xl shadow-black/20 border border-white/10">
-                    <span class="material-symbols-outlined text-slate-400 text-[22px]">calendar_month</span>
+                <div class="flex items-center bg-white h-11 rounded-xl px-4 gap-2 shadow-xl shadow-black/20 border border-white/10">
+                    <span class="material-symbols-outlined text-slate-400 text-[18px]">calendar_month</span>
                     <select wire:model.live="selectedYear"
                             class="bg-transparent border-none focus:ring-0 text-lg font-black text-slate-900 p-0 pr-8 cursor-pointer">
                         @foreach($years as $y)

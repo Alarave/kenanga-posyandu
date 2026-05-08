@@ -64,8 +64,6 @@ class User extends Authenticatable implements MustVerifyEmail
 
     const ROLE_ADMIN = 'admin';
 
-    const ROLE_COORDINATOR = 'coordinator';
-
     const ROLE_KADER = 'kader';
 
     /**
@@ -76,7 +74,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return [
             self::ROLE_SUPERADMIN,
             self::ROLE_ADMIN,
-            self::ROLE_COORDINATOR,
             self::ROLE_KADER,
         ];
     }
@@ -96,10 +93,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->role === self::ROLE_ADMIN;
     }
 
-    public function isCoordinator(): bool
-    {
-        return $this->role === self::ROLE_COORDINATOR;
-    }
 
     /**
      * Get pedukuhan_id dari posyandu user

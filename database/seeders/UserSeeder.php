@@ -43,23 +43,6 @@ class UserSeeder extends Seeder
             );
         }
 
-        // ── Coordinator (cross-posyandu oversight) ────────────────────────────
-        User::updateOrCreate(
-            ['username' => 'koordinator'],
-            [
-                'name' => 'Koordinator Wilayah',
-                'email' => 'koordinator@posyandu.com',
-                'username' => 'koordinator',
-                'password' => Hash::make('password123'),
-                'role' => User::ROLE_COORDINATOR,
-                'posyandu_id' => null,
-                'is_active' => true,
-                'verified_email' => true,
-                'attempt_login' => 0,
-                'block_expires' => null,
-                'email_verified_at' => now(),
-            ]
-        );
 
         // ── Per-posyandu users ────────────────────────────────────────────────
         $posyanduUsers = [

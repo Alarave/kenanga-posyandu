@@ -71,11 +71,24 @@ class MedicalRecordController extends Controller
     {
         $this->authorize('create', MedicalRecord::class);
 
-        $this->medicalRecordService->createRecord($request->validated(), auth()->user());
+        try {
+            $this->medicalRecordService->createRecord($request->validated(), auth()->user());
 
-        return redirect()
-            ->route('admin.medical-records.index')
-            ->with('success', 'Rekam medis berhasil ditambahkan.');
+            return redirect()
+                ->route('admin.medical-records.index')
+                ->with('success', 'Rekam medis berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Gagal menyimpan rekam medis: ' . $e->getMessage(), [
+                'user_id' => auth()->id(),
+                'patient_id' => $request->patient_id,
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return redirect()
+                ->back()
+                ->withInput()
+                ->with('error', 'Gagal menyimpan rekam medis: ' . $e->getMessage());
+        }
     }
 
     /**

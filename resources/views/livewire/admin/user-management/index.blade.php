@@ -1,14 +1,16 @@
 <div class="space-y-6">
-    {{-- Header Section (Replicated style from other components) --}}
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8">
-        <div>
-            <nav class="flex text-xs text-slate-400 mb-1.5 gap-1.5 items-center">
-                <a href="{{ route('dashboard') }}" class="hover:text-teal-600 transition-colors">Beranda</a>
-                <span class="material-symbols-outlined text-[12px]">chevron_right</span>
-                <span class="text-teal-600 font-semibold">Manajemen User</span>
-            </nav>
-            <h1 class="text-2xl font-bold text-slate-900">Manajemen Akses & Pengguna</h1>
-            <p class="text-sm text-slate-500 mt-0.5">Kelola hak akses dan akun kader posyandu.</p>
+    {{-- Header Section (Standardized with other components) --}}
+    <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8">
+        <div class="relative pl-6">
+            {{-- Vertical Bar --}}
+            <div class="absolute left-0 top-1 bottom-1 w-1.5 bg-gradient-to-b from-teal-500 via-emerald-400 to-transparent rounded-full"></div>
+            
+            <div class="flex flex-col gap-4">
+                <div>
+                    <h1 class="text-3xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">Manajemen Akses & Pengguna</h1>
+                    <p class="text-sm font-bold text-slate-900 mt-2">Kelola hak akses dan akun kader posyandu.</p>
+                </div>
+            </div>
         </div>
         
         <div class="flex flex-wrap gap-3 items-center">
@@ -20,21 +22,21 @@
 
     {{-- ── Stats Row ── --}}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-            <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Pengguna</div>
-            <div class="text-3xl font-black text-slate-900">{{ $totalUsers }}</div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+            <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Total Pengguna</div>
+            <div class="text-2xl font-black text-slate-900">{{ $totalUsers }}</div>
         </div>
-        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-            <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Kader Aktif</div>
-            <div class="text-3xl font-black text-slate-900">{{ App\Models\User::where('role', 'kader')->where('is_active', true)->count() }}</div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+            <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Kader Aktif</div>
+            <div class="text-2xl font-black text-slate-900">{{ App\Models\User::where('role', 'kader')->where('is_active', true)->count() }}</div>
         </div>
-        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-            <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Unit Terdaftar</div>
-            <div class="text-3xl font-black text-slate-900">{{ $totalPosyandu }}</div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+            <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Unit Terdaftar</div>
+            <div class="text-2xl font-black text-slate-900">{{ $totalPosyandu }}</div>
         </div>
-        <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
-            <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Akun Nonaktif</div>
-            <div class="text-3xl font-black text-red-600">{{ $inactiveUsers }}</div>
+        <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
+            <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Akun Nonaktif</div>
+            <div class="text-2xl font-black text-red-600">{{ $inactiveUsers }}</div>
         </div>
     </div>
 
@@ -85,11 +87,11 @@
         <x-table>
             <thead class="bg-slate-50/80 border-b border-slate-100">
                 <tr>
-                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest text-left">Detail User</th>
-                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest text-left">Role</th>
-                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest text-left">Unit Penugasan</th>
-                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest text-center">Status</th>
-                    <th class="px-6 py-4 text-xs font-bold text-slate-500 uppercase tracking-widest text-right">Aksi</th>
+                    <th class="px-5 py-3 text-[10px] font-black text-slate-900 uppercase tracking-widest text-center">Detail User</th>
+                    <th class="px-5 py-3 text-[10px] font-black text-slate-900 uppercase tracking-widest text-center">Role</th>
+                    <th class="px-5 py-3 text-[10px] font-black text-slate-900 uppercase tracking-widest text-center">Unit Penugasan</th>
+                    <th class="px-5 py-3 text-[10px] font-black text-slate-900 uppercase tracking-widest text-center">Status</th>
+                    <th class="px-5 py-3 text-[10px] font-black text-slate-900 uppercase tracking-widest text-center">Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-50">
@@ -143,14 +145,24 @@
                             @endif
                         </div>
                     </td>
-                    <td class="px-6 py-4 text-right">
-                        <div class="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <x-button href="{{ route('admin.users.show', $user->id) }}" variant="ghost" size="sm">
-                                <span class="material-symbols-outlined text-[18px]">visibility</span>
-                            </x-button>
-                            <x-button href="{{ route('admin.users.edit', $user->id) }}" variant="ghost" size="sm">
-                                <span class="material-symbols-outlined text-[18px]">edit</span>
-                            </x-button>
+                    <td class="px-5 py-4 text-center">
+                        <div class="flex items-center justify-center gap-2">
+                            <a href="{{ route('admin.users.show', $user->id) }}" 
+                               class="w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-teal-600 hover:text-white transition-all shadow-sm hover:shadow-teal-500/20 group/btn"
+                               title="Lihat Detail">
+                                <span class="material-symbols-outlined text-[22px]">visibility</span>
+                            </a>
+                            <a href="{{ route('admin.users.edit', $user->id) }}" 
+                               class="w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-indigo-600 hover:text-white transition-all shadow-sm hover:shadow-indigo-500/20 group/btn"
+                               title="Edit User">
+                                <span class="material-symbols-outlined text-[22px]">edit</span>
+                            </a>
+                            <button wire:click="delete({{ $user->id }})" 
+                                    wire:confirm="Apakah Anda yakin ingin menghapus user ini? Tindakan ini tidak dapat dibatalkan."
+                                    class="w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-red-600 hover:text-white transition-all shadow-sm hover:shadow-red-500/20 group/btn"
+                                    title="Hapus User">
+                                <span class="material-symbols-outlined text-[22px]">delete</span>
+                            </button>
                         </div>
                     </td>
                 </tr>

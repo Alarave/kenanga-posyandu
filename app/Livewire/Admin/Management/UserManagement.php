@@ -47,4 +47,18 @@ class UserManagement extends BaseAdminComponent
             'inactiveUsers' => $stats->inactive ?? 0,
         ]);
     }
+
+    public function delete($id)
+    {
+        $user = User::findOrFail($id);
+        
+        // Prevent deleting self
+        if ($user->id === auth()->id()) {
+            session()->flash('error', 'Anda tidak dapat menghapus akun Anda sendiri.');
+            return;
+        }
+
+        $user->delete();
+        session()->flash('success', 'User berhasil dihapus.');
+    }
 }

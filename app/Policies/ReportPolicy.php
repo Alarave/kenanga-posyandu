@@ -8,11 +8,11 @@ class ReportPolicy
 {
     /**
      * Determine if the user can view reports.
-     * Superadmin, admin, and coordinator can access reports.
+     * Superadmin, admin, and kader can access reports.
      */
     public function viewAny(User $user): bool
     {
-        return $user->isSuperAdmin() || $user->isAdmin() || $user->isCoordinator() || $user->isKader();
+        return $user->isSuperAdmin() || $user->isAdmin() || $user->isKader();
     }
 
     /**
@@ -21,6 +21,6 @@ class ReportPolicy
      */
     public function export(User $user): bool
     {
-        return $user->isSuperAdmin() || $user->isAdmin() || $user->isCoordinator() || $user->isKader();
+        return $user->isSuperAdmin() || $user->isAdmin() || $user->isKader();
     }
 }

@@ -125,19 +125,4 @@ class MedicalRecord extends Model
         });
     }
 
-    /**
-     * Override scopeByCoordinator untuk MedicalRecord (akses melalui patient.posyandu.pedukuhan)
-     */
-    protected function scopeByCoordinator($query, $user)
-    {
-        $pedukuhanId = $user->getPedukuhanId();
-
-        if (! $pedukuhanId) {
-            return $query->whereNull('id');
-        }
-
-        return $query->whereHas('patient.posyandu', function ($q) use ($pedukuhanId) {
-            $q->where('pedukuhan_id', $pedukuhanId);
-        });
-    }
 }
