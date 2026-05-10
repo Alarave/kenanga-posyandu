@@ -49,15 +49,16 @@ class MedicalRecordPolicy
      */
     public function create(User $user): bool
     {
-        // Superadmin, Admin, and Kader can create medical records
+        // Superadmin and Admin can create medical records
         if ($user->isSuperAdmin()) {
             return true;
         }
 
-        if ($user->isAdmin() || $user->isKader()) {
+        if ($user->isAdmin()) {
             return $user->posyandu_id !== null;
         }
 
+        // Kader can only view
         return false;
     }
 
@@ -71,12 +72,12 @@ class MedicalRecordPolicy
             return true;
         }
 
-
-        // Admin and Kader can update medical records from their posyandu
-        if ($user->isAdmin() || $user->isKader()) {
+        // Admin can update medical records from their posyandu
+        if ($user->isAdmin()) {
             return $user->posyandu_id === $medicalRecord->patient->posyandu_id;
         }
 
+        // Kader can only view
         return false;
     }
 

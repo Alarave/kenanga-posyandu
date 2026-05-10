@@ -77,6 +77,10 @@
             // Rekam Medis - accessible by all authenticated users
             if (auth()->user()->isSuperAdmin() || auth()->user()->isAdmin() || auth()->user()->isKader()) {
                 $items[] = ['route' => 'admin.medical-records.index', 'pattern' => 'admin.medical-records.index', 'icon' => 'fa-notes-medical', 'label' => 'Rekam Medis'];
+            }
+            
+            // Bulan Penimbangan - only superadmin and admin
+            if (auth()->user()->isSuperAdmin() || auth()->user()->isAdmin()) {
                 $items[] = ['route' => 'admin.medical-records.bulk', 'pattern' => 'admin.medical-records.bulk', 'icon' => 'fa-file-medical', 'label' => 'Bulan Penimbangan'];
             }
         @endphp

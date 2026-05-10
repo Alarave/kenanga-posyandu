@@ -31,6 +31,8 @@ class BulkMeasurementEntry extends Component
 
     public function mount()
     {
+        $this->authorize('create', MedicalRecord::class);
+        
         $this->visit_date = now()->format('Y-m-d');
 
         // If user is a Kader, set their posyandu_id

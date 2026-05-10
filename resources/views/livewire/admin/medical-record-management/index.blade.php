@@ -23,11 +23,13 @@
             
             {{-- Action Buttons with Better Styling --}}
             <div class="flex flex-wrap gap-3 items-center justify-end flex-1">
+                @can('create', App\Models\MedicalRecord::class)
                 <a href="{{ route('admin.medical-records.bulk') }}" 
                    class="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-white border border-slate-100 text-xs font-black uppercase tracking-widest text-slate-600 hover:text-teal-600 hover:border-teal-200 hover:shadow-lg hover:shadow-teal-500/5 transition-all group/btn">
                     <span class="material-symbols-outlined text-[20px] text-slate-400 group-hover/btn:text-teal-500 transition-colors">assignment_turned_in</span>
                     Bulan Penimbangan
                 </a>
+                @endcan
                 
                 @can('create', App\Models\MedicalRecord::class)
                 <a href="{{ route('admin.medical-records.create') }}" 

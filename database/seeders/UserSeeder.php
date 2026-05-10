@@ -48,33 +48,33 @@ class UserSeeder extends Seeder
         $posyanduUsers = [
             // KENANGA 1
             [
-                'posyandu_code' => 'KENANGA1',
+                'posyandu_code' => 'PSY003', // Fixed from KENANGA1
+                'name' => 'Kader Kenanga 1',
+                'email' => 'kader.kenanga1@posyandu.com',
+                'username' => 'kader_kenanga1',
+                'role' => User::ROLE_KADER,
+            ],
+            [
+                'posyandu_code' => 'PSY003',
                 'name' => 'Admin Kenanga 1',
                 'email' => 'admin.kenanga1@posyandu.com',
                 'username' => 'admin_kenanga1',
                 'role' => User::ROLE_ADMIN,
             ],
-            [
-                'posyandu_code' => 'KENANGA1',
-                'name' => 'Moderator Kenanga 1',
-                'email' => 'kenanga1@posyandu.com',
-                'username' => 'kenanga1',
-                'role' => User::ROLE_KADER,
-            ],
             // KENANGA 2
             [
-                'posyandu_code' => 'KENANGA2',
-                'name' => 'Admin Kenanga 2',
-                'email' => 'admin.kenanga2@posyandu.com',
-                'username' => 'admin_kenanga2',
-                'role' => User::ROLE_ADMIN,
-            ],
-            [
-                'posyandu_code' => 'KENANGA2',
+                'posyandu_code' => 'PSY002', // Fixed from KENANGA2
                 'name' => 'Kader Kenanga 2',
                 'email' => 'kader.kenanga2@posyandu.com',
                 'username' => 'kader_kenanga2',
                 'role' => User::ROLE_KADER,
+            ],
+            [
+                'posyandu_code' => 'PSY002',
+                'name' => 'Admin Kenanga 2',
+                'email' => 'admin.kenanga2@posyandu.com',
+                'username' => 'admin_kenanga2',
+                'role' => User::ROLE_ADMIN,
             ],
         ];
 
