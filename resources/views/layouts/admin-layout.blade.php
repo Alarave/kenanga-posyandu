@@ -26,45 +26,6 @@
 </div>
 @endsection
 
-@push('styles')
-<style>
-    /* Custom styles that extend Tailwind */
-    .admin-table {
-        @apply min-w-full divide-y divide-gray-200;
-    }
-    .admin-table thead {
-        @apply bg-gray-50;
-    }
-    .admin-table th {
-        @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider;
-    }
-    .admin-table tbody {
-        @apply bg-white divide-y divide-gray-200;
-    }
-    .admin-table td {
-        @apply px-6 py-4 whitespace-nowrap text-sm text-gray-500;
-    }
-    
-    /* Status badges */
-    .status-badge {
-        @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
-    }
-    .status-active {
-        @apply bg-green-100 text-green-800;
-    }
-    .status-inactive {
-        @apply bg-red-100 text-red-800;
-    }
-    .status-pending {
-        @apply bg-yellow-100 text-yellow-800;
-    }
-    
-    /* Card variations */
-    .card-primary {
-        @apply bg-white rounded-lg shadow border border-gray-200;
-    }
-    .card-secondary {
-        @apply bg-gray-50 rounded-lg shadow-inner border border-gray-100;
-    }
-</style>
+@push('scripts')
+{{-- Admin specific scripts can go here --}}
 @endpush

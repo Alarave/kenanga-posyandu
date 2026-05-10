@@ -13,8 +13,6 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
-            'user' => \App\Http\Middleware\UserMiddleware::class,
-            'superadmin' => \App\Http\Middleware\SuperadminMiddleware::class,
             'role' => \App\Http\Middleware\RoleMiddleware::class,
             'check.user.status' => \App\Http\Middleware\CheckUserStatus::class,
             'session.timeout' => \App\Http\Middleware\SessionTimeout::class,

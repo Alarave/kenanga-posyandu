@@ -8,20 +8,19 @@
     <title>{{ config('app.name', 'Posyandu') }} | @yield('title')</title>
     
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
     
-    <!-- Styles -->
-    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    
-    <!-- Scripts -->
+    <!-- Scripts & Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     @livewireStyles
 </head>
-<body class="font-sans antialiased">
+<body class="font-sans antialiased text-slate-900">
     <div class="relative">
         <!-- Modal Overlay -->
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"></div>
+        <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"></div>
         
         <!-- Modal Content -->
         <div class="fixed inset-0 z-10 overflow-y-auto">

@@ -11,6 +11,18 @@ class PatientRequest extends FormRequest
         return true;
     }
 
+    /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('id_number') && !empty($this->id_number)) {
+            $this->merge([
+                'id_number_hash' => \App\Models\Patient::generateBlindIndex($this->id_number)
+            ]);
+        }
+    }
+
     public function rules()
     {
         $patientId = $this->route('patient') ? $this->route('patient')->id : null;
@@ -18,7 +30,8 @@ class PatientRequest extends FormRequest
         return [
             'full_name' => 'required|string|max:255',
             'head_of_family_name' => 'nullable|string|max:255',
-            'id_number' => 'required|digits:16|unique:patients,id_number,'.$patientId,
+            'id_number' => 'required|digits:16',
+            'id_number_hash' => 'required|unique:patients,id_number_hash,'.$patientId,
             'category' => 'required|string|in:bayi,baduta,balita,anak_sekolah,ibu_hamil,remaja,lansia,umum',
             'parent_name' => 'nullable|string|max:255',
             'mother_nik' => 'nullable|digits:16',

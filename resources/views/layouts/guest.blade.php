@@ -61,39 +61,20 @@
                     
                     {{-- Alert Messages (Session) --}}
                     @if (session('status'))
-                        <div class="mb-8 p-5 bg-teal-50 text-teal-700 border border-teal-200 rounded-2xl text-lg font-bold flex items-center gap-3" role="alert" aria-live="polite">
-                            <span class="material-symbols-outlined">check_circle</span>
-                            {{ session('status') }}
-                        </div>
+                        <x-ui.alert type="status" :message="session('status')" />
                     @endif
 
                     @if (session('success'))
-                        <div class="mb-8 p-5 bg-green-50 text-green-700 border border-green-200 rounded-2xl text-lg font-bold flex items-center gap-3" role="alert" aria-live="polite">
-                            <span class="material-symbols-outlined">check_circle</span>
-                            {{ session('success') }}
-                        </div>
+                        <x-ui.alert type="success" :message="session('success')" />
                     @endif
 
                     @if (session('error'))
-                        <div class="mb-8 p-5 bg-red-50 text-red-700 border border-red-200 rounded-2xl text-lg font-bold flex items-center gap-3" role="alert" aria-live="assertive">
-                            <span class="material-symbols-outlined">error</span>
-                            {{ session('error') }}
-                        </div>
+                        <x-ui.alert type="error" :message="session('error')" />
                     @endif
 
                     {{-- Validation Errors --}}
                     @if ($errors->any())
-                        <div class="mb-8 p-6 bg-red-50 border border-red-200 rounded-2xl" role="alert" aria-live="assertive">
-                             <div class="text-red-700 font-bold flex items-center gap-2 mb-3 text-lg">
-                                <span class="material-symbols-outlined">error</span>
-                                Ada kesalahan pengisian:
-                            </div>
-                            <ul class="space-y-1">
-                                @foreach ($errors->all() as $error)
-                                    <li class="text-red-600 text-base font-semibold">• {{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
+                        <x-ui.alert type="error" :messages="$errors->all()" />
                     @endif
 
                     @yield('content')

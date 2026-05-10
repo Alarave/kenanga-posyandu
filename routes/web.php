@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Auth\ConfirmPasswordController;
 // --- CONTROLLERS UMUM ---
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\PasswordResetController;
@@ -122,7 +121,10 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('admin/medical-records/{medicalRecord}', [MedicalRecordController::class, 'destroy'])->name('admin.medical-records.destroy');
 
     // 7. USERS
-    Route::middleware(['superadmin'])->group(function () {
+    Route::middleware(['role:superadmin'])->group(function () {
+        // Role & Permission Management
+        Route::get('admin/settings/roles', \App\Livewire\Admin\Settings\RolePermissionManagement::class)->name('admin.settings.roles');
+
         Route::get('admin/users', UserManagement::class)->name('admin.users.index');
         Route::get('admin/users/create', [UserController::class, 'create'])->name('admin.users.create');
         Route::post('admin/users', [UserController::class, 'store'])->name('admin.users.store');

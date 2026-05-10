@@ -78,6 +78,17 @@ class Analytics extends BaseAdminComponent
     /**
      * Refresh data manually (clears cache)
      */
+    public function refreshStats(): void
+    {
+        $user = Auth::user();
+        $posyanduId = $user->isSuperAdmin() ? null : $user->posyandu_id;
+        
+        // Dispatch job for all relevant keys (current year, and optionally current month)
+        ComputeAnalyticsSnapshot::dispatch($posyanduId, $this->selectedYear, $this->selectedMonth);
+        
+        $this->loadData();
+    }
+
     protected function loadData(): void
     {
         $user = Auth::user();
@@ -91,6 +102,11 @@ class Analytics extends BaseAdminComponent
         if ($snapshot) {
             $data = $snapshot->data['analytics_data'];
             $this->lastUpdated = $snapshot->last_computed_at->format('d M Y H:i');
+            
+            // Auto-refresh in background if data is older than 1 hour
+            if ($snapshot->last_computed_at->diffInHours(now()) >= 1) {
+                ComputeAnalyticsSnapshot::dispatch($posyanduId, $this->selectedYear, $this->selectedMonth);
+            }
         } else {
             // Fallback to legacy computation if no snapshot exists
             $data = $this->fetchAnalyticsData();

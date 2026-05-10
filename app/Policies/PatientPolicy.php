@@ -8,22 +8,9 @@ use App\Services\ActivityLogService;
 
 class PatientPolicy
 {
-    /**
-     * Determine if the user can view any patients.
-     */
     public function viewAny(User $user): bool
     {
-        // Superadmin can view all patients
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
-
-        // Admin and kader can view patients from their posyandu
-        if ($user->isAdmin() || $user->isKader()) {
-            return $user->posyandu_id !== null;
-        }
-
-        return false;
+        return $user->hasPermissionTo('patient.view') && $user->posyandu_id !== null;
     }
 
     /**
@@ -31,17 +18,7 @@ class PatientPolicy
      */
     public function view(User $user, Patient $patient): bool
     {
-        // Superadmin can view any patient
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
-
-        // Admin and kader can only view patients from their posyandu
-        if ($user->isAdmin() || $user->isKader()) {
-            return $user->posyandu_id === $patient->posyandu_id;
-        }
-
-        return false;
+        return $user->hasPermissionTo('patient.view') && $user->posyandu_id === $patient->posyandu_id;
     }
 
     /**
@@ -49,17 +26,7 @@ class PatientPolicy
      */
     public function create(User $user): bool
     {
-        // Superadmin and Admin can create patients
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
-
-        if ($user->isAdmin()) {
-            return $user->posyandu_id !== null;
-        }
-
-        // Kader cannot create (read-only per user request)
-        return false;
+        return $user->hasPermissionTo('patient.create') && $user->posyandu_id !== null;
     }
 
     /**
@@ -67,18 +34,7 @@ class PatientPolicy
      */
     public function update(User $user, Patient $patient): bool
     {
-        // Superadmin can update any patient
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
-
-        // Only Admin can update patients from their posyandu
-        if ($user->isAdmin()) {
-            return $user->posyandu_id === $patient->posyandu_id;
-        }
-
-        // Kader cannot update (read-only)
-        return false;
+        return $user->hasPermissionTo('patient.update') && $user->posyandu_id === $patient->posyandu_id;
     }
 
     /**
@@ -86,16 +42,7 @@ class PatientPolicy
      */
     public function delete(User $user, Patient $patient): bool
     {
-        // ONLY Superadmin and Admin (scoped) can delete patients
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
-
-        if ($user->isAdmin()) {
-            return $user->posyandu_id === $patient->posyandu_id;
-        }
-
-        return false;
+        return $user->hasPermissionTo('patient.delete') && $user->posyandu_id === $patient->posyandu_id;
     }
 
     /**

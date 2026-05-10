@@ -36,8 +36,6 @@ class PatientController extends Controller
     {
         $this->authorize('create', Patient::class);
 
-        \Log::info('Patient store request:', $request->all());
-
         try {
             $this->patientService->createPatient($request->validated(), auth()->user());
 

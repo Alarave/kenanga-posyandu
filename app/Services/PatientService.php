@@ -29,8 +29,9 @@ class PatientService
             $data['posyandu_id'] = $user->posyandu_id;
         }
 
-        // Validate unique NIK per posyandu
-        $existingPatient = Patient::where('id_number', $data['id_number'])
+        // SECURITY: Validate unique NIK using Blind Index (id_number_hash)
+        $nikHash = Patient::generateBlindIndex($data['id_number']);
+        $existingPatient = Patient::where('id_number_hash', $nikHash)
             ->where('posyandu_id', $data['posyandu_id'])
             ->first();
 
@@ -46,14 +47,19 @@ class PatientService
 
         $patient = Patient::create($data);
 
-        // Log activity
+        // SECURITY: Filter sensitive data before logging
+        $logData = collect($patient->toArray())
+            ->except(['id_number', 'id_number_hash', 'phone_number'])
+            ->toArray();
+
+        // Log activity (No NIK in description)
         $this->activityLogService->log(
             'create_patient',
-            "Menambahkan data warga: {$patient->full_name} (NIK: {$patient->id_number})",
+            "Menambahkan data warga: {$patient->full_name}",
             $patient->id,
             'Patient',
             null,
-            $patient->toArray()
+            $logData
         );
 
         return $patient;
@@ -66,16 +72,14 @@ class PatientService
      */
     public function updatePatient(Patient $patient, array $data, User $user): Patient
     {
-        // Store old values before update
-        $oldValues = $patient->toArray();
-
         // Enforce posyandu_id for non-superadmin users
         if (! $user->isSuperAdmin()) {
             $data['posyandu_id'] = $user->posyandu_id;
         }
 
-        // Validate unique NIK per posyandu (excluding current patient)
-        $existingPatient = Patient::where('id_number', $data['id_number'])
+        // SECURITY: Validate unique NIK using Blind Index
+        $nikHash = Patient::generateBlindIndex($data['id_number']);
+        $existingPatient = Patient::where('id_number_hash', $nikHash)
             ->where('posyandu_id', $data['posyandu_id'])
             ->where('id', '!=', $patient->id)
             ->first();
@@ -86,22 +90,30 @@ class PatientService
             ]);
         }
 
+        // Store old values before update (filtered)
+        $oldValues = collect($patient->toArray())
+            ->except(['id_number', 'id_number_hash', 'phone_number'])
+            ->toArray();
+
         if (isset($data['profile_photo']) && $data['profile_photo'] instanceof UploadedFile) {
-            // Optionally delete old photo here if desired:
-            // if ($patient->profile_photo) Storage::disk('public')->delete($patient->profile_photo);
             $data['profile_photo'] = $data['profile_photo']->store('patients', 'public');
         }
 
         $patient->update($data);
 
-        // Log activity with old and new values
+        // Fresh data for logging (filtered)
+        $newValues = collect($patient->fresh()->toArray())
+            ->except(['id_number', 'id_number_hash', 'phone_number'])
+            ->toArray();
+
+        // Log activity (No NIK in description)
         $this->activityLogService->log(
             'update_patient',
-            "Mengubah data warga: {$patient->full_name} (NIK: {$patient->id_number})",
+            "Mengubah data warga: {$patient->full_name}",
             $patient->id,
             'Patient',
             $oldValues,
-            $patient->fresh()->toArray()
+            $newValues
         );
 
         return $patient;
@@ -112,18 +124,20 @@ class PatientService
      */
     public function deletePatient(Patient $patient): void
     {
-        // Store patient data before deletion
-        $patientData = $patient->toArray();
+        // SECURITY: Filter sensitive data before deletion logging
+        $patientData = collect($patient->toArray())
+            ->except(['id_number', 'id_number_hash', 'phone_number'])
+            ->toArray();
+            
         $patientName = $patient->full_name;
-        $patientNik = $patient->id_number;
         $patientId = $patient->id;
 
         $patient->delete();
 
-        // Log activity
+        // Log activity (No NIK in description)
         $this->activityLogService->log(
             'delete_patient',
-            "Menghapus data warga: {$patientName} (NIK: {$patientNik})",
+            "Menghapus data warga: {$patientName}",
             $patientId,
             'Patient',
             $patientData,

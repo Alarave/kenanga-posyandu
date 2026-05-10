@@ -5,8 +5,12 @@
                 <span class="material-symbols-outlined">analytics</span>
             </div>
             <div>
-                <h1 class="text-lg font-black text-slate-900 leading-tight">Penimbangan Massal</h1>
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Entry Cepat Data Antropometri</p>
+                <h1 class="text-2xl font-black text-slate-900 leading-tight">Penimbangan Massal</h1>
+                <div class="flex items-center gap-3 mt-1">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Entry Cepat Data Antropometri</p>
+                    <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+                    <p class="text-[10px] font-black text-teal-600 uppercase tracking-widest">{{ count($measurements) }} Balita dalam daftar</p>
+                </div>
             </div>
         </div>
     @endsection
@@ -43,6 +47,14 @@
                             @endforeach
                         </select>
                     </div>
+
+                    <button wire:click="loadAllPatients" 
+                            wire:loading.attr="disabled"
+                            class="w-full h-16 flex items-center justify-center gap-3 bg-teal-600 hover:bg-teal-500 text-white rounded-2xl text-xs font-black uppercase tracking-widest shadow-lg shadow-teal-500/20 transition-all active:scale-95 disabled:opacity-50">
+                        <span class="material-symbols-outlined" wire:loading.remove wire:target="loadAllPatients">group_add</span>
+                        <span class="material-symbols-outlined animate-spin" wire:loading wire:target="loadAllPatients">sync</span>
+                        Muat Antrian Balita
+                    </button>
                 </div>
             </div>
 
@@ -124,13 +136,15 @@
                         <div class="space-y-2">
                             <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Berat (kg)</label>
                             <input type="number" step="0.01" wire:model.live.debounce.500ms="measurements.{{ $index }}.weight" 
-                                class="w-full bg-slate-50 border-slate-100 rounded-3xl text-xl font-black focus:ring-teal-500 focus:border-teal-500 py-4 text-center placeholder-slate-200 transition-all hover:bg-slate-100/50"
+                                tabindex="{{ ($index * 2) + 1 }}"
+                                class="w-full bg-slate-50 border-slate-100 rounded-3xl text-2xl font-black focus:ring-teal-500 focus:border-teal-500 py-5 text-center placeholder-slate-200 transition-all hover:bg-slate-100/50 shadow-inner"
                                 placeholder="0.00">
                         </div>
                         <div class="space-y-2">
                             <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Tinggi (cm)</label>
                             <input type="number" step="0.1" wire:model.live.debounce.500ms="measurements.{{ $index }}.height" 
-                                class="w-full bg-slate-50 border-slate-100 rounded-3xl text-xl font-black focus:ring-teal-500 focus:border-teal-500 py-4 text-center placeholder-slate-200 transition-all hover:bg-slate-100/50"
+                                tabindex="{{ ($index * 2) + 2 }}"
+                                class="w-full bg-slate-50 border-slate-100 rounded-3xl text-2xl font-black focus:ring-teal-500 focus:border-teal-500 py-5 text-center placeholder-slate-200 transition-all hover:bg-slate-100/50 shadow-inner"
                                 placeholder="0.0">
                         </div>
                     </div>
@@ -156,6 +170,16 @@
                                 'bg-purple-50 text-purple-600 border-purple-100' => str_contains($m['status_bbtb'], 'Gemuk'),
                             ])>
                                 BB/TB: {{ $m['status_bbtb'] }}
+                            </div>
+                        @endif
+                        @if(isset($m['status_tbu']))
+                            <div @class([
+                                'px-3 py-1.5 rounded-2xl text-[9px] font-black uppercase tracking-tighter border shadow-sm',
+                                'bg-emerald-50 text-emerald-600 border-emerald-100' => str_contains($m['status_tbu'], 'Normal'),
+                                'bg-red-50 text-red-600 border-red-100' => str_contains($m['status_tbu'], 'Pendek') || str_contains($m['status_tbu'], 'Sangat Pendek'),
+                                'bg-blue-50 text-blue-600 border-blue-100' => str_contains($m['status_tbu'], 'Tinggi'),
+                            ])>
+                                TB/U: {{ $m['status_tbu'] }}
                             </div>
                         @endif
                     </div>

@@ -52,6 +52,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // ── Superadmin Permission Bypass ─────────────────────────────
+        Gate::before(function ($user, $ability) {
+            return $user->isSuperAdmin() ? true : null;
+        });
+
         // Register model policies
         Gate::policy(Patient::class, PatientPolicy::class);
         Gate::policy(MedicalRecord::class, MedicalRecordPolicy::class);

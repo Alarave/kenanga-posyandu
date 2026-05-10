@@ -108,6 +108,31 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Relationship with the dynamic Role model
+     */
+    public function roleModel()
+    {
+        return $this->hasOne(Role::class, 'name', 'role');
+    }
+
+    /**
+     * Check if the user has a specific permission via their role
+     */
+    public function hasPermissionTo($permissionName): bool
+    {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+
+        $role = Role::where('name', $this->role)->first();
+        if (! $role) {
+            return false;
+        }
+
+        return $role->permissions()->where('name', $permissionName)->exists();
+    }
+
+    /**
      * Get the user's initials
      */
     public function getInitialsAttribute(): string

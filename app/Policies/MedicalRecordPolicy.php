@@ -8,22 +8,9 @@ use App\Services\ActivityLogService;
 
 class MedicalRecordPolicy
 {
-    /**
-     * Determine if the user can view any medical records.
-     */
     public function viewAny(User $user): bool
     {
-        // Superadmin can view all medical records
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
-
-        // Admin and kader can view medical records from their posyandu
-        if ($user->isAdmin() || $user->isKader()) {
-            return $user->posyandu_id !== null;
-        }
-
-        return false;
+        return $user->hasPermissionTo('medical_record.view') && $user->posyandu_id !== null;
     }
 
     /**
@@ -31,17 +18,7 @@ class MedicalRecordPolicy
      */
     public function view(User $user, MedicalRecord $medicalRecord): bool
     {
-        // Superadmin can view any medical record
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
-
-        // Admin and kader can only view medical records from their posyandu
-        if ($user->isAdmin() || $user->isKader()) {
-            return $user->posyandu_id === $medicalRecord->patient->posyandu_id;
-        }
-
-        return false;
+        return $user->hasPermissionTo('medical_record.view') && $user->posyandu_id === $medicalRecord->patient->posyandu_id;
     }
 
     /**
@@ -49,17 +26,7 @@ class MedicalRecordPolicy
      */
     public function create(User $user): bool
     {
-        // Superadmin and Admin can create medical records
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
-
-        if ($user->isAdmin()) {
-            return $user->posyandu_id !== null;
-        }
-
-        // Kader can only view
-        return false;
+        return $user->hasPermissionTo('medical_record.create') && $user->posyandu_id !== null;
     }
 
     /**
@@ -67,18 +34,7 @@ class MedicalRecordPolicy
      */
     public function update(User $user, MedicalRecord $medicalRecord): bool
     {
-        // Superadmin can update any medical record
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
-
-        // Admin can update medical records from their posyandu
-        if ($user->isAdmin()) {
-            return $user->posyandu_id === $medicalRecord->patient->posyandu_id;
-        }
-
-        // Kader can only view
-        return false;
+        return $user->hasPermissionTo('medical_record.update') && $user->posyandu_id === $medicalRecord->patient->posyandu_id;
     }
 
     /**
@@ -86,16 +42,7 @@ class MedicalRecordPolicy
      */
     public function delete(User $user, MedicalRecord $medicalRecord): bool
     {
-        // ONLY Superadmin and Admin (scoped) can delete medical records
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
-
-        if ($user->isAdmin()) {
-            return $user->posyandu_id === $medicalRecord->patient->posyandu_id;
-        }
-
-        return false;
+        return $user->hasPermissionTo('medical_record.delete') && $user->posyandu_id === $medicalRecord->patient->posyandu_id;
     }
 
     /**

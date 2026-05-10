@@ -1,0 +1,165 @@
+================================================================================
+MANUAL ARSITEKTUR TOTAL: POSYANDU DIGITAL (MASTER CONSOLIDATED EDITION)
+================================================================================
+
+Dokumen ini adalah panduan tunggal yang merinci seluruh anatomi sistem, logika 
+bisnis, dan infrastruktur teknis aplikasi Posyandu Digital.
+
+--------------------------------------------------------------------------------
+1. STRUKTUR DIREKTORI UTAMA & KONFIGURASI
+--------------------------------------------------------------------------------
+- app/               : Logika inti (Models, Controllers, Livewire, Services).
+- config/            : Pengaturan sistem (Database, App, Auth, Mail, dll).
+- database/          : Migrations (Struktur DB), Seeders (Data awal), Factories.
+- public/            : Titik masuk utama (index.php) dan aset publik.
+- resources/         : Sumber daya UI (Views/Blade, CSS Tailwind, JS).
+- routes/            : Navigasi URL (web.php, api.php, auth.php).
+- storage/           : Penyimpanan log, cache, dan file upload warga.
+- tests/             : Pengujian otomatis (Feature & Unit Testing).
+- .env               : File konfigurasi rahasia (Sangat Penting).
+
+--------------------------------------------------------------------------------
+2. BEDAH MENDALAM DIREKTORI 'app/' (100% COVERAGE)
+--------------------------------------------------------------------------------
+A. Http Layer (app/Http/):
+   - app/Http/Kernel.php         : Konfigurasi "pipa" HTTP. Mengatur urutan eksekusi middleware global dan web.
+   - app/Http/Controllers/       :
+      * Auth/                     :
+        - LoginController.php           : Mengelola proses masuk (authentication), pembatasan percobaan login (throttling), dan pengalihan user berdasarkan role.
+        - PasswordResetController.php   : Menangani alur lupa password, mulai dari pengiriman link reset ke email hingga pembaruan password baru.
+        - VerifyEmailController.php     : Mengelola proses verifikasi alamat email untuk memastikan akun dibuat dengan email yang valid.
+        - ConfirmPasswordController.php : Memvalidasi ulang password user sebelum mengakses area sensitif (seperti ganti password).
+      * Web/                      :
+        - ActivityLogController.php    : Menangani tampilan jejak audit (audit trail) dan ekspor log aktivitas sistem.
+        - ArticleController.php        : Mengelola data artikel kesehatan (tambah, edit, hapus) untuk admin.
+        - GalleryController.php        : Pusat pengelolaan foto kegiatan dan album dokumentasi Posyandu.
+        - MedicalRecordController.php   : Pengelola utama data rekam medis, riwayat imunisasi, dan kunjungan.
+        - PatientController.php        : Master data warga (pendaftaran, enkripsi data, dan foto profil).
+        - PedukuhanController.php      : Pengelola data wilayah dusun/RW di tingkat desa.
+        - PosyanduController.php       : Manajemen data unit layanan Posyandu dan pengurusnya.
+        - PublicArticleController.php  : Mengatur tampilan artikel edukasi yang bisa dibaca oleh warga umum.
+        - PublicController.php         : Menangani rute umum seperti halaman depan (landing page) dan informasi umum.
+        - ReportController.php         : Koordinator pembuatan dan pengunduhan laporan (PDF/Excel).
+        - ScheduleController.php       : Pengelola kalender jadwal kegiatan Posyandu bulanan.
+        - UserController.php           : Manajemen akun pengguna (Kader/Admin) dan hak aksesnya.
+      * DashboardController.php   : Logika penyiapan data ringkasan untuk halaman dashboard pertama.
+   - app/Http/Middleware/        :
+     * RoleMiddleware.php        : Filter akses utama berbasis peran (Admin/Kader/Superadmin) dengan pencatatan log audit.
+     * CheckUserStatus.php       : Memeriksa kolom 'is_active' di database; memblokir akses jika akun dinonaktifkan.
+     * PosyanduScopeMiddleware.php : Memastikan Kader hanya bisa mengelola data balita di Posyandu tempatnya bertugas.
+     * SessionTimeout.php        : Mengukur waktu aktivitas user dan otomatis logout jika tidak ada interaksi dalam waktu tertentu.
+     * Authenticate.php          : Gerbang utama yang memastikan hanya pengguna yang sudah login yang bisa masuk.
+     * SuperadminMiddleware.php  : Penjaga khusus untuk fitur-fitur teknis yang hanya boleh diakses oleh Super Admin.
+     * UserMiddleware.php        : Middleware legacy untuk pengecekan akses pengguna standar.
+     * VerifyEmailMiddleware.php  : Mengarahkan user ke halaman verifikasi jika email akun mereka belum dikonfirmasi.
+   - app/Http/Requests/          :
+      * ArticleRequest.php        : Validasi konten artikel (judul unik, format slug, dan isi konten).
+      * GalleryRequest.php        : Validasi upload foto kegiatan (ukuran file, tipe gambar JPG/PNG).
+      * MedicalRecordRequest.php  : Validasi angka medis (berat & tinggi badan harus logis, tanggal kunjungan).
+      * PatientRequest.php        : Validasi PII (NIK 16 digit, format nama, dan hashing NIK untuk pengecekan unik).
+      * PedukuhanRequest.php      : Validasi data wilayah dusun dan pemetaan wilayahnya.
+      * PosyanduRequest.php       : Validasi nama unit Posyandu dan kebenaran alamat lokasinya.
+      * ScheduleRequest.php       : Validasi jadwal (memastikan tanggal tidak lampau dan tidak bentrok).
+      * UserRequest.php           : Validasi pembuatan akun (email unik, kekuatan password, dan pemilihan role).
+
+B. Arsitektur Inti:
+   - app/Casts/EncryptedCast.php     : Enkripsi otomatis data sensitif (NIK).
+   - app/Contracts/                  : Interface (standarisasi pengolah file).
+   - app/DataTransferObjects (DTO)/  : Objek pengantar data (contoh: hasil gizi).
+   - app/Exports/ & Imports/         :
+     * MonthlyReportExport.php : Koordinator utama yang menggabungkan berbagai lembar kerja (sheets) menjadi satu file Excel utuh.
+     * Sheets/ (Lembar Kerja Excel Spesifik):
+       - NutritionDistributionSheet.php : Menampilkan sebaran status gizi (Normal, Stunting, dll) dalam bentuk tabel data.
+       - RawMedicalRecordsSheet.php     : Berisi data mentah hasil penimbangan (BB, TB, Umur) untuk analisis manual lebih lanjut.
+       - ReportSummarySheet.php         : Ringkasan statistik utama (Total Kunjungan, Jumlah Balita Sehat vs Berisiko).
+       - SchedulesSheet.php             : Daftar jadwal kegiatan Posyandu yang telah terlaksana pada bulan tersebut.
+       - VisitsByCategorySheet.php      : Pengelompokan kunjungan berdasarkan kategori warga (Balita, Lansia, Ibu Hamil).
+     * PatientImport.php       :
+       Mesin pengolah data warga dari file Excel. Memiliki fitur:
+       - Validasi Heading: Memastikan file Excel memiliki kolom yang sesuai standar.
+       - Pemetaan Data: Mengubah baris Excel menjadi format yang dimengerti database.
+       - Enkripsi On-the-fly: Mengenkripsi NIK secara otomatis saat data dibaca.
+       - Cek Duplikasi: Menggunakan Blind Index untuk mencegah impor NIK ganda.
+       - Error Handling: Mencatat kesalahan per baris (contoh: format tanggal lahir salah) 
+         agar user tahu bagian mana yang perlu diperbaiki.
+   - app/Jobs/                       :
+     * ComputeAnalyticsSnapshot.php  : Tugas berat untuk menghitung ringkasan data kesehatan desa (stunting, kunjungan) dan menyimpannya sebagai "snapshot" agar grafik dashboard dimuat sangat cepat.
+     * SendWhatsAppNotificationJob.php: Mengirim pesan pengingat jadwal Posyandu ke WhatsApp warga secara asinkron agar tidak memperlambat kinerja website saat sedang mengirim ribuan pesan.
+     * Job.php                       : Kelas dasar untuk seluruh tugas latar belakang (background jobs).
+   - app/Services/                   :
+     * ActivityLogService.php        : Layanan audit log untuk mencatat setiap aksi user, IP, dan data lama/baru.
+     * ArticleService.php           : Logika manajemen artikel kesehatan (slugging, sanitasi konten).
+     * GalleryService.php           : Manajemen foto kegiatan, pemrosesan file, dan penyimpanan galeri.
+     * GrowthChartService.php       : Penyiap data koordinat untuk grafik KMS WHO (Chart.js integration).
+     * MedicalRecordService.php      : Orkestrasi penyimpanan rekam medis dan relasi data kesehatan.
+     * NutritionCalculatorService.php: Kalkulator status gizi standar WHO (Z-Score BB/U, TB/U, BB/TB).
+     * PatientService.php            : Manajemen siklus hidup warga, enkripsi NIK, dan Blind Indexing.
+     * PedukuhanService.php          : Logika bisnis manajemen wilayah Dusun/RW.
+     * PosyanduService.php           : Manajemen unit layanan Posyandu dan metadata wilayah.
+     * ReportService.php            : Agregator data untuk pembuatan laporan bulanan (PDF/Excel).
+     * ScheduleService.php           : Pengelola jadwal kegiatan Posyandu dan pengingat agenda.
+     * UserService.php               : Manajemen akun user (Kader/Admin), hashing password, dan role.
+     * WhatsAppService.php           : Integrasi notifikasi WhatsApp untuk pengingat jadwal penimbangan.
+   - app/Traits/                     :
+     * LogsActivity.php              : Logging otomatis pada setiap Model.
+     * HasPosyanduScope.php          : Pembatasan data per wilayah Posyandu.
+
+C. Models (Pondasi Data):
+   - Patient.php                     : Data warga dengan sistem Blind Index.
+   - MedicalRecord.php               : Data kesehatan dengan status gizi WHO.
+   - ActivityLog.php                 : Catatan audit keamanan sistem.
+
+--------------------------------------------------------------------------------
+3. MODUL LIVEWIRE ADMIN (app/Livewire/Admin/)
+--------------------------------------------------------------------------------
+- Admin/Analytics/Index.php          : Grafik real-time tren stunting desa.
+- Admin/Management/                  : 
+    * ArticleManagement.php          : Pengelola artikel edukasi (CRUD).
+    * UserManagement.php             : Pengelola akun Kader & Admin.
+    * Posyandu & Pedukuhan.php       : Pengelola wilayah pelayanan.
+- Admin/MedicalRecord/               : 
+    * BulkMeasurementEntry.php       : Fitur input massal (Spreadsheet Mode).
+- Admin/PatientManagement/           : 
+    * Index.php                      : Master data warga (Pencarian NIK Aman).
+    * GrowthChart.php                : Grafik KMS digital (Kurva WHO).
+- Admin/Reports/MonthlyReport.php    : Pembuat laporan bulanan (Excel/PDF).
+- Admin/Settings/RolePermission.php  : Kontrol hak akses fitur sistem.
+
+--------------------------------------------------------------------------------
+4. KOMPONEN UI REUSABLE (app/View/Components/ & resources/views/components/)
+--------------------------------------------------------------------------------
+- Widget/      : ChartWidget (Grafik), StatsCard (Angka), DashboardCard.
+- Layouts/UI/  : Alert, Button, Card, ProgressBar, Breadcrumbs, Modal.
+- Tables/      : DataTable, SortableTable (Klik kolom), FilterableTable.
+- Modals/      : ConfirmModal (Hapus), FormModal (Input), InfoModal.
+- DateTime/    : DatePicker kustom untuk tanggal lahir/kunjungan.
+- Forms/       : Input, Select, Checkbox, Label (Terstandarisasi).
+- Settings/    : LanguageSelector & ThemeSelector.
+
+--------------------------------------------------------------------------------
+5. ALUR DATA & IMPLEMENTASI TEKNIS KUNCI
+--------------------------------------------------------------------------------
+A. Alur Data (Data Flow):
+   [Request] -> [Role Check] -> [Livewire Logic] -> [Service Calculation] -> [DB]
+
+B. Analisis Teknis Bulk Entry:
+   - Muat Antrian: Otomatisasi penyiapan balita per Posyandu.
+   - Live-Calculating: Hasil stunting muncul seketika saat angka diketik.
+   - Excel Mode: Navigasi keyboard penuh (Panah/Enter) via Alpine.js.
+   - updateOrCreate: Keamanan data dari duplikasi dan kemudahan koreksi.
+
+C. Keamanan Blind Index:
+   Pencarian NIK yang efisien meskipun terenkripsi dengan menggunakan hash 
+   deterministik (id_number_hash), menjaga data tetap privat namun bisa dicari.
+
+--------------------------------------------------------------------------------
+6. DATABASE & FRONTEND SYSTEM
+--------------------------------------------------------------------------------
+- Skema DB Utama: users, patients, medical_records, posyandus, activity_logs.
+- Desain System: Menggunakan Public Sans font, Indigo Design System, dan 
+                 TailwindCSS Utility Layers di app.css.
+
+================================================================================
+Dibuat oleh: Antigravity AI (Lead Software Architect)
+Versi: 7.2 (Master Consolidated Edition)
+================================================================================

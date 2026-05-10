@@ -20,92 +20,155 @@
             <div class="absolute top-1/2 -right-24 w-80 h-80 bg-emerald-400/20 rounded-full blur-[100px]"></div>
         </div>
 
-        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-8">
-            <div class="space-y-2">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/10 text-[9px] font-black uppercase tracking-[0.2em] text-teal-300">
-                    <span class="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse"></span>
-                    Live Data Analysis
+        <div class="relative z-10 flex flex-col xl:flex-row justify-between gap-10">
+            {{-- ── Left Side: Identity ── --}}
+            <div class="space-y-6 max-w-2xl">
+                <div class="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-white text-teal-900 border border-white text-xs font-black uppercase tracking-widest shadow-xl">
+                    <span class="w-2.5 h-2.5 rounded-full bg-teal-600 animate-pulse"></span>
+                    Live Data Posyandu
                 </div>
-                <h1 class="text-3xl md:text-4xl font-black tracking-tight leading-tight text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">Analitik & Wawasan Kesehatan</h1>
-                <p class="text-base text-slate-300 font-medium max-w-2xl">
-                    Pemantauan agregat periode Januari – Desember {{ $selectedYear }} 
-                    @if(auth()->user()->posyandu) · <span class="text-white font-bold">{{ auth()->user()->posyandu->name }}</span> @endif
-                </p>
-                @if($lastUpdated)
-                <p class="text-[10px] font-black uppercase tracking-widest text-slate-500 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[12px]">history</span>
-                    Data diperbarui terakhir pada: {{ $lastUpdated }}
-                </p>
-                @endif
+                
+                <div class="space-y-4">
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight leading-tight">
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 drop-shadow-sm">
+                            Analitik & Wawasan
+                        </span>
+                    </h1>
+                    <p class="text-lg md:text-xl text-white/90 font-bold leading-relaxed">
+                        Data Periode: Januari – Desember {{ $selectedYear }} 
+                        @if(auth()->user()->posyandu) <br> <span class="text-teal-300">Unit: {{ auth()->user()->posyandu->name }}</span> @endif
+                    </p>
+                </div>
             </div>
 
-            <div class="flex items-center gap-4 flex-wrap">
-                <div class="flex items-center bg-white h-11 rounded-xl px-4 gap-2 shadow-xl shadow-black/20 border border-white/10">
-                    <span class="material-symbols-outlined text-slate-400 text-[18px]">calendar_month</span>
-                    <select wire:model.live="selectedYear"
-                            class="bg-transparent border-none focus:ring-0 text-lg font-black text-slate-900 p-0 pr-8 cursor-pointer">
-                        @foreach($years as $y)
-                            <option value="{{ $y }}">{{ $y }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                {{-- Month Selector --}}
-            <div class="flex items-center bg-white h-14 rounded-2xl px-5 gap-3 shadow-xl shadow-black/20 border border-white/10">
-                <span class="material-symbols-outlined text-slate-400 text-[22px]">format_list_bulleted</span>
-                <select wire:model.live="selectedMonth"
-                        class="bg-transparent border-none focus:ring-0 text-lg font-black text-slate-900 p-0 pr-8 cursor-pointer">
-                    <option value="">Semua Bulan</option>
-                    @foreach(range(1, 12) as $m)
-                        <option value="{{ $m }}">{{ Carbon\Carbon::create(2000, $m)->translatedFormat('F') }}</option>
-                    @endforeach
-                </select>
-            </div>
+            {{-- ── Right Side: Actions & Status ── --}}
+            <div class="flex flex-col items-start xl:items-end gap-6 w-full xl:w-auto">
+                {{-- Top Row: Filters & Main Action --}}
+                <div class="flex flex-wrap items-center justify-start xl:justify-end gap-6 w-full">
+                    {{-- Selectors Group (With Enhanced Borders & Depth) --}}
+                    <div class="flex flex-1 sm:flex-initial items-center bg-white p-1 rounded-2xl sm:rounded-[2.5rem] border-[3px] border-teal-400 shadow-[0_15px_40px_rgba(0,0,0,0.2)]">
+                        <div class="px-5 sm:px-8 py-3 hover:bg-teal-50 transition-colors rounded-l-[2rem]">
+                            <label class="block text-[11px] font-black text-teal-800 uppercase tracking-widest mb-1.5">Tahun</label>
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-teal-600 text-[20px]">calendar_month</span>
+                                <select wire:model.live="selectedYear" class="bg-transparent border-none focus:ring-0 text-xl font-black text-slate-900 p-0 cursor-pointer appearance-none pr-8">
+                                    @foreach($years as $y) <option value="{{ $y }}">{{ $y }}</option> @endforeach
+                                </select>
+                            </div>
+                        </div>
+                        <div class="w-[2px] h-12 bg-teal-100"></div>
+                        <div class="px-5 sm:px-8 py-3 hover:bg-teal-50 transition-colors rounded-r-[2rem]">
+                            <label class="block text-[11px] font-black text-teal-800 uppercase tracking-widest mb-1.5">Bulan</label>
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-teal-600 text-[20px]">explore</span>
+                                <select wire:model.live="selectedMonth" class="bg-transparent border-none focus:ring-0 text-xl font-black text-slate-900 p-0 cursor-pointer appearance-none pr-8">
+                                    <option value="">Semua</option>
+                                    @foreach(range(1, 12) as $m) <option value="{{ $m }}">{{ Carbon\Carbon::create(2000, $m)->translatedFormat('F') }}</option> @endforeach
+                                </select>
+                            </div>
+                        </div>
+                    </div>
 
-            {{-- Export buttons --}}
-                <div class="flex items-center gap-2">
-                    <a href="{{ route('admin.reports.index') }}"
-                       class="h-14 px-6 flex items-center gap-3 bg-white/10 hover:bg-white/20 backdrop-blur-xl border border-white/20 rounded-2xl text-sm font-black text-white uppercase tracking-widest transition-all">
-                        <span class="material-symbols-outlined text-teal-400 text-[22px]">file_download</span>
-                        Excel
+                    {{-- Main Report Button (With Bold Border & Glow) --}}
+                    <a href="{{ route('admin.reports.index') }}" class="h-20 px-10 flex items-center gap-4 bg-white text-teal-900 hover:bg-teal-50 rounded-[2.5rem] text-sm font-black uppercase tracking-widest shadow-[0_15px_40px_rgba(20,184,166,0.2)] transition-all border-[3px] border-teal-400 hover:-translate-y-1 active:scale-95 whitespace-nowrap">
+                        <span class="material-symbols-outlined text-[32px] text-teal-600">assessment</span>
+                        Detail Laporan
                     </a>
-                    <a href="{{ route('admin.reports.index') }}"
-                       class="h-14 px-6 flex items-center gap-3 bg-teal-600 hover:bg-teal-700 text-white rounded-2xl text-sm font-black uppercase tracking-widest shadow-xl shadow-teal-600/30 transition-all">
-                        <span class="material-symbols-outlined text-[22px]">picture_as_pdf</span>
-                        PDF
-                    </a>
+                </div>
+
+                {{-- Bottom Row: Status & Sync (High Contrast) --}}
+                <div class="flex flex-wrap items-center justify-start xl:justify-end gap-4 w-full">
+                    <div class="flex flex-1 sm:flex-initial items-center justify-between sm:justify-start gap-4 sm:gap-6 px-6 sm:px-8 py-3 sm:py-4 bg-slate-900 rounded-2xl sm:rounded-[2rem] border-2 border-teal-500 shadow-2xl overflow-hidden">
+                        <div class="flex items-center gap-3 sm:gap-4">
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-teal-500 flex items-center justify-center">
+                                <span class="material-symbols-outlined text-white text-[20px] sm:text-[28px]">history</span>
+                            </div>
+                            <div class="flex flex-col">
+                                <span class="text-[9px] sm:text-xs font-black text-teal-400 uppercase tracking-widest">Update:</span>
+                                <span class="text-sm sm:text-lg font-black text-white tracking-tight">{{ $lastUpdated }}</span>
+                            </div>
+                        </div>
+                        <div class="hidden sm:block w-px h-10 bg-white/20"></div>
+                        <button wire:click="refreshStats" 
+                                wire:loading.attr="disabled"
+                                class="flex items-center gap-2 px-4 sm:px-6 py-2 sm:py-3 rounded-xl sm:rounded-2xl bg-teal-600 hover:bg-teal-500 text-white transition-all group/ref">
+                            <span @class(['material-symbols-outlined text-[18px] sm:text-[24px] group-hover/ref:rotate-180 transition-transform duration-700', 'animate-spin' => false]) 
+                                  wire:loading.class="animate-spin" wire:target="refreshStats">sync</span>
+                            <span class="text-[10px] sm:text-sm font-black uppercase tracking-widest">Update</span>
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    {{-- ── Key Performance Stats (High Contrast) ── --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    {{-- ── Key Performance Stats (Premium Cards) ── --}}
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         @php
             $stats = [
-                ['label' => 'Total Balita', 'val' => number_format($totalBalita), 'unit' => 'Jiwa', 'icon' => 'child_care', 'color' => 'teal', 'desc' => 'Terdaftar aktif'],
-                ['label' => 'Angka Stunting', 'val' => $stuntingRate . '%', 'unit' => 'Prevalensi', 'icon' => 'trending_down', 'color' => 'red', 'desc' => $stuntingRate >= 14 ? 'Perlu Intervensi' : 'Dibawah Target Nasional'],
-                ['label' => 'Cakupan Imunisasi', 'val' => $cakupanImunisasi . '%', 'unit' => 'Kelengkapan', 'icon' => 'vaccines', 'color' => 'blue', 'desc' => 'Status Rekam Medis'],
-                ['label' => 'Petugas Aktif', 'val' => $kaderAktif, 'unit' => 'Kader', 'icon' => 'groups', 'color' => 'amber', 'desc' => 'Admin & Tenaga Kesehatan'],
+                ['label' => 'Total Balita', 'val' => number_format($totalBalita), 'unit' => 'Jiwa', 'icon' => 'child_care', 'color' => 'teal', 'desc' => 'Terdaftar aktif di sistem'],
+                ['label' => 'Angka Stunting', 'val' => $stuntingRate . '%', 'unit' => 'Prevalensi', 'icon' => 'trending_down', 'color' => 'red', 'desc' => $stuntingRate >= 14 ? 'Perlu Perhatian Khusus' : 'Kondisi Aman (Normal)'],
+                ['label' => 'Cakupan Imunisasi', 'val' => $cakupanImunisasi . '%', 'unit' => 'Target 100%', 'icon' => 'vaccines', 'color' => 'blue', 'desc' => 'Kelengkapan dosis rutin'],
+                ['label' => 'Kader Aktif', 'val' => $kaderAktif, 'unit' => 'Petugas', 'icon' => 'groups', 'color' => 'amber', 'desc' => 'Total petugas lapangan'],
             ];
         @endphp
 
         @foreach($stats as $s)
-        <div class="bg-white rounded-[2.5rem] p-8 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)] transition-all duration-500 group">
-            <div class="flex items-start justify-between mb-6">
-                <div @class([
-                    'w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:scale-110 shadow-lg',
-                    'bg-teal-500 text-white shadow-teal-500/20' => $s['color'] === 'teal',
-                    'bg-red-500 text-white shadow-red-500/20' => $s['color'] === 'red',
-                    'bg-blue-600 text-white shadow-blue-600/20' => $s['color'] === 'blue',
-                    'bg-amber-500 text-white shadow-amber-500/20' => $s['color'] === 'amber',
-                ])>
-                    <span class="material-symbols-outlined text-[32px]">{{ $s['icon'] }}</span>
+        <div @class([
+            'relative overflow-hidden bg-white rounded-[3rem] p-8 border-2 transition-all duration-500 group hover:-translate-y-2',
+            'border-teal-50 hover:border-teal-400 shadow-xl shadow-teal-900/5' => $s['color'] === 'teal',
+            'border-red-50 hover:border-red-400 shadow-xl shadow-red-900/5' => $s['color'] === 'red',
+            'border-blue-50 hover:border-blue-400 shadow-xl shadow-blue-900/5' => $s['color'] === 'blue',
+            'border-amber-50 hover:border-amber-400 shadow-xl shadow-amber-900/5' => $s['color'] === 'amber',
+        ])>
+            {{-- Decorative Background Glow --}}
+            <div @class([
+                'absolute -right-10 -bottom-10 w-32 h-32 rounded-full blur-[60px] opacity-10 group-hover:opacity-30 transition-opacity',
+                'bg-teal-500' => $s['color'] === 'teal',
+                'bg-red-500' => $s['color'] === 'red',
+                'bg-blue-500' => $s['color'] === 'blue',
+                'bg-amber-500' => $s['color'] === 'amber',
+            ])></div>
+
+            <div class="relative z-10">
+                <div class="flex items-start justify-between mb-8">
+                    <div @class([
+                        'w-16 h-16 rounded-[1.5rem] flex items-center justify-center transition-all duration-500 group-hover:rotate-6',
+                        'bg-teal-500 text-white shadow-lg shadow-teal-500/30' => $s['color'] === 'teal',
+                        'bg-red-500 text-white shadow-lg shadow-red-500/30' => $s['color'] === 'red',
+                        'bg-blue-600 text-white shadow-lg shadow-blue-600/30' => $s['color'] === 'blue',
+                        'bg-amber-500 text-white shadow-lg shadow-amber-500/30' => $s['color'] === 'amber',
+                    ])>
+                        <span class="material-symbols-outlined text-[36px]">{{ $s['icon'] }}</span>
+                    </div>
+                    <div class="text-right">
+                        <span @class([
+                            'text-[10px] font-black uppercase tracking-[0.2em]',
+                            'text-teal-600/60' => $s['color'] === 'teal',
+                            'text-red-600/60' => $s['color'] === 'red',
+                            'text-blue-600/60' => $s['color'] === 'blue',
+                            'text-amber-600/60' => $s['color'] === 'amber',
+                        ])>{{ $s['unit'] }}</span>
+                    </div>
                 </div>
-                <span class="text-[9px] font-black uppercase tracking-widest text-slate-400 group-hover:text-slate-900 transition-colors">{{ $s['unit'] }}</span>
+
+                <div class="space-y-1">
+                    <h3 class="text-5xl lg:text-6xl font-black text-slate-900 tracking-tighter mb-2 group-hover:scale-105 transition-transform origin-left">
+                        {{ $s['val'] }}
+                    </h3>
+                    <p class="text-base font-black text-slate-800 uppercase tracking-tight">{{ $s['label'] }}</p>
+                    <div class="flex items-center gap-2 pt-2 border-t border-slate-50 mt-4">
+                        <span @class([
+                            'w-2 h-2 rounded-full',
+                            'bg-teal-400' => $s['color'] === 'teal',
+                            'bg-red-400' => $s['color'] === 'red',
+                            'bg-blue-400' => $s['color'] === 'blue',
+                            'bg-amber-400' => $s['color'] === 'amber',
+                        ])></span>
+                        <p class="text-xs text-slate-500 font-bold tracking-tight">{{ $s['desc'] }}</p>
+                    </div>
+                </div>
             </div>
-            <h3 class="text-4xl font-black text-slate-900 tracking-tighter mb-2">{{ $s['val'] }}</h3>
-            <p class="text-sm font-black text-slate-800 uppercase tracking-tight mb-1">{{ $s['label'] }}</p>
-            <p class="text-[11px] text-slate-400 font-bold">{{ $s['desc'] }}</p>
         </div>
         @endforeach
     </div>

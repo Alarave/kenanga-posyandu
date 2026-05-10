@@ -20,6 +20,20 @@
         </div>
     </div>
 
+    @if (session()->has('success'))
+        <div class="p-4 mb-4 text-sm text-teal-700 bg-teal-50 rounded-2xl border border-teal-100 flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-300">
+            <span class="material-symbols-outlined text-[20px]">check_circle</span>
+            {{ session('success') }}
+        </div>
+    @endif
+
+    @if (session()->has('error'))
+        <div class="p-4 mb-4 text-sm text-red-700 bg-red-50 rounded-2xl border border-red-100 flex items-center gap-3 animate-in fade-in slide-in-from-top-4 duration-300">
+            <span class="material-symbols-outlined text-[20px]">error</span>
+            {{ session('error') }}
+        </div>
+    @endif
+
     {{-- ── Stats Row ── --}}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
@@ -109,23 +123,24 @@
                         </div>
                     </td>
                     <td class="px-6 py-4">
-                        <span class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider bg-slate-100 text-slate-600 border border-slate-200">
-                            @php
-                                $roleName = $user->display_role_name;
-                                if ($roleName === 'superadmin') {
-                                    $label = 'Super Admin';
-                                } else {
-                                    // Handle cases where role name doesn't end with a digit
-                                    $lastChar = substr($roleName, -1);
-                                    if (is_numeric($lastChar)) {
-                                        $label = ucfirst(substr($roleName, 0, -1)) . ' ' . $lastChar;
-                                    } else {
-                                        $label = ucfirst($roleName);
-                                    }
-                                }
-                            @endphp
-                            {{ $label }}
-                        </span>
+                        @if($user->isSuperAdmin())
+                            <span class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider bg-slate-900 text-white border border-slate-900">
+                                Super Admin
+                            </span>
+                        @else
+                            <div class="flex items-center gap-3">
+                                <label class="relative inline-flex items-center cursor-pointer group/toggle">
+                                    <input type="checkbox" 
+                                           wire:click="toggleRole({{ $user->id }})"
+                                           class="sr-only peer" 
+                                           {{ $user->isAdmin() ? 'checked' : '' }}>
+                                    <div class="w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-teal-600"></div>
+                                </label>
+                                <span class="text-[10px] font-black uppercase tracking-widest {{ $user->isAdmin() ? 'text-teal-600' : 'text-slate-400' }}">
+                                    {{ $user->isAdmin() ? 'Administrator' : 'Kader' }}
+                                </span>
+                            </div>
+                        @endif
                     </td>
                     <td class="px-6 py-4">
                         <div class="text-[13px] font-semibold text-slate-600">{{ $user->posyandu->name ?? 'Semua Unit' }}</div>
