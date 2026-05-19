@@ -1,8 +1,9 @@
 {{-- ── Navbar Shell ── --}}
 <header id="topNavbar"
     class="sticky top-0 z-40 flex items-center justify-between h-16 px-4 md:px-6
-           bg-white border-b border-slate-200 shadow-theme-xs
-           transition-shadow duration-200 font-outfit">
+           bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-[0_1px_3px_0_rgb(0,0,0,.04)]
+           transition-shadow duration-200"
+    style="font-family:'Public Sans','Inter',sans-serif;">
 
     {{-- ── LEFT: Mobile toggle + Search ── --}}
     <div class="flex items-center gap-4 flex-1 min-w-0">
@@ -47,11 +48,7 @@
                        hover:bg-slate-50 active:scale-95 transition-all duration-300 group bg-white border border-slate-100 shadow-sm hover:shadow-md hover:border-teal-100">
 
                 {{-- Avatar with Ring --}}
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-white font-black flex-shrink-0 shadow-lg relative group-hover:rotate-3 transition-transform"
-                     style="background:{{ $avatarGrad }}; font-size:13px; letter-spacing:.05em;">
-                    {{ $initials }}
-                    <div class="absolute inset-0 rounded-xl border-2 border-white/20"></div>
-                </div>
+                <x-avatar :name="$name" size="medium" status="online" />
 
                 {{-- Name + role --}}
                 <div class="hidden md:flex flex-col items-start leading-tight">
@@ -83,10 +80,7 @@
                 {{-- User Card Section (More Compact) --}}
                 <div class="px-4 py-4 rounded-3xl mb-2 relative overflow-hidden group/card bg-slate-50 border border-slate-100">
                     <div class="flex items-center gap-3.5 relative z-10">
-                        <div class="w-11 h-11 rounded-xl flex items-center justify-center text-white font-black shadow-lg"
-                             style="background:{{ $avatarGrad }}; font-size:13px;">
-                            {{ $initials }}
-                        </div>
+                        <x-avatar :name="$name" size="medium" />
                         <div class="min-w-0">
                             <p class="text-slate-900 font-black text-[14px] truncate leading-tight mb-0.5">{{ $name }}</p>
                             <span class="inline-flex items-center px-2 py-0.5 rounded-lg text-[8.5px] font-black uppercase tracking-wider {{ $badgeClass }} shadow-sm">
