@@ -111,38 +111,64 @@
     </div>
 
     {{-- ── Filters ── --}}
-    <div class="bg-white rounded-3xl border border-slate-100 p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
-        <div class="flex flex-wrap items-center gap-3 flex-1">
-            <div class="relative min-w-[300px] group">
+    <div class="bg-white rounded-[2rem] border border-slate-100 p-4 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div class="flex flex-col md:flex-row md:items-center gap-4 flex-1">
+            {{-- Search Input --}}
+            <div class="relative w-full md:max-w-md group">
                 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-teal-600 transition-colors pointer-events-none text-[20px]">search</span>
                 <input type="text" wire:model.live.debounce.300ms="search" 
                        placeholder="Cari agenda atau lokasi..."
                        class="search-input-premium w-full">
             </div>
 
-            <select wire:model.live="status"
-                    class="h-12 px-6 border border-slate-100 rounded-2xl text-xs font-black uppercase tracking-widest text-slate-700 focus:outline-none focus:border-teal-500 transition-all appearance-none cursor-pointer bg-slate-50/50">
-                <option value="">Semua Status</option>
-                <option value="upcoming">Mendatang</option>
-                <option value="ongoing">Berlangsung</option>
-                <option value="completed">Selesai</option>
-                <option value="cancelled">Dibatalkan</option>
-            </select>
+            {{-- Double-Pill Filter Container --}}
+            <div class="flex flex-col sm:flex-row items-center bg-white p-1 rounded-3xl border border-slate-200 shadow-sm w-full md:w-auto">
+                {{-- Status Pill --}}
+                <div @class([
+                    'px-5 py-2 hover:bg-slate-50/50 transition-colors w-full sm:w-40',
+                    'rounded-t-3xl sm:rounded-t-none sm:rounded-l-3xl' => auth()->user()->isSuperAdmin(),
+                    'rounded-3xl' => !auth()->user()->isSuperAdmin(),
+                ])>
+                    <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Status</label>
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-teal-600 text-[18px] flex-shrink-0">event_note</span>
+                        <div class="w-full">
+                            <x-forms.select-input wire:model.live="status" placeholder="Semua Status" :placeholderDisabled="false" value="{{ $status }}" class="!bg-transparent !border-none focus:!ring-0 !text-xs !font-bold !text-slate-800 !p-0 !shadow-none !h-auto pr-6">
+                                <option value="upcoming">Mendatang</option>
+                                <option value="ongoing">Berlangsung</option>
+                                <option value="completed">Selesai</option>
+                                <option value="cancelled">Dibatalkan</option>
+                            </x-forms.select-input>
+                        </div>
+                    </div>
+                </div>
 
-            @if(auth()->user()->isSuperAdmin())
-            <select wire:model.live="posyandu_id"
-                    class="h-12 px-6 border border-slate-100 rounded-2xl text-xs font-black uppercase tracking-widest text-slate-700 focus:outline-none focus:border-teal-500 transition-all appearance-none cursor-pointer bg-slate-50/50">
-                <option value="">Seluruh Unit</option>
-                @foreach($posyandus as $p)
-                    <option value="{{ $p->id }}">{{ $p->name }}</option>
-                @endforeach
-            </select>
-            @endif
+                @if(auth()->user()->isSuperAdmin())
+                    {{-- Divider --}}
+                    <div class="hidden sm:block w-[1px] h-10 bg-slate-100"></div>
+
+                    {{-- Posyandu Unit Pill --}}
+                    <div class="px-5 py-2 hover:bg-slate-50/50 transition-colors rounded-b-3xl sm:rounded-b-none sm:rounded-r-3xl w-full sm:w-48">
+                        <label class="block text-[9px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Posyandu</label>
+                        <div class="flex items-center gap-2">
+                            <span class="material-symbols-outlined text-teal-600 text-[18px] flex-shrink-0">location_city</span>
+                            <div class="w-full">
+                                <x-forms.select-input wire:model.live="posyandu_id" placeholder="Seluruh Unit" :placeholderDisabled="false" value="{{ $posyandu_id }}" class="!bg-transparent !border-none focus:!ring-0 !text-xs !font-bold !text-slate-800 !p-0 !shadow-none !h-auto pr-6">
+                                    @foreach($posyandus as $p)
+                                        <option value="{{ $p->id }}">{{ $p->name }}</option>
+                                    @endforeach
+                                </x-forms.select-input>
+                            </div>
+                        </div>
+                    </div>
+                @endif
+            </div>
         </div>
         
         @if($search || $status || $posyandu_id)
             <button wire:click="$set('search', ''); $set('status', ''); $set('posyandu_id', '');"
-                    class="text-[10px] font-black text-red-500 uppercase tracking-[0.2em] hover:text-red-600 transition-colors px-4">
+                    class="w-full md:w-auto h-11 px-6 flex items-center justify-center gap-2 text-red-500 font-bold text-xs uppercase tracking-widest hover:bg-red-50 rounded-2xl transition-all">
+                <span class="material-symbols-outlined text-[18px]">restart_alt</span>
                 Reset Filter
             </button>
         @endif
