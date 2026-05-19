@@ -1,9 +1,8 @@
 {{-- ── Navbar Shell ── --}}
 <header id="topNavbar"
     class="sticky top-0 z-40 flex items-center justify-between h-16 px-4 md:px-6
-           bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-[0_1px_3px_0_rgb(0,0,0,.04)]
-           transition-shadow duration-200"
-    style="font-family:'Public Sans','Inter',sans-serif;">
+           bg-white border-b border-slate-200 shadow-theme-xs
+           transition-shadow duration-200 font-outfit">
 
     {{-- ── LEFT: Mobile toggle + Search ── --}}
     <div class="flex items-center gap-4 flex-1 min-w-0">
@@ -23,7 +22,7 @@
     </div>
 
     {{-- ── RIGHT: Notif · Profile ── --}}
-    <div class="flex items-center gap-2 md:gap-3 flex-shrink-0" x-data="{ notifOpen: false, profileOpen: false }">
+    <div class="flex items-center gap-2 md:gap-3 flex-shrink-0" x-data="{ notifOpen: false, profileOpen: false }" @keydown.escape.window="profileOpen = false; notifOpen = false" wire:ignore.self>
 
         {{-- ── Mobile search toggle ── --}}
         <button id="mobileSearchBtn"
