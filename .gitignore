@@ -1,4 +1,3 @@
-```
 # Dependencies
 vendor/
 
@@ -75,4 +74,10 @@ htmlcov/
 *.tar.bz2
 *.tar.xz
 *.tar.zst
-```
+
+# Node dependencies
+node_modules/
+
+# Local/tool-specific files
+/scratch/
+/.kiro/
