@@ -14,6 +14,25 @@
 <div class="space-y-8">
     {{-- Header Summary Bar --}}
     @php
+        // Resolve entity display name from entity_type class
+        $entityDisplayName = null;
+        if ($activityLog->entity_type && $activityLog->entity_id) {
+            try {
+                $entityModel = app($activityLog->entity_type)->find($activityLog->entity_id);
+                if ($entityModel) {
+                    $entityDisplayName = $entityModel->full_name
+                        ?? $entityModel->name
+                        ?? $entityModel->title
+                        ?? null;
+                }
+            } catch (\Throwable $e) {
+                // Entity class might not exist or be deleted
+                $entityDisplayName = null;
+            }
+        }
+    @endphp
+
+    @php
         $badgeStyle = match($activityLog->action_type) {
             'create' => 'bg-emerald-50 text-emerald-700 border-emerald-100/85',
             'update' => 'bg-amber-50 text-amber-700 border-amber-100/85',
@@ -66,7 +85,17 @@
                             </div>
                             <div>
                                 <p class="text-sm font-black text-slate-800">{{ $activityLog->entity_type ? class_basename($activityLog->entity_type) : 'Global System' }}</p>
-                                <p class="text-xs font-bold text-teal-600 uppercase tracking-widest">ID #{{ $activityLog->entity_id ?? 'N/A' }}</p>
+                                @if($entityDisplayName)
+                                    <p class="text-sm font-bold text-slate-700 leading-tight">{{ $entityDisplayName }}</p>
+                                    <p class="text-[10px] font-medium text-slate-400 uppercase tracking-wider">ID #{{ $activityLog->entity_id }}</p>
+                                @elseif($activityLog->entity_id)
+                                    <p class="text-xs font-bold text-teal-600 uppercase tracking-widest">ID #{{ $activityLog->entity_id }}</p>
+                                    @if($activityLog->action_type === 'delete')
+                                        <p class="text-[10px] text-rose-400 italic font-medium">(Data telah dihapus)</p>
+                                    @endif
+                                @else
+                                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">N/A</p>
+                                @endif
                             </div>
                         </div>
                     </div>

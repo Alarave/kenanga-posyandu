@@ -226,13 +226,27 @@
                             </span>
                         </td>
                         <td class="px-6 py-5">
+                            @php
+                                // Extract entity name from stored JSON payload (avoids N+1 queries)
+                                $payload = $log->new_values ?? $log->old_values ?? [];
+                                $entityName = $payload['full_name']
+                                    ?? $payload['name']
+                                    ?? $payload['title']
+                                    ?? null;
+                            @endphp
                             <div class="flex flex-col min-w-[120px]">
-                                <span class="text-xs font-bold text-slate-700 truncate block">
+                                <span class="text-xs font-bold text-slate-700 truncate block max-w-[150px]">
                                     {{ $log->entity_type ? class_basename($log->entity_type) : '-' }}
                                 </span>
-                                <span class="text-[9px] font-black text-slate-400 uppercase tracking-tighter">
-                                    ID #{{ $log->entity_id ?? 'N/A' }}
-                                </span>
+                                @if($entityName)
+                                    <span class="text-[11px] font-bold text-teal-700 truncate block max-w-[150px]" title="{{ $entityName }}">
+                                        {{ $entityName }}
+                                    </span>
+                                @else
+                                    <span class="text-[9px] font-medium text-slate-400 uppercase tracking-tighter">
+                                        ID #{{ $log->entity_id ?? 'N/A' }}
+                                    </span>
+                                @endif
                             </div>
                         </td>
                         <td class="px-6 py-5 whitespace-nowrap">
