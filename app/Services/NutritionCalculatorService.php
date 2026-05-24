@@ -348,12 +348,12 @@ class NutritionCalculatorService
      */
     private function normalizeGender(string $gender): ?string
     {
-        $gender = strtoupper(trim($gender));
+        $gender = strtolower(trim($gender));
 
         return match ($gender) {
-            'L', 'M' => 'M', // Laki-laki / Male
-            'P', 'F' => 'F', // Perempuan / Female
-            default => null,
+            'l', 'm', 'male'   => 'M', // Laki-laki / Male
+            'p', 'f', 'female' => 'F', // Perempuan / Female
+            default            => null,
         };
     }
 }

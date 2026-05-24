@@ -104,43 +104,51 @@ class BulkMeasurementEntry extends Component
 
         $this->isLoadingAll = true;
 
+        // Batch-load patient IDs that already have a record for this date (avoids N+1)
+        $existingPatientIds = MedicalRecord::whereDate('visit_date', $this->visit_date)
+            ->whereHas('patient', fn($q) => $q->where('posyandu_id', $this->posyandu_id))
+            ->pluck('patient_id')
+            ->toArray();
+
+        // Also add IDs already in current measurements list
+        $alreadyAddedIds = collect($this->measurements)->pluck('patient_id')->toArray();
+        $skipIds = array_merge($existingPatientIds, $alreadyAddedIds);
+
         $patients = Patient::where('posyandu_id', $this->posyandu_id)
+            ->where('category', 'balita')
+            ->whereNotIn('id', $skipIds)
             ->with(['medicalRecords' => function($query) {
                 $query->latest()->limit(1);
             }])
+            ->orderBy('full_name')
             ->get();
 
+        $addedCount = 0;
         foreach ($patients as $patient) {
-            // Skip if already in list
-            if (collect($this->measurements)->contains('patient_id', $patient->id)) {
-                continue;
-            }
-
-            // Check if already has record for this date
-            $hasRecord = MedicalRecord::where('patient_id', $patient->id)
-                ->whereDate('visit_date', $this->visit_date)
-                ->exists();
-
-            if ($hasRecord) continue;
-
             $lastRecord = $patient->medicalRecords->first();
-            
+
             $this->measurements[] = [
-                'patient_id' => $patient->id,
-                'full_name' => $patient->full_name,
-                'parent_name' => $patient->parent_name,
-                'age_months' => $patient->age_in_months,
-                'gender' => $patient->gender,
-                'last_weight' => $lastRecord?->weight ?? '-',
-                'last_height' => $lastRecord?->height ?? '-',
-                'weight' => '',
-                'height' => '',
+                'patient_id'         => $patient->id,
+                'full_name'          => $patient->full_name,
+                'parent_name'        => $patient->parent_name,
+                'age_months'         => $patient->age_in_months,
+                'gender'             => $patient->gender,
+                'last_weight'        => $lastRecord?->weight ?? '-',
+                'last_height'        => $lastRecord?->height ?? '-',
+                'weight'             => '',
+                'height'             => '',
                 'measurement_method' => $patient->age_in_months >= 24 ? 'standing' : 'recumbent',
             ];
+            $addedCount++;
         }
 
         $this->isLoadingAll = false;
-        $this->dispatch('notify', ['type' => 'success', 'message' => count($patients) . ' Balita dimuat ke daftar.']);
+        $this->dispatch('notify', [
+            'type'    => 'success',
+            'message' => $addedCount > 0
+                ? "{$addedCount} balita dimuat ke daftar."
+                : 'Semua balita sudah memiliki data untuk tanggal ini.',
+        ]);
     }
 
     public function removePatient($index)
@@ -229,6 +237,9 @@ class BulkMeasurementEntry extends Component
                     'z_score_hfa' => !empty($m['height']) ? $results['z_score_hfa'] : null,
                     'wasting_status' => (!empty($m['weight']) && !empty($m['height'])) ? $results['wasting_status'] : null,
                     'z_score_wfh' => (!empty($m['weight']) && !empty($m['height'])) ? $results['z_score_wfh'] : null,
+                    'complaint' => '—',
+                    'diagnosis' => 'Sehat',
+                    'immunization' => 'Tidak ada',
                 ]
             );
             $count++;
