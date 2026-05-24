@@ -206,7 +206,3 @@
     </div>
 </div>
 
-{{-- Growth Chart --}}
-<div class="w-full mt-12 pb-16">
-    @livewire('admin.patient-management.growth-chart', ['patient' => $patient, 'isEmbedded' => true])
-</div>

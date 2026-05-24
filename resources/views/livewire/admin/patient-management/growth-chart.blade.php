@@ -430,7 +430,178 @@
     </div>
     @else
     {{-- ── Section 3: Grafik Pertumbuhan (Bottom Section) ── --}}
-    <div class="bg-white rounded-[3rem] p-10 shadow-[0_8px_30px_rgb(0,0,0,0.02)] border border-slate-100 overflow-hidden relative group">
+    <div class="bg-white rounded-[3rem] p-10 shadow-[0_8px_30px_rgb(0,0,0,0.02)] border border-slate-100 overflow-hidden relative group"
+         x-data="{ 
+            chart: null,
+            hasData: true,
+            initChart(chartData) {
+                const ctx = document.getElementById('growthChartBottom');
+                if (!ctx || !window.Chart) return;
+                if (this.chart) this.chart.destroy();
+                
+                const data = chartData || null;
+                if (!data || !data.datasets || data.datasets.length === 0) {
+                    this.hasData = false;
+                    return;
+                }
+
+                this.hasData = true;
+
+                // Intercept and style datasets for soft-colored light-mode reference bands
+                const rawDatasets = data.datasets;
+                const medianDataset = rawDatasets.find(d => d.label === 'Median');
+                const plus2Dataset = rawDatasets.find(d => d.label === '+2 SD');
+                const minus2Dataset = rawDatasets.find(d => d.label === '-2 SD');
+                const plus3Dataset = rawDatasets.find(d => d.label === '+3 SD');
+                const minus3Dataset = rawDatasets.find(d => d.label === '-3 SD');
+                const childDataset = rawDatasets.find(d => d.label.includes('Anak') || d.label.includes('Badan'));
+
+                const styledDatasets = [];
+
+                // 1. +3 SD (index 0) - Fills to +2 SD (index 1) with amber warning
+                if (plus3Dataset) {
+                    plus3Dataset.borderColor = '#f43f5e';
+                    plus3Dataset.borderWidth = 1.5;
+                    plus3Dataset.pointRadius = 0;
+                    plus3Dataset.pointHoverRadius = 0;
+                    plus3Dataset.fill = 1;
+                    plus3Dataset.backgroundColor = 'rgba(245, 158, 11, 0.08)';
+                    styledDatasets.push(plus3Dataset);
+                }
+
+                // 2. +2 SD (index 1) - Fills to -2 SD (index 3) with healthy emerald green
+                if (plus2Dataset) {
+                    plus2Dataset.borderColor = '#f59e0b';
+                    plus2Dataset.borderWidth = 1.5;
+                    plus2Dataset.pointRadius = 0;
+                    plus2Dataset.pointHoverRadius = 0;
+                    plus2Dataset.fill = 3;
+                    plus2Dataset.backgroundColor = 'rgba(16, 185, 129, 0.12)';
+                    styledDatasets.push(plus2Dataset);
+                }
+
+                // 3. Median (index 2) - No fill, drawn clearly in the center
+                if (medianDataset) {
+                    medianDataset.borderColor = '#10b981';
+                    medianDataset.borderWidth = 2.5;
+                    medianDataset.pointRadius = 0;
+                    medianDataset.pointHoverRadius = 0;
+                    medianDataset.fill = false;
+                    styledDatasets.push(medianDataset);
+                }
+
+                // 4. -2 SD (index 3) - Fills to -3 SD (index 4) with amber warning
+                if (minus2Dataset) {
+                    minus2Dataset.borderColor = '#f59e0b';
+                    minus2Dataset.borderWidth = 1.5;
+                    minus2Dataset.pointRadius = 0;
+                    minus2Dataset.pointHoverRadius = 0;
+                    minus2Dataset.fill = 4;
+                    minus2Dataset.backgroundColor = 'rgba(245, 158, 11, 0.08)';
+                    styledDatasets.push(minus2Dataset);
+                }
+
+                // 5. -3 SD (index 4) - Fills to origin (bottom) with rose danger
+                if (minus3Dataset) {
+                    minus3Dataset.borderColor = '#ef4444';
+                    minus3Dataset.borderWidth = 1.5;
+                    minus3Dataset.pointRadius = 0;
+                    minus3Dataset.pointHoverRadius = 0;
+                    minus3Dataset.fill = 'origin';
+                    minus3Dataset.backgroundColor = 'rgba(239, 68, 68, 0.08)';
+                    styledDatasets.push(minus3Dataset);
+                }
+
+                // 6. Child dataset (index 5) - High contrast, styled by gender theme
+                if (childDataset) {
+                    const isMaleGender = {{ $isMale ? 'true' : 'false' }};
+                    const lineCol = isMaleGender ? '#0d9488' : '#be185d';
+                    childDataset.borderColor = lineCol;
+                    childDataset.borderWidth = 4;
+                    childDataset.pointRadius = 6;
+                    childDataset.pointHoverRadius = 9;
+                    childDataset.pointBackgroundColor = lineCol;
+                    childDataset.pointBorderColor = '#ffffff';
+                    childDataset.pointBorderWidth = 2;
+                    childDataset.fill = false;
+                    childDataset.tension = 0.25;
+                    styledDatasets.push(childDataset);
+                }
+
+                data.datasets = styledDatasets;
+
+                this.chart = new Chart(ctx, {
+                    type: 'line',
+                    data: data,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: { duration: 1500, easing: 'easeOutQuart' },
+                        interaction: { intersect: false, mode: 'index' },
+                        scales: {
+                            x: { 
+                                grid: { color: 'rgba(15, 23, 42, 0.05)', drawBorder: false }, 
+                                ticks: { color: '#475569', font: { size: 10, weight: '700' } },
+                                title: { display: true, text: 'UMUR (BULAN)', color: '#1e293b', font: { weight: '800', size: 11, family: 'Inter' } }
+                            },
+                            y: { 
+                                grid: { color: 'rgba(15, 23, 42, 0.05)', drawBorder: false }, 
+                                ticks: { color: '#475569', font: { size: 10, weight: '700' } },
+                                suggestedMin: data.datasets.some(d => d.label.includes('Tinggi')) ? 40 : 0,
+                                title: { display: true, text: data.datasets.some(d => d.label.includes('Tinggi')) ? 'TINGGI (CM)' : 'BERAT (KG)', color: '#1e293b', font: { weight: '800', size: 11, family: 'Inter' } }
+                            }
+                        },
+                        plugins: {
+                            legend: { 
+                                position: 'bottom', 
+                                labels: { 
+                                    boxWidth: 8, 
+                                    boxHeight: 8, 
+                                    usePointStyle: true, 
+                                    pointStyle: 'circle', 
+                                    color: '#475569', 
+                                    padding: 25, 
+                                    font: { weight: '700', size: 10 } 
+                                } 
+                            },
+                            tooltip: { 
+                                backgroundColor: 'rgba(15, 23, 42, 0.95)', 
+                                padding: 16, 
+                                cornerRadius: 16, 
+                                usePointStyle: true, 
+                                titleFont: { size: 13, weight: '800' }, 
+                                bodyFont: { size: 12, weight: '600' },
+                                filter: function(tooltipItem) {
+                                    const label = tooltipItem.dataset.label || '';
+                                    return label.includes('Anak') || label.includes('Badan') || label === 'Median';
+                                },
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) {
+                                            label += ': ';
+                                        }
+                                        if (context.parsed.y !== null) {
+                                            const isHeight = context.chart.options.scales.y.title.text.includes('TINGGI') || context.dataset.label.includes('Tinggi');
+                                            label += context.parsed.y + (isHeight ? ' cm' : ' kg');
+                                        }
+                                        return label;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+         }"
+         x-init="
+            setTimeout(() => { if (typeof initialGrowthData !== 'undefined') initChart(initialGrowthData); }, 300);
+            $wire.on('chart-updated', (data) => {
+                const rawData = Array.isArray(data) ? data[0] : data;
+                initChart(rawData);
+            });
+         "
+    >
         <div class="absolute -right-20 -top-20 w-80 h-80 bg-teal-500/5 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
 
         <div class="flex flex-col md:flex-row items-center justify-between gap-8 mb-10 relative z-10">
@@ -467,7 +638,7 @@
                     <span @class([
                         'w-8 h-8 rounded-xl flex items-center justify-center transition-colors',
                         'bg-teal-50 text-teal-600' => $activeChart === 'hfa',
-                        'bg-slate-100 text-slate-400' => $activeChart !== 'hfa'
+                        'bg-slate-100 text-slate-400' => $activeChart !== 'wfa'
                     ])>
                         <span class="material-symbols-outlined text-[20px]">straighten</span>
                     </span>
@@ -477,195 +648,23 @@
         </div>
 
         <script>var initialGrowthData = @json($chartData);</script>
-        <div class="relative rounded-[2.5rem] p-8 border border-slate-100 bg-white shadow-sm overflow-hidden h-[550px] transition-all duration-700" 
-             x-data="{ 
-                chart: null,
-                hasData: true,
-                initChart(chartData) {
-                    const ctx = document.getElementById('growthChartBottom');
-                    if (!ctx || !window.Chart) return;
-                    if (this.chart) this.chart.destroy();
-                    
-                    const data = chartData || null;
-                    if (!data || !data.datasets || data.datasets.length === 0) {
-                        this.hasData = false;
-                        return;
-                    }
-
-                    this.hasData = true;
-
-                    // Intercept and style datasets for soft-colored light-mode reference bands
-                    const rawDatasets = data.datasets;
-                    const medianDataset = rawDatasets.find(d => d.label === 'Median');
-                    const plus2Dataset = rawDatasets.find(d => d.label === '+2 SD');
-                    const minus2Dataset = rawDatasets.find(d => d.label === '-2 SD');
-                    const plus3Dataset = rawDatasets.find(d => d.label === '+3 SD');
-                    const minus3Dataset = rawDatasets.find(d => d.label === '-3 SD');
-                    const childDataset = rawDatasets.find(d => d.label.includes('Anak') || d.label.includes('Badan'));
-
-                    const styledDatasets = [];
-
-                    // 1. +3 SD (index 0) - Fills to +2 SD (index 1) with amber warning
-                    if (plus3Dataset) {
-                        plus3Dataset.borderColor = '#f43f5e';
-                        plus3Dataset.borderWidth = 1.5;
-                        plus3Dataset.pointRadius = 0;
-                        plus3Dataset.pointHoverRadius = 0;
-                        plus3Dataset.fill = 1;
-                        plus3Dataset.backgroundColor = 'rgba(245, 158, 11, 0.08)';
-                        styledDatasets.push(plus3Dataset);
-                    }
-
-                    // 2. +2 SD (index 1) - Fills to -2 SD (index 3) with healthy emerald green
-                    if (plus2Dataset) {
-                        plus2Dataset.borderColor = '#f59e0b';
-                        plus2Dataset.borderWidth = 1.5;
-                        plus2Dataset.pointRadius = 0;
-                        plus2Dataset.pointHoverRadius = 0;
-                        plus2Dataset.fill = 3;
-                        plus2Dataset.backgroundColor = 'rgba(16, 185, 129, 0.12)';
-                        styledDatasets.push(plus2Dataset);
-                    }
-
-                    // 3. Median (index 2) - No fill, drawn clearly in the center
-                    if (medianDataset) {
-                        medianDataset.borderColor = '#10b981';
-                        medianDataset.borderWidth = 2.5;
-                        medianDataset.pointRadius = 0;
-                        medianDataset.pointHoverRadius = 0;
-                        medianDataset.fill = false;
-                        styledDatasets.push(medianDataset);
-                    }
-
-                    // 4. -2 SD (index 3) - Fills to -3 SD (index 4) with amber warning
-                    if (minus2Dataset) {
-                        minus2Dataset.borderColor = '#f59e0b';
-                        minus2Dataset.borderWidth = 1.5;
-                        minus2Dataset.pointRadius = 0;
-                        minus2Dataset.pointHoverRadius = 0;
-                        minus2Dataset.fill = 4;
-                        minus2Dataset.backgroundColor = 'rgba(245, 158, 11, 0.08)';
-                        styledDatasets.push(minus2Dataset);
-                    }
-
-                    // 5. -3 SD (index 4) - Fills to origin (bottom) with rose danger
-                    if (minus3Dataset) {
-                        minus3Dataset.borderColor = '#ef4444';
-                        minus3Dataset.borderWidth = 1.5;
-                        minus3Dataset.pointRadius = 0;
-                        minus3Dataset.pointHoverRadius = 0;
-                        minus3Dataset.fill = 'origin';
-                        minus3Dataset.backgroundColor = 'rgba(239, 68, 68, 0.08)';
-                        styledDatasets.push(minus3Dataset);
-                    }
-
-                    // 6. Child dataset (index 5) - High contrast, styled by gender theme
-                    if (childDataset) {
-                        const isMaleGender = {{ $isMale ? 'true' : 'false' }};
-                        const lineCol = isMaleGender ? '#0d9488' : '#be185d';
-                        childDataset.borderColor = lineCol;
-                        childDataset.borderWidth = 4;
-                        childDataset.pointRadius = 6;
-                        childDataset.pointHoverRadius = 9;
-                        childDataset.pointBackgroundColor = lineCol;
-                        childDataset.pointBorderColor = '#ffffff';
-                        childDataset.pointBorderWidth = 2;
-                        childDataset.fill = false;
-                        childDataset.tension = 0.25;
-                        styledDatasets.push(childDataset);
-                    }
-
-                    data.datasets = styledDatasets;
-
-                    this.chart = new Chart(ctx, {
-                        type: 'line',
-                        data: data,
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            animation: { duration: 1500, easing: 'easeOutQuart' },
-                            interaction: { intersect: false, mode: 'index' },
-                            scales: {
-                                x: { 
-                                    grid: { color: 'rgba(15, 23, 42, 0.05)', drawBorder: false }, 
-                                    ticks: { color: '#475569', font: { size: 10, weight: '700' } },
-                                    title: { display: true, text: 'UMUR (BULAN)', color: '#1e293b', font: { weight: '800', size: 11, family: 'Inter' } }
-                                },
-                                y: { 
-                                    grid: { color: 'rgba(15, 23, 42, 0.05)', drawBorder: false }, 
-                                    ticks: { color: '#475569', font: { size: 10, weight: '700' } },
-                                    suggestedMin: data.datasets.some(d => d.label.includes('Tinggi')) ? 40 : 0,
-                                    title: { display: true, text: data.datasets.some(d => d.label.includes('Tinggi')) ? 'TINGGI (CM)' : 'BERAT (KG)', color: '#1e293b', font: { weight: '800', size: 11, family: 'Inter' } }
-                                }
-                            },
-                            plugins: {
-                                legend: { 
-                                    position: 'bottom', 
-                                    labels: { 
-                                        boxWidth: 8, 
-                                        boxHeight: 8, 
-                                        usePointStyle: true, 
-                                        pointStyle: 'circle', 
-                                        color: '#475569', 
-                                        padding: 25, 
-                                        font: { weight: '700', size: 10 } 
-                                    } 
-                                },
-                                tooltip: { 
-                                    backgroundColor: 'rgba(15, 23, 42, 0.95)', 
-                                    padding: 16, 
-                                    cornerRadius: 16, 
-                                    usePointStyle: true, 
-                                    titleFont: { size: 13, weight: '800' }, 
-                                    bodyFont: { size: 12, weight: '600' },
-                                    filter: function(tooltipItem) {
-                                        const label = tooltipItem.dataset.label || '';
-                                        return label.includes('Anak') || label.includes('Badan') || label === 'Median';
-                                    },
-                                    callbacks: {
-                                        label: function(context) {
-                                            let label = context.dataset.label || '';
-                                            if (label) {
-                                                label += ': ';
-                                            }
-                                            if (context.parsed.y !== null) {
-                                                const isHeight = context.chart.options.scales.y.title.text.includes('TINGGI') || context.dataset.label.includes('Tinggi');
-                                                label += context.parsed.y + (isHeight ? ' cm' : ' kg');
-                                            }
-                                            return label;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    });
-                }
-             }"
-             x-init="
-                setTimeout(() => { if (typeof initialGrowthData !== 'undefined') initChart(initialGrowthData); }, 300);
-                $wire.on('chart-updated', (data) => {
-                    const rawData = Array.isArray(data) ? data[0] : data;
-                    initChart(rawData);
-                });
-             "
-        >
-            <div class="relative w-full h-full z-10" wire:ignore>
-                <canvas id="growthChartBottom" x-show="hasData"></canvas>
+        
+        <div class="relative w-full h-[550px] z-10" wire:ignore>
+            <canvas id="growthChartBottom" x-show="hasData"></canvas>
+        </div>
+        
+        <div x-show="!hasData" class="absolute inset-0 flex flex-col items-center justify-center p-12 text-center z-20 bg-white/95 rounded-[3rem]">
+            <div class="w-24 h-24 rounded-[2.5rem] bg-slate-50 flex items-center justify-center text-slate-400 mb-8 border border-slate-100 shadow-sm">
+                <span class="material-symbols-outlined text-[48px]">query_stats</span>
             </div>
-            
-            <div x-show="!hasData" class="absolute inset-0 flex flex-col items-center justify-center p-12 text-center z-20">
-                <div class="w-24 h-24 rounded-[2.5rem] bg-slate-50 flex items-center justify-center text-slate-400 mb-8 border border-slate-100 shadow-sm">
-                    <span class="material-symbols-outlined text-[48px]">query_stats</span>
-                </div>
-                <h4 class="text-xl font-black text-slate-800 tracking-tight">Belum Ada Data Pengukuran</h4>
-                <p class="text-xs text-slate-400 font-bold max-w-[300px] mt-3 leading-relaxed">Grafik pertumbuhan akan tersedia setelah data antropometri ditambahkan.</p>
-            </div>
+            <h4 class="text-xl font-black text-slate-800 tracking-tight">Belum Ada Data Pengukuran</h4>
+            <p class="text-xs text-slate-400 font-bold max-w-[300px] mt-3 leading-relaxed">Grafik pertumbuhan akan tersedia setelah data antropometri ditambahkan.</p>
+        </div>
 
-            <div wire:loading wire:target="switchChart" class="absolute inset-0 bg-white/60 backdrop-blur-md flex items-center justify-center z-30 rounded-[2.5rem]">
-                <div class="flex flex-col items-center gap-5">
-                    <div class="w-12 h-12 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
-                    <p class="text-[11px] font-black text-teal-600 uppercase tracking-[0.4em]">Sinkronisasi Analisis...</p>
-                </div>
+        <div wire:loading wire:target="switchChart" class="absolute inset-0 bg-white/60 backdrop-blur-md flex items-center justify-center z-30 rounded-[3rem]">
+            <div class="flex flex-col items-center gap-5">
+                <div class="w-12 h-12 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
+                <p class="text-[11px] font-black text-teal-600 uppercase tracking-[0.4em]">Sinkronisasi Analisis...</p>
             </div>
         </div>
     </div>

@@ -201,6 +201,13 @@
             @include('livewire.admin.patient-management.details.' . $theme['partial'])
         </div>
     </div>
+
+    @if(in_array($patient->category, ['bayi', 'baduta', 'balita', 'lansia']))
+        {{-- Growth Chart (Full Width) ── --}}
+        <div class="w-full mt-10 pb-16">
+            @livewire('admin.patient-management.growth-chart', ['patient' => $patient, 'isEmbedded' => true])
+        </div>
+    @endif
 </div>
 
 @endsection
