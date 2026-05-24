@@ -10,6 +10,8 @@ return new class extends Migration
 {
     public function up(): void
     {
+        Schema::disableForeignKeyConstraints();
+
         Schema::table('users', function (Blueprint $table) {
             $table->string('cadre_role')->nullable();
             $table->string('ttl')->nullable();
@@ -168,6 +170,8 @@ return new class extends Migration
                 ]);
             }
         }
+
+        Schema::enableForeignKeyConstraints();
     }
 
     public function down(): void
