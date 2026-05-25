@@ -39,21 +39,19 @@
             {{-- Pilih Posyandu (superadmin only) --}}
             @if(auth()->user()->isSuperAdmin())
             <div class="flex-1 min-w-[200px]">
-                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Pilih Posyandu</label>
-                <select wire:model="selectedPosyanduId"
-                        class="w-full h-12 rounded-lg border border-slate-300 bg-white px-4 text-sm font-medium text-slate-700 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition">
+                <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2">Pilih Posyandu</label>
+                <x-forms.select-input wire:model="selectedPosyanduId" placeholder="" value="{{ $selectedPosyanduId }}">
                     @foreach($posyandus as $pos)
                         <option value="{{ $pos->id }}">{{ $pos->name }}</option>
                     @endforeach
-                </select>
+                </x-forms.select-input>
             </div>
             @endif
 
             {{-- Pilih Bulan --}}
             <div class="flex-1 min-w-[160px]">
-                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Pilih Bulan</label>
-                <select wire:model="selectedMonth"
-                        class="w-full h-12 rounded-lg border border-slate-300 bg-white px-4 text-sm font-medium text-slate-700 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition">
+                <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2">Pilih Bulan</label>
+                <x-forms.select-input wire:model="selectedMonth" placeholder="" value="{{ $selectedMonth }}">
                     <option value="1">Januari</option>
                     <option value="2">Februari</option>
                     <option value="3">Maret</option>
@@ -66,24 +64,23 @@
                     <option value="10">Oktober</option>
                     <option value="11">November</option>
                     <option value="12">Desember</option>
-                </select>
+                </x-forms.select-input>
             </div>
 
             {{-- Pilih Tahun --}}
             <div class="flex-1 min-w-[130px]">
-                <label class="block text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Pilih Tahun</label>
-                <select wire:model="selectedYear"
-                        class="w-full h-12 rounded-lg border border-slate-300 bg-white px-4 text-sm font-medium text-slate-700 focus:border-teal-500 focus:ring-1 focus:ring-teal-500 transition">
+                <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2">Pilih Tahun</label>
+                <x-forms.select-input wire:model="selectedYear" placeholder="" value="{{ $selectedYear }}">
                     @for($y = now()->year; $y >= 2020; $y--)
                         <option value="{{ $y }}">{{ $y }}</option>
                     @endfor
-                </select>
+                </x-forms.select-input>
             </div>
 
             {{-- Tombol Tampilkan --}}
             <button wire:click="generateReport"
                     wire:loading.attr="disabled"
-                    class="h-12 px-8 bg-teal-600 text-white rounded-lg text-sm font-bold hover:bg-teal-700 active:scale-95 transition-all flex items-center gap-2 min-w-[140px] justify-center shadow-sm">
+                    class="h-14 px-8 bg-teal-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-teal-700 active:scale-95 transition-all flex items-center gap-2 min-w-[140px] justify-center shadow-lg hover:shadow-teal-500/10">
                 <span wire:loading.remove wire:target="generateReport" class="material-symbols-outlined text-[18px]">search</span>
                 <svg wire:loading wire:target="generateReport" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>

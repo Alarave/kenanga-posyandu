@@ -1,9 +1,5 @@
-@extends('layouts.admin-layout')
-
-@section('admin-title') Detail Artikel: {{ $article->title }} @endsection
-
-@section('admin-content')
 <div class="max-w-[1440px] mx-auto space-y-10 pb-20">
+    @section('admin-title') Detail Artikel: {{ $article->title }} @endsection
 
     {{-- ── Header Section with Actions ── --}}
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -40,7 +36,7 @@
         <div class="lg:col-span-8 space-y-8">
             <div class="bg-white rounded-[3rem] border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
                 {{-- Hero Cover --}}
-                @if($article->thumbnail)
+                @if($article->thumbnail && Storage::disk('public')->exists($article->thumbnail))
                     <div class="w-full aspect-video relative group overflow-hidden">
                         <img src="{{ asset('storage/'.$article->thumbnail) }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                         <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-slate-900/20 to-transparent"></div>
@@ -178,14 +174,13 @@
             </div>
         </div>
     </div>
-</div>
 
-<style>
-    .senior-friendly-content p {
-        margin-bottom: 2rem;
-        line-height: 2;
-        font-size: 1.25rem;
-        color: #334155;
-    }
-</style>
-@endsection
+    <style>
+        .senior-friendly-content p {
+            margin-bottom: 2rem;
+            line-height: 2;
+            font-size: 1.25rem;
+            color: #334155;
+        }
+    </style>
+</div>

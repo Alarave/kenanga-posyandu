@@ -98,16 +98,11 @@
                         
                         <div class="space-y-4 relative z-10">
                             <label class="block text-[10px] font-black text-indigo-300 uppercase tracking-[0.3em] ml-1">Pilih Kategori</label>
-                            <div class="relative">
-                                <select wire:model="category_id"
-                                        class="w-full h-16 px-6 rounded-2xl bg-white/10 border border-white/10 text-sm font-black uppercase tracking-widest text-white focus:outline-none focus:border-indigo-400 transition-all appearance-none cursor-pointer backdrop-blur-md">
-                                    <option value="" class="bg-slate-900">Pilih Kategori</option>
-                                    @foreach($categories as $category)
-                                        <option value="{{ $category->id }}" class="bg-slate-900">{{ $category->name }}</option>
-                                    @endforeach
-                                </select>
-                                <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-indigo-300 pointer-events-none">expand_more</span>
-                            </div>
+                            <x-forms.select-input wire:model="category_id" placeholder="Pilih Kategori" :placeholderDisabled="true" value="{{ $category_id }}" class="!h-16 !bg-white/10 !border-white/10 !text-white !rounded-2xl !px-6 !text-sm !font-black !uppercase !tracking-widest focus:!border-indigo-400 focus:!ring-0 backdrop-blur-md">
+                                @foreach($categories as $category)
+                                    <option value="{{ $category->id }}" class="bg-slate-900">{{ $category->name }}</option>
+                                @endforeach
+                            </x-forms.select-input>
                             @error('category_id') <p class="text-[10px] text-red-400 font-bold ml-1 uppercase tracking-wider">{{ $message }}</p> @enderror
                         </div>
 

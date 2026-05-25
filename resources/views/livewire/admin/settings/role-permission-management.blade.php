@@ -75,7 +75,7 @@
             <h3 class="text-xl font-black mb-4">Informasi Keamanan</h3>
             <p class="text-slate-400 text-sm leading-relaxed mb-6 font-medium">
                 Perubahan pada matriks hak akses ini akan langsung berdampak pada seluruh pengguna dengan peran tersebut. 
-                <span class="text-teal-400 font-bold underline">Superadmin</span> memiliki akses tak terbatas ke seluruh sistem dan tidak dipengaruhi oleh pengaturan pada matriks ini.
+                <span class="text-teal-400 font-bold underline">Admin RW</span> memiliki akses tak terbatas ke seluruh sistem dan tidak dipengaruhi oleh pengaturan pada matriks ini.
             </p>
             <div class="flex items-center gap-4">
                 <div class="flex items-center gap-2 px-4 py-2 bg-white/5 rounded-xl border border-white/10">

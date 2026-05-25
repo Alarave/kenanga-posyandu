@@ -11,6 +11,9 @@ use Livewire\Livewire;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
+    // Seed roles and permissions
+    $this->seed(\Database\Seeders\RolesAndPermissionsSeeder::class);
+
     // Create a posyandu
     $this->posyandu = Posyandu::factory()->create();
 
@@ -61,9 +64,9 @@ it('displays growth chart for balita patient with medical records', function () 
     // Test Livewire component
     Livewire::actingAs($this->admin)
         ->test(GrowthChart::class, ['patient' => $patient])
-        ->assertSee('Grafik Pertumbuhan')
-        ->assertSee('Berat Badan (kg)')
-        ->assertSee('Tinggi Badan (cm)')
+        ->assertSee('Grafik Analisis Pertumbuhan WHO')
+        ->assertSee('Berat Badan')
+        ->assertSee('Tinggi Badan')
         ->assertSet('chartData.weight', function ($weight) {
             return count($weight) === 2 && $weight[0] == 12.5 && $weight[1] == 13.0;
         })
@@ -83,7 +86,7 @@ it('shows empty state when patient has no medical records', function () {
     // Test Livewire component
     Livewire::actingAs($this->admin)
         ->test(GrowthChart::class, ['patient' => $patient])
-        ->assertSee('Belum ada data pengukuran untuk ditampilkan di grafik');
+        ->assertSee('Belum Ada Data Pengukuran');
 });
 
 it('displays growth chart on patient detail page for balita', function () {
@@ -173,4 +176,37 @@ it('color codes data points based on nutrition status', function () {
                 && $statuses[1] === 'Gizi Kurang'
                 && $statuses[2] === 'Gizi Baik';
         });
+});
+
+it('does not render growth chart content for lansia patient', function () {
+    $patient = Patient::factory()->create([
+        'posyandu_id' => $this->posyandu->id,
+        'category' => 'lansia',
+        'birth_date' => now()->subYears(65),
+    ]);
+
+    // Create medical records
+    MedicalRecord::factory()->create([
+        'patient_id' => $patient->id,
+        'user_id' => $this->admin->id,
+        'visit_date' => now()->subMonths(2),
+        'weight' => 60.5,
+        'height' => 160.0,
+        'systolic_bp' => 120,
+        'diastolic_bp' => 80,
+        'blood_sugar' => 110,
+        'uric_acid' => 5.4,
+        'cholesterol' => 190,
+    ]);
+
+    Livewire::actingAs($this->admin)
+        ->test(GrowthChart::class, ['patient' => $patient])
+        ->assertDontSee('Grafik Analisis Pertumbuhan WHO')
+        ->assertDontSee('Grafik Pemantauan Kesehatan Berkala')
+        ->assertSet('chartData', []);
+
+    $this->actingAs($this->admin)
+        ->get(route('admin.patients.show', $patient))
+        ->assertOk()
+        ->assertDontSeeLivewire('admin.patient-management.growth-chart');
 });

@@ -57,7 +57,7 @@
 @endpush
 
 @section('admin-content')
-<div class="w-full pb-12 px-4">
+<div class="w-full pb-12 px-4" x-data="{ category: '{{ old('category', $record->patient->category) }}' }" @category-updated.window="category = $event.detail">
     {{-- Header Section --}}
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div class="flex items-center gap-4">
@@ -117,7 +117,8 @@
                     <div class="md:col-span-8 space-y-3">
                         <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Nama Balita / Sasaran <span class="text-primary">*</span></label>
                         <div class="relative group/select">
-                            <select name="patient_id" id="patient-select" required placeholder="Cari nama atau NIK balita..."
+                            <input type="hidden" name="patient_id" value="{{ $record->patient_id }}">
+                            <select id="patient-select" required placeholder="Cari nama atau NIK balita..."
                                     class="w-full h-16 border border-slate-200 rounded-[1.25rem] text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all appearance-none cursor-pointer bg-slate-50/30">
                                 @foreach($patients as $patient)
                                     @php
@@ -133,6 +134,7 @@
                                             data-last-weight="{{ $lastRec->weight ?? 0 }}"
                                             data-last-status="{{ $lastRec->weight_status ?? '' }}"
                                             data-second-last-status="{{ $secondLastRec->weight_status ?? '' }}"
+                                            data-category="{{ $patient->category }}"
                                             {{ old('patient_id', $record->patient_id) == $patient->id ? 'selected' : '' }}>
                                         {{ $patient->full_name }} — NIK: {{ $patient->id_number }}
                                     </option>
@@ -198,7 +200,7 @@
                         </div>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+                    <div :class="category === 'lansia' ? 'grid-cols-1 md:grid-cols-2' : 'grid-cols-1 md:grid-cols-3'" class="grid gap-8 relative">
                         <div class="space-y-3">
                             <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Berat Badan <span class="text-primary">*</span></label>
                             <div class="relative">
@@ -219,7 +221,7 @@
                             @error('height') <p class="text-[10px] text-rose-500 font-bold ml-1">{{ $message }}</p> @enderror
                         </div>
 
-                        <div class="space-y-3" x-data="{ 
+                        <div class="space-y-3" x-show="category !== 'lansia'" x-data="{ 
                             status: '{{ $record->weight_status }}',
                             getStatusLabel() {
                                 if (this.status === 'N') return '🟢 N (Naik)';
@@ -244,7 +246,7 @@
                             </div>
                         </div>
 
-                        <div class="md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 mt-2 border-t border-slate-100/60">
+                        <div class="md:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 mt-2 border-t border-slate-100/60" x-show="category !== 'lansia'">
                             <div class="space-y-3">
                                 <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Cara Ukur <span class="text-primary">*</span></label>
                                 <div class="flex gap-4">
@@ -285,7 +287,85 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {{-- Lansia Checkups Block --}}
+                <div class="bg-white rounded-[3rem] border border-slate-100 p-10 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all duration-500 hover:shadow-[0_20px_50px_rgba(249,115,22,0.08)] relative overflow-hidden group"
+                     x-show="category === 'lansia'"
+                     x-transition:enter="transition ease-out duration-500"
+                     x-transition:enter-start="opacity-0 transform translate-y-8"
+                     x-transition:enter-end="opacity-100 transform translate-y-0">
+                    <div class="absolute -top-24 -right-24 w-64 h-64 bg-orange-500/5 rounded-full blur-3xl group-hover:bg-orange-500/10 transition-colors"></div>
+                    
+                    <div class="flex items-center gap-4 mb-10 relative">
+                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-amber-600 text-white flex items-center justify-center shadow-lg shadow-orange-200">
+                            <span class="material-symbols-outlined text-[24px]">favorite</span>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-black text-slate-800 uppercase tracking-[0.2em]">Pemeriksaan Fisik Lansia (Posbindu)</h3>
+                            <p class="text-xs font-bold text-slate-400 mt-0.5">Pengukuran tekanan darah, gula darah, kolesterol, dan asam urat</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 relative">
+                        <div class="space-y-3">
+                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Tekanan Darah (Sistolik)</label>
+                            <div class="relative">
+                                <input type="number" name="systolic_bp" value="{{ old('systolic_bp', $record->systolic_bp) }}" placeholder="Contoh: 120"
+                                       class="w-full h-16 pl-6 pr-14 border border-slate-200 rounded-[1.25rem] text-sm font-bold text-slate-700 focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/5 transition-all bg-slate-50/30 @error('systolic_bp') border-error bg-error/5 @enderror">
+                                <span class="absolute right-6 top-5 text-[11px] font-black text-slate-300">mmHg</span>
+                            </div>
+                            @error('systolic_bp') <p class="text-[10px] text-rose-500 font-bold ml-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div class="space-y-3">
+                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Tekanan Darah (Diastolik)</label>
+                            <div class="relative">
+                                <input type="number" name="diastolic_bp" value="{{ old('diastolic_bp', $record->diastolic_bp) }}" placeholder="Contoh: 80"
+                                       class="w-full h-16 pl-6 pr-14 border border-slate-200 rounded-[1.25rem] text-sm font-bold text-slate-700 focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/5 transition-all bg-slate-50/30 @error('diastolic_bp') border-error bg-error/5 @enderror">
+                                <span class="absolute right-6 top-5 text-[11px] font-black text-slate-300">mmHg</span>
+                            </div>
+                            @error('diastolic_bp') <p class="text-[10px] text-rose-500 font-bold ml-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div class="space-y-3">
+                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Gula Darah</label>
+                            <div class="relative">
+                                <input type="number" name="blood_sugar" value="{{ old('blood_sugar', $record->blood_sugar) }}" placeholder="Contoh: 120"
+                                       class="w-full h-16 pl-6 pr-14 border border-slate-200 rounded-[1.25rem] text-sm font-bold text-slate-700 focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/5 transition-all bg-slate-50/30 @error('blood_sugar') border-error bg-error/5 @enderror">
+                                <span class="absolute right-6 top-5 text-[11px] font-black text-slate-300">mg/dL</span>
+                            </div>
+                            @error('blood_sugar') <p class="text-[10px] text-rose-500 font-bold ml-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div class="space-y-3">
+                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Asam Urat</label>
+                            <div class="relative">
+                                <input type="number" step="0.1" name="uric_acid" value="{{ old('uric_acid', $record->uric_acid) }}" placeholder="Contoh: 5.4"
+                                       class="w-full h-16 pl-6 pr-14 border border-slate-200 rounded-[1.25rem] text-sm font-bold text-slate-700 focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/5 transition-all bg-slate-50/30 @error('uric_acid') border-error bg-error/5 @enderror">
+                                <span class="absolute right-6 top-5 text-[11px] font-black text-slate-300">mg/dL</span>
+                            </div>
+                            @error('uric_acid') <p class="text-[10px] text-rose-500 font-bold ml-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div class="space-y-3">
+                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Kolesterol</label>
+                            <div class="relative">
+                                <input type="number" name="cholesterol" value="{{ old('cholesterol', $record->cholesterol) }}" placeholder="Contoh: 180"
+                                       class="w-full h-16 pl-6 pr-14 border border-slate-200 rounded-[1.25rem] text-sm font-bold text-slate-700 focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/5 transition-all bg-slate-50/30 @error('cholesterol') border-error bg-error/5 @enderror">
+                                <span class="absolute right-6 top-5 text-[11px] font-black text-slate-300">mg/dL</span>
+                            </div>
+                            @error('cholesterol') <p class="text-[10px] text-rose-500 font-bold ml-1">{{ $message }}</p> @enderror
+                        </div>
+
+                        <div class="lg:col-span-5 space-y-3 pt-4">
+                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Obat yang Sedang Diminum</label>
+                            <textarea name="current_medication" rows="2" placeholder="Contoh: Amlodipine 5mg 1x1, Metformin 500mg 2x1..."
+                                      class="w-full p-6 border border-slate-200 rounded-[2rem] text-sm font-bold text-slate-700 focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/5 transition-all bg-slate-50/30 resize-none @error('current_medication') border-error bg-error/5 @enderror">{{ old('current_medication', $record->current_medication) }}</textarea>
+                            @error('current_medication') <p class="text-[10px] text-rose-500 font-bold ml-1">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8" x-show="category !== 'lansia'">
                     {{-- B. Skrining TBC & Gejala --}}
                     <div class="bg-white rounded-[3rem] border border-slate-100 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all duration-500 hover:shadow-[0_20px_50px_rgba(244,63,94,0.06)] relative overflow-hidden group">
                         <div class="absolute -top-24 -right-24 w-64 h-64 bg-rose-500/5 rounded-full blur-3xl group-hover:bg-rose-500/10 transition-colors"></div>
@@ -369,22 +449,34 @@
                                 @endforeach
                             </div>
 
-                            <div class="grid grid-cols-2 gap-4">
+                             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 @foreach([
                                     'vitamin_a' => ['Vitamin A', 'biotech'],
                                     'deworming_medicine' => ['Obat Cacing', 'pill']
                                 ] as $name => $info)
-                                    <label class="relative flex flex-col items-center justify-center p-5 rounded-[2rem] border border-slate-100 bg-slate-50/30 hover:bg-white hover:border-teal-200 transition-all cursor-pointer group/toggle has-[:checked]:border-teal-500/50 has-[:checked]:bg-teal-50/30">
-                                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">{{ $info[0] }}</span>
-                                        <div class="relative inline-flex items-center">
-                                            <input type="checkbox" name="{{ $name }}" value="1" {{ old($name, $record->$name) ? 'checked' : '' }} class="sr-only peer">
-                                            <div class="w-12 h-7 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-500 shadow-inner transition-colors"></div>
-                                        </div>
-                                        <div class="mt-3 px-3 py-1 rounded-full text-[9px] font-black tracking-tighter transition-all bg-slate-100 text-slate-800 peer-checked:bg-teal-100 peer-checked:text-slate-800 uppercase" 
-                                             x-data x-text="$el.previousElementSibling.querySelector('input').checked ? 'DIBERIKAN' : 'TIDAK'">
-                                            {{ old($name, $record->$name) ? 'DIBERIKAN' : 'TIDAK' }}
-                                        </div>
-                                    </label>
+                                    <div x-data="{ checked: {{ old($name, $record->$name) ? 'true' : 'false' }} }" class="space-y-3">
+                                        <label class="relative flex flex-col items-center justify-center p-5 rounded-[2rem] border border-slate-100 bg-slate-50/30 hover:bg-white hover:border-teal-200 transition-all cursor-pointer group/toggle has-[:checked]:border-teal-500/50 has-[:checked]:bg-teal-50/30">
+                                            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">{{ $info[0] }}</span>
+                                            <div class="relative inline-flex items-center">
+                                                <input type="checkbox" name="{{ $name }}" value="1" x-model="checked" {{ old($name, $record->$name) ? 'checked' : '' }} class="sr-only peer">
+                                                <div class="w-12 h-7 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[3px] after:left-[3px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-500 shadow-inner transition-colors"></div>
+                                            </div>
+                                            <div class="mt-3 px-3 py-1 rounded-full text-[9px] font-black tracking-tighter transition-all bg-slate-100 text-slate-800 peer-checked:bg-teal-100 peer-checked:text-slate-800 uppercase" 
+                                                 x-text="checked ? 'DIBERIKAN' : 'TIDAK'">
+                                                {{ old($name, $record->$name) ? 'DIBERIKAN' : 'TIDAK' }}
+                                            </div>
+                                        </label>
+
+                                        {{-- Conditional Color Selector for Vitamin A --}}
+                                        @if($name === 'vitamin_a')
+                                            <div x-show="checked" x-transition class="pt-2">
+                                                <x-forms.select-input name="vitamin_a_color" placeholder="-- Pilih Warna Kapsul --" :placeholderDisabled="false" value="{{ old('vitamin_a_color', $record->vitamin_a_color) }}">
+                                                    <option value="biru" {{ old('vitamin_a_color', $record->vitamin_a_color) == 'biru' ? 'selected' : '' }}>🔵 Kapsul Biru (6-11 bln)</option>
+                                                    <option value="merah" {{ old('vitamin_a_color', $record->vitamin_a_color) == 'merah' ? 'selected' : '' }}>🔴 Kapsul Merah (1-5 thn)</option>
+                                                </x-forms.select-input>
+                                            </div>
+                                        @endif
+                                    </div>
                                 @endforeach
                             </div>
 
@@ -407,7 +499,7 @@
                                     <input type="hidden" name="vaccine_name" x-ref="vaccineInput" value="{{ old('vaccine_name', $record->vaccine_name) }}">
                                     
                                     <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                                        @foreach(['BCG', 'Polio 1', 'Polio 2', 'Polio 3', 'Polio 4', 'DPT-HB-Hib 1', 'DPT-HB-Hib 2', 'DPT-HB-Hib 3', 'PCV 1', 'PCV 2', 'Campak/MR', 'IPV'] as $vaccine)
+                                        @foreach(['HB-0', 'Polio 0', 'BCG', 'Polio 1', 'Polio 2', 'Polio 3', 'Polio 4', 'DPT-HB-Hib 1', 'DPT-HB-Hib 2', 'DPT-HB-Hib 3', 'PCV 1', 'PCV 2', 'PCV 3', 'RV 1', 'RV 2', 'RV 3', 'IPV 1', 'IPV 2', 'MR', 'DPT-HB-Hib Lanjutan', 'MR Lanjutan', 'JE'] as $vaccine)
                                             <button type="button" 
                                                     @click="toggleVaccine('{{ $vaccine }}')"
                                                     :class="selectedVaccines.includes('{{ $vaccine }}') ? 'border-teal-600 bg-teal-400 text-black shadow-sm' : 'border-slate-100 bg-slate-50/30 text-slate-700 hover:bg-white hover:border-teal-200'"
@@ -436,9 +528,10 @@
             </div>
 
             {{-- 3. Perkembangan & Tindakan (BOTTOM ROW) --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+            <div :class="category === 'lansia' ? 'grid-cols-1' : 'grid-cols-1 md:grid-cols-2'" class="grid gap-8 mt-8">
                 {{-- A. Perkembangan (KPSP) --}}
-                <div class="md:col-span-1 bg-white rounded-[3rem] border border-slate-100 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,108,73,0.08)]">
+                <div class="md:col-span-1 bg-white rounded-[3rem] border border-slate-100 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all duration-500 hover:shadow-[0_20px_50px_rgba(0,108,73,0.08)]"
+                     x-show="category !== 'lansia'">
                     <div class="flex items-center gap-3 mb-8">
                         <div class="w-10 h-10 rounded-2xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
                             <span class="material-symbols-outlined text-[20px]">psychology</span>
@@ -449,15 +542,10 @@
                     <div class="space-y-6">
                         <div class="space-y-3">
                             <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Status KPSP</label>
-                            <div class="relative">
-                                <select name="kpsp_status"
-                                        class="w-full h-16 px-6 border border-slate-200 rounded-[1.25rem] text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all appearance-none cursor-pointer bg-slate-50/30">
-                                    <option value="">-- Pilih Status --</option>
-                                    <option value="Lengkap" {{ old('kpsp_status', $record->kpsp_status) == 'Lengkap' ? 'selected' : '' }}>✅ Lengkap / Sesuai</option>
-                                    <option value="Tidak Lengkap" {{ old('kpsp_status', $record->kpsp_status) == 'Tidak Lengkap' ? 'selected' : '' }}>⚠️ Ada Keterlambatan</option>
-                                </select>
-                                <span class="absolute right-6 top-5 text-slate-300 material-symbols-outlined pointer-events-none">expand_more</span>
-                            </div>
+                            <x-forms.select-input name="kpsp_status" placeholder="-- Pilih Status --" :placeholderDisabled="false" value="{{ old('kpsp_status', $record->kpsp_status) }}">
+                                <option value="Lengkap" {{ old('kpsp_status', $record->kpsp_status) == 'Lengkap' ? 'selected' : '' }}>✅ Lengkap / Sesuai</option>
+                                <option value="Tidak Lengkap" {{ old('kpsp_status', $record->kpsp_status) == 'Tidak Lengkap' ? 'selected' : '' }}>⚠️ Ada Keterlambatan</option>
+                            </x-forms.select-input>
                         </div>
                     </div>
                 </div>
@@ -474,31 +562,28 @@
                     <div class="space-y-6">
                         <div class="space-y-3">
                             <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Rujukan</label>
-                            <div class="relative">
-                                <select name="referral_type"
-                                        class="w-full h-16 px-6 border border-slate-200 rounded-[1.25rem] text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all appearance-none cursor-pointer bg-slate-50/30 @error('referral_type') border-rose-500 @enderror">
-                                    <option value="None" {{ old('referral_type', $record->referral_type) == 'None' ? 'selected' : '' }}>Tidak Ada Rujukan</option>
-                                    <option value="Pustu" {{ old('referral_type', $record->referral_type) == 'Pustu' ? 'selected' : '' }}>Pustu</option>
-                                    <option value="Puskesmas" {{ old('referral_type', $record->referral_type) == 'Puskesmas' ? 'selected' : '' }}>Puskesmas</option>
-                                    <option value="RS" {{ old('referral_type', $record->referral_type) == 'RS' ? 'selected' : '' }}>Rumah Sakit</option>
-                                </select>
-                                <span class="absolute right-6 top-5 text-slate-300 material-symbols-outlined pointer-events-none">expand_more</span>
-                            </div>
+                            <x-forms.select-input name="referral_type" placeholder="" value="{{ old('referral_type', $record->referral_type) }}" :error="$errors->has('referral_type')">
+                                <option value="None" {{ old('referral_type', $record->referral_type) == 'None' ? 'selected' : '' }}>Tidak Ada Rujukan</option>
+                                <option value="Pustu" {{ old('referral_type', $record->referral_type) == 'Pustu' ? 'selected' : '' }}>Pustu</option>
+                                <option value="Puskesmas" {{ old('referral_type', $record->referral_type) == 'Puskesmas' ? 'selected' : '' }}>Puskesmas</option>
+                                <option value="RS" {{ old('referral_type', $record->referral_type) == 'RS' ? 'selected' : '' }}>Rumah Sakit</option>
+                            </x-forms.select-input>
                             @error('referral_type') <p class="text-[10px] text-rose-500 font-bold ml-1">{{ $message }}</p> @enderror
                         </div>
                         <div class="space-y-3">
+                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Keluhan / Riwayat Sakit</label>
+                            <textarea name="complaint" rows="2" placeholder="Catat keluhan balita jika ada..."
+                                      class="w-full p-5 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-slate-50/30 resize-none">{{ old('complaint', $record->complaint) }}</textarea>
+                        </div>
+                        <div class="space-y-3">
                             <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Hasil Pemeriksaan / Diagnosis <span class="text-rose-500">*</span></label>
-                            <div class="relative">
-                                <select name="diagnosis" required
-                                        class="w-full h-16 px-6 border border-slate-200 rounded-[1.25rem] text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all appearance-none cursor-pointer bg-slate-50/30 @error('diagnosis') border-rose-500 @enderror">
-                                    <option value="Sehat" {{ old('diagnosis', $record->diagnosis) == 'Sehat' ? 'selected' : '' }}>🟢 Sehat</option>
-                                    <option value="Kurang Gizi" {{ old('diagnosis', $record->diagnosis) == 'Kurang Gizi' ? 'selected' : '' }}>🟡 Perlu Pemantauan Gizi</option>
-                                    <option value="Indikasi Stunting" {{ old('diagnosis', $record->diagnosis) == 'Indikasi Stunting' ? 'selected' : '' }}>🔴 Indikasi Stunting</option>
-                                    <option value="Sakit" {{ old('diagnosis', $record->diagnosis) == 'Sakit' ? 'selected' : '' }}>🤒 Sakit (Demam/Batuk/Pilek)</option>
-                                    <option value="Lainnya" {{ old('diagnosis', $record->diagnosis) == 'Lainnya' ? 'selected' : '' }}>Lainnya...</option>
-                                </select>
-                                <span class="absolute right-6 top-5 text-slate-300 material-symbols-outlined pointer-events-none">expand_more</span>
-                            </div>
+                            <x-forms.select-input name="diagnosis" placeholder="" required :error="$errors->has('diagnosis')" value="{{ old('diagnosis', $record->diagnosis) }}">
+                                <option value="Sehat" {{ old('diagnosis', $record->diagnosis) == 'Sehat' ? 'selected' : '' }}>🟢 Sehat</option>
+                                <option value="Kurang Gizi" {{ old('diagnosis', $record->diagnosis) == 'Kurang Gizi' ? 'selected' : '' }}>🟡 Perlu Pemantauan Gizi</option>
+                                <option value="Indikasi Stunting" {{ old('diagnosis', $record->diagnosis) == 'Indikasi Stunting' ? 'selected' : '' }}>🔴 Indikasi Stunting</option>
+                                <option value="Sakit" {{ old('diagnosis', $record->diagnosis) == 'Sakit' ? 'selected' : '' }}>🤒 Sakit (Demam/Batuk/Pilek)</option>
+                                <option value="Lainnya" {{ old('diagnosis', $record->diagnosis) == 'Lainnya' ? 'selected' : '' }}>Lainnya...</option>
+                            </x-forms.select-input>
                             @error('diagnosis') <p class="text-[10px] text-rose-500 font-bold ml-1">{{ $message }}</p> @enderror
                         </div>
                         <div class="space-y-3">
@@ -651,6 +736,16 @@ document.addEventListener('DOMContentLoaded', function() {
         // Do NOT run calculateWeightStatus on init for EDIT, 
         // as the record already has its own saved weight status.
         // UNLESS the user touches the weight field.
+        
+        // Update Alpine category
+        const options = Array.from(patientSelect.options);
+        const selectedOption = options.find(opt => opt.value == ts.getValue());
+        if (selectedOption) {
+            const cat = selectedOption.dataset.category || 'balita';
+            setTimeout(() => {
+                window.dispatchEvent(new CustomEvent('category-updated', { detail: cat }));
+            }, 50);
+        }
     }
 });
 </script>

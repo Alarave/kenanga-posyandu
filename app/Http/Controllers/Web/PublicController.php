@@ -34,9 +34,13 @@ class PublicController extends Controller
     /**
      * Display the about page
      */
-    public function about()
+    public function about(\App\Services\AboutPageService $aboutPageService)
     {
-        return view('public.about');
+        $misis = $aboutPageService->getMissions();
+        $tujuans = $aboutPageService->getGoals();
+        $kaders = $aboutPageService->getCadres();
+
+        return view('public.about.about', compact('misis', 'tujuans', 'kaders'));
     }
 
     /**

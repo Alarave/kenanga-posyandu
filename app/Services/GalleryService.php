@@ -21,7 +21,11 @@ class GalleryService
         $data['user_id'] = $user->id;
 
         if (isset($data['photo']) && $data['photo'] instanceof UploadedFile) {
+            $mimeType = $data['photo']->getMimeType();
+            $data['type'] = str_starts_with($mimeType, 'video/') ? 'video' : 'image';
             $data['photo'] = $data['photo']->store('galleries', 'public');
+        } else {
+            $data['type'] = 'image';
         }
 
         return Gallery::create($data);
@@ -36,6 +40,8 @@ class GalleryService
             if ($gallery->photo) {
                 Storage::disk('public')->delete($gallery->photo);
             }
+            $mimeType = $data['photo']->getMimeType();
+            $data['type'] = str_starts_with($mimeType, 'video/') ? 'video' : 'image';
             $data['photo'] = $data['photo']->store('galleries', 'public');
         }
 

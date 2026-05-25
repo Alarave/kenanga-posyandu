@@ -98,7 +98,7 @@ class AboutPageService
         $kaders = $users->map(function ($user) {
             $imagePath = $user->image;
             if (empty($imagePath)) {
-                $imagePath = asset('assets/img/kaders/placeholder.png'); // placeholder default jika kosong
+                $imagePath = asset('assets/img/kaders/placeholder.svg'); // placeholder default jika kosong
             } elseif (str_starts_with($imagePath, 'assets/')) {
                 $imagePath = asset($imagePath);
             } else {

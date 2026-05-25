@@ -55,6 +55,17 @@ class ActivityLog extends Model
         'created_at' => 'datetime',
     ];
 
+    private static function currentUserId(): ?int
+    {
+        $user = auth()->user();
+
+        if (! $user || ! $user->exists) {
+            return null;
+        }
+
+        return $user->getKey();
+    }
+
     /**
      * Relationship with User
      */
@@ -69,7 +80,7 @@ class ActivityLog extends Model
     public static function logCreate(Model $model, ?string $description = null): self
     {
         return static::create([
-            'user_id' => auth()->id(),
+            'user_id' => self::currentUserId(),
             'user_name' => auth()->user()?->name,
             'role' => auth()->user()?->role ?? 'guest',
             'action_type' => 'create',
@@ -88,7 +99,7 @@ class ActivityLog extends Model
     public static function logUpdate(Model $model, array $oldValues, array $newValues, ?string $description = null): self
     {
         return static::create([
-            'user_id' => auth()->id(),
+            'user_id' => self::currentUserId(),
             'user_name' => auth()->user()?->name,
             'role' => auth()->user()?->role ?? 'guest',
             'action_type' => 'update',
@@ -108,7 +119,7 @@ class ActivityLog extends Model
     public static function logDelete(Model $model, array $oldValues, ?string $description = null): self
     {
         return static::create([
-            'user_id' => auth()->id(),
+            'user_id' => self::currentUserId(),
             'user_name' => auth()->user()?->name,
             'role' => auth()->user()?->role ?? 'guest',
             'action_type' => 'delete',
@@ -127,7 +138,7 @@ class ActivityLog extends Model
     public static function logActivity(string $action, string $description, $model = null, array $metadata = []): self
     {
         return static::create([
-            'user_id' => auth()->id(),
+            'user_id' => self::currentUserId(),
             'user_name' => auth()->user()?->name,
             'role' => auth()->user()?->role ?? 'guest',
             'action_type' => $action,

@@ -19,9 +19,13 @@ class PatientController extends Controller
     /**
      * Show the form for creating a new patient.
      */
-    public function create()
+    public function create(Request $request)
     {
         $this->authorize('create', Patient::class);
+
+        if (!$request->has('category')) {
+            return view('livewire.admin.patient-management.select-category');
+        }
 
         $pedukuhans = \App\Models\Pedukuhan::all();
         $posyandus = $this->getAvailablePosyandus();

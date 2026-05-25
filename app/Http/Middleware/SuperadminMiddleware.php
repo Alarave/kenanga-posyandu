@@ -16,7 +16,7 @@ class SuperadminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (! $request->user() || ! $request->user()->isSuperAdmin()) {
-            abort(403, 'Hanya Super Admin yang berhak mengakses halaman ini.');
+            abort(403, 'Hanya Admin RW yang berhak mengakses halaman ini.');
         }
 
         return $next($request);

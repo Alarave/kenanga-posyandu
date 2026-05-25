@@ -89,6 +89,6 @@ class ScheduleUpdate extends Component
 
         return view('livewire.admin.schedule-management.update', [
             'posyandus' => $posyandus,
-        ]);
+        ])->layout('layouts.admin-layout');
     }
 }

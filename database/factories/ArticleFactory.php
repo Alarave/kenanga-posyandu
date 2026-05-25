@@ -23,7 +23,7 @@ class ArticleFactory extends Factory
             'content' => fake()->paragraphs(3, true),
             'thumbnail' => null,
             'slug' => Str::slug($title).'-'.fake()->unique()->numberBetween(1, 10000),
-            'status' => fake()->randomElement(['Published', 'Draft']),
+            'status' => fake()->randomElement(['published', 'draft']),
             'published_at' => fake()->optional()->dateTimeBetween('-1 year', 'now'),
         ];
     }

@@ -4,6 +4,7 @@ namespace App\Livewire\User\Settings;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 use Livewire\Component;
 
@@ -16,8 +17,8 @@ class Password extends Component
     public $new_password_confirmation;
 
     protected $rules = [
-        'current_password' => 'required|min:6',
-        'new_password' => 'required|min:6|confirmed',
+        'current_password' => 'required|min:8',
+        'new_password' => ['required', 'confirmed', Password::min(8)->letters()->mixedCase()->numbers()],
     ];
 
     public function updatePassword()

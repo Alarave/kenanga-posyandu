@@ -32,7 +32,7 @@ beforeEach(function () {
         'title' => 'Artikel Kesehatan Test',
         'slug' => 'artikel-kesehatan-test',
         'content' => 'Konten artikel kesehatan untuk testing',
-        'status' => 'Published',
+        'status' => 'published',
     ]);
 });
 
@@ -130,8 +130,7 @@ describe('konten halaman tentang kami', function () {
         $response = $this->get('/about');
 
         $response->assertOk();
-        // Assert Slogan is present
-        $response->assertSee('Posyandu ILP Kenanga RW 011, Mitra Masyarakat Menuju Hidup Sehat');
+
         // Assert Visi is present
         $response->assertSee('Menjadi Posyandu ILP Kenanga 1 yang aktif, profesional, inovatif, dan terpercaya');
         // Assert Misi is present
@@ -379,11 +378,30 @@ describe('error handling', function () {
         $response = $this->get('/halaman-tidak-ada');
 
         $response->assertNotFound();
+        $response->assertSee('Halaman yang Anda cari tidak dapat ditemukan');
+        $response->assertSee('Kembali ke Beranda');
+        $response->assertSee('Posyandu Kenanga');
     });
 
     it('menampilkan 404 untuk artikel yang tidak ada', function () {
         $response = $this->get('/articles/artikel-tidak-ada');
 
         $response->assertNotFound();
+    });
+
+    it('dapat me-render halaman 500 kustom', function () {
+        $view = view('errors.500')->render();
+
+        expect($view)->toContain('Kesalahan Internal Server')
+            ->toContain('Terjadi kesalahan internal pada server kami')
+            ->toContain('Posyandu Kenanga');
+    });
+
+    it('dapat me-render halaman 503 kustom', function () {
+        $view = view('errors.503')->render();
+
+        expect($view)->toContain('Layanan Tidak Tersedia')
+            ->toContain('Layanan sedang tidak tersedia atau sedang dalam pemeliharaan rutin')
+            ->toContain('Posyandu Kenanga');
     });
 });

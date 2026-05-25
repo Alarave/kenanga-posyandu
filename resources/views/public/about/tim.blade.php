@@ -1,6 +1,6 @@
 {{-- ── 6. BIODATA KADER POSYANDU ── --}}
 <section class="py-14 border-t border-slate-100 dark:border-slate-800">
-    <div class="max-w-screen-xl mx-auto px-4 md:px-8">
+    <div class="max-w-7xl mx-auto px-4 md:px-8">
         <div class="max-w-xl mx-auto sm:text-center">
             <h2 class="text-slate-900 dark:text-white text-3xl md:text-5xl font-black font-jakarta tracking-tight py-2">
                 Tim Pelaksana
@@ -13,19 +13,19 @@
         <div class="mt-12">
             <ul class="grid gap-8 sm:grid-cols-2 md:grid-cols-3">
                 @foreach($kaders as $k)
-                <li class="cursor-pointer group bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-850 p-5 rounded-[2rem] shadow-xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-350 flex flex-col items-center text-center relative overflow-hidden" onclick="openKaderModal('{{ addslashes($k->name) }}', '{{ addslashes($k->role) }}', '{{ addslashes($k->pendidikan) }}', '{{ addslashes($k->alamat) }}', '{{ addslashes($k->email) }}', '{{ addslashes($k->image) }}')">
+                <li class="cursor-pointer group bg-white dark:bg-slate-900 border border-slate-200/50 dark:border-slate-850 p-5 rounded-4xl shadow-xs hover:shadow-xl hover:-translate-y-1.5 transition-all duration-350 flex flex-col items-center text-center relative overflow-hidden" onclick="openKaderModal('{{ addslashes($k->name) }}', '{{ addslashes($k->role) }}', '{{ addslashes($k->pendidikan) }}', '{{ addslashes($k->alamat) }}', '{{ addslashes($k->email) }}', '{{ addslashes($k->image) }}')">
                     {{-- Decorative top hover accent bar --}}
-                    <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="absolute top-0 left-0 right-0 h-1 bg-linear-to-r from-primary to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                     {{-- Image container --}}
-                    <div class="w-full aspect-[3/4] overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-800 relative shadow-xs">
+                    <div class="w-full aspect-3/4 overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-800 relative shadow-xs">
                         <img
                             src="{{ $k->image }}"
                             class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-500"
                             alt="{{ $k->name }}"
                         />
                         {{-- Subtle glassmorphic hover overlay --}}
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
+                        <div class="absolute inset-0 bg-linear-to-t from-slate-950/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
                             <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 bg-white/20 backdrop-blur-md rounded-full text-white text-xs font-bold border border-white/30">
                                 <span class="material-symbols-outlined text-sm">visibility</span>
                                 Lihat Profil

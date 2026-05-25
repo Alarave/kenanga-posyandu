@@ -1,85 +1,73 @@
 {{-- Sidebar Component --}}
 <aside id="sidebar"
     class="flex-shrink-0 flex flex-col h-screen fixed lg:sticky top-0 left-0 z-30 overflow-hidden transition-all duration-300 ease-in-out"
-    style="width:260px; background:#FFFFFF; border-right:1px solid #F1F5F9;">
+    style="width:260px; background:#ffffff; border-right:1px solid rgba(0,0,0,0.07); box-shadow:1px 0 12px rgba(0,0,0,0.04);">
 
     {{-- ── Logo & Toggle ── --}}
-    <div class="h-16 flex items-center justify-between px-5 flex-shrink-0" style="border-bottom:1px solid #F1F5F9;">
+    <div class="h-16 flex items-center justify-between px-4 flex-shrink-0"
+         style="border-bottom:1px solid rgba(0,0,0,0.06);">
         <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group sidebar-logo min-w-0">
-            <div class="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm"
-                 style="background:linear-gradient(135deg,#0d9488 0%,#0f766e 100%);">
-                <i class="fas fa-heartbeat text-white" style="font-size:16px;"></i>
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm"
+                 style="background:linear-gradient(135deg,#006c49 0%,#0d9488 100%);">
+                <i class="fas fa-heartbeat text-white" style="font-size:15px;"></i>
             </div>
-            <div class="sidebar-text overflow-hidden">
-                <span class="block font-black text-slate-900 tracking-tight leading-none" style="font-size:17px;">Posyandu</span>
-                <span class="block text-slate-500 font-bold" style="font-size:11px; letter-spacing:.06em; margin-top:2px;">DASHBOARD ADMIN</span>
+            <div class="sidebar-text overflow-hidden transition-all duration-300">
+                <span class="block font-extrabold text-slate-900 leading-none" style="font-size:15px; letter-spacing:-0.02em;">Posyandu</span>
+                <span class="block text-slate-400 font-semibold" style="font-size:10px; letter-spacing:.08em; margin-top:2px; text-transform:uppercase;">Admin Dashboard</span>
             </div>
         </a>
 
         <button id="sidebarToggleBtn"
-            class="hidden lg:flex w-7 h-7 items-center justify-center rounded-lg transition-all flex-shrink-0"
-            style="color:#94a3b8; hover-bg:#f8fafc;"
-            onmouseenter="this.style.background='#f8fafc'; this.style.color='#0f172a';"
-            onmouseleave="this.style.background='transparent'; this.style.color='#94a3b8';">
+            class="hidden lg:flex w-7 h-7 items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all flex-shrink-0"
+            title="Toggle sidebar">
             <i id="toggleIcon" class="fas fa-chevron-left transition-transform duration-300" style="font-size:9px;"></i>
         </button>
     </div>
 
     {{-- ── Navigation ── --}}
-    <nav class="flex-1 overflow-y-auto overflow-x-hidden py-5 custom-scrollbar" style="padding-left:12px; padding-right:12px;">
-
-        {{-- Section: Overview --}}
-        <div class="sidebar-section-label mt-2 mb-2 px-3">
-            <span class="text-slate-500 font-black" style="font-size:11px; letter-spacing:.12em; text-transform:uppercase;">Ringkasan Data</span>
-        </div>
+    <nav class="flex-1 overflow-y-auto overflow-x-hidden py-3 scrollbar-hide" style="padding-left:10px; padding-right:10px;">
 
         @php
-            $navLink = 'flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 group';
-            $active  = 'bg-slate-900 text-white shadow-sm';
-            $idle    = 'text-slate-500 hover:bg-slate-50 hover:text-slate-800';
+            $navLinkBase = 'nav-link mb-0.5';
+            $isActive = fn($pattern) => request()->routeIs($pattern) ? 'active' : '';
         @endphp
 
+        {{-- Section: Overview --}}
+        <div class="sidebar-section-label px-2 mb-1.5 mt-2 transition-all duration-300">
+            <span class="block font-bold text-slate-400" style="font-size:10px; letter-spacing:.1em; text-transform:uppercase;">Ringkasan</span>
+        </div>
+
         <a href="{{ route('dashboard') }}"
-           class="{{ $navLink }} {{ request()->routeIs('dashboard') ? $active : $idle }} mb-1">
-            <i class="fas fa-house w-5 text-center flex-shrink-0 text-[15px]"></i>
-            <span class="sidebar-text text-[14.5px] font-bold whitespace-nowrap">Halaman Utama</span>
+           class="{{ $navLinkBase }} {{ $isActive('dashboard') }}">
+            <i class="fas fa-house-chimney w-4 text-center flex-shrink-0" style="font-size:14px;"></i>
+            <span class="sidebar-text whitespace-nowrap transition-all duration-300 text-sm">Halaman Utama</span>
         </a>
 
         <a href="{{ route('admin.analytics') }}"
-           class="{{ $navLink }} {{ request()->routeIs('admin.analytics') ? $active : $idle }} mb-1">
-            <i class="fas fa-chart-line w-5 text-center flex-shrink-0 text-[15px]"></i>
-            <span class="sidebar-text text-[14.5px] font-bold whitespace-nowrap">Analitik & Grafik</span>
+           class="{{ $navLinkBase }} {{ $isActive('admin.analytics') }}">
+            <i class="fas fa-chart-line w-4 text-center flex-shrink-0" style="font-size:14px;"></i>
+            <span class="sidebar-text whitespace-nowrap transition-all duration-300 text-sm">Analitik & Grafik</span>
         </a>
 
         {{-- Section: Manajemen --}}
-        <div class="sidebar-section-label mt-6 mb-2 px-3">
-            <span class="text-slate-500 font-black" style="font-size:11px; letter-spacing:.12em; text-transform:uppercase;">Manajemen Layanan</span>
+        <div class="sidebar-section-label px-2 mb-1.5 mt-5 transition-all duration-300">
+            <span class="block font-bold text-slate-400" style="font-size:10px; letter-spacing:.1em; text-transform:uppercase;">Manajemen</span>
         </div>
 
         @php
             $items = [];
-            
-            // Data Warga - accessible by all authenticated users
             if (auth()->user()->isSuperAdmin() || auth()->user()->isAdmin() || auth()->user()->isKader()) {
                 $items[] = ['route' => 'admin.patients.index', 'pattern' => 'admin.patients.*', 'icon' => 'fa-users', 'label' => 'Data Warga'];
             }
-            
-            // Data Posyandu - only superadmin and admin
             if (auth()->user()->isSuperAdmin() || auth()->user()->isAdmin()) {
                 $items[] = ['route' => 'admin.posyandu.index', 'pattern' => 'admin.posyandu.*', 'icon' => 'fa-house-medical', 'label' => 'Data Posyandu'];
             }
-            
-            // Jadwal Kegiatan - accessible by all authenticated users
             if (auth()->user()->isSuperAdmin() || auth()->user()->isAdmin() || auth()->user()->isKader()) {
                 $items[] = ['route' => 'admin.schedules.index', 'pattern' => 'admin.schedules.*', 'icon' => 'fa-calendar-days', 'label' => 'Jadwal Kegiatan'];
             }
-            
-            // Rekam Medis - accessible by all authenticated users
             if (auth()->user()->isSuperAdmin() || auth()->user()->isAdmin() || auth()->user()->isKader()) {
                 $items[] = ['route' => 'admin.medical-records.index', 'pattern' => 'admin.medical-records.index', 'icon' => 'fa-notes-medical', 'label' => 'Rekam Medis'];
             }
-            
-            // Bulan Penimbangan - only superadmin and admin
             if (auth()->user()->isSuperAdmin() || auth()->user()->isAdmin()) {
                 $items[] = ['route' => 'admin.medical-records.bulk', 'pattern' => 'admin.medical-records.bulk', 'icon' => 'fa-file-medical', 'label' => 'Bulan Penimbangan'];
             }
@@ -87,90 +75,91 @@
 
         @foreach($items as $item)
         <a href="{{ route($item['route']) }}"
-           class="{{ $navLink }} {{ request()->routeIs($item['pattern']) ? $active : $idle }} mb-1">
-            <i class="fas {{ $item['icon'] }} w-5 text-center flex-shrink-0 text-[15px]"></i>
-            <span class="sidebar-text text-[14.5px] font-bold whitespace-nowrap">{{ $item['label'] }}</span>
+           class="{{ $navLinkBase }} {{ $isActive($item['pattern']) }}">
+            <i class="fas {{ $item['icon'] }} w-4 text-center flex-shrink-0" style="font-size:14px;"></i>
+            <span class="sidebar-text whitespace-nowrap transition-all duration-300 text-sm">{{ $item['label'] }}</span>
         </a>
         @endforeach
 
         {{-- Section: Laporan --}}
         @if(auth()->user()->isSuperAdmin() || auth()->user()->isAdmin() || auth()->user()->isKader())
-        <div class="sidebar-section-label mt-6 mb-2 px-3">
-            <span class="text-slate-500 font-black" style="font-size:11px; letter-spacing:.12em; text-transform:uppercase;">Admin RW & Riwayat</span>
+        <div class="sidebar-section-label px-2 mb-1.5 mt-5 transition-all duration-300">
+            <span class="block font-bold text-slate-400" style="font-size:10px; letter-spacing:.1em; text-transform:uppercase;">Laporan & Riwayat</span>
         </div>
 
         <a href="{{ route('admin.reports.index') }}"
-           class="{{ $navLink }} {{ request()->routeIs('admin.reports.*') ? $active : $idle }} mb-1">
-            <i class="fas fa-chart-bar w-5 text-center flex-shrink-0 text-[15px]"></i>
-            <span class="sidebar-text text-[14.5px] font-bold whitespace-nowrap">Laporan Bulanan</span>
+           class="{{ $navLinkBase }} {{ $isActive('admin.reports.*') }}">
+            <i class="fas fa-chart-bar w-4 text-center flex-shrink-0" style="font-size:14px;"></i>
+            <span class="sidebar-text whitespace-nowrap transition-all duration-300 text-sm">Laporan Bulanan</span>
         </a>
 
         @if(auth()->user()->isSuperAdmin())
         <a href="{{ route('admin.activity-logs.index') }}"
-           class="{{ $navLink }} {{ request()->routeIs('admin.activity-logs.*') ? $active : $idle }} mb-0.5">
-            <i class="fas fa-clipboard-list w-4 text-center flex-shrink-0 text-[13px]"></i>
-            <span class="sidebar-text text-[13px] font-semibold whitespace-nowrap">Log Aktivitas</span>
+           class="{{ $navLinkBase }} {{ $isActive('admin.activity-logs.*') }}">
+            <i class="fas fa-clipboard-list w-4 text-center flex-shrink-0" style="font-size:14px;"></i>
+            <span class="sidebar-text whitespace-nowrap transition-all duration-300 text-sm">Log Aktivitas</span>
         </a>
         @endif
         @endif
 
         {{-- Section: Konten --}}
         @if(auth()->user()->isSuperAdmin() || auth()->user()->isAdmin() || auth()->user()->isKader())
-        <div class="sidebar-section-label mt-5 mb-1 px-2">
-            <span class="text-slate-400 font-bold" style="font-size:9.5px; letter-spacing:.12em; text-transform:uppercase;">Konten</span>
+        <div class="sidebar-section-label px-2 mb-1.5 mt-5 transition-all duration-300">
+            <span class="block font-bold text-slate-400" style="font-size:10px; letter-spacing:.1em; text-transform:uppercase;">Konten</span>
         </div>
 
         <a href="{{ route('admin.articles.index') }}"
-           class="{{ $navLink }} {{ request()->routeIs('admin.articles.*') ? $active : $idle }} mb-0.5">
-            <i class="fas fa-newspaper w-4 text-center flex-shrink-0 text-[13px]"></i>
-            <span class="sidebar-text text-[13px] font-semibold whitespace-nowrap">Artikel & Berita</span>
+           class="{{ $navLinkBase }} {{ $isActive('admin.articles.*') }}">
+            <i class="fas fa-newspaper w-4 text-center flex-shrink-0" style="font-size:14px;"></i>
+            <span class="sidebar-text whitespace-nowrap transition-all duration-300 text-sm">Artikel & Berita</span>
         </a>
 
         <a href="{{ route('admin.gallery.index') }}"
-           class="{{ $navLink }} {{ request()->routeIs('admin.gallery.*') ? $active : $idle }} mb-0.5">
-            <i class="fas fa-images w-4 text-center flex-shrink-0 text-[13px]"></i>
-            <span class="sidebar-text text-[13px] font-semibold whitespace-nowrap">Galeri</span>
+           class="{{ $navLinkBase }} {{ $isActive('admin.gallery.*') }}">
+            <i class="fas fa-images w-4 text-center flex-shrink-0" style="font-size:14px;"></i>
+            <span class="sidebar-text whitespace-nowrap transition-all duration-300 text-sm">Galeri</span>
         </a>
         @endif
 
         {{-- Section: Sistem --}}
         @if(auth()->user()->isSuperAdmin())
-        <div class="sidebar-section-label mt-5 mb-1 px-2">
-            <span class="text-slate-400 font-bold" style="font-size:9.5px; letter-spacing:.12em; text-transform:uppercase;">Sistem</span>
+        <div class="sidebar-section-label px-2 mb-1.5 mt-5 transition-all duration-300">
+            <span class="block font-bold text-slate-400" style="font-size:10px; letter-spacing:.1em; text-transform:uppercase;">Sistem</span>
         </div>
 
         <a href="{{ route('admin.users.index') }}"
-           class="{{ $navLink }} {{ request()->routeIs('admin.users.*') ? $active : $idle }} mb-0.5">
-            <i class="fas fa-user-shield w-4 text-center flex-shrink-0 text-[13px]"></i>
-            <span class="sidebar-text text-[13px] font-semibold whitespace-nowrap">Manajemen User</span>
+           class="{{ $navLinkBase }} {{ $isActive('admin.users.*') }}">
+            <i class="fas fa-user-shield w-4 text-center flex-shrink-0" style="font-size:14px;"></i>
+            <span class="sidebar-text whitespace-nowrap transition-all duration-300 text-sm">Manajemen User</span>
         </a>
         @endif
 
     </nav>
 
     {{-- ── User Footer ── --}}
-    <div class="flex-shrink-0 p-3" style="border-top:1px solid #F1F5F9;">
-        <div class="flex items-center gap-3 p-2 rounded-xl transition-all duration-200 cursor-pointer hover:bg-slate-50">
+    <div class="flex-shrink-0 p-3" style="border-top:1px solid rgba(0,0,0,0.06);">
+        <div class="flex items-center gap-3 p-2.5 rounded-xl transition-all duration-200 cursor-pointer hover:bg-slate-50 group">
             {{-- Avatar --}}
             <x-avatar :name="Auth::user()->name" size="small" status="online" />
 
             {{-- Info --}}
-            <div class="sidebar-text flex-1 min-w-0">
-                <p class="text-slate-800 font-bold truncate leading-tight" style="font-size:11px;">{{ Auth::user()->name ?? 'Admin' }}</p>
-                <p class="text-slate-400 truncate" style="font-size:10px;">
+            <div class="sidebar-text flex-1 min-w-0 transition-all duration-300">
+                <p class="text-slate-800 font-bold truncate leading-tight text-[13px]">{{ Auth::user()->name ?? 'Admin' }}</p>
+                <p class="text-slate-400 truncate text-[11px] font-medium mt-0.5">
                     {{ auth()->user()->role_label }}
                 </p>
             </div>
 
             {{-- Logout --}}
-            <form method="POST" action="{{ route('logout') }}" class="flex-shrink-0 sidebar-text">
+            <form method="POST" action="{{ route('logout') }}" class="flex-shrink-0 sidebar-text overflow-hidden transition-all duration-300">
                 @csrf
-                <button type="submit"
-                    class="w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 transition-all"
-                    onmouseenter="this.style.background='#fee2e2'; this.style.color='#ef4444';"
-                    onmouseleave="this.style.background='transparent'; this.style.color='#94a3b8';"
-                    title="Keluar">
-                    <i class="fas fa-arrow-right-from-bracket" style="font-size:11px;"></i>
+                <button type="submit" class="Btn" title="Keluar">
+                    <div class="sign">
+                        <svg viewBox="0 0 512 512">
+                            <path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"></path>
+                        </svg>
+                    </div>
+                    <div class="text">Keluar</div>
                 </button>
             </form>
         </div>
@@ -179,26 +168,25 @@
 </aside>
 
 {{-- Mobile Overlay --}}
-<div id="sidebarOverlay" class="fixed inset-0 bg-black/40 z-20 hidden lg:hidden backdrop-blur-sm"></div>
+<div id="sidebarOverlay" class="fixed inset-0 bg-black/30 z-20 hidden lg:hidden backdrop-blur-[2px]"></div>
 
 <script>
 (function () {
-    const KEY        = 'sidebar_v2_collapsed';
-    const sidebar    = document.getElementById('sidebar');
-    const btn        = document.getElementById('sidebarToggleBtn');
-    const mobileBtn  = document.getElementById('mobileSidebarToggle');
-    const icon       = document.getElementById('toggleIcon');
-    const main       = document.getElementById('mainContent');
-    const overlay    = document.getElementById('sidebarOverlay');
-    const EXP = '260px', COL = '68px';
+    const KEY       = 'sidebar_v2_collapsed';
+    const sidebar   = document.getElementById('sidebar');
+    const btn       = document.getElementById('sidebarToggleBtn');
+    const mobileBtn = document.getElementById('mobileSidebarToggle');
+    const icon      = document.getElementById('toggleIcon');
+    const main      = document.getElementById('mainContent');
+    const overlay   = document.getElementById('sidebarOverlay');
+    const EXP = '260px', COL = '64px';
 
     let collapsed = localStorage.getItem(KEY) === 'true';
 
     function apply(animate) {
         const isDesktop = window.innerWidth >= 1024;
         const width = isDesktop ? (collapsed ? COL : EXP) : (collapsed ? '0px' : EXP);
-        
-        // Update CSS Variable
+
         document.documentElement.style.setProperty('--sidebar-width', width);
 
         if (!animate) {
@@ -208,8 +196,8 @@
 
         if (icon) icon.style.transform = collapsed ? 'rotate(180deg)' : 'rotate(0deg)';
 
-        const els = document.querySelectorAll('.sidebar-text, .sidebar-section-label');
-        els.forEach(el => {
+        const texts = document.querySelectorAll('.sidebar-text, .sidebar-section-label');
+        texts.forEach(el => {
             el.style.opacity  = collapsed ? '0' : '1';
             el.style.maxWidth = collapsed ? '0' : '200px';
         });

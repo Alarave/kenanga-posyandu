@@ -9,6 +9,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
+    // Seed roles and permissions
+    $this->seed(\Database\Seeders\RolesAndPermissionsSeeder::class);
+
     // Create a pedukuhan manually
     $pedukuhan = \App\Models\Pedukuhan::create([
         'name' => 'Test Pedukuhan',
@@ -217,7 +220,7 @@ test('medical record does not calculate nutrition status for non-balita categori
 
     expect($medicalRecord)->not->toBeNull()
         ->and($medicalRecord->z_score)->toBeNull()
-        ->and($medicalRecord->nutrition_status)->toBeNull();
+        ->and($medicalRecord->nutrition_status)->toBe('Belum Dihitung');
 });
 
 test('compareNutritionStatus returns correct trend values', function () {

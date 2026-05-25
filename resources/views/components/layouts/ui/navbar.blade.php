@@ -7,16 +7,7 @@
     $name = $user->name ?? 'Admin';
     $initials = strtoupper(substr($name, 0, 1)) . (str_contains($name, ' ') ? strtoupper(substr(strstr($name, ' '), 1, 1)) : '');
 
-    $role = 'Admin';
-    if ($user) {
-        $role = $user->display_role_name;
-        // Format for display: admin1 -> Admin 1, superadmin -> Super Admin
-        if ($role === 'superadmin') {
-            $role = 'Super Admin';
-        } else {
-            $role = ucfirst(substr($role, 0, -1)) . ' ' . substr($role, -1);
-        }
-    }
+    $role = $user ? $user->role_label : 'Admin';
 
     // Role badge colour
     $badgeClass = match(true) {
@@ -70,7 +61,7 @@
             <i class="fas fa-search" style="font-size:13px;"></i>
         </button>
 
-        {{-- ── Notification bell (Super Admin Only) ── --}}
+        {{-- ── Notification bell (Admin RW Only) ── --}}
         @if(auth()->user()->isSuperAdmin())
             @livewire('shared.notification-bell')
         @endif
@@ -166,16 +157,16 @@
                 </div>
 
                 {{-- Logout Button (Smaller) --}}
-                <div class="mt-2 pt-2 border-t border-slate-50">
+                <div class="mt-2 pt-2 border-t border-slate-50 flex justify-center">
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit"
-                            class="w-full h-11 flex items-center gap-3.5 px-3 bg-red-50 text-red-600
-                                   hover:bg-red-600 hover:text-white rounded-xl transition-all duration-300 group font-black shadow-sm">
-                            <div class="w-8 h-8 rounded-lg bg-white flex items-center justify-center shadow-sm group-hover:bg-red-500 group-hover:text-white transition-all flex-shrink-0">
-                                <i class="fas fa-power-off text-[12px]"></i>
+                        <button type="submit" class="Btn" title="Keluar">
+                            <div class="sign">
+                                <svg viewBox="0 0 512 512">
+                                    <path d="M377.9 105.9L500.7 228.7c7.2 7.2 11.3 17.1 11.3 27.3s-4.1 20.1-11.3 27.3L377.9 406.1c-6.4 6.4-15 9.9-24 9.9c-18.7 0-33.9-15.2-33.9-33.9l0-62.1-128 0c-17.7 0-32-14.3-32-32l0-64c0-17.7 14.3-32 32-32l128 0 0-62.1c0-18.7 15.2-33.9 33.9-33.9c9 0 17.6 3.6 24 9.9zM160 96L96 96c-17.7 0-32 14.3-32 32l0 256c0 17.7 14.3 32 32 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32l-64 0c-53 0-96-43-96-96L0 128C0 75 43 32 96 32l64 0c17.7 0 32 14.3 32 32s-14.3 32-32 32z"></path>
+                                </svg>
                             </div>
-                            <span class="text-[13px] uppercase tracking-widest">Keluar</span>
+                            <div class="text">Keluar</div>
                         </button>
                     </form>
                 </div>

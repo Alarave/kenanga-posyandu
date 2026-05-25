@@ -72,17 +72,13 @@
                 </label>
                 <div class="relative">
                     <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 text-[18px]">location_city</span>
-                    <select name="pedukuhan_id"
-                            class="w-full h-11 pl-10 pr-4 rounded-xl border border-slate-300 text-sm font-medium text-slate-700
-                                   focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 transition appearance-none bg-white cursor-pointer
-                                   @error('pedukuhan_id') border-red-400 bg-red-50 @enderror">
-                        <option value="">Pilih Pedukuhan</option>
+                    <x-forms.select-input name="pedukuhan_id" placeholder="Pilih Pedukuhan" :placeholderDisabled="true" value="{{ old('pedukuhan_id', $posyandu->pedukuhan_id) }}" class="!pl-10 !h-11 !rounded-xl !border-slate-300 focus:!border-teal-500 focus:!ring-teal-500/20 !shadow-none" :error="$errors->has('pedukuhan_id')">
                         @foreach($pedukuhans as $ped)
                             <option value="{{ $ped->id }}" {{ old('pedukuhan_id', $posyandu->pedukuhan_id) == $ped->id ? 'selected' : '' }}>
                                 {{ $ped->name }}
                             </option>
                         @endforeach
-                    </select>
+                    </x-forms.select-input>
                 </div>
                 @error('pedukuhan_id')
                     <p class="mt-1 text-xs text-red-600 flex items-center gap-1">

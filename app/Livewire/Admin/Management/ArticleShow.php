@@ -5,10 +5,12 @@ namespace App\Livewire\Admin\Management;
 use App\Livewire\Shared\BaseAdminComponent;
 use App\Models\Article;
 use Illuminate\View\View;
+use Livewire\Attributes\Layout;
 
 /**
  * Komponen untuk melihat detail artikel (OOP & Clean Code).
  */
+#[Layout('layouts.admin-layout')]
 class ArticleShow extends BaseAdminComponent
 {
     public Article $article;

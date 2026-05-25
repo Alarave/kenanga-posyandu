@@ -7,10 +7,10 @@
 
     <title>{{ config('app.name', 'Posyandu') }} - @yield('title', 'Dashboard')</title>
 
-    <!-- Fonts (Outfit) -->
+    <!-- Fonts (Public Sans) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -26,10 +26,10 @@
     
     <style>
         :root { --sidebar-width: 260px; }
-        
+
         #mainContent {
-            width: 100% !important;
-            transition: all 0.3s ease-in-out;
+            width: 100%;
+            transition: all 300ms ease-out;
         }
 
         @media (min-width: 1024px) {
@@ -38,25 +38,26 @@
                 grid-template-columns: var(--sidebar-width, 260px) 1fr;
                 min-height: 100vh;
             }
-            #sidebar { 
+            #sidebar {
                 position: sticky !important;
                 top: 0;
                 height: 100vh;
-                width: var(--sidebar-width) !important; 
+                width: var(--sidebar-width) !important;
+                transition: width 300ms ease-out;
             }
             #mainContent {
-                width: 100% !important;
+                width: 100%;
                 min-width: 0;
                 display: flex;
                 flex-direction: column;
             }
         }
 
-        /* Prevent table overlap in cards */
-        .premium-card, .bento-card {
+        /* Prevent table overflow in cards */
+        .section-card, .premium-card, .bento-card, .widget-card {
             max-width: 100%;
         }
-        
+
         .overflow-x-auto {
             -webkit-overflow-scrolling: touch;
         }
@@ -64,7 +65,7 @@
 
     @stack('styles')
 </head>
-<body class="font-outfit antialiased bg-slate-50 text-slate-900">
+<body class="font-sans antialiased bg-slate-50 text-slate-900">
 
     <div class="min-h-screen app-grid bg-dashboard">
         <!-- Sidebar -->

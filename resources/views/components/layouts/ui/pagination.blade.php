@@ -1,16 +1,9 @@
 {{--
-    Posyandu Pagination Component
-    ─────────────────────────────
+    Posyandu Premium Pagination Component
+    ─────────────────────────────────────
+    Inspired by Next.js Admin Template "Pagination with Icon"
     Usage:
         <x-layouts.ui.pagination :paginator="$items" />
-
-    Optional props:
-        :show-info="true"   — tampilkan "Menampilkan X–Y dari Z data" (default: true)
-        :simple="false"     — hanya prev/next tanpa nomor halaman (default: false)
-
-    Juga dipakai sebagai override Laravel default pagination via:
-        php artisan vendor:publish --tag=laravel-pagination
-    (lihat resources/views/vendor/pagination/tailwind.blade.php)
 --}}
 
 @props([
@@ -27,130 +20,90 @@
     $current  = $paginator->currentPage();
     $last     = $paginator->lastPage();
 
-    // Rentang halaman yang ditampilkan (maks 5 di sekitar halaman aktif)
+    // Range of pages to display around current
     $window = 2;
     $start  = max(1, $current - $window);
     $end    = min($last, $current + $window);
 @endphp
 
 @if($hasPages)
-<nav
-    role="navigation"
-    aria-label="Navigasi halaman"
-    class="flex flex-col sm:flex-row items-center justify-between gap-3 px-1 py-1"
-    style="font-family:'Public Sans',sans-serif;">
-
-    {{-- ── Info: "Menampilkan X–Y dari Z data" ── --}}
+<nav role="navigation" aria-label="Pagination Navigation" class="flex flex-col sm:flex-row items-center justify-between gap-4 py-3">
+    {{-- Left: Info --}}
     @if($showInfo && $from)
-    <p class="text-[13px] font-medium text-on-surface-variant order-2 sm:order-1 whitespace-nowrap">
-        Menampilkan
-        <span class="font-bold text-on-surface">{{ number_format($from) }}</span>–<span class="font-bold text-on-surface">{{ number_format($to) }}</span>
+    <div class="text-sm font-medium text-slate-500 dark:text-slate-400">
+        Menampilkan <span class="text-slate-900 dark:text-white font-bold">{{ number_format($from) }}</span>
+        -
+        <span class="text-slate-900 dark:text-white font-bold">{{ number_format($to) }}</span>
         dari
-        <span class="font-bold text-on-surface">{{ number_format($total) }}</span>
-        data
-    </p>
+        <span class="text-slate-900 dark:text-white font-bold">{{ number_format($total) }}</span> warga
+    </div>
     @endif
 
-    {{-- ── Page Controls ── --}}
-    <div class="flex items-center gap-1 order-1 sm:order-2">
-
-        {{-- Prev --}}
+    {{-- Right: Pagination Controls --}}
+    <div class="flex items-center gap-3">
+        {{-- Previous Page Button --}}
         @if($paginator->onFirstPage())
-            <span class="inline-flex items-center justify-center w-9 h-9 rounded-xl border border-outline-variant
-                         text-on-surface-variant opacity-40 cursor-not-allowed select-none"
-                  aria-disabled="true">
-                <i class="fas fa-chevron-left text-[11px]"></i>
+            <span class="flex items-center h-10 justify-center rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 px-4 text-slate-400 dark:text-slate-600 text-sm font-semibold cursor-not-allowed select-none">
+                <span class="material-symbols-outlined text-[20px] mr-1.5">chevron_left</span>
+                Previous
             </span>
         @else
-            <button wire:click="previousPage"
-               rel="prev"
-               aria-label="Halaman sebelumnya"
-               class="inline-flex items-center justify-center w-9 h-9 rounded-xl border border-outline-variant
-                      bg-surface-container-lowest text-on-surface-variant
-                      hover:bg-surface-container hover:text-on-surface
-                      active:scale-95 transition-all duration-150 cursor-pointer">
-                <i class="fas fa-chevron-left text-[11px]"></i>
+            <button wire:click="previousPage" rel="prev" aria-label="Previous Page" class="flex items-center h-10 justify-center rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/80 active:scale-95 shadow-sm text-sm font-semibold transition-all cursor-pointer">
+                <span class="material-symbols-outlined text-[20px] mr-1.5">chevron_left</span>
+                Previous
             </button>
         @endif
 
+        {{-- Page Numbers --}}
         @if(!$simple)
-            {{-- First page + ellipsis --}}
-            @if($start > 1)
-                <button wire:click="gotoPage(1)"
-                   aria-label="Halaman 1"
-                   class="inline-flex items-center justify-center w-9 h-9 rounded-xl border border-outline-variant
-                          bg-surface-container-lowest text-on-surface-variant text-[13px] font-semibold
-                          hover:bg-surface-container hover:text-on-surface
-                          active:scale-95 transition-all duration-150 cursor-pointer">
-                    1
-                </button>
-                @if($start > 2)
-                    <span class="inline-flex items-center justify-center w-9 h-9 text-on-surface-variant text-[13px] select-none">
-                        …
-                    </span>
+            <div class="flex items-center gap-1.5">
+                {{-- First Page --}}
+                @if($start > 1)
+                    <button wire:click="gotoPage(1)" aria-label="Go to page 1" class="flex items-center justify-center w-10 h-10 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-teal-600 transition-all">
+                        1
+                    </button>
+                    @if($start > 2)
+                        <span class="flex items-center justify-center w-10 h-10 text-slate-400 dark:text-slate-600 text-sm select-none">...</span>
+                    @endif
                 @endif
-            @endif
 
-            {{-- Page window --}}
-            @foreach(range($start, $end) as $page)
-                @if($page === $current)
-                    <span aria-current="page"
-                          aria-label="Halaman {{ $page }}, halaman aktif"
-                          class="inline-flex items-center justify-center w-9 h-9 rounded-xl text-[13px] font-bold
-                                 text-on-primary shadow-sm select-none"
-                          style="background:var(--color-primary, #00685f);">
-                        {{ $page }}
-                    </span>
-                @else
-                    <button wire:click="gotoPage({{ $page }})"
-                       aria-label="Halaman {{ $page }}"
-                       class="inline-flex items-center justify-center w-9 h-9 rounded-xl border border-outline-variant
-                              bg-surface-container-lowest text-on-surface-variant text-[13px] font-semibold
-                              hover:bg-surface-container hover:text-on-surface
-                              active:scale-95 transition-all duration-150 cursor-pointer">
-                        {{ $page }}
+                {{-- Page List --}}
+                @foreach(range($start, $end) as $page)
+                    @if($page === $current)
+                        <span aria-current="page" class="flex items-center justify-center w-10 h-10 rounded-xl bg-teal-600 text-white text-sm font-bold shadow-lg shadow-teal-500/20 select-none">
+                            {{ $page }}
+                        </span>
+                    @else
+                        <button wire:click="gotoPage({{ $page }})" aria-label="Go to page {{ $page }}" class="flex items-center justify-center w-10 h-10 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-teal-600 transition-all">
+                            {{ $page }}
+                        </button>
+                    @endif
+                @endforeach
+
+                {{-- Last Page --}}
+                @if($end < $last)
+                    @if($end < $last - 1)
+                        <span class="flex items-center justify-center w-10 h-10 text-slate-400 dark:text-slate-600 text-sm select-none">...</span>
+                    @endif
+                    <button wire:click="gotoPage({{ $last }})" aria-label="Go to page {{ $last }}" class="flex items-center justify-center w-10 h-10 rounded-xl text-sm font-semibold text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800/80 hover:text-teal-600 transition-all">
+                        {{ $last }}
                     </button>
                 @endif
-            @endforeach
-
-            {{-- Ellipsis + last page --}}
-            @if($end < $last)
-                @if($end < $last - 1)
-                    <span class="inline-flex items-center justify-center w-9 h-9 text-on-surface-variant text-[13px] select-none">
-                        …
-                    </span>
-                @endif
-                <button wire:click="gotoPage({{ $last }})"
-                   aria-label="Halaman {{ $last }}"
-                   class="inline-flex items-center justify-center w-9 h-9 rounded-xl border border-outline-variant
-                          bg-surface-container-lowest text-on-surface-variant text-[13px] font-semibold
-                          hover:bg-surface-container hover:text-on-surface
-                          active:scale-95 transition-all duration-150 cursor-pointer">
-                    {{ $last }}
-                </button>
-            @endif
+            </div>
         @endif
 
-        {{-- Next --}}
+        {{-- Next Page Button --}}
         @if($paginator->hasMorePages())
-            <button wire:click="nextPage"
-               rel="next"
-               aria-label="Halaman berikutnya"
-               class="inline-flex items-center justify-center w-9 h-9 rounded-xl border border-outline-variant
-                      bg-surface-container-lowest text-on-surface-variant
-                      hover:bg-surface-container hover:text-on-surface
-                      active:scale-95 transition-all duration-150 cursor-pointer">
-                <i class="fas fa-chevron-right text-[11px]"></i>
+            <button wire:click="nextPage" rel="next" aria-label="Next Page" class="flex items-center h-10 justify-center rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/80 active:scale-95 shadow-sm text-sm font-semibold transition-all cursor-pointer">
+                Next
+                <span class="material-symbols-outlined text-[20px] ml-1.5">chevron_right</span>
             </button>
         @else
-            <span class="inline-flex items-center justify-center w-9 h-9 rounded-xl border border-outline-variant
-                         text-on-surface-variant opacity-40 cursor-not-allowed select-none"
-                  aria-disabled="true">
-                <i class="fas fa-chevron-right text-[11px]"></i>
+            <span class="flex items-center h-10 justify-center rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 px-4 text-slate-400 dark:text-slate-600 text-sm font-semibold cursor-not-allowed select-none">
+                Next
+                <span class="material-symbols-outlined text-[20px] ml-1.5">chevron_right</span>
             </span>
         @endif
-
-    </div>{{-- end controls --}}
-
+    </div>
 </nav>
 @endif

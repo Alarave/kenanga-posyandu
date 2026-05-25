@@ -71,14 +71,14 @@
                 </div>
             </nav>
             <h1 class="text-3xl font-black tracking-tight leading-none">
-                <span class="text-transparent bg-clip-text bg-gradient-to-r {{ $theme['gradient'] }}">{{ $patient->full_name }}</span>
+                <span class="text-transparent bg-clip-text bg-linear-to-r {{ $theme['gradient'] }}">{{ $patient->full_name }}</span>
             </h1>
         </div>
 
         <div class="flex items-center gap-3">
             <x-button href="{{ route('admin.patients.edit', $patient->id) }}" 
                       variant="secondary" 
-                      class="!rounded-2xl h-14 !px-8 font-black shadow-xl {{ $theme['shadow'] }} hover:-translate-y-0.5 transition-all">
+                      class="rounded-2xl! h-14 px-8! font-black shadow-xl {{ $theme['shadow'] }} hover:-translate-y-0.5 transition-all">
                 <span class="material-symbols-outlined mr-2">edit</span>
                 Edit Profil
             </x-button>
@@ -107,7 +107,7 @@
                         @if($patient->profile_photo)
                             <img src="{{ asset('storage/' . $patient->profile_photo) }}" class="w-full h-full object-cover">
                         @else
-                            <div class="w-full h-full bg-gradient-to-br from-slate-50 to-slate-100 flex items-center justify-center">
+                            <div class="w-full h-full bg-linear-to-br from-slate-50 to-slate-100 flex items-center justify-center">
                                 <span class="material-symbols-outlined text-slate-300 text-[96px]" style="font-variation-settings: 'wght' 100;">account_circle</span>
                             </div>
                         @endif
@@ -144,7 +144,7 @@
                         ])>{{ ($patient->gender == 'L' || $patient->gender == 'M') ? 'Laki-laki' : 'Perempuan' }}</p>
                     </div>
                     
-                    <div class="p-4 bg-gradient-to-br {{ $theme['gradient'] }} rounded-[2rem] text-center group hover:scale-105 transition-all duration-500 shadow-lg {{ $theme['shadow'] }} relative overflow-hidden">
+                    <div class="p-4 bg-linear-to-br {{ $theme['gradient'] }} rounded-4xl text-center group hover:scale-105 transition-all duration-500 shadow-lg {{ $theme['shadow'] }} relative overflow-hidden">
                         <div class="absolute -right-4 -top-4 w-12 h-12 bg-white/10 rounded-full blur-lg"></div>
                         <p class="text-[9px] font-black text-white/70 uppercase tracking-widest mb-1 relative z-10">Usia</p>
                         <p class="text-[11px] font-black text-white relative z-10">{{ $patient->age }}</p>
@@ -163,7 +163,7 @@
                 
                 <div class="space-y-5">
                     <div class="flex items-start gap-4">
-                        <div class="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center flex-shrink-0 text-slate-400">
+                        <div class="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center shrink-0 text-slate-400">
                             <span class="material-symbols-outlined text-[18px]">phone_iphone</span>
                         </div>
                         <div>
@@ -173,7 +173,7 @@
                     </div>
                     
                     <div class="flex items-start gap-4">
-                        <div class="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center flex-shrink-0 text-slate-400">
+                        <div class="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center shrink-0 text-slate-400">
                             <span class="material-symbols-outlined text-[18px]">location_on</span>
                         </div>
                         <div>
@@ -183,7 +183,7 @@
                     </div>
 
                     <div class="flex items-start gap-4">
-                        <div class="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center flex-shrink-0 text-slate-400">
+                        <div class="w-8 h-8 rounded-lg bg-slate-50 flex items-center justify-center shrink-0 text-slate-400">
                             <span class="material-symbols-outlined text-[18px]">home_work</span>
                         </div>
                         <div>
@@ -202,7 +202,7 @@
         </div>
     </div>
 
-    @if(in_array($patient->category, ['bayi', 'baduta', 'balita', 'lansia']))
+    @if(in_array($patient->category, ['bayi', 'baduta', 'balita']))
         {{-- Growth Chart (Full Width) ── --}}
         <div class="w-full mt-10 pb-16">
             @livewire('admin.patient-management.growth-chart', ['patient' => $patient, 'isEmbedded' => true])

@@ -82,6 +82,6 @@ class ScheduleCreate extends Component
 
         return view('livewire.admin.schedule-management.create', [
             'posyandus' => $posyandus,
-        ]);
+        ])->layout('layouts.admin-layout');
     }
 }

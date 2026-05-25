@@ -38,17 +38,16 @@ Route::get('/contact', [PublicController::class, 'contact'])->name('public.conta
 Route::middleware('guest')->group(function () {
     // Login Routes
     Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
-    Route::post('login', [LoginController::class, 'login']);
+    // Throttle: maksimal 5 percobaan login per menit per IP (anti brute-force)
+    Route::post('login', [LoginController::class, 'login'])->middleware('throttle:5,1');
 
     // Password Reset Routes
     Route::get('password/reset', [PasswordResetController::class, 'showLinkRequestForm'])->name('password.request');
-    Route::post('password/email', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email');
+    Route::post('password/email', [PasswordResetController::class, 'sendResetLinkEmail'])->name('password.email')->middleware('throttle:3,1');
     Route::get('password/reset/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
     Route::post('password/reset', [PasswordResetController::class, 'reset'])->name('password.update');
 
-    // Password Confirmation Routes
-    Route::get('password/confirm', [ConfirmPasswordController::class, 'showConfirmForm'])->name('password.confirm');
-    Route::post('password/confirm', [ConfirmPasswordController::class, 'confirm']);
+    // Konfirmasi password ditangani oleh routes/auth.php via Livewire Volt
 });
 
 // Protected Routes (Require Login)
@@ -137,7 +136,7 @@ Route::middleware(['auth'])->group(function () {
     // ---------------------------------------------------------
     // 8. ACTIVITY LOGS (CONTROLLER)
     // ---------------------------------------------------------
-    Route::middleware(['superadmin'])->group(function () {
+    Route::middleware(['role:superadmin'])->group(function () {
         Route::get('admin/activity-logs', [App\Http\Controllers\Web\ActivityLogController::class, 'index'])->name('admin.activity-logs.index');
         Route::get('admin/activity-logs/{activityLog}', [App\Http\Controllers\Web\ActivityLogController::class, 'show'])->name('admin.activity-logs.show');
         Route::get('admin/activity-logs/statistics', [App\Http\Controllers\Web\ActivityLogController::class, 'statistics'])->name('admin.activity-logs.statistics');

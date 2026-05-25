@@ -29,9 +29,9 @@ class ActivityLogService
         $user = Auth::user();
 
         return ActivityLog::create([
-            'user_id' => $user->id,
-            'user_name' => $user->name,
-            'role' => $user->role,
+            'user_id' => $user?->exists ? $user->id : null,
+            'user_name' => $user?->name,
+            'role' => $user?->role ?? 'guest',
             'action_type' => $actionType,
             'description' => $description,
             'entity_type' => $entityType,

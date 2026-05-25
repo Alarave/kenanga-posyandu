@@ -1,11 +1,16 @@
-<div class="relative w-full lg:max-w-2xl" x-data="{ open: false }" @click.away="open = false">
+<div class="relative w-full lg:max-w-2xl" 
+     x-data="{ open: false }" 
+     @click.away="open = false"
+     @keydown.escape.window="open = false"
+     wire:ignore.self
+     wire:key="global-search-root">
     {{-- Search Input Group --}}
     <div class="relative group">
         <i class="fas fa-search absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-teal-600 transition-colors pointer-events-none" style="font-size:14px;"></i>
         <input 
             wire:model.live.debounce.300ms="search"
             @focus="open = true"
-            @keydown.slash.window.prevent="$el.focus()"
+            @keydown.slash.window="if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') { $event.preventDefault(); $el.focus(); }"
             type="text" 
             placeholder="Cari pasien, rekam medis, jadwal, artikel... "
             class="w-full h-11 pl-11 pr-4 rounded-2xl border-2 border-slate-100 bg-slate-50 text-slate-700 placeholder-slate-400 text-[14px] font-bold focus:outline-none focus:ring-4 focus:ring-teal-500/10 focus:border-teal-400 focus:bg-white transition-all duration-300 shadow-sm hover:shadow-md"

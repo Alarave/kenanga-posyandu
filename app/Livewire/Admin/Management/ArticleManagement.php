@@ -9,10 +9,6 @@ use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Url;
 
-/**
- * Komponen Manajemen Artikel (OOP & Clean Code).
- * Mengelola daftar artikel, pencarian, dan penghapusan.
- */
 #[Layout('layouts.admin-layout')]
 class ArticleManagement extends BaseAdminComponent
 {
@@ -27,9 +23,7 @@ class ArticleManagement extends BaseAdminComponent
 
     protected $queryString = [];
 
-    /**
-     * Render halaman manajemen artikel.
-     */
+
     public function render(ArticleService $service): View
     {
         $filters = [
@@ -43,9 +37,7 @@ class ArticleManagement extends BaseAdminComponent
         ]);
     }
 
-    /**
-     * Hapus artikel dengan autorisasi.
-     */
+
     public function deleteArticle(int $id, ArticleService $service): void
     {
         $article = Article::findOrFail($id);

@@ -120,6 +120,44 @@ class GrowthChartService
         return $data;
     }
 
+    /**
+     * Mendapatkan data riwayat kesehatan berkala Lansia (Posbindu).
+     */
+    public function getLansiaHealthData(Patient $patient): array
+    {
+        $records = $patient->medicalRecords()
+            ->orderBy('visit_date')
+            ->get();
+
+        $labels = [];
+        $weightData = [];
+        $systolicData = [];
+        $diastolicData = [];
+        $bloodSugarData = [];
+        $uricAcidData = [];
+        $cholesterolData = [];
+
+        foreach ($records as $record) {
+            $labels[] = $record->visit_date->translatedFormat('d M Y');
+            $weightData[] = $record->weight ? (float) $record->weight : null;
+            $systolicData[] = $record->systolic_bp ? (int) $record->systolic_bp : null;
+            $diastolicData[] = $record->diastolic_bp ? (int) $record->diastolic_bp : null;
+            $bloodSugarData[] = $record->blood_sugar ? (int) $record->blood_sugar : null;
+            $uricAcidData[] = $record->uric_acid ? (float) $record->uric_acid : null;
+            $cholesterolData[] = $record->cholesterol ? (int) $record->cholesterol : null;
+        }
+
+        return [
+            'labels' => $labels,
+            'weight' => $weightData,
+            'systolic' => $systolicData,
+            'diastolic' => $diastolicData,
+            'blood_sugar' => $bloodSugarData,
+            'uric_acid' => $uricAcidData,
+            'cholesterol' => $cholesterolData,
+        ];
+    }
+
     private function normalizeGender(?string $gender): string
     {
         if (! $gender) {

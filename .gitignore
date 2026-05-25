@@ -81,3 +81,7 @@ node_modules/
 # Local/tool-specific files
 /scratch/
 /.kiro/
+
+# Laravel Vite build artifacts
+/public/hot
+/public/build

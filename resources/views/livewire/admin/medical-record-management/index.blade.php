@@ -55,15 +55,12 @@
 
             {{-- Posyandu Filter --}}
             @if(auth()->user()->isSuperAdmin())
-            <div class="relative">
-                <select wire:model.live="posyandu_id"
-                        class="h-12 px-6 border border-slate-100 rounded-2xl text-xs font-black uppercase tracking-widest text-slate-700 focus:outline-none focus:border-primary transition-all appearance-none cursor-pointer bg-slate-50/50">
-                    <option value="">Seluruh Unit</option>
+            <div class="w-48">
+                <x-forms.select-input wire:model.live="posyandu_id" placeholder="Seluruh Unit" :placeholderDisabled="false" value="{{ $posyandu_id }}" class="!h-12 !rounded-2xl !bg-slate-50/50 !border-slate-100 !text-xs !font-black !uppercase !tracking-widest !text-slate-700 focus:!border-primary pr-10">
                     @foreach(\App\Models\Posyandu::all() as $p)
                         <option value="{{ $p->id }}">{{ $p->name }}</option>
                     @endforeach
-                </select>
-                <span class="material-symbols-outlined absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none text-[18px]">expand_more</span>
+                </x-forms.select-input>
             </div>
             @endif
         </div>

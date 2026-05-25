@@ -13,7 +13,7 @@ class MedicalRecordSeeder extends Seeder
     {
         // Resolve kader users by username so we never rely on hardcoded IDs
         // Resolve kader users by username
-        $kaderKenanga1 = User::where('username', 'kenanga1')->firstOrFail();
+        $kaderKenanga1 = User::where('username', 'kader_kenanga1')->firstOrFail();
         $kaderKenanga2 = User::where('username', 'kader_kenanga2')->firstOrFail();
 
         // Resolve patients by NIK

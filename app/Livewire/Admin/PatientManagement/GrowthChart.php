@@ -22,11 +22,21 @@ class GrowthChart extends BaseAdminComponent
     public function mount(Patient $patient): void
     {
         $this->patient = $patient;
+
+        if (! $this->supportsGrowthChart()) {
+            $this->chartData = [];
+            return;
+        }
+
         $this->chartData = $this->getChartData(app(GrowthChartService::class));
     }
 
     public function switchChart(string $type): void
     {
+        if (! $this->supportsGrowthChart()) {
+            return;
+        }
+
         \Illuminate\Support\Facades\Log::info('Switching chart to: '.$type);
         $this->activeChart = $type;
         $this->chartData = $this->getChartData(app(GrowthChartService::class));
@@ -49,5 +59,10 @@ class GrowthChart extends BaseAdminComponent
     {
         return view('livewire.admin.patient-management.growth-chart')
             ->layout('layouts.admin-layout');
+    }
+
+    private function supportsGrowthChart(): bool
+    {
+        return in_array($this->patient->category, ['bayi', 'baduta', 'balita'], true);
     }
 }

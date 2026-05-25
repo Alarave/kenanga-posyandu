@@ -42,98 +42,98 @@
     </div>
 
     {{-- ── Summary Cards ── --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
         {{-- Bayi --}}
-        <div class="bg-white border border-slate-200 rounded-3xl p-5 flex items-center gap-4 shadow-sm group hover:border-sky-500/30 transition-all">
-            <div class="w-12 h-12 bg-sky-50 text-sky-600 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                <span class="material-symbols-outlined text-[24px]">baby_changing_station</span>
+        <div class="stat-card flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#eff6ff; color:#2563eb;">
+                <span class="material-symbols-outlined text-[20px]">baby_changing_station</span>
             </div>
             <div>
-                <p class="text-[10px] font-black text-slate-900 uppercase tracking-widest leading-none mb-1">Bayi (0-11 bln)</p>
-                <p class="text-2xl font-black text-slate-900 leading-none">{{ App\Models\Patient::where('category', 'bayi')->count() }}</p>
+                <p class="text-xs font-semibold text-slate-500 leading-none mb-1">Bayi (0-11 bln)</p>
+                <p class="text-xl font-bold text-slate-900 leading-none" style="font-variant-numeric:tabular-nums;">{{ App\Models\Patient::where('category', 'bayi')->count() }}</p>
             </div>
         </div>
 
         {{-- Baduta --}}
-        <div class="bg-white border border-slate-200 rounded-3xl p-5 flex items-center gap-4 shadow-sm group hover:border-blue-500/30 transition-all">
-            <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                <span class="material-symbols-outlined text-[24px]">child_friendly</span>
+        <div class="stat-card flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#dbeafe; color:#1d4ed8;">
+                <span class="material-symbols-outlined text-[20px]">child_friendly</span>
             </div>
             <div>
-                <p class="text-[10px] font-black text-slate-900 uppercase tracking-widest leading-none mb-1">Baduta (12-23 bln)</p>
-                <p class="text-2xl font-black text-slate-900 leading-none">{{ App\Models\Patient::where('category', 'baduta')->count() }}</p>
+                <p class="text-xs font-semibold text-slate-500 leading-none mb-1">Baduta (12-23 bln)</p>
+                <p class="text-xl font-bold text-slate-900 leading-none" style="font-variant-numeric:tabular-nums;">{{ App\Models\Patient::where('category', 'baduta')->count() }}</p>
             </div>
         </div>
 
         {{-- Balita --}}
-        <div class="bg-white border border-slate-200 rounded-3xl p-5 flex items-center gap-4 shadow-sm group hover:border-teal-500/30 transition-all">
-            <div class="w-12 h-12 bg-teal-50 text-teal-600 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                <span class="material-symbols-outlined text-[24px]">child_care</span>
+        <div class="stat-card flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#f0fdfa; color:#0f766e;">
+                <span class="material-symbols-outlined text-[20px]">child_care</span>
             </div>
             <div>
-                <p class="text-[10px] font-black text-slate-900 uppercase tracking-widest leading-none mb-1">Balita (24-59 bln)</p>
-                <p class="text-2xl font-black text-slate-900 leading-none">{{ App\Models\Patient::where('category', 'balita')->count() }}</p>
+                <p class="text-xs font-semibold text-slate-500 leading-none mb-1">Balita (24-59 bln)</p>
+                <p class="text-xl font-bold text-slate-900 leading-none" style="font-variant-numeric:tabular-nums;">{{ App\Models\Patient::where('category', 'balita')->count() }}</p>
             </div>
         </div>
 
         {{-- Anak Sekolah --}}
-        <div class="bg-white border border-slate-200 rounded-3xl p-5 flex items-center gap-4 shadow-sm group hover:border-indigo-500/30 transition-all">
-            <div class="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                <span class="material-symbols-outlined text-[24px]">school</span>
+        <div class="stat-card flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#eef2ff; color:#4338ca;">
+                <span class="material-symbols-outlined text-[20px]">school</span>
             </div>
             <div>
-                <p class="text-[10px] font-black text-slate-900 uppercase tracking-widest leading-none mb-1">Anak Sekolah (5-9 thn)</p>
-                <p class="text-2xl font-black text-slate-900 leading-none">{{ App\Models\Patient::where('category', 'anak_sekolah')->count() }}</p>
+                <p class="text-xs font-semibold text-slate-500 leading-none mb-1">Anak Sekolah</p>
+                <p class="text-xl font-bold text-slate-900 leading-none" style="font-variant-numeric:tabular-nums;">{{ App\Models\Patient::where('category', 'anak_sekolah')->count() }}</p>
             </div>
         </div>
 
         {{-- Ibu Hamil --}}
-        <div class="bg-white border border-slate-200 rounded-3xl p-5 flex items-center gap-4 shadow-sm group hover:border-pink-500/30 transition-all">
-            <div class="w-12 h-12 bg-pink-50 text-pink-600 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                <span class="material-symbols-outlined text-[24px]">pregnant_woman</span>
+        <div class="stat-card flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#fdf2f8; color:#be185d;">
+                <span class="material-symbols-outlined text-[20px]">pregnant_woman</span>
             </div>
             <div>
-                <p class="text-[10px] font-black text-slate-900 uppercase tracking-widest leading-none mb-1">Ibu Hamil</p>
-                <p class="text-2xl font-black text-slate-900 leading-none">{{ App\Models\Patient::where('category', 'ibu_hamil')->count() }}</p>
+                <p class="text-xs font-semibold text-slate-500 leading-none mb-1">Ibu Hamil</p>
+                <p class="text-xl font-bold text-slate-900 leading-none" style="font-variant-numeric:tabular-nums;">{{ App\Models\Patient::where('category', 'ibu_hamil')->count() }}</p>
             </div>
         </div>
 
         {{-- Remaja --}}
-        <div class="bg-white border border-slate-200 rounded-3xl p-5 flex items-center gap-4 shadow-sm group hover:border-purple-500/30 transition-all">
-            <div class="w-12 h-12 bg-purple-50 text-purple-600 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                <span class="material-symbols-outlined text-[24px]">emoji_people</span>
+        <div class="stat-card flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#f5f3ff; color:#7c3aed;">
+                <span class="material-symbols-outlined text-[20px]">emoji_people</span>
             </div>
             <div>
-                <p class="text-[10px] font-black text-slate-900 uppercase tracking-widest leading-none mb-1">Remaja</p>
-                <p class="text-2xl font-black text-slate-900 leading-none">{{ App\Models\Patient::where('category', 'remaja')->count() }}</p>
+                <p class="text-xs font-semibold text-slate-500 leading-none mb-1">Remaja</p>
+                <p class="text-xl font-bold text-slate-900 leading-none" style="font-variant-numeric:tabular-nums;">{{ App\Models\Patient::where('category', 'remaja')->count() }}</p>
             </div>
         </div>
 
         {{-- Lansia --}}
-        <div class="bg-white border border-slate-200 rounded-3xl p-5 flex items-center gap-4 shadow-sm group hover:border-orange-500/30 transition-all">
-            <div class="w-12 h-12 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                <span class="material-symbols-outlined text-[24px]">elderly</span>
+        <div class="stat-card flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#fff7ed; color:#c2410c;">
+                <span class="material-symbols-outlined text-[20px]">elderly</span>
             </div>
             <div>
-                <p class="text-[10px] font-black text-slate-900 uppercase tracking-widest leading-none mb-1">Lansia</p>
-                <p class="text-2xl font-black text-slate-900 leading-none">{{ App\Models\Patient::where('category', 'lansia')->count() }}</p>
+                <p class="text-xs font-semibold text-slate-500 leading-none mb-1">Lansia</p>
+                <p class="text-xl font-bold text-slate-900 leading-none" style="font-variant-numeric:tabular-nums;">{{ App\Models\Patient::where('category', 'lansia')->count() }}</p>
             </div>
         </div>
 
         {{-- Umum / Lainnya --}}
-        <div class="bg-white border border-slate-200 rounded-3xl p-5 flex items-center gap-4 shadow-sm group hover:border-slate-500/30 transition-all">
-            <div class="w-12 h-12 bg-slate-50 text-slate-600 rounded-2xl flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
-                <span class="material-symbols-outlined text-[24px]">groups</span>
+        <div class="stat-card flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#f8fafc; color:#475569;">
+                <span class="material-symbols-outlined text-[20px]">groups</span>
             </div>
             <div>
-                <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Umum / Lainnya</p>
-                <p class="text-2xl font-black text-slate-900 leading-none">{{ App\Models\Patient::where('category', 'umum')->count() }}</p>
+                <p class="text-xs font-semibold text-slate-500 leading-none mb-1">Umum / Lainnya</p>
+                <p class="text-xl font-bold text-slate-900 leading-none" style="font-variant-numeric:tabular-nums;">{{ App\Models\Patient::where('category', 'umum')->count() }}</p>
             </div>
         </div>
     </div>
 
     {{-- ── Search & Filter Bar ── --}}
-    <section class="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
+    <section class="section-card p-4">
         <div class="flex flex-wrap items-center gap-4">
             {{-- Search Input (Livewire) --}}
             <div class="flex-1 min-w-[280px] relative group">
@@ -159,8 +159,11 @@
 
             {{-- Category Filter --}}
             <div class="w-full sm:w-auto min-w-[200px]">
-                <select wire:model.live="category"
-                        class="w-full h-12 px-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all appearance-none cursor-pointer shadow-sm focus:bg-white">
+                <x-forms.select-input 
+                    wire:model.live="category"
+                    placeholder=""
+                    value="{{ $category }}"
+                >
                     <option value="all">Semua Kategori</option>
                     <option value="bayi">Bayi</option>
                     <option value="baduta">Baduta</option>
@@ -170,14 +173,14 @@
                     <option value="remaja">Remaja</option>
                     <option value="lansia">Lansia</option>
                     <option value="umum">Lainnya / Umum</option>
-                </select>
+                </x-forms.select-input>
             </div>
 
             @if($search || $category !== 'all')
             <button wire:click="resetFilters"
-                    class="h-12 px-4 flex items-center gap-2 text-red-500 font-bold text-xs uppercase tracking-widest hover:bg-red-50 rounded-2xl transition-all">
+                    class="h-11 px-4 flex items-center gap-2 text-red-500 font-semibold text-sm hover:bg-red-50 rounded-xl transition-all">
                 <span class="material-symbols-outlined text-[18px]">restart_alt</span>
-                Reset Filter
+                Reset
             </button>
             @endif
         </div>
@@ -189,14 +192,14 @@
     @endif
 
     {{-- ── Data Table ── --}}
-    <div class="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
+    <div class="section-card overflow-hidden">
         <x-table>
-            <thead class="bg-slate-50/80 border-b border-slate-100">
+            <thead style="background:#f9fafb; border-bottom:1px solid rgba(0,0,0,0.06);">
                 <tr>
-                    <th class="px-6 py-4 text-[11px] font-black text-slate-500 uppercase tracking-[0.15em] text-left">Detail Nama Warga</th>
-                    <th class="px-6 py-4 text-[11px] font-black text-slate-500 uppercase tracking-[0.15em] text-left">Kategori</th>
-                    <th class="px-6 py-4 text-[11px] font-black text-slate-500 uppercase tracking-[0.15em] text-left">Lokasi Posyandu</th>
-                    <th class="px-6 py-4 text-[11px] font-black text-slate-500 uppercase tracking-[0.15em] text-right">Tindakan</th>
+                    <th class="px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider text-left">Nama Warga</th>
+                    <th class="px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider text-left">Kategori</th>
+                    <th class="px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider text-left">Posyandu</th>
+                    <th class="px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-50">
@@ -204,66 +207,65 @@
                 @php
                     $initials = strtoupper(substr($patient->full_name, 0, 2));
                     $catStyles = [
-                        'bayi' => 'bg-sky-100 text-sky-700',
-                        'baduta' => 'bg-blue-100 text-blue-700',
-                        'balita' => 'bg-teal-100 text-teal-700',
-                        'anak_sekolah' => 'bg-indigo-100 text-indigo-700',
-                        'ibu_hamil' => 'bg-pink-100 text-pink-700',
-                        'remaja' => 'bg-indigo-100 text-indigo-700',
-                        'lansia' => 'bg-orange-100 text-orange-700',
-                        'umum' => 'bg-slate-100 text-slate-700',
+                        'bayi'        => 'badge-blue',
+                        'baduta'      => 'badge-blue',
+                        'balita'      => 'badge-teal',
+                        'anak_sekolah'=> 'badge-purple',
+                        'ibu_hamil'   => 'badge-pink',
+                        'remaja'      => 'badge-purple',
+                        'lansia'      => 'badge-amber',
+                        'umum'        => 'badge-slate',
                     ];
                 @endphp
-                <tr class="group hover:bg-slate-50/50 transition-colors" wire:key="patient-{{ $patient->id }}">
-                    <td class="px-6 py-4">
+                <tr class="hover:bg-slate-50 transition-colors" style="border-bottom:1px solid rgba(0,0,0,0.04);" wire:key="patient-{{ $patient->id }}">
+                    <td class="px-5 py-3.5">
                         <div class="flex items-center gap-3">
                             @if($patient->profile_photo)
-                                <img src="{{ asset('storage/' . $patient->profile_photo) }}" class="h-10 w-10 rounded-2xl object-cover border border-teal-100 flex-shrink-0">
+                                <img src="{{ asset('storage/' . $patient->profile_photo) }}" class="h-9 w-9 rounded-xl object-cover border border-slate-100 flex-shrink-0">
                             @else
-                                <div class="h-10 w-10 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center font-black text-xs border border-teal-100 flex-shrink-0">
+                                <div class="h-9 w-9 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold text-xs flex-shrink-0">
                                     {{ $initials }}
                                 </div>
                             @endif
                             <div>
-                                <div class="font-black text-slate-900 text-[15px] leading-tight">{{ $patient->full_name }}</div>
-                                <div class="text-[12px] text-slate-500 font-bold mt-1 tracking-tight">NIK: {{ $patient->id_number }}</div>
+                                <div class="font-semibold text-slate-800 text-sm leading-tight">{{ $patient->full_name }}</div>
+                                <div class="text-xs text-slate-400 mt-0.5">NIK: {{ $patient->id_number }}</div>
                             </div>
                         </div>
                     </td>
-                    <td class="px-6 py-4">
-                        <span class="px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider {{ $catStyles[$patient->category] ?? 'bg-slate-100 text-slate-600' }}">
+                    <td class="px-5 py-3.5">
+                        <span class="badge {{ $catStyles[$patient->category] ?? 'badge-slate' }}">
                             {{ str_replace('_', ' ', $patient->category) }}
                         </span>
                     </td>
-                    <td class="px-6 py-4">
-                        <div class="text-[13px] font-semibold text-slate-600">{{ $patient->posyandu->name ?? '—' }}</div>
-                        <div class="text-[10px] text-slate-400 uppercase tracking-tighter">{{ $patient->age }}</div>
+                    <td class="px-5 py-3.5">
+                        <div class="text-sm font-medium text-slate-700">{{ $patient->posyandu->name ?? '—' }}</div>
+                        <div class="text-xs text-slate-400 mt-0.5">{{ $patient->age }}</div>
                     </td>
-                    <td class="px-6 py-4 text-right">
-                        <div class="flex items-center justify-end gap-2.5">
+                    <td class="px-5 py-3.5 text-right">
+                        <div class="flex items-center justify-end gap-2">
                             {{-- View Detail --}}
                             <a href="{{ route('admin.patients.show', $patient->id) }}" 
-                               class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-50 text-slate-500 hover:bg-teal-500 hover:text-white hover:shadow-lg hover:shadow-teal-500/30 transition-all duration-300"
+                               class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-50 border border-slate-200 text-slate-500 hover:bg-teal-500 hover:text-white hover:border-teal-500 transition-all"
                                title="Lihat Detail">
-                                <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                <span class="material-symbols-outlined text-[17px]">visibility</span>
                             </a>
-                            
 
                             {{-- Edit Record --}}
                             @can('update', $patient)
                             <a href="{{ route('admin.patients.edit', $patient->id) }}" 
-                               class="w-9 h-9 flex items-center justify-center rounded-xl bg-slate-50 text-slate-500 hover:bg-amber-500 hover:text-white hover:shadow-lg hover:shadow-amber-500/30 transition-all duration-300"
+                               class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-50 border border-slate-200 text-slate-500 hover:bg-amber-500 hover:text-white hover:border-amber-500 transition-all"
                                title="Edit Data">
-                                <span class="material-symbols-outlined text-[18px]">edit</span>
+                                <span class="material-symbols-outlined text-[17px]">edit</span>
                             </a>
                             @endcan
 
                             {{-- Delete --}}
                             @can('delete', $patient)
                             <button wire:click="confirmDelete({{ $patient->id }})" 
-                                    class="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 text-red-400 hover:bg-red-500 hover:text-white hover:shadow-lg hover:shadow-red-500/30 transition-all duration-300"
+                                    class="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 border border-red-100 text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all"
                                     title="Hapus Data">
-                                <span class="material-symbols-outlined text-[18px]">delete</span>
+                                <span class="material-symbols-outlined text-[17px]">delete</span>
                             </button>
                             @endcan
                         </div>

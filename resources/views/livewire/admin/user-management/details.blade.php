@@ -37,16 +37,16 @@
                         @php
                             $roleKey = $user->display_role_name;
                             $roles = [
-                                'superadmin' => ['bg' => 'bg-purple-100', 'text' => 'text-purple-600', 'label' => 'Super Admin'],
-                                'admin1' => ['bg' => 'bg-blue-100', 'text' => 'text-blue-600', 'label' => 'Admin 1'],
-                                'admin2' => ['bg' => 'bg-blue-100', 'text' => 'text-blue-600', 'label' => 'Admin 2'],
-                                'kader1' => ['bg' => 'bg-emerald-100', 'text' => 'text-emerald-600', 'label' => 'Kader 1'],
-                                'kader2' => ['bg' => 'bg-emerald-100', 'text' => 'text-emerald-600', 'label' => 'Kader 2'],
+                                'admin_rw' => ['bg' => 'bg-purple-100', 'text' => 'text-purple-600'],
+                                'admin1' => ['bg' => 'bg-blue-100', 'text' => 'text-blue-600'],
+                                'admin2' => ['bg' => 'bg-blue-100', 'text' => 'text-blue-600'],
+                                'kader1' => ['bg' => 'bg-emerald-100', 'text' => 'text-emerald-600'],
+                                'kader2' => ['bg' => 'bg-emerald-100', 'text' => 'text-emerald-600'],
                             ];
-                            $r = $roles[$roleKey] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-600', 'label' => $roleKey];
+                            $r = $roles[$roleKey] ?? ['bg' => 'bg-slate-100', 'text' => 'text-slate-600'];
                         @endphp
                         <span class="px-6 py-2 {{ $r['bg'] }} {{ $r['text'] }} text-[10px] font-black rounded-full uppercase tracking-widest shadow-sm">
-                            {{ $r['label'] }}
+                            {{ $user->role_label }}
                         </span>
                     </div>
 
@@ -97,15 +97,7 @@
                         </div>
                         <div>
                             <label class="text-[10px] font-black text-slate-300 uppercase tracking-widest block mb-2">Peran Akun</label>
-                            @php
-                                $roleKey = $user->display_role_name;
-                                if ($roleKey === 'superadmin') {
-                                    $label = 'Super Admin';
-                                } else {
-                                    $label = ucfirst(substr($roleKey, 0, -1)) . ' ' . substr($roleKey, -1);
-                                }
-                            @endphp
-                            <p class="text-slate-700 font-bold tracking-tight">{{ $label }} System</p>
+                            <p class="text-slate-700 font-bold tracking-tight">{{ $user->role_label }} System</p>
                         </div>
                     </div>
                 </div>

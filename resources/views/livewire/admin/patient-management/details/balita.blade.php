@@ -57,7 +57,7 @@
     </div>
 
     {{-- Card Antropometri Terakhir --}}
-    <div class="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-[3rem] border border-emerald-100 p-10 shadow-sm relative overflow-hidden group">
+    <div class="bg-linear-to-br from-emerald-50 to-teal-50 rounded-[3rem] border border-emerald-100 p-10 shadow-sm relative overflow-hidden group">
         <div class="absolute -right-10 -bottom-10 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
         <div class="flex items-center gap-4 mb-8">
             <div class="w-10 h-10 rounded-xl bg-white text-emerald-600 flex items-center justify-center shadow-sm">
@@ -79,7 +79,7 @@
     </div>
 
     {{-- Card Atensi Kesehatan --}}
-    <div class="bg-gradient-to-br from-rose-50 to-pink-50 rounded-[3rem] border border-rose-100 p-10 shadow-sm relative overflow-hidden group">
+    <div class="bg-linear-to-br from-rose-50 to-pink-50 rounded-[3rem] border border-rose-100 p-10 shadow-sm relative overflow-hidden group">
         <div class="absolute -left-10 -top-10 w-32 h-32 bg-rose-500/5 rounded-full blur-2xl group-hover:scale-150 transition-transform"></div>
         <div class="flex items-center gap-4 mb-6">
             <div class="w-10 h-10 rounded-xl bg-white text-rose-500 flex items-center justify-center shadow-sm">
@@ -163,7 +163,7 @@
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         @foreach($patient->getImmunizationStatus() as $group)
             <div @class([
-                'p-6 rounded-[2rem] border transition-all duration-300',
+                'p-6 rounded-4xl border transition-all duration-300',
                 'bg-slate-50 border-slate-100 opacity-60' => !$group['vaccines'][0]['is_due'],
                 'bg-white border-slate-100 shadow-sm' => $group['vaccines'][0]['is_due']
             ])>
@@ -205,4 +205,3 @@
         @endforeach
     </div>
 </div>
-

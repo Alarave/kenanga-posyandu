@@ -23,6 +23,18 @@ class PatientRequest extends FormRequest
         }
     }
 
+    /**
+     * Configure the validator instance.
+     */
+    public function withValidator($validator): void
+    {
+        $validator->after(function ($validator) {
+            if ($validator->errors()->has('id_number_hash')) {
+                $validator->errors()->add('id_number', 'NIK sudah terdaftar dalam sistem.');
+            }
+        });
+    }
+
     public function rules()
     {
         $patientId = $this->route('patient') ? $this->route('patient')->id : null;
@@ -57,6 +69,8 @@ class PatientRequest extends FormRequest
             'water_access' => 'nullable|string|max:100',
             'has_latrine' => 'nullable|boolean',
             'economic_status' => 'nullable|string|max:100',
+            'rt_domisili' => 'nullable|string|max:10',
+            'historical_diseases' => 'nullable|string',
         ];
     }
 

@@ -67,23 +67,29 @@
 
             {{-- Role Filter --}}
             <div class="w-full sm:w-auto min-w-[180px]">
-                <select wire:model.live="role"
-                        class="w-full h-12 px-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-teal-500 transition-all appearance-none cursor-pointer">
-                    <option value="">Semua Role</option>
+                <x-forms.select-input 
+                    wire:model.live="role"
+                    placeholder="Semua Role"
+                    :placeholderDisabled="false"
+                    value="{{ $role }}"
+                >
                     @foreach(App\Models\User::getRoles() as $r)
-                        <option value="{{ $r }}">{{ ucfirst($r) }}</option>
+                        <option value="{{ $r }}">{{ $r === 'superadmin' ? 'Admin RW' : ucfirst($r) }}</option>
                     @endforeach
-                </select>
+                </x-forms.select-input>
             </div>
 
             {{-- Status Filter --}}
             <div class="w-full sm:w-auto min-w-[150px]">
-                <select wire:model.live="status"
-                        class="w-full h-12 px-4 bg-slate-50 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-teal-500 transition-all appearance-none cursor-pointer">
-                    <option value="">Semua Status</option>
+                <x-forms.select-input 
+                    wire:model.live="status"
+                    placeholder="Semua Status"
+                    :placeholderDisabled="false"
+                    value="{{ $status }}"
+                >
                     <option value="active">Aktif</option>
                     <option value="inactive">Nonaktif</option>
-                </select>
+                </x-forms.select-input>
             </div>
 
             @if($search || $role || $status)
@@ -125,7 +131,7 @@
                     <td class="px-6 py-4">
                         @if($user->isSuperAdmin())
                             <span class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider bg-slate-900 text-white border border-slate-900">
-                                Super Admin
+                                Admin RW
                             </span>
                         @else
                             <div class="flex items-center gap-3">

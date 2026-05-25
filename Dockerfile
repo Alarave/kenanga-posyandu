@@ -45,4 +45,4 @@ RUN composer install
 EXPOSE 8080
 
 # Perintah untuk menjalankan php-fpm, artisan serve, dan npm secara bersamaan
-CMD ["bash", "-c", "php artisan serve --host=0.0.0.0 --port=8080 & npm run dev & php-fpm"]
+CMD ["bash", "-c", "php artisan serve --host=0.0.0.0 --port=8080 & php-fpm"]

@@ -60,23 +60,18 @@
 
         {{-- Filters Group --}}
         <div class="flex items-center gap-3 w-full lg:w-auto">
-            <div class="flex items-center bg-slate-50 h-12 rounded-2xl px-4 gap-2 border border-transparent focus-within:border-teal-100 transition-all">
-                <span class="material-symbols-outlined text-slate-400 text-[18px]">filter_list</span>
-                <select wire:model.live="status"
-                        class="bg-transparent border-none focus:ring-0 text-[11px] font-black text-slate-700 p-0 pr-8 cursor-pointer uppercase tracking-widest">
-                    <option value="">Semua Status</option>
+            <div class="w-44">
+                <x-forms.select-input wire:model.live="status" placeholder="Semua Status" :placeholderDisabled="false" value="{{ $status }}" class="!h-12 !rounded-2xl !bg-slate-50 !border-none !text-[11px] !font-black !text-slate-700 !uppercase !tracking-widest pr-10">
                     <option value="published">Terbit</option>
                     <option value="draft">Draft</option>
-                </select>
+                </x-forms.select-input>
             </div>
 
-            <div class="flex items-center bg-slate-50 h-12 rounded-2xl px-4 gap-2 border border-transparent focus-within:border-teal-100 transition-all">
-                <span class="material-symbols-outlined text-slate-400 text-[18px]">swap_vert</span>
-                <select wire:model.live="sort"
-                        class="bg-transparent border-none focus:ring-0 text-[11px] font-black text-slate-700 p-0 pr-8 cursor-pointer uppercase tracking-widest">
+            <div class="w-44">
+                <x-forms.select-input wire:model.live="sort" placeholder="" value="{{ $sort }}" class="!h-12 !rounded-2xl !bg-slate-50 !border-none !text-[11px] !font-black !text-slate-700 !uppercase !tracking-widest pr-10">
                     <option value="latest">Terbaru</option>
                     <option value="oldest">Terlama</option>
-                </select>
+                </x-forms.select-input>
             </div>
 
             @if($search || $status || $sort !== 'latest')
@@ -106,7 +101,7 @@
                         <td class="px-6 py-5">
                             <div class="flex items-center gap-5">
                                 <div class="w-16 h-16 rounded-2xl overflow-hidden bg-slate-100 flex-shrink-0 border-2 border-white shadow-lg group-hover:scale-105 transition-transform duration-500">
-                                    @if($article->thumbnail)
+                                    @if($article->thumbnail && Storage::disk('public')->exists($article->thumbnail))
                                         <img src="{{ asset('storage/'.$article->thumbnail) }}" class="w-full h-full object-cover" alt="Thumbnail">
                                     @else
                                         <div class="w-full h-full flex items-center justify-center bg-slate-100 text-slate-300">

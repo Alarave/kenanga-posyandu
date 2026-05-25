@@ -65,26 +65,19 @@
                         </div>
                         @endif
 
-                        {{-- Posyandu Selection (Only for Super Admin) --}}
+                        {{-- Posyandu Selection (Only for Admin RW) --}}
                         @if(auth()->user()->isSuperAdmin())
                         <div class="space-y-4">
                             <label class="block text-base font-black text-slate-800 ml-2">
                                 1. Pilih Lokasi Posyandu <span class="text-red-500">*</span>
                             </label>
-                            <div class="relative">
-                                <span class="absolute left-5 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400">health_and_safety</span>
-                                <select name="posyandu_id"
-                                        class="w-full h-16 pl-14 pr-10 rounded-[1.5rem] border-2 border-slate-100 bg-slate-50 text-base font-black text-slate-700
-                                               focus:outline-none focus:border-teal-500 focus:bg-white focus:ring-8 focus:ring-teal-500/10 transition-all appearance-none
-                                               @error('posyandu_id') border-red-200 bg-red-50 @enderror">
-                                    <option value="">-- Pilih Posyandu --</option>
-                                    @foreach($posyandus as $pos)
-                                        <option value="{{ $pos->id }}" {{ old('posyandu_id') == $pos->id ? 'selected' : '' }}>
-                                            {{ $pos->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
+                            <x-forms.select-input name="posyandu_id" placeholder="-- Pilih Posyandu --" :placeholderDisabled="true" value="{{ old('posyandu_id') }}" :error="$errors->has('posyandu_id')">
+                                @foreach($posyandus as $pos)
+                                    <option value="{{ $pos->id }}" {{ old('posyandu_id') == $pos->id ? 'selected' : '' }}>
+                                        {{ $pos->name }}
+                                    </option>
+                                @endforeach
+                            </x-forms.select-input>
                         </div>
                         @else
                         <input type="hidden" name="posyandu_id" value="{{ auth()->user()->posyandu_id }}">

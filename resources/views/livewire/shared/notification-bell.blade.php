@@ -1,4 +1,4 @@
-<div class="relative" x-data="{ notifOpen: false }">
+<div class="relative" x-data="{ notifOpen: false }" wire:poll.30s="calculateUnread">
     <button @click="notifOpen = !notifOpen; if(notifOpen) $wire.markAsRead()" 
         class="w-10 h-10 flex items-center justify-center rounded-xl
                text-slate-500 border border-slate-200 hover:bg-slate-100 hover:text-teal-600

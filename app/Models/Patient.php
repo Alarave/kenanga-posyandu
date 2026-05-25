@@ -21,7 +21,8 @@ class Patient extends Model
         'mother_nik', 'kia_book_ownership', 'guardian_status', 'education',
         'job', 'number_of_children', 'is_pregnant', 'living_status',
         'independence_status', 'family_member_count', 'house_condition',
-        'water_access', 'has_latrine', 'economic_status',
+        'water_access', 'has_latrine', 'economic_status', 'rt_domisili',
+        'historical_diseases',
     ];
 
     protected $casts = [
@@ -83,43 +84,87 @@ class Patient extends Model
     }
 
     /**
-     * Get missing/overdue vaccines based on Indonesian standard schedule.
+     * Get immunization schedule and status based on Indonesian standard.
      */
-    public function getMissingVaccines(): array
+    public function getImmunizationStatus(): array
     {
-        if ($this->category !== 'balita') {
-            return [];
-        }
-
         $ageMonths = $this->age_in_months;
         $receivedVaccines = $this->medicalRecords()
             ->whereNotNull('vaccine_name')
-            ->pluck('vaccine_name')
+            ->get()
+            ->flatMap(function ($record) {
+                return explode(', ', $record->vaccine_name);
+            })
+            ->unique()
             ->toArray();
 
-        // Standard Schedule: [Vaccine Name => Minimum Age in Months]
         $schedule = [
-            'Hepatitis B' => 0,
-            'BCG' => 1,
-            'Polio 1' => 1,
-            'DPT-HB-Hib 1' => 2,
-            'Polio 2' => 2,
-            'PCV 1' => 2,
-            'DPT-HB-Hib 2' => 3,
-            'Polio 3' => 3,
-            'PCV 2' => 3,
-            'DPT-HB-Hib 3' => 4,
-            'Polio 4' => 4,
-            'IPV' => 4,
-            'Campak/MR' => 9,
-            'DPT-HB-Hib Lanjutan' => 18,
-            'Campak/MR Lanjutan' => 18,
+            ['age' => 0, 'label' => '0 Bulan', 'vaccines' => [
+                ['name' => 'HB-0', 'prevent' => 'Hepatitis B'],
+                ['name' => 'Polio 0', 'prevent' => 'Polio'],
+            ]],
+            ['age' => 1, 'label' => '1 Bulan', 'vaccines' => [
+                ['name' => 'BCG', 'prevent' => 'TBC'],
+                ['name' => 'Polio 1', 'prevent' => 'Polio'],
+            ]],
+            ['age' => 2, 'label' => '2 Bulan', 'vaccines' => [
+                ['name' => 'DPT-HB-Hib 1', 'prevent' => 'Difteri, Pertusis, Tetanus, Hep B, Hib'],
+                ['name' => 'Polio 2', 'prevent' => 'Polio'],
+                ['name' => 'PCV 1', 'prevent' => 'Pneumonia & Meningitis'],
+                ['name' => 'RV 1', 'prevent' => 'Rotavirus'],
+            ]],
+            ['age' => 3, 'label' => '3 Bulan', 'vaccines' => [
+                ['name' => 'DPT-HB-Hib 2', 'prevent' => 'Difteri, Pertusis, Tetanus, Hep B, Hib'],
+                ['name' => 'Polio 3', 'prevent' => 'Polio'],
+                ['name' => 'PCV 2', 'prevent' => 'Pneumonia & Meningitis'],
+                ['name' => 'RV 2', 'prevent' => 'Rotavirus'],
+            ]],
+            ['age' => 4, 'label' => '4 Bulan', 'vaccines' => [
+                ['name' => 'DPT-HB-Hib 3', 'prevent' => 'Difteri, Pertusis, Tetanus, Hep B, Hib'],
+                ['name' => 'Polio 4', 'prevent' => 'Polio'],
+                ['name' => 'IPV 1', 'prevent' => 'Polio (Suntik)'],
+                ['name' => 'RV 3', 'prevent' => 'Rotavirus'],
+            ]],
+            ['age' => 9, 'label' => '9 Bulan', 'vaccines' => [
+                ['name' => 'MR', 'prevent' => 'Campak & Rubella'],
+                ['name' => 'IPV 2', 'prevent' => 'Polio (Suntik)'],
+            ]],
+            ['age' => 12, 'label' => '12 Bulan', 'vaccines' => [
+                ['name' => 'PCV 3', 'prevent' => 'Pneumonia & Meningitis'],
+            ]],
+            ['age' => 18, 'label' => '18 Bulan', 'vaccines' => [
+                ['name' => 'DPT-HB-Hib Lanjutan', 'prevent' => 'Booster DPT-HB-Hib'],
+                ['name' => 'MR Lanjutan', 'prevent' => 'Booster MR'],
+            ]],
         ];
 
+        foreach ($schedule as &$group) {
+            foreach ($group['vaccines'] as &$vax) {
+                $vax['received'] = in_array($vax['name'], $receivedVaccines);
+                $vax['is_due'] = $ageMonths >= $group['age'];
+            }
+        }
+
+        return $schedule;
+    }
+
+    /**
+     * Get missing/overdue vaccines.
+     */
+    public function getMissingVaccines(): array
+    {
+        if ($this->category !== 'balita' && $this->category !== 'bayi' && $this->category !== 'baduta') {
+            return [];
+        }
+
+        $status = $this->getImmunizationStatus();
         $missing = [];
-        foreach ($schedule as $vaccine => $minAge) {
-            if ($ageMonths >= $minAge && ! in_array($vaccine, $receivedVaccines)) {
-                $missing[] = $vaccine;
+
+        foreach ($status as $group) {
+            foreach ($group['vaccines'] as $vax) {
+                if ($vax['is_due'] && ! $vax['received']) {
+                    $missing[] = $vax['name'];
+                }
             }
         }
 

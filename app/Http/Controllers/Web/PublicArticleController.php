@@ -49,7 +49,7 @@ class PublicArticleController extends Controller
 
     public function about()
     {
-        return view('public.about');
+        return view('public.about.about');
     }
 
     public function contact()

@@ -5,6 +5,7 @@ namespace App\Livewire\Admin\Management;
 use App\Livewire\Shared\BaseAdminComponent;
 use App\Models\Posyandu;
 use App\Models\User;
+use App\Services\UserService;
 use Livewire\Attributes\Layout;
 
 #[Layout('layouts.admin-layout')]
@@ -74,7 +75,7 @@ class UserManagement extends BaseAdminComponent
             return;
         }
 
-        $user->delete();
+        app(UserService::class)->deleteUser($user);
         session()->flash('success', 'User berhasil dihapus.');
     }
 }

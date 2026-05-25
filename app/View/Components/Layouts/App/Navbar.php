@@ -62,8 +62,7 @@ class Navbar extends Component
         $this->name = $this->user->name ?? 'Admin';
         $this->initials = strtoupper(substr($this->name, 0, 1)) . (str_contains($this->name, ' ') ? strtoupper(substr(strstr($this->name, ' '), 1, 1)) : '');
         
-        $roleName = $this->user->display_role_name ?? 'Admin';
-        $this->role = $roleName === 'superadmin' ? 'Super Admin' : ucfirst(substr($roleName, 0, -1)) . ' ' . substr($roleName, -1);
+        $this->role = $this->user->role_label;
 
         $this->badgeClass = match(true) {
             $this->user?->isSuperAdmin() => 'bg-violet-100 text-violet-700',

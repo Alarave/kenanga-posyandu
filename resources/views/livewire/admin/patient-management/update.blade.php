@@ -131,14 +131,10 @@
  
                         <div class="space-y-3">
                             <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Jenis Kelamin <span class="text-teal-500">*</span></label>
-                            <div class="relative">
-                                <select name="gender" required
-                                        class="w-full h-16 px-6 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all appearance-none cursor-pointer bg-slate-50/30">
+                                <x-forms.select-input name="gender" placeholder="Pilih Jenis Kelamin" :placeholderDisabled="true" value="{{ old('gender', $patient->gender) }}" required>
                                     <option value="M" {{ old('gender', $patient->gender) == 'M' ? 'selected' : '' }}>Laki-laki</option>
                                     <option value="F" {{ old('gender', $patient->gender) == 'F' ? 'selected' : '' }}>Perempuan</option>
-                                </select>
-                                <span class="material-symbols-outlined absolute right-5 top-5 text-slate-300 pointer-events-none">expand_more</span>
-                            </div>
+                                </x-forms.select-input>
                         </div>
                     </div>
                 </div>
@@ -199,13 +195,10 @@
  
                     <div class="md:col-span-2 space-y-3 pt-4">
                         <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Kepemilikan Buku KIA</label>
-                        <div class="relative">
-                            <select name="kia_book_ownership" class="w-full h-14 px-6 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all appearance-none cursor-pointer bg-slate-50/30">
-                                <option value="0" {{ old('kia_book_ownership', $patient->kia_book_ownership) == '0' ? 'selected' : '' }}>Tidak Memiliki</option>
-                                <option value="1" {{ old('kia_book_ownership', $patient->kia_book_ownership) == '1' ? 'selected' : '' }}>Ya, Memiliki</option>
-                            </select>
-                            <span class="material-symbols-outlined absolute right-5 top-4 text-slate-300 pointer-events-none">expand_more</span>
-                        </div>
+                        <x-forms.select-input name="kia_book_ownership" placeholder="" value="{{ old('kia_book_ownership', $patient->kia_book_ownership) }}">
+                            <option value="0" {{ old('kia_book_ownership', $patient->kia_book_ownership) == '0' ? 'selected' : '' }}>Tidak Memiliki</option>
+                            <option value="1" {{ old('kia_book_ownership', $patient->kia_book_ownership) == '1' ? 'selected' : '' }}>Ya, Memiliki</option>
+                        </x-forms.select-input>
                     </div>
                 </div>
             </div>
@@ -225,32 +218,53 @@
                         <p class="text-xs font-bold text-slate-400 mt-0.5">Status pekerjaan dan pendidikan</p>
                     </div>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div class="space-y-3">
-                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Pendidikan</label>
-                        <select name="education" class="w-full h-14 px-5 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-pink-500 focus:ring-4 focus:ring-pink-500/5 transition-all bg-slate-50/30">
-                            <option value="">Pilih Pendidikan</option>
-                            @foreach(['SD','SMP','SMA','D3','S1','S2','S3','Tidak Sekolah'] as $edu)
-                                <option value="{{ $edu }}" {{ old('education', $patient->education) == $edu ? 'selected' : '' }}>{{ $edu }}</option>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    {{-- Pendidikan --}}
+                    <div class="md:col-span-3 space-y-3">
+                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Pendidikan Terakhir</label>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-3">
+                            @foreach(['SD', 'SMP', 'SMA', 'D3', 'S1', 'S2', 'S3', 'Tidak Sekolah'] as $edu)
+                                <label class="cursor-pointer">
+                                    <input type="radio" name="education" value="{{ $edu }}" 
+                                           {{ old('education', $patient->education) == $edu ? 'checked' : '' }} 
+                                           class="hidden peer">
+                                    <div class="py-3 px-2 text-center border border-slate-200 rounded-2xl peer-checked:border-primary peer-checked:bg-primary/5 peer-checked:text-primary font-bold text-xs hover:border-slate-300 hover:bg-slate-50 transition-all">
+                                        {{ $edu }}
+                                    </div>
+                                </label>
                             @endforeach
-                        </select>
+                        </div>
                     </div>
-                    <div class="space-y-3">
+
+                    {{-- Pekerjaan --}}
+                    <div class="space-y-3" x-data="{ currentJob: '{{ old('job', $patient->job) }}' }">
                         <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Pekerjaan</label>
-                        <input type="text" name="job" value="{{ old('job', $patient->job) }}" placeholder="Contoh: PNS, IRT..."
-                               class="w-full h-14 px-5 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-pink-500 focus:ring-4 focus:ring-pink-500/5 transition-all bg-slate-50/30">
+                        <input type="text" name="job" x-model="currentJob" placeholder="Contoh: PNS, IRT..."
+                               class="w-full h-14 px-5 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-slate-50/30">
+                        <div class="flex flex-wrap gap-1.5 mt-2">
+                            @foreach(['IRT', 'PNS', 'Karyawan', 'Wiraswasta', 'Buruh', 'Tidak Bekerja'] as $jobChip)
+                                <button type="button" @click="currentJob = '{{ $jobChip }}'" 
+                                        class="px-2.5 py-1 rounded-lg border border-slate-200 hover:border-primary hover:bg-primary/5 text-[10px] font-bold text-slate-500 hover:text-primary transition-all">
+                                    {{ $jobChip }}
+                                </button>
+                            @endforeach
+                        </div>
                     </div>
+
+                    {{-- Jumlah Anak --}}
                     <div class="space-y-3">
                         <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Jumlah Anak</label>
                         <input type="number" name="number_of_children" value="{{ old('number_of_children', $patient->number_of_children) }}"
-                               class="w-full h-14 px-5 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-pink-500 focus:ring-4 focus:ring-pink-500/5 transition-all bg-slate-50/30">
+                               class="w-full h-14 px-5 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-slate-50/30">
                     </div>
+
+                    {{-- Status Kehamilan --}}
                     <div class="space-y-3">
                         <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Status Kehamilan</label>
-                        <select name="is_pregnant" class="w-full h-14 px-5 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-pink-500 focus:ring-4 focus:ring-pink-500/5 transition-all bg-slate-50/30">
+                        <x-forms.select-input name="is_pregnant" placeholder="" value="{{ old('is_pregnant', $patient->is_pregnant) }}">
                             <option value="0" {{ old('is_pregnant', $patient->is_pregnant) == '0' ? 'selected' : '' }}>Tidak Hamil</option>
                             <option value="1" {{ old('is_pregnant', $patient->is_pregnant) == '1' ? 'selected' : '' }}>Sedang Hamil</option>
-                        </select>
+                        </x-forms.select-input>
                     </div>
                 </div>
             </div>
@@ -273,17 +287,23 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div class="space-y-3">
                         <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Status Tinggal</label>
-                        <select name="living_status" class="w-full h-14 px-6 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/5 transition-all bg-slate-50/30">
+                        <x-forms.select-input name="living_status" placeholder="" value="{{ old('living_status', $patient->living_status) }}">
                             <option value="Sendiri" {{ old('living_status', $patient->living_status) == 'Sendiri' ? 'selected' : '' }}>Tinggal Sendiri</option>
                             <option value="Keluarga" {{ old('living_status', $patient->living_status) == 'Keluarga' ? 'selected' : '' }}>Bersama Keluarga</option>
-                        </select>
+                        </x-forms.select-input>
                     </div>
                     <div class="space-y-3">
                         <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Status Kemandirian</label>
-                        <select name="independence_status" class="w-full h-14 px-6 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/5 transition-all bg-slate-50/30">
+                        <x-forms.select-input name="independence_status" placeholder="" value="{{ old('independence_status', $patient->independence_status) }}">
                             <option value="Mandiri" {{ old('independence_status', $patient->independence_status) == 'Mandiri' ? 'selected' : '' }}>Mandiri (A)</option>
                             <option value="Bantuan" {{ old('independence_status', $patient->independence_status) == 'Bantuan' ? 'selected' : '' }}>Bantuan (B/C)</option>
-                        </select>
+                        </x-forms.select-input>
+                    </div>
+                    <div class="md:col-span-2 space-y-3 pt-4">
+                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Penyakit yang Pernah Diderita</label>
+                        <textarea name="historical_diseases" rows="2"
+                                  placeholder="Contoh: Hipertensi, Diabetes Mellitus, Asam Urat, Penyakit Jantung..."
+                                  class="w-full p-6 border border-slate-200 rounded-[2rem] text-sm font-bold text-slate-700 focus:outline-none focus:border-orange-500 focus:ring-4 focus:ring-orange-500/5 transition-all bg-slate-50/30 resize-none">{{ old('historical_diseases', $patient->historical_diseases) }}</textarea>
                     </div>
                 </div>
             </div>
@@ -318,14 +338,22 @@
                                 </div>
                                 <input type="hidden" name="posyandu_id" value="{{ auth()->user()->posyandu_id }}">
                             @else
-                                <select name="posyandu_id" required class="w-full h-16 px-6 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all appearance-none cursor-pointer bg-slate-50/30">
+                                <x-forms.select-input name="posyandu_id" placeholder="" value="{{ old('posyandu_id', $patient->posyandu_id) }}" required>
                                     @foreach($posyandus as $p)
                                         <option value="{{ $p->id }}" {{ old('posyandu_id', $patient->posyandu_id) == $p->id ? 'selected' : '' }}>{{ $p->name }}</option>
                                     @endforeach
-                                </select>
-                                <span class="material-symbols-outlined absolute right-5 top-5 text-slate-300 pointer-events-none">expand_more</span>
+                                </x-forms.select-input>
                             @endif
                         </div>
+                    </div>
+                    <div class="space-y-3">
+                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">RT Domisili</label>
+                        <input type="text" name="rt_domisili" value="{{ old('rt_domisili', $patient->rt_domisili) }}"
+                               placeholder="Contoh: 004 atau 011..."
+                               class="w-full h-16 px-6 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all bg-slate-50/30">
+                    </div>
+                    <div class="space-y-3">
+                        {{-- Empty element to balance the grid --}}
                     </div>
                     <div class="md:col-span-2 space-y-3">
                         <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Alamat Lengkap <span class="text-teal-500">*</span></label>

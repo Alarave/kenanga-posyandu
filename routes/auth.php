@@ -10,8 +10,10 @@ Route::middleware('guest')->group(function () {
     Volt::route('login', 'auth.login') // Halaman login
         ->name('login');
 
-    Volt::route('register', 'auth.register') // Halaman registrasi (jika diperlukan)
-        ->name('register');
+    // DINONAKTIFKAN: Registrasi publik tidak diizinkan.
+    // Semua pengguna dibuat oleh superadmin melalui menu manajemen pengguna.
+    // Volt::route('register', 'auth.register')
+    //     ->name('register');
 
     Volt::route('forgot-password', 'auth.forgot-password') // Halaman untuk meminta reset password
         ->name('password.request');

@@ -130,7 +130,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach(['S','K','N','T','U','B','O','GB','GK','GR','GL'] as $row)
+                    @foreach(['S','K','N','T','D','B','O','GB','GK','GR','GL'] as $row)
                         @php $d = $reportData['pokja_iv']['rows'][$row]; @endphp
                         <tr>
                             <td class="col-label">{{ $row }}</td>

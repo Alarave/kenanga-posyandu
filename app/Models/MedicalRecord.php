@@ -53,6 +53,8 @@ class MedicalRecord extends Model
         'complaint', 'diagnosis', 'disease_history', 'health_note',
         'vaccine_name', 'vaccine_dose', 'vitamin_a_color', 'deworming_medicine',
         'is_basic_immunization_complete',
+        'systolic_bp', 'diastolic_bp', 'blood_sugar', 'uric_acid', 'cholesterol',
+        'current_medication',
         // Gizi BB/U
         'nutrition_status', 'z_score', 'nutrition_trend',
         // Gizi TB/U (stunting)
@@ -80,6 +82,7 @@ class MedicalRecord extends Model
         'height' => 'decimal:2',
         'head_circumference' => 'decimal:2',
         'upper_arm_circumference' => 'decimal:2',
+        'uric_acid' => 'decimal:2',
         // Z-Score semua indeks
         'z_score' => 'decimal:2',  // BB/U
         'z_score_hfa' => 'decimal:2',  // TB/U

@@ -248,6 +248,8 @@ class PatientRowProcessor
             'pill_fe' => false,
             'z_score' => $zScore,
             'nutrition_status' => $nutritionStatus,
+            'complaint' => '—',
+            'diagnosis' => 'Sehat',
         ]);
 
         $this->recordsImported++;
