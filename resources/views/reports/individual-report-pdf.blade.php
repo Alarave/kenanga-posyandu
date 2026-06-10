@@ -126,7 +126,6 @@
             border-radius: 8px;
             padding: 8px;
             background: #ffffff;
-            height: 210px;
         }
         
         .row {
@@ -198,24 +197,6 @@
         </tr>
     </table>
 
-    {{-- GRAFIK (Hanya untuk Balita) --}}
-    @if(in_array($reportData['patient']['category'], ['bayi', 'baduta', 'balita']))
-        <div class="section-title">Grafik Pertumbuhan Anak (WHO Standard)</div>
-        <div class="row">
-            <div class="chart-box">
-                <div style="font-weight: bold; font-size: 7.5pt; text-align: center; margin-bottom: 4px;">Kurva Tren Berat Badan (kg)</div>
-                <div class="chart-container">
-                    <img src="data:image/svg+xml;base64,{{ base64_encode($reportData['svg_charts']['weight']) }}" alt="Grafik Berat Badan" style="width:100%; height:auto; max-height:100%; display:block;" />
-                </div>
-            </div>
-            <div class="chart-box">
-                <div style="font-weight: bold; font-size: 7.5pt; text-align: center; margin-bottom: 4px;">Kurva Tren Tinggi Badan (cm)</div>
-                <div class="chart-container">
-                    <img src="data:image/svg+xml;base64,{{ base64_encode($reportData['svg_charts']['height']) }}" alt="Grafik Tinggi Badan" style="width:100%; height:auto; max-height:100%; display:block;" />
-                </div>
-            </div>
-        </div>
-    @endif
 
     {{-- TABEL RIWAYAT PENGUKURAN --}}
     <div class="section-title" style="margin-top: 20px;">Riwayat Kunjungan & Antropometri Bulanan</div>
@@ -276,6 +257,30 @@
             @endforeach
         </tbody>
     </table>
+
+    {{-- GRAFIK (Hanya untuk Balita) --}}
+    @if(in_array($reportData['patient']['category'], ['bayi', 'baduta', 'balita']))
+        <div class="page-break"></div>
+        <div class="kop">
+            <h1 class="kop-title">Posyandu {{ $reportData['patient']['posyandu_name'] }}</h1>
+            <p class="kop-subtitle">Alamat: Dusun Kenanga, Desa Kenanga, Sleman, D.I. Yogyakarta</p>
+        </div>
+        <div class="section-title">Grafik Pertumbuhan Anak (WHO Standard)</div>
+        <div class="row">
+            <div class="chart-box">
+                <div style="font-weight: bold; font-size: 7.5pt; text-align: center; margin-bottom: 4px;">Kurva Tren Berat Badan (kg)</div>
+                <div class="chart-container">
+                    <img src="data:image/svg+xml;base64,{{ base64_encode($reportData['svg_charts']['weight']) }}" alt="Grafik Berat Badan" style="width:100%; height:auto; display:block;" />
+                </div>
+            </div>
+            <div class="chart-box">
+                <div style="font-weight: bold; font-size: 7.5pt; text-align: center; margin-bottom: 4px;">Kurva Tren Tinggi Badan (cm)</div>
+                <div class="chart-container">
+                    <img src="data:image/svg+xml;base64,{{ base64_encode($reportData['svg_charts']['height']) }}" alt="Grafik Tinggi Badan" style="width:100%; height:auto; display:block;" />
+                </div>
+            </div>
+        </div>
+    @endif
 
     {{-- PAGE BREAK FOR DETAILS (If Balita and has immunization cards, break page so it fits cleanly) --}}
     @if(in_array($reportData['patient']['category'], ['bayi', 'baduta', 'balita']))
