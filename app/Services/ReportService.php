@@ -466,8 +466,9 @@ class ReportService
             ];
         }
 
-        // Generate SVG Charts for weight and height
-        $svgCharts = $this->generateIndividualSvgCharts($records->toArray(), $monthsRange);
+        // Generate SVG Charts for weight and height (using ALL records for WHO standard)
+        $allRecords = MedicalRecord::where('patient_id', $patient->id)->orderBy('visit_date', 'asc')->get();
+        $svgCharts = $this->generateIndividualSvgCharts($patient, $allRecords);
 
         $periodLabel = $this->getMonthName($startMonth) . ' ' . $startYear;
         if ($startMonth !== $endMonth || $startYear !== $endYear) {
@@ -508,128 +509,126 @@ class ReportService
     }
 
     /**
-     * Generate individual SVG charts for weight and height
+     * Generate individual SVG charts for weight and height using WHO Standards
      */
-    public function generateIndividualSvgCharts(array $records, array $monthsRange): array
+    public function generateIndividualSvgCharts(Patient $patient, \Illuminate\Database\Eloquent\Collection $records): array
     {
         // Dimensions
         $width = 540;
         $height = 200;
-        $paddingLeft = 45;
-        $paddingRight = 20;
-        $paddingTop = 20;
-        $paddingBottom = 35;
+        $paddingLeft = 35;
+        $paddingRight = 15;
+        $paddingTop = 15;
+        $paddingBottom = 25;
         
         $chartW = $width - $paddingLeft - $paddingRight;
         $chartH = $height - $paddingTop - $paddingBottom;
 
-        $totalSlots = count($monthsRange);
-        
-        // 1. Weight Chart
-        // Calculate Y range for Weight (min=0, max=15 or max weight + 2)
-        $maxWeight = 15;
-        foreach ($records as $r) {
-            if ($r['weight'] > $maxWeight) {
-                $maxWeight = (float) $r['weight'];
-            }
-        }
-        $maxYWeight = ceil($maxWeight + 2);
-        $minYWeight = 0;
+        $gender = ($patient->gender === 'L' || $patient->gender === 'M' || strtoupper($patient->gender) === 'LAKI-LAKI') ? 'M' : 'F';
 
-        // 2. Height Chart
-        // Calculate Y range for Height (min=40, max=100 or max height + 10)
-        $maxHeight = 100;
-        foreach ($records as $r) {
-            if ($r['height'] > $maxHeight) {
-                $maxHeight = (float) $r['height'];
-            }
-        }
-        $maxYHeight = ceil($maxHeight + 10);
-        $minYHeight = 40;
+        // Get WHO References
+        $weightRefs = \App\Models\WhoWeightForAge::where('gender', $gender)->where('age_months', '<=', 60)->orderBy('age_months')->get();
+        $heightRefs = \App\Models\WhoHeightForAge::where('gender', $gender)->where('age_months', '<=', 60)->orderBy('age_months')->get();
 
-        // Helper to generate SVG string for a metric
-        $generateSvg = function(string $metric, float $minY, float $maxY) use ($records, $monthsRange, $width, $height, $paddingLeft, $paddingRight, $paddingTop, $paddingBottom, $chartW, $chartH, $totalSlots) {
-            $dataPoints = [];
+        $generateSvg = function(string $type, $refs) use ($patient, $records, $width, $height, $paddingLeft, $paddingRight, $paddingTop, $paddingBottom, $chartW, $chartH) {
+            $minY = $type === 'weight' ? 0 : 40;
             
-            // X-axis coordinate calculator
-            $getX = function(int $index) use ($paddingLeft, $chartW, $totalSlots) {
-                if ($totalSlots <= 1) {
-                    return $paddingLeft + $chartW / 2;
+            // Calculate dynamic maxY to prevent offside data
+            $maxData = $type === 'weight' ? 25 : 120;
+            foreach ($records as $rec) {
+                if ((float)$rec->$type > $maxData) {
+                    $maxData = ceil((float)$rec->$type);
                 }
-                return $paddingLeft + ($index / ($totalSlots - 1)) * $chartW;
+            }
+            $maxY = $type === 'weight' ? max(25, $maxData + 3) : max(120, $maxData + 5);
+            $yTicksCount = 5;
+
+            $getX = function(int $ageMonth) use ($paddingLeft, $chartW) {
+                return $paddingLeft + ($ageMonth / 60) * $chartW;
             };
 
-            // Y-axis coordinate calculator
             $getY = function(float $val) use ($paddingTop, $chartH, $minY, $maxY) {
-                if ($maxY == $minY) return $paddingTop + $chartH / 2;
+                $val = max($minY, min($maxY, $val)); // clamp
                 return $paddingTop + $chartH - (($val - $minY) / ($maxY - $minY)) * $chartH;
             };
 
-            // Map records to coordinates
-            foreach ($monthsRange as $i => $slot) {
-                $rec = collect($records)->first(function($r) use ($slot) {
-                    return \Carbon\Carbon::parse($r['visit_date'])->format('Y-m') === $slot['key'];
-                });
-                
-                if ($rec && isset($rec[$metric]) && $rec[$metric] > 0) {
-                    $x = $getX($i);
-                    $y = $getY((float) $rec[$metric]);
-                    $dataPoints[] = [
-                        'x' => $x,
-                        'y' => $y,
-                        'value' => $rec[$metric],
-                        'label' => $slot['short_label'],
-                    ];
-                }
-            }
-
-            // Begin SVG String
-            $svg = '<svg viewBox="0 0 ' . $width . ' ' . $height . '" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="background:#ffffff; font-family:sans-serif;">';
+            $svg = '<svg viewBox="0 0 ' . $width . ' ' . $height . '" width="' . $width . '" height="' . $height . '" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="background:#ffffff; font-family:sans-serif;">';
             
-            // Grid lines and ticks for Y-axis (4 levels)
-            $yTicks = 4;
-            for ($k = 0; $k <= $yTicks; $k++) {
-                $tickVal = $minY + ($k / $yTicks) * ($maxY - $minY);
+            // Draw Y-axis grid & labels
+            for ($k = 0; $k <= $yTicksCount; $k++) {
+                $tickVal = $minY + ($k / $yTicksCount) * ($maxY - $minY);
                 $ty = $getY($tickVal);
                 $svg .= '<line x1="' . $paddingLeft . '" y1="' . $ty . '" x2="' . ($width - $paddingRight) . '" y2="' . $ty . '" stroke="#f1f5f9" stroke-width="1" />';
-                $svg .= '<text x="' . ($paddingLeft - 8) . '" y="' . ($ty + 4) . '" fill="#64748b" font-size="9" text-anchor="end">' . round($tickVal, 1) . '</text>';
+                $svg .= '<text x="' . ($paddingLeft - 5) . '" y="' . ($ty + 3) . '" fill="#64748b" font-size="8" text-anchor="end">' . round($tickVal) . '</text>';
             }
 
-            // Grid lines and labels for X-axis
-            foreach ($monthsRange as $i => $slot) {
-                $tx = $getX($i);
-                // Vertical grid line
+            // Draw X-axis grid & labels (Every 6 months)
+            for ($m = 0; $m <= 60; $m += 6) {
+                $tx = $getX($m);
                 $svg .= '<line x1="' . $tx . '" y1="' . $paddingTop . '" x2="' . $tx . '" y2="' . ($height - $paddingBottom) . '" stroke="#f8fafc" stroke-width="1" />';
-                // X label
-                $svg .= '<text x="' . $tx . '" y="' . ($height - $paddingBottom + 16) . '" fill="#64748b" font-size="9" text-anchor="middle" font-weight="bold">' . $slot['short_label'] . '</text>';
+                $svg .= '<text x="' . $tx . '" y="' . ($height - $paddingBottom + 12) . '" fill="#64748b" font-size="8" text-anchor="middle">' . $m . '</text>';
             }
+            $svg .= '<text x="' . ($width / 2) . '" y="' . ($height - 5) . '" fill="#475569" font-size="8" text-anchor="middle" font-weight="bold">Umur (Bulan)</text>';
 
-            // Draw line
-            if (count($dataPoints) > 1) {
-                $polyPoints = [];
-                foreach ($dataPoints as $dp) {
-                    $polyPoints[] = $dp['x'] . ',' . $dp['y'];
+            // Function to draw WHO bands
+            $drawBand = function($field, $color, $strokeWidth = 1, $dash = '') use ($refs, $getX, $getY, $type) {
+                $points = [];
+                foreach ($refs as $r) {
+                    $val = $type === 'height' && $field === 'median' ? $r->m_value : $r->$field;
+                    if ($val) $points[] = $getX($r->age_months) . ',' . $getY($val);
                 }
-                $svg .= '<polyline points="' . implode(' ', $polyPoints) . '" fill="none" stroke="#0d9488" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />';
+                $dashAttr = $dash ? 'stroke-dasharray="' . $dash . '"' : '';
+                return '<polyline points="' . implode(' ', $points) . '" fill="none" stroke="' . $color . '" stroke-width="' . $strokeWidth . '" ' . $dashAttr . ' stroke-linejoin="round" />';
+            };
+
+            // Draw SD curves
+            $svg .= $drawBand('sd_plus3', '#cbd5e1', 1);
+            $svg .= $drawBand('sd_minus3', '#cbd5e1', 1);
+            $svg .= $drawBand('sd_plus2', '#fca5a5', 1, '4 4'); // Red dashed
+            $svg .= $drawBand('sd_minus2', '#fca5a5', 1, '4 4'); // Red dashed
+            $svg .= $drawBand('median', '#22c55e', 2); // Green median
+
+            // Child Data
+            $childPoints = [];
+            foreach ($records as $rec) {
+                $age = (int) $patient->birth_date->diffInMonths($rec->visit_date);
+                if ($age <= 60 && $rec->$type > 0) {
+                    $cx = $getX($age);
+                    $cy = $getY((float) $rec->$type);
+                    $childPoints[] = ['x' => $cx, 'y' => $cy, 'val' => $rec->$type];
+                }
             }
 
-            // Draw data points and value labels
-            foreach ($dataPoints as $dp) {
-                $svg .= '<circle cx="' . $dp['x'] . '" cy="' . $dp['y'] . '" r="5" fill="#0d9488" stroke="#ffffff" stroke-width="2" />';
-                $svg .= '<text x="' . $dp['x'] . '" y="' . ($dp['y'] - 10) . '" fill="#0f172a" font-size="9" font-weight="black" text-anchor="middle">' . $dp['value'] . '</text>';
+            // Draw Child Line
+            if (count($childPoints) > 1) {
+                $poly = [];
+                foreach ($childPoints as $p) {
+                    $poly[] = $p['x'] . ',' . $p['y'];
+                }
+                $svg .= '<polyline points="' . implode(' ', $poly) . '" fill="none" stroke="#0f172a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />';
+            }
+
+            // Draw Child Points
+            foreach ($childPoints as $p) {
+                $svg .= '<circle cx="' . $p['x'] . '" cy="' . $p['y'] . '" r="3" fill="#0f172a" stroke="#ffffff" stroke-width="1" />';
+                // Only label the last point to avoid clutter
+                if ($p === end($childPoints)) {
+                    $svg .= '<rect x="' . ($p['x'] - 12) . '" y="' . ($p['y'] - 18) . '" width="24" height="12" fill="#0f172a" rx="2" />';
+                    $svg .= '<text x="' . $p['x'] . '" y="' . ($p['y'] - 9) . '" fill="#ffffff" font-size="7" font-weight="bold" text-anchor="middle">' . $p['val'] . '</text>';
+                }
             }
 
             // Border axis
-            $svg .= '<line x1="' . $paddingLeft . '" y1="' . $paddingTop . '" x2="' . $paddingLeft . '" y2="' . ($height - $paddingBottom) . '" stroke="#cbd5e1" stroke-width="1.5" />';
-            $svg .= '<line x1="' . $paddingLeft . '" y1="' . ($height - $paddingBottom) . '" x2="' . ($width - $paddingRight) . '" y2="' . ($height - $paddingBottom) . '" stroke="#cbd5e1" stroke-width="1.5" />';
+            $svg .= '<line x1="' . $paddingLeft . '" y1="' . $paddingTop . '" x2="' . $paddingLeft . '" y2="' . ($height - $paddingBottom) . '" stroke="#94a3b8" stroke-width="1.5" />';
+            $svg .= '<line x1="' . $paddingLeft . '" y1="' . ($height - $paddingBottom) . '" x2="' . ($width - $paddingRight) . '" y2="' . ($height - $paddingBottom) . '" stroke="#94a3b8" stroke-width="1.5" />';
 
             $svg .= '</svg>';
             return $svg;
         };
 
         return [
-            'weight' => $generateSvg('weight', $minYWeight, $maxYWeight),
-            'height' => $generateSvg('height', $minYHeight, $maxYHeight),
+            'weight' => $generateSvg('weight', $weightRefs),
+            'height' => $generateSvg('height', $heightRefs),
         ];
     }
 

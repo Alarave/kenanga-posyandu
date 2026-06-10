@@ -21,6 +21,10 @@ class MonthlyReport extends BaseAdminComponent
 
     public int $endYear;
 
+    public string $startPeriod;
+
+    public string $endPeriod;
+
     public ?int $selectedPosyanduId = null;
 
     public bool $reportGenerated = false;
@@ -54,6 +58,27 @@ class MonthlyReport extends BaseAdminComponent
             $this->selectedPosyanduId = Posyandu::first()?->id;
         } else {
             $this->selectedPosyanduId = $user->posyandu_id;
+        }
+        
+        $this->startPeriod = sprintf('%04d-%02d', $this->startYear, $this->startMonth);
+        $this->endPeriod = sprintf('%04d-%02d', $this->endYear, $this->endMonth);
+    }
+
+    public function updatedStartPeriod($value)
+    {
+        if ($value) {
+            [$year, $month] = explode('-', $value);
+            $this->startYear = (int) $year;
+            $this->startMonth = (int) $month;
+        }
+    }
+
+    public function updatedEndPeriod($value)
+    {
+        if ($value) {
+            [$year, $month] = explode('-', $value);
+            $this->endYear = (int) $year;
+            $this->endMonth = (int) $month;
         }
     }
 

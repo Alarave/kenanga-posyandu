@@ -188,6 +188,7 @@
         const width = isDesktop ? (collapsed ? COL : EXP) : (collapsed ? '0px' : EXP);
 
         document.documentElement.style.setProperty('--sidebar-width', width);
+        sidebar.style.width = width;
 
         if (!animate) {
             sidebar.style.transition = 'none';
@@ -222,9 +223,12 @@
 
     apply(false);
 
-    btn?.addEventListener('click', toggle);
-    mobileBtn?.addEventListener('click', toggle);
-    overlay?.addEventListener('click', toggle);
+    document.addEventListener('click', (e) => {
+        if (e.target.closest('#sidebarToggleBtn') || e.target.closest('#mobileSidebarToggle') || e.target.closest('#sidebarOverlay')) {
+            toggle();
+        }
+    });
+
     window.addEventListener('resize', () => apply(false));
 })();
 </script>
