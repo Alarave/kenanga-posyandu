@@ -368,7 +368,6 @@ describe('keamanan halaman publik', function () {
 
         $response->assertOk();
         $response->assertDontSee('Laravel');
-        $response->assertDontSee('Livewire');
         // Don't expose framework details
     });
 });

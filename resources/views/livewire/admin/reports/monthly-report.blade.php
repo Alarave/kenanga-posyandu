@@ -1,46 +1,54 @@
-<div class="space-y-8 p-6 md:p-8 pt-2 md:pt-4">
+<div class="space-y-8 p-6 md:p-8 pt-4">
     {{-- Header Section --}}
-    <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-6">
-        <div class="relative pl-6">
-            {{-- Vertical Bar --}}
-            <div class="absolute left-0 top-1 bottom-1 w-1.5 bg-gradient-to-b from-teal-500 via-emerald-400 to-transparent rounded-full"></div>
+    <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8 relative">
+        <div class="relative pl-6 z-10">
+            {{-- Vertical Glowing Bar --}}
+            <div class="absolute left-0 top-1 bottom-1 w-1.5 bg-gradient-to-b from-teal-400 to-emerald-300 rounded-full shadow-[0_0_12px_rgba(45,212,191,0.6)]"></div>
             
-            <div class="flex flex-col gap-4">
-
+            <div class="flex flex-col gap-3">
                 <div>
-                    <h1 class="text-4xl font-black tracking-tight leading-none text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">
+                    <h1 class="text-4xl font-black tracking-tight leading-none text-teal-800 drop-shadow-sm">
                         Rekap & Laporan
                     </h1>
-                    <p class="text-sm font-bold text-slate-900 mt-3">Analisis data kunjungan dan status kesehatan warga secara komprehensif.</p>
+                    <p class="text-sm font-medium text-slate-500 mt-3">Analisis data kunjungan dan status kesehatan warga secara komprehensif.</p>
                 </div>
             </div>
         </div>
+        
+        {{-- Decorative Background Glow --}}
+        <div class="absolute right-0 top-0 w-64 h-64 bg-teal-400/5 rounded-full blur-3xl -z-10 pointer-events-none"></div>
     </div>
 
     {{-- Flash Messages --}}
     @if(session('success'))
-        <div class="flex items-center gap-3 px-4 py-3 bg-green-50 border border-green-200 text-green-800 rounded-xl text-sm font-medium">
-            <span class="material-symbols-outlined text-green-600 text-[20px]">check_circle</span>
+        <div class="flex items-center gap-3 px-5 py-4 bg-emerald-50/80 backdrop-blur-sm border border-emerald-100 text-emerald-800 rounded-2xl text-sm font-medium shadow-sm animate-fade-in">
+            <span class="material-symbols-outlined text-emerald-500 text-[22px]">check_circle</span>
             {{ session('success') }}
         </div>
     @endif
     @if(session('error'))
-        <div class="flex items-center gap-3 px-4 py-3 bg-red-50 border border-red-200 text-red-800 rounded-xl text-sm font-medium">
-            <span class="material-symbols-outlined text-red-600 text-[20px]">error</span>
+        <div class="flex items-center gap-3 px-5 py-4 bg-rose-50/80 backdrop-blur-sm border border-rose-100 text-rose-800 rounded-2xl text-sm font-medium shadow-sm animate-fade-in">
+            <span class="material-symbols-outlined text-rose-500 text-[22px]">error</span>
             {{ session('error') }}
         </div>
     @endif
 
-    {{-- ── Filter Section ── --}}
-    <section class="bg-white rounded-xl border border-slate-200 p-6 shadow-sm">
-        <h3 class="text-sm font-bold text-slate-500 uppercase tracking-widest mb-4">Filter Laporan</h3>
-        <div class="flex flex-wrap items-end gap-4">
-
+    {{-- ── Filter Section (Glassmorphism & Floating Style) ── --}}
+    <section class="bg-white/80 backdrop-blur-xl rounded-3xl border border-white/40 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.05)] p-6 relative overflow-hidden">
+        {{-- Inner subtle glow --}}
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-teal-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        
+        <div class="flex items-center gap-2 mb-5">
+            <span class="material-symbols-outlined text-teal-600 text-[20px]">filter_list</span>
+            <h3 class="text-xs font-black text-slate-700 uppercase tracking-widest">Filter Laporan</h3>
+        </div>
+        
+        <div class="flex flex-wrap items-end gap-5 relative z-10">
             {{-- Pilih Posyandu (superadmin only) --}}
             @if(auth()->user()->isSuperAdmin())
             <div class="flex-1 min-w-[200px]">
-                <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2">Pilih Posyandu</label>
-                <x-forms.select-input wire:model="selectedPosyanduId" placeholder="" value="{{ $selectedPosyanduId }}">
+                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-2">Posyandu</label>
+                <x-forms.select-input wire:model="selectedPosyanduId" class="!rounded-2xl !bg-slate-50/50 focus:!bg-white !border-slate-200/60 shadow-inner-sm transition-all" value="{{ $selectedPosyanduId }}">
                     @foreach($posyandus as $pos)
                         <option value="{{ $pos->id }}">{{ $pos->name }}</option>
                     @endforeach
@@ -48,343 +56,329 @@
             </div>
             @endif
 
-            {{-- Tanggal Mulai (Bulan) --}}
-            <div class="flex-1 min-w-[160px]">
-                <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2">Dari Bulan</label>
-                <x-forms.select-input wire:model="startMonth" placeholder="" value="{{ $startMonth }}">
-                    <option value="1">Januari</option>
-                    <option value="2">Februari</option>
-                    <option value="3">Maret</option>
-                    <option value="4">April</option>
-                    <option value="5">Mei</option>
-                    <option value="6">Juni</option>
-                    <option value="7">Juli</option>
-                    <option value="8">Agustus</option>
-                    <option value="9">September</option>
-                    <option value="10">Oktober</option>
-                    <option value="11">November</option>
-                    <option value="12">Desember</option>
-                </x-forms.select-input>
+            {{-- Tanggal Mulai --}}
+            <div class="flex-1 min-w-[140px]">
+                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-2">Periode Mulai</label>
+                <input type="month" wire:model.live="startPeriod" class="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50/50 text-sm font-medium focus:bg-white focus:border-teal-400 focus:ring-4 focus:ring-teal-400/10 transition-all shadow-inner-sm">
             </div>
 
-            {{-- Tanggal Mulai (Tahun) --}}
-            <div class="flex-1 min-w-[130px]">
-                <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2">Dari Tahun</label>
-                <x-forms.select-input wire:model="startYear" placeholder="" value="{{ $startYear }}">
-                    @for($y = now()->year; $y >= 2020; $y--)
-                        <option value="{{ $y }}">{{ $y }}</option>
-                    @endfor
-                </x-forms.select-input>
+            {{-- Divider --}}
+            <div class="hidden md:flex items-center justify-center w-6 h-12 pb-2">
+                <span class="material-symbols-outlined text-slate-300">arrow_right_alt</span>
             </div>
 
-            {{-- Tanggal Akhir (Bulan) --}}
-            <div class="flex-1 min-w-[160px]">
-                <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2">Sampai Bulan</label>
-                <x-forms.select-input wire:model="endMonth" placeholder="" value="{{ $endMonth }}">
-                    <option value="1">Januari</option>
-                    <option value="2">Februari</option>
-                    <option value="3">Maret</option>
-                    <option value="4">April</option>
-                    <option value="5">Mei</option>
-                    <option value="6">Juni</option>
-                    <option value="7">Juli</option>
-                    <option value="8">Agustus</option>
-                    <option value="9">September</option>
-                    <option value="10">Oktober</option>
-                    <option value="11">November</option>
-                    <option value="12">Desember</option>
-                </x-forms.select-input>
-            </div>
-
-            {{-- Tanggal Akhir (Tahun) --}}
-            <div class="flex-1 min-w-[130px]">
-                <label class="block text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1 mb-2">Sampai Tahun</label>
-                <x-forms.select-input wire:model="endYear" placeholder="" value="{{ $endYear }}">
-                    @for($y = now()->year; $y >= 2020; $y--)
-                        <option value="{{ $y }}">{{ $y }}</option>
-                    @endfor
-                </x-forms.select-input>
+            {{-- Tanggal Akhir --}}
+            <div class="flex-1 min-w-[140px]">
+                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-2">Periode Selesai</label>
+                <input type="month" wire:model.live="endPeriod" class="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50/50 text-sm font-medium focus:bg-white focus:border-teal-400 focus:ring-4 focus:ring-teal-400/10 transition-all shadow-inner-sm">
             </div>
 
             {{-- Tombol Tampilkan --}}
             <button wire:click="generateReport"
                     wire:loading.attr="disabled"
-                    class="h-14 px-8 bg-teal-600 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-teal-700 active:scale-95 transition-all flex items-center gap-2 min-w-[140px] justify-center shadow-lg hover:shadow-teal-500/10">
-                <span wire:loading.remove wire:target="generateReport" class="material-symbols-outlined text-[18px]">search</span>
+                    class="h-12 px-8 bg-gradient-to-r from-teal-600 to-emerald-500 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2 shadow-[0_8px_16px_-6px_rgba(13,148,136,0.4)]">
+                <span wire:loading.remove wire:target="generateReport" class="material-symbols-outlined text-[18px]">magic_button</span>
                 <svg wire:loading wire:target="generateReport" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                 </svg>
-                <span wire:loading.remove wire:target="generateReport">Tampilkan</span>
-                <span wire:loading wire:target="generateReport">Memuat...</span>
+                <span wire:loading.remove wire:target="generateReport">Analisis</span>
+                <span wire:loading wire:target="generateReport">Proses...</span>
             </button>
         </div>
     </section>
 
-    {{-- ── Stats Cards (hanya tampil setelah generate) ── --}}
+    {{-- ── Stats Cards ── --}}
     @if($reportGenerated)
-    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
         {{-- Total Kunjungan --}}
-        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex justify-between items-start mb-4">
-                <div class="p-3 bg-teal-50 rounded-xl text-teal-600">
-                    <span class="material-symbols-outlined text-[22px]">group</span>
+        <div class="group bg-white rounded-3xl border border-slate-100 p-6 shadow-[0_4px_20px_-8px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-8px_rgba(13,148,136,0.15)] transition-all duration-300 relative overflow-hidden">
+            <div class="absolute -right-6 -top-6 w-32 h-32 bg-teal-50 rounded-full blur-2xl group-hover:bg-teal-100 transition-colors"></div>
+            <div class="flex justify-between items-start mb-6 relative">
+                <div class="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-teal-50 to-emerald-50 rounded-2xl text-teal-600 shadow-sm border border-teal-100/50">
+                    <span class="material-symbols-outlined text-[24px]">group</span>
                 </div>
-                <span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">Bulan Ini</span>
+                <span class="text-[10px] font-black text-teal-600 bg-teal-50 border border-teal-100 px-3 py-1.5 rounded-full uppercase tracking-wider">Bulan Ini</span>
             </div>
-            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Total Kunjungan</p>
-            <h3 class="text-4xl font-black text-slate-900 mt-1 leading-tight">{{ $totalKunjungan }}</h3>
-            <p class="text-xs text-slate-400 mt-2">{{ $periodLabel }}</p>
+            <div class="relative">
+                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Total Kunjungan</p>
+                <h3 class="text-4xl font-black text-slate-800 mt-2 mb-1 tracking-tight">{{ $totalKunjungan }}</h3>
+                <p class="text-[11px] text-slate-400 font-medium">{{ $periodLabel }}</p>
+            </div>
         </div>
 
         {{-- Balita Stunting --}}
-        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex justify-between items-start mb-4">
-                <div class="p-3 bg-red-50 rounded-xl text-red-500">
-                    <span class="material-symbols-outlined text-[22px]" style="font-variation-settings:'FILL' 1;">warning</span>
+        <div class="group bg-white rounded-3xl border border-slate-100 p-6 shadow-[0_4px_20px_-8px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-8px_rgba(244,63,94,0.15)] transition-all duration-300 relative overflow-hidden">
+            <div class="absolute -right-6 -top-6 w-32 h-32 bg-rose-50 rounded-full blur-2xl group-hover:bg-rose-100 transition-colors"></div>
+            <div class="flex justify-between items-start mb-6 relative">
+                <div class="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-rose-50 to-red-50 rounded-2xl text-rose-500 shadow-sm border border-rose-100/50">
+                    <span class="material-symbols-outlined text-[24px]" style="font-variation-settings:'FILL' 1;">warning</span>
                 </div>
-                <span class="text-xs font-bold text-red-600 bg-red-50 px-2 py-1 rounded-full">Perhatian</span>
+                <span class="text-[10px] font-black text-rose-600 bg-rose-50 border border-rose-100 px-3 py-1.5 rounded-full uppercase tracking-wider animate-pulse">Perhatian</span>
             </div>
-            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Balita Stunting</p>
-            <h3 class="text-4xl font-black text-slate-900 mt-1 leading-tight">{{ $balitaStunting }}</h3>
-            <p class="text-xs text-slate-400 mt-2">Ditemukan bulan ini</p>
+            <div class="relative">
+                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Balita Stunting</p>
+                <h3 class="text-4xl font-black text-slate-800 mt-2 mb-1 tracking-tight">{{ $balitaStunting }}</h3>
+                <p class="text-[11px] text-slate-400 font-medium">Ditemukan bulan ini</p>
+            </div>
         </div>
 
         {{-- Ibu Hamil --}}
-        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex justify-between items-start mb-4">
-                <div class="p-3 bg-blue-50 rounded-xl text-blue-500">
-                    <span class="material-symbols-outlined text-[22px]">pregnant_woman</span>
+        <div class="group bg-white rounded-3xl border border-slate-100 p-6 shadow-[0_4px_20px_-8px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-8px_rgba(59,130,246,0.15)] transition-all duration-300 relative overflow-hidden">
+            <div class="absolute -right-6 -top-6 w-32 h-32 bg-blue-50 rounded-full blur-2xl group-hover:bg-blue-100 transition-colors"></div>
+            <div class="flex justify-between items-start mb-6 relative">
+                <div class="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl text-blue-500 shadow-sm border border-blue-100/50">
+                    <span class="material-symbols-outlined text-[24px]">pregnant_woman</span>
                 </div>
-                <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-full">Terdaftar</span>
+                <span class="text-[10px] font-black text-blue-600 bg-blue-50 border border-blue-100 px-3 py-1.5 rounded-full uppercase tracking-wider">Terdaftar</span>
             </div>
-            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Ibu Hamil</p>
-            <h3 class="text-4xl font-black text-slate-900 mt-1 leading-tight">{{ $totalIbuHamil }}</h3>
-            <p class="text-xs text-slate-400 mt-2">Terdaftar aktif</p>
+            <div class="relative">
+                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Ibu Hamil</p>
+                <h3 class="text-4xl font-black text-slate-800 mt-2 mb-1 tracking-tight">{{ $totalIbuHamil }}</h3>
+                <p class="text-[11px] text-slate-400 font-medium">Terdaftar aktif</p>
+            </div>
         </div>
 
         {{-- Cakupan Vitamin A --}}
-        <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition-shadow">
-            <div class="flex justify-between items-start mb-4">
-                <div class="p-3 bg-amber-50 rounded-xl text-amber-500">
-                    <span class="material-symbols-outlined text-[22px]">medication</span>
+        <div class="group bg-white rounded-3xl border border-slate-100 p-6 shadow-[0_4px_20px_-8px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-8px_rgba(245,158,11,0.15)] transition-all duration-300 relative overflow-hidden">
+            <div class="absolute -right-6 -top-6 w-32 h-32 bg-amber-50 rounded-full blur-2xl group-hover:bg-amber-100 transition-colors"></div>
+            <div class="flex justify-between items-start mb-6 relative">
+                <div class="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl text-amber-500 shadow-sm border border-amber-100/50">
+                    <span class="material-symbols-outlined text-[24px]">medication</span>
                 </div>
-                <span class="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded-full">Target: 95%</span>
+                <span class="text-[10px] font-black text-amber-600 bg-amber-50 border border-amber-100 px-3 py-1.5 rounded-full uppercase tracking-wider">Target: 95%</span>
             </div>
-            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Cakupan Vitamin A</p>
-            <h3 class="text-4xl font-black text-slate-900 mt-1 leading-tight">{{ $cakupanVitaminA }}%</h3>
-            <p class="text-xs text-slate-400 mt-2">Capaian posyandu</p>
+            <div class="relative">
+                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Cakupan Vitamin A</p>
+                <h3 class="text-4xl font-black text-slate-800 mt-2 mb-1 tracking-tight">{{ $cakupanVitaminA }}%</h3>
+                <p class="text-[11px] text-slate-400 font-medium">Capaian posyandu</p>
+            </div>
         </div>
 
     </section>
 
-    {{-- ── Tabel Detail Kunjungan ── --}}
-    <section class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+    {{-- ── Tabel Detail Kunjungan (Redesigned) ── --}}
+    <section class="bg-white rounded-[2rem] border border-slate-100 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col">
 
         {{-- Header Tabel --}}
-        <div class="px-6 py-4 border-b border-slate-200 flex flex-wrap justify-between items-center gap-4">
+        <div class="px-8 py-6 border-b border-slate-100/60 bg-slate-50/30 flex flex-wrap justify-between items-center gap-6">
             <div>
-                <h2 class="text-base font-bold text-slate-900">Data Detail Kunjungan</h2>
-                <p class="text-sm text-slate-500 mt-0.5">{{ $periodLabel }} — {{ $posyanduName }}</p>
+                <h2 class="text-xl font-black text-slate-800 tracking-tight">Detail Kunjungan</h2>
+                <p class="text-[13px] text-slate-500 font-medium mt-1"><span class="font-bold text-teal-600">{{ $posyanduName }}</span> • {{ $periodLabel }}</p>
             </div>
-            <div class="flex gap-3">
+            <div class="flex flex-wrap gap-3">
                 {{-- Ekspor Excel --}}
                 <button wire:click="exportExcel"
                         wire:loading.attr="disabled"
                         wire:target="exportExcel"
-                        class="h-11 px-5 bg-green-600 text-white rounded-lg text-sm font-bold hover:bg-green-700 active:scale-95 transition-all flex items-center gap-2 shadow-sm">
-                    <span wire:loading.remove wire:target="exportExcel" class="material-symbols-outlined text-[18px]">description</span>
-                    <svg wire:loading wire:target="exportExcel" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                        class="h-11 px-5 bg-white border border-slate-200 text-slate-700 rounded-xl text-sm font-bold hover:border-emerald-500 hover:text-emerald-600 active:scale-95 transition-all flex items-center gap-2 shadow-sm group">
+                    <span wire:loading.remove wire:target="exportExcel" class="material-symbols-outlined text-[18px] text-emerald-500 group-hover:scale-110 transition-transform">description</span>
+                    <svg wire:loading wire:target="exportExcel" class="animate-spin h-4 w-4 text-emerald-500" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                     </svg>
-                    <span>Ekspor Excel</span>
+                    <span>Excel</span>
                 </button>
 
                 {{-- Ekspor PDF --}}
                 <button wire:click="exportPdf"
                         wire:loading.attr="disabled"
                         wire:target="exportPdf"
-                        class="h-11 px-5 bg-red-600 text-white rounded-lg text-sm font-bold hover:bg-red-700 active:scale-95 transition-all flex items-center gap-2 shadow-sm">
-                    <span wire:loading.remove wire:target="exportPdf" class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
-                    <svg wire:loading wire:target="exportPdf" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                        class="h-11 px-5 bg-white border border-slate-200 text-slate-700 rounded-xl text-sm font-bold hover:border-rose-500 hover:text-rose-600 active:scale-95 transition-all flex items-center gap-2 shadow-sm group">
+                    <span wire:loading.remove wire:target="exportPdf" class="material-symbols-outlined text-[18px] text-rose-500 group-hover:scale-110 transition-transform">picture_as_pdf</span>
+                    <svg wire:loading wire:target="exportPdf" class="animate-spin h-4 w-4 text-rose-500" fill="none" viewBox="0 0 24 24">
                         <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                         <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                     </svg>
-                    <span>Ekspor PDF</span>
+                    <span>PDF</span>
                 </button>
             </div>
         </div>
 
         {{-- Search & Sort Section --}}
-        <div class="px-6 py-4 border-t border-slate-100 bg-slate-50/50 space-y-3">
+        <div class="px-6 lg:px-8 py-5 border-b border-slate-100/60 flex flex-col gap-4">
             {{-- Search Input --}}
-            <div class="relative group">
-                <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-teal-500 transition-colors text-[18px]">search</span>
-                <input type="text" wire:model.live.debounce.150ms="search" 
-                       placeholder="Cari nama warga atau NIK..."
-                       class="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 text-sm focus:border-teal-400 focus:ring-1 focus:ring-teal-400 focus:ring-opacity-50 transition-all">
+            <div class="relative w-full max-w-[400px] shrink-0 group">
+                <div class="absolute inset-y-0 left-0 w-10 flex items-center justify-center pointer-events-none">
+                    <span class="material-symbols-outlined text-slate-400 group-focus-within:text-teal-500 transition-colors text-[20px]">search</span>
+                </div>
+                <input type="text" wire:model.live.debounce.300ms="search" 
+                       placeholder="Cari Nama/NIK..."
+                       class="w-full pl-10 pr-4 h-10 rounded-xl border border-slate-200 bg-slate-50/50 text-[13px] font-medium focus:bg-white focus:border-teal-400 focus:ring-4 focus:ring-teal-400/10 transition-all shadow-sm">
             </div>
 
             {{-- Sort Options Row --}}
-            <div class="flex items-center gap-2 flex-wrap">
-                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mr-2">Urutkan:</span>
+            <div class="flex items-center gap-3 overflow-x-auto hide-scrollbar w-full pb-1">
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap shrink-0">Urutkan:</span>
             
-            {{-- Sort by Patient Name --}}
-            <div class="flex gap-1">
-                <button wire:click="$set('sortBy', 'patient_name_asc')"
-                        @class(['px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all', 
-                                'bg-teal-100 text-teal-600 ring-1 ring-teal-200' => $sortBy === 'patient_name_asc',
-                                'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200' => $sortBy !== 'patient_name_asc'])
-                        title="Nama A-Z">
-                    <span class="material-symbols-outlined text-[12px]">sort_by_alpha</span>
-                </button>
-                <button wire:click="$set('sortBy', 'patient_name_desc')"
-                        @class(['px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all', 
-                                'bg-teal-100 text-teal-600 ring-1 ring-teal-200' => $sortBy === 'patient_name_desc',
-                                'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200' => $sortBy !== 'patient_name_desc'])
-                        title="Nama Z-A">
-                    <span class="material-symbols-outlined text-[12px]">sort_by_alpha</span><span class="text-[8px] ml-0.5">↓</span>
-                </button>
-            </div>
+                {{-- Sort by Patient Name --}}
+                <div class="flex bg-slate-100/80 p-1 rounded-xl">
+                    <button wire:click="$set('sortBy', 'patient_name_asc')"
+                            @class(['px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap flex items-center gap-1', 
+                                    'bg-white text-teal-600 shadow-sm' => $sortBy === 'patient_name_asc',
+                                    'text-slate-500 hover:text-slate-700' => $sortBy !== 'patient_name_asc'])>
+                        <span class="material-symbols-outlined text-[14px]">sort_by_alpha</span> A-Z
+                    </button>
+                    <button wire:click="$set('sortBy', 'patient_name_desc')"
+                            @class(['px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap flex items-center gap-1', 
+                                    'bg-white text-teal-600 shadow-sm' => $sortBy === 'patient_name_desc',
+                                    'text-slate-500 hover:text-slate-700' => $sortBy !== 'patient_name_desc'])>
+                        <span class="material-symbols-outlined text-[14px]">sort_by_alpha</span> Z-A
+                    </button>
+                </div>
 
-            {{-- Sort by Visit Date --}}
-            <div class="flex gap-1">
-                <button wire:click="$set('sortBy', 'visit_date_asc')"
-                        @class(['px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all', 
-                                'bg-teal-100 text-teal-600 ring-1 ring-teal-200' => $sortBy === 'visit_date_asc',
-                                'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200' => $sortBy !== 'visit_date_asc'])
-                        title="Tanggal Lama - Baru">
-                    <span class="material-symbols-outlined text-[12px]">calendar_month</span>
-                </button>
-                <button wire:click="$set('sortBy', 'visit_date_desc')"
-                        @class(['px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all', 
-                                'bg-teal-100 text-teal-600 ring-1 ring-teal-200' => $sortBy === 'visit_date_desc',
-                                'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200' => $sortBy !== 'visit_date_desc'])
-                        title="Tanggal Baru - Lama">
-                    <span class="material-symbols-outlined text-[12px]">calendar_month</span><span class="text-[8px] ml-0.5">↓</span>
-                </button>
-            </div>
-
-            {{-- Sort by Updated Date --}}
-            <div class="flex gap-1">
-                <button wire:click="$set('sortBy', 'updated_at_asc')"
-                        @class(['px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all', 
-                                'bg-teal-100 text-teal-600 ring-1 ring-teal-200' => $sortBy === 'updated_at_asc',
-                                'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200' => $sortBy !== 'updated_at_asc'])
-                        title="Edit Lama - Baru">
-                    <span class="material-symbols-outlined text-[12px]">update</span>
-                </button>
-                <button wire:click="$set('sortBy', 'updated_at_desc')"
-                        @class(['px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all', 
-                                'bg-teal-100 text-teal-600 ring-1 ring-teal-200' => $sortBy === 'updated_at_desc',
-                                'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200' => $sortBy !== 'updated_at_desc'])
-                        title="Edit Baru - Lama">
-                    <span class="material-symbols-outlined text-[12px]">update</span><span class="text-[8px] ml-0.5">↓</span>
-                </button>
+                {{-- Sort by Visit Date --}}
+                <div class="flex bg-slate-100/80 p-1 rounded-xl">
+                    <button wire:click="$set('sortBy', 'visit_date_desc')"
+                            @class(['px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap flex items-center gap-1', 
+                                    'bg-white text-teal-600 shadow-sm' => $sortBy === 'visit_date_desc',
+                                    'text-slate-500 hover:text-slate-700' => $sortBy !== 'visit_date_desc'])>
+                        <span class="material-symbols-outlined text-[14px]">event_available</span> Terbaru
+                    </button>
+                    <button wire:click="$set('sortBy', 'visit_date_asc')"
+                            @class(['px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap flex items-center gap-1', 
+                                    'bg-white text-teal-600 shadow-sm' => $sortBy === 'visit_date_asc',
+                                    'text-slate-500 hover:text-slate-700' => $sortBy !== 'visit_date_asc'])>
+                        <span class="material-symbols-outlined text-[14px]">history_toggle_off</span> Terlama
+                    </button>
+                </div>
             </div>
         </div>
 
         {{-- Tabel --}}
         <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-                <thead class="bg-slate-50 border-b border-slate-200">
+            <table class="w-full text-left border-collapse whitespace-nowrap">
+                <thead>
                     <tr>
-                        <th class="px-5 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider w-12">No</th>
-                        <th class="px-5 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Nama Balita</th>
-                        <th class="px-5 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Usia</th>
-                        <th class="px-5 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Tgl Kunjungan</th>
-                        <th class="px-5 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Berat (kg)</th>
-                        <th class="px-5 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Tinggi (cm)</th>
-                        <th class="px-5 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider">Status Gizi</th>
-                        <th class="px-5 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Vit. A</th>
-                        <th class="px-5 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Pill FE</th>
-                        <th class="px-5 py-3.5 text-xs font-bold text-slate-500 uppercase tracking-wider text-center">Aksi</th>
+                        <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest w-16">No</th>
+                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Kategori</th>
+                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Nama & NIK</th>
+                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Usia</th>
+                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Kunjungan</th>
+                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Pengukuran</th>
+                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status Gizi</th>
+                        <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Tindakan</th>
+                        <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100">
+                <tbody class="divide-y divide-slate-100/50">
                     @forelse($records as $index => $record)
-                    <tr class="hover:bg-slate-50 transition-colors">
-                        <td class="px-5 py-4 text-sm text-slate-500">
+                    <tr class="hover:bg-slate-50/80 transition-colors group">
+                        <td class="px-8 py-5 text-sm font-bold text-slate-400">
                             {{ ($records->currentPage() - 1) * $records->perPage() + $index + 1 }}
                         </td>
-                        <td class="px-5 py-4">
-                            <div class="font-semibold text-sm text-slate-900">{{ $record->patient->full_name ?? '-' }}</div>
-                            <div class="text-xs text-slate-400">{{ $record->patient->id_number ?? '' }}</div>
+                        <td class="px-6 py-5">
+                            @php
+                                $cat = $record->patient->category ?? 'Lainnya';
+                                $catColor = match(strtolower($cat)) {
+                                    'bayi', 'baduta', 'balita' => 'text-emerald-700 bg-emerald-50 border-emerald-200',
+                                    'ibu hamil', 'ibu_hamil' => 'text-blue-700 bg-blue-50 border-blue-200',
+                                    'lansia' => 'text-amber-700 bg-amber-50 border-amber-200',
+                                    'pua', 'wus', 'remaja' => 'text-purple-700 bg-purple-50 border-purple-200',
+                                    default => 'text-slate-700 bg-slate-50 border-slate-200'
+                                };
+                            @endphp
+                            <span class="inline-flex px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded border {{ $catColor }}">
+                                {{ str_replace('_', ' ', $cat) }}
+                            </span>
                         </td>
-                        <td class="px-5 py-4 text-sm text-slate-700">
+                        <td class="px-6 py-5">
+                            <div class="font-bold text-sm text-slate-800">{{ $record->patient->full_name ?? '-' }}</div>
+                            <div class="text-[11px] font-medium text-slate-500 font-mono mt-0.5">{{ $record->patient->id_number ?? '' }}</div>
+                        </td>
+                        <td class="px-6 py-5">
                             @if($record->patient?->birth_date)
-                                {{ $record->patient->birth_date->diffInMonths(now()) }} Bln
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 text-xs font-bold">
+                                    {{ floor($record->patient->birth_date->diffInMonths(now())) }} Bln
+                                </span>
                             @else
-                                -
+                                <span class="text-slate-400">-</span>
                             @endif
                         </td>
-                        <td class="px-5 py-4 text-sm text-slate-700">
+                        <td class="px-6 py-5 text-sm font-semibold text-slate-600">
                             {{ \Carbon\Carbon::parse($record->visit_date)->format('d M Y') }}
                         </td>
-                        <td class="px-5 py-4 text-sm font-medium text-slate-900">
-                            {{ $record->weight ? number_format($record->weight, 1) : '-' }}
+                        <td class="px-6 py-5">
+                            <div class="flex items-center gap-3">
+                                <div title="Berat Badan">
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase">BB</span>
+                                    <div class="text-sm font-bold text-slate-800">{{ $record->weight ? number_format($record->weight, 1) : '-' }} <span class="text-xs text-slate-400 font-medium">kg</span></div>
+                                </div>
+                                <div class="w-px h-6 bg-slate-200"></div>
+                                <div title="Tinggi Badan">
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase">TB</span>
+                                    <div class="text-sm font-bold text-slate-800">{{ $record->height ? number_format($record->height, 1) : '-' }} <span class="text-xs text-slate-400 font-medium">cm</span></div>
+                                </div>
+                            </div>
                         </td>
-                        <td class="px-5 py-4 text-sm font-medium text-slate-900">
-                            {{ $record->height ? number_format($record->height, 1) : '-' }}
-                        </td>
-                        <td class="px-5 py-4">
+                        <td class="px-6 py-5">
                             @php
                                 $status = $record->nutrition_status ?? null;
-                                $badgeClass = match($status) {
-                                    'Normal'             => 'bg-green-50 text-green-700 border border-green-200',
-                                    'Gizi Kurang'        => 'bg-amber-50 text-amber-700 border border-amber-200',
-                                    'Gizi Lebih'         => 'bg-purple-50 text-purple-700 border border-purple-200',
-                                    'Gizi Buruk/Stunting'=> 'bg-red-50 text-red-700 border border-red-200',
-                                    default              => 'bg-slate-100 text-slate-500 border border-slate-200',
+                                $badgeStyle = match($status ? strtolower(trim($status)) : null) {
+                                    'normal', 'gizi baik', 'baik' => 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20',
+                                    'gizi kurang', 'kurang' => 'bg-amber-50 text-amber-700 ring-1 ring-amber-600/20',
+                                    'gizi lebih', 'lebih' => 'bg-indigo-50 text-indigo-700 ring-1 ring-indigo-600/20',
+                                    'gizi buruk/stunting', 'gizi buruk', 'buruk', 'stunting' => 'bg-rose-50 text-rose-700 ring-1 ring-rose-600/20',
+                                    default => 'bg-slate-100 text-slate-500 ring-1 ring-slate-400/20',
                                 };
-                                $icon = match($status) {
-                                    'Gizi Buruk/Stunting' => 'priority_high',
-                                    'Gizi Kurang'         => 'trending_down',
-                                    'Gizi Lebih'          => 'trending_up',
-                                    'Normal'              => 'check',
-                                    default               => 'remove',
+                                $icon = match($status ? strtolower(trim($status)) : null) {
+                                    'gizi buruk/stunting', 'gizi buruk', 'buruk', 'stunting' => 'trending_down',
+                                    'gizi kurang', 'kurang' => 'trending_down',
+                                    'gizi lebih', 'lebih' => 'trending_up',
+                                    'normal', 'gizi baik', 'baik' => 'check_circle',
+                                    default => 'horizontal_rule',
                                 };
                             @endphp
                             @if($status)
-                            <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold {{ $badgeClass }}">
-                                <span class="material-symbols-outlined text-[13px]">{{ $icon }}</span>
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-bold {{ $badgeStyle }}">
+                                <span class="material-symbols-outlined text-[14px]" style="font-variation-settings:'FILL' 1;">{{ $icon }}</span>
                                 {{ $status }}
                             </span>
                             @else
                             <span class="text-xs text-slate-400">-</span>
                             @endif
                         </td>
-                        <td class="px-5 py-4 text-center">
-                            @if($record->vitamin_a)
-                                <span class="material-symbols-outlined text-green-500 text-[20px]" style="font-variation-settings:'FILL' 1;">check_circle</span>
-                            @else
-                                <span class="material-symbols-outlined text-slate-300 text-[20px]">cancel</span>
-                            @endif
+                        <td class="px-6 py-5">
+                            <div class="flex items-center justify-center gap-2">
+                                <div class="flex flex-col items-center gap-1" title="Vitamin A">
+                                    <span class="text-[9px] font-bold text-slate-400 uppercase">Vit. A</span>
+                                    @if($record->vitamin_a)
+                                        <div class="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600"><span class="material-symbols-outlined text-[14px]" style="font-variation-settings:'FILL' 1;">check</span></div>
+                                    @else
+                                        <div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-400"><span class="material-symbols-outlined text-[14px]">close</span></div>
+                                    @endif
+                                </div>
+                                <div class="w-px h-6 bg-slate-100"></div>
+                                <div class="flex flex-col items-center gap-1" title="Pil FE">
+                                    <span class="text-[9px] font-bold text-slate-400 uppercase">Pil FE</span>
+                                    @if($record->pill_fe)
+                                        <div class="w-6 h-6 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600"><span class="material-symbols-outlined text-[14px]" style="font-variation-settings:'FILL' 1;">check</span></div>
+                                    @else
+                                        <div class="w-6 h-6 rounded-full bg-slate-100 flex items-center justify-center text-slate-400"><span class="material-symbols-outlined text-[14px]">close</span></div>
+                                    @endif
+                                </div>
+                            </div>
                         </td>
-                        <td class="px-5 py-4 text-center">
-                            @if($record->pill_fe)
-                                <span class="material-symbols-outlined text-green-500 text-[20px]" style="font-variation-settings:'FILL' 1;">check_circle</span>
-                            @else
-                                <span class="material-symbols-outlined text-slate-300 text-[20px]">cancel</span>
-                            @endif
-                        </td>
-                        <td class="px-5 py-4 text-center">
+                        <td class="px-8 py-5 text-center">
                             <a href="{{ route('admin.reports.individual', ['patient' => $record->patient_id, 'start_month' => $startMonth, 'start_year' => $startYear, 'end_month' => $endMonth, 'end_year' => $endYear]) }}"
-                               class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-black text-slate-600 hover:bg-teal-600 hover:text-white transition-all">
-                                <span class="material-symbols-outlined text-[16px]">article</span>
-                                <span class="ml-1">Rapor</span>
+                               class="inline-flex items-center justify-center rounded-xl bg-white border border-slate-200 shadow-sm px-4 py-2.5 text-xs font-black text-slate-700 hover:bg-teal-50 hover:text-teal-700 hover:border-teal-200 active:scale-95 transition-all">
+                                <span class="material-symbols-outlined text-[18px]">assignment_ind</span>
+                                <span class="ml-1.5">Rapor</span>
                             </a>
                         </td>
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="10" class="px-5 py-16 text-center">
-                            <div class="flex flex-col items-center gap-3 text-slate-400">
-                                <span class="material-symbols-outlined text-[48px] text-slate-300">search_off</span>
-                                <p class="text-sm font-medium">Tidak ada data kunjungan</p>
-                                <p class="text-xs">Tidak ditemukan rekam medis untuk periode {{ $periodLabel }}</p>
+                        <td colspan="9" class="px-8 py-20 text-center">
+                            <div class="flex flex-col items-center gap-4 text-slate-400">
+                                <div class="w-20 h-20 rounded-3xl bg-slate-50 flex items-center justify-center border border-slate-100">
+                                    <span class="material-symbols-outlined text-[40px] text-slate-300">search_off</span>
+                                </div>
+                                <div>
+                                    <p class="text-base font-bold text-slate-600">Tidak ada data kunjungan</p>
+                                    <p class="text-sm mt-1">Tidak ditemukan rekam medis untuk periode {{ $periodLabel }}</p>
+                                </div>
                             </div>
                         </td>
                     </tr>
@@ -395,25 +389,25 @@
 
         {{-- Pagination --}}
         @if($records instanceof \Illuminate\Pagination\LengthAwarePaginator && $records->hasPages())
-        <div class="px-6 py-4 bg-slate-50 border-t border-slate-200 flex flex-wrap justify-between items-center gap-4">
-            <p class="text-sm text-slate-500">
-                Menampilkan {{ $records->firstItem() }}–{{ $records->lastItem() }} dari {{ $total }} data
+        <div class="px-8 py-5 bg-white border-t border-slate-100/60 flex flex-wrap justify-between items-center gap-4">
+            <p class="text-sm font-medium text-slate-500">
+                Menampilkan <span class="font-bold text-slate-700">{{ $records->firstItem() }}</span>–<span class="font-bold text-slate-700">{{ $records->lastItem() }}</span> dari <span class="font-bold text-slate-700">{{ $total }}</span> data
             </p>
-            <div class="flex items-center gap-1">
+            <div class="flex items-center gap-1.5">
                 {{-- Prev --}}
                 <button wire:click="previousPage"
                         @disabled($records->onFirstPage())
-                        class="w-9 h-9 flex items-center justify-center border border-slate-200 rounded-lg text-slate-500 hover:bg-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
-                    <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+                        class="w-10 h-10 flex items-center justify-center bg-white border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-teal-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white shadow-sm">
+                    <span class="material-symbols-outlined text-[20px]">chevron_left</span>
                 </button>
 
                 {{-- Page Numbers --}}
                 @foreach($records->getUrlRange(max(1, $records->currentPage() - 2), min($records->lastPage(), $records->currentPage() + 2)) as $page => $url)
                     <button wire:click="gotoPage({{ $page }})"
-                            class="w-9 h-9 flex items-center justify-center rounded-lg text-sm font-semibold transition-colors
+                            class="w-10 h-10 flex items-center justify-center rounded-xl text-sm font-bold transition-all shadow-sm
                                 {{ $page === $records->currentPage()
-                                    ? 'bg-teal-600 text-white shadow-sm'
-                                    : 'border border-slate-200 text-slate-600 hover:bg-white' }}">
+                                    ? 'bg-gradient-to-br from-teal-600 to-emerald-500 text-white border-transparent'
+                                    : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-teal-600' }}">
                         {{ $page }}
                     </button>
                 @endforeach
@@ -421,28 +415,29 @@
                 {{-- Next --}}
                 <button wire:click="nextPage"
                         @disabled($records->currentPage() === $records->lastPage())
-                        class="w-9 h-9 flex items-center justify-center border border-slate-200 rounded-lg text-slate-500 hover:bg-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed">
-                    <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+                        class="w-10 h-10 flex items-center justify-center bg-white border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 hover:text-teal-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white shadow-sm">
+                    <span class="material-symbols-outlined text-[20px]">chevron_right</span>
                 </button>
             </div>
         </div>
         @elseif($records->count() > 0)
-        <div class="px-6 py-4 bg-slate-50 border-t border-slate-200">
-            <p class="text-sm text-slate-500">Menampilkan {{ $total }} data</p>
+        <div class="px-8 py-5 bg-white border-t border-slate-100/60">
+            <p class="text-sm font-medium text-slate-500">Menampilkan total <span class="font-bold text-slate-700">{{ $total }}</span> data</p>
         </div>
         @endif
 
     </section>
     @else
     {{-- Empty State --}}
-    <section class="bg-white rounded-xl border border-slate-200 shadow-sm p-16 text-center">
-        <div class="flex flex-col items-center gap-4 text-slate-400">
-            <div class="w-20 h-20 rounded-2xl bg-teal-50 flex items-center justify-center">
-                <span class="material-symbols-outlined text-[40px] text-teal-400">assessment</span>
+    {{-- Empty State --}}
+    <section class="bg-white rounded-3xl border border-slate-200 shadow-sm p-12 mt-8 text-center">
+        <div class="flex flex-col items-center justify-center gap-4">
+            <div class="w-20 h-20 rounded-2xl bg-teal-50 flex items-center justify-center border border-teal-100 mb-2">
+                <span class="material-symbols-outlined text-[40px] text-teal-500" style="font-variation-settings:'FILL' 1;">analytics</span>
             </div>
             <div>
-                <p class="text-base font-semibold text-slate-600">Pilih periode laporan</p>
-                <p class="text-sm text-slate-400 mt-1">Pilih bulan, tahun, dan posyandu lalu klik <strong>Tampilkan</strong> untuk melihat laporan</p>
+                <h2 class="text-2xl font-black text-slate-800 tracking-tight">Pilih Periode Laporan</h2>
+                <p class="text-sm font-medium text-slate-500 mt-2 max-w-md mx-auto leading-relaxed">Pilih posyandu, bulan, dan tahun pada filter di atas lalu klik <span class="font-bold text-teal-600">Analisis</span> untuk menghasilkan rekap dan laporan detail.</p>
             </div>
         </div>
     </section>
@@ -452,7 +447,6 @@
 
 @push('scripts')
 <script>
-    // Handle file download event from Livewire
     document.addEventListener('livewire:initialized', () => {
         Livewire.on('download-file', (data) => {
             const link = document.createElement('a');
