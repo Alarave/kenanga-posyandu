@@ -84,20 +84,20 @@ class Patient extends Model
     {
         $ageMonths = $this->age_in_months;
         
-        $receivedFromVaccineName = $this->medicalRecords()
-            ->whereNotNull('vaccine_name')
-            ->get()
+        $records = $this->relationLoaded('medicalRecords')
+            ? $this->medicalRecords
+            : $this->medicalRecords()->get();
+
+        $receivedFromVaccineName = $records
+            ->filter(fn($record) => !is_null($record->vaccine_name))
             ->flatMap(function ($record) {
                 return explode(', ', $record->vaccine_name);
             })
             ->unique()
             ->toArray();
 
-        $receivedFromImmunization = $this->medicalRecords()
-            ->whereNotNull('immunization')
-            ->where('immunization', '!=', '')
-            ->where('immunization', '!=', 'Tidak ada')
-            ->get()
+        $receivedFromImmunization = $records
+            ->filter(fn($record) => !is_null($record->immunization) && $record->immunization !== '' && $record->immunization !== 'Tidak ada')
             ->flatMap(function ($record) {
                 $parts = preg_split('/[,;]+/', $record->immunization);
                 $mapped = [];
