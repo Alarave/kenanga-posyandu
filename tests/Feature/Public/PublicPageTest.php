@@ -22,10 +22,12 @@ beforeEach(function () {
         'phone_number' => '081234567890',
     ]);
 
+    $startTime = now()->addDays(7);
     $this->schedule = Schedule::factory()->create([
         'posyandu_id' => $this->posyandu->id,
         'title' => 'Posyandu Rutin',
-        'start_time' => now()->addDays(7),
+        'start_time' => $startTime,
+        'end_time' => $startTime->copy()->addHours(2),
         'status' => 'upcoming',
     ]);
 
@@ -93,9 +95,11 @@ describe('konten halaman beranda', function () {
 
     it('tidak menampilkan lebih dari 3 jadwal terdekat', function () {
         // Create 5 schedules
+        $startTime = now()->addDays(1);
         Schedule::factory()->count(5)->create([
             'posyandu_id' => $this->posyandu->id,
-            'start_time' => now()->addDays(1),
+            'start_time' => $startTime,
+            'end_time' => $startTime->copy()->addHours(2),
             'status' => 'upcoming',
         ]);
 
