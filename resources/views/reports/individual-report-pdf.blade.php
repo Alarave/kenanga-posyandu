@@ -160,7 +160,7 @@
     {{-- KOP SURAT --}}
     <div class="kop">
         <h1 class="kop-title">Posyandu {{ $reportData['patient']['posyandu_name'] }}</h1>
-        <p class="kop-subtitle">Alamat: Dusun Kenanga, Desa Kenanga, Sleman, D.I. Yogyakarta</p>
+        <p class="kop-subtitle">Alamat: Jl P Lombok 1 RW 011 Aren Jaya Bekasi Timur</p>
     </div>
 
     {{-- JUDUL LAPORAN --}}
@@ -184,8 +184,13 @@
         <tr>
             <td class="biodata-label">Tanggal Lahir</td>
             <td class="biodata-value">: {{ $reportData['patient']['birth_date'] }}</td>
-            <td class="biodata-label">Nama Orang Tua (Ibu/Ayah)</td>
-            <td class="biodata-value">: {{ $reportData['patient']['mother_name'] }} / {{ $reportData['patient']['father_name'] }}</td>
+            @if($reportData['patient']['category'] !== 'lansia')
+                <td class="biodata-label">Nama Orang Tua (Ibu/Ayah)</td>
+                <td class="biodata-value">: {{ $reportData['patient']['mother_name'] }} / {{ $reportData['patient']['father_name'] }}</td>
+            @else
+                <td class="biodata-label">No. Telepon</td>
+                <td class="biodata-value">: {{ $reportData['patient']['phone_number'] }}</td>
+            @endif
         </tr>
         <tr>
             <td class="biodata-label">Domisili / Alamat</td>
@@ -263,7 +268,7 @@
         <div class="page-break"></div>
         <div class="kop">
             <h1 class="kop-title">Posyandu {{ $reportData['patient']['posyandu_name'] }}</h1>
-            <p class="kop-subtitle">Alamat: Dusun Kenanga, Desa Kenanga, Sleman, D.I. Yogyakarta</p>
+            <p class="kop-subtitle">Alamat: Jl P Lombok 1 RW 011 Aren Jaya Bekasi Timur</p>
         </div>
         <div class="section-title">Grafik Pertumbuhan Anak (WHO Standard)</div>
         <div class="row">
@@ -282,12 +287,101 @@
         </div>
     @endif
 
+    {{-- GRAFIK (Hanya untuk Lansia) --}}
+    @if($reportData['patient']['category'] === 'lansia')
+        <div class="page-break"></div>
+        <div class="kop">
+            <h1 class="kop-title">Posyandu {{ $reportData['patient']['posyandu_name'] }}</h1>
+            <p class="kop-subtitle">Alamat: Jl P Lombok 1 RW 011 Aren Jaya Bekasi Timur</p>
+        </div>
+        <div class="section-title">Grafik Perkembangan Kesehatan Lansia</div>
+        <div class="row" style="margin-bottom: 10px;">
+            <div class="chart-box" style="width: 48%; float: left; margin-right: 4%;">
+                <div style="font-weight: bold; font-size: 7.5pt; text-align: center; margin-bottom: 4px;">Tren Tekanan Darah (mmHg)</div>
+                <div class="chart-container" style="border: 1px solid #cbd5e1; padding: 5px; height: 160px;">
+                    @if(isset($reportData['svg_charts']['blood_pressure']))
+                        <img src="data:image/svg+xml;base64,{{ base64_encode($reportData['svg_charts']['blood_pressure']) }}" alt="Grafik Tekanan Darah" style="width:100%; height:auto; display:block;" />
+                    @else
+                        <div style="text-align: center; padding-top: 60px; color: #94a3b8; font-size: 8pt; font-style: italic;">Tidak ada data</div>
+                    @endif
+                </div>
+            </div>
+            <div class="chart-box" style="width: 48%; float: left;">
+                <div style="font-weight: bold; font-size: 7.5pt; text-align: center; margin-bottom: 4px;">Tren Gula Darah (mg/dL)</div>
+                <div class="chart-container" style="border: 1px solid #cbd5e1; padding: 5px; height: 160px;">
+                    @if(isset($reportData['svg_charts']['blood_sugar']))
+                        <img src="data:image/svg+xml;base64,{{ base64_encode($reportData['svg_charts']['blood_sugar']) }}" alt="Grafik Gula Darah" style="width:100%; height:auto; display:block;" />
+                    @else
+                        <div style="text-align: center; padding-top: 60px; color: #94a3b8; font-size: 8pt; font-style: italic;">Tidak ada data</div>
+                    @endif
+                </div>
+            </div>
+        </div>
+        <div style="clear: both; height: 15px;"></div>
+        <div class="row">
+            <div class="chart-box" style="width: 48%; float: left; margin-right: 4%;">
+                <div style="font-weight: bold; font-size: 7.5pt; text-align: center; margin-bottom: 4px;">Tren Asam Urat (mg/dL)</div>
+                <div class="chart-container" style="border: 1px solid #cbd5e1; padding: 5px; height: 160px;">
+                    @if(isset($reportData['svg_charts']['uric_acid']))
+                        <img src="data:image/svg+xml;base64,{{ base64_encode($reportData['svg_charts']['uric_acid']) }}" alt="Grafik Asam Urat" style="width:100%; height:auto; display:block;" />
+                    @else
+                        <div style="text-align: center; padding-top: 60px; color: #94a3b8; font-size: 8pt; font-style: italic;">Tidak ada data</div>
+                    @endif
+                </div>
+            </div>
+            <div class="chart-box" style="width: 48%; float: left;">
+                <div style="font-weight: bold; font-size: 7.5pt; text-align: center; margin-bottom: 4px;">Tren Kolesterol (mg/dL)</div>
+                <div class="chart-container" style="border: 1px solid #cbd5e1; padding: 5px; height: 160px;">
+                    @if(isset($reportData['svg_charts']['cholesterol']))
+                        <img src="data:image/svg+xml;base64,{{ base64_encode($reportData['svg_charts']['cholesterol']) }}" alt="Grafik Kolesterol" style="width:100%; height:auto; display:block;" />
+                    @else
+                        <div style="text-align: center; padding-top: 60px; color: #94a3b8; font-size: 8pt; font-style: italic;">Tidak ada data</div>
+                    @endif
+                </div>
+            </div>
+        </div>
+        <div style="clear: both; height: 30px;"></div>
+    @endif
+
+    {{-- GRAFIK (Hanya untuk Ibu Hamil) --}}
+    @if($reportData['patient']['category'] === 'ibu_hamil')
+        <div class="page-break"></div>
+        <div class="kop">
+            <h1 class="kop-title">Posyandu {{ $reportData['patient']['posyandu_name'] }}</h1>
+            <p class="kop-subtitle">Alamat: Jl P Lombok 1 RW 011 Aren Jaya Bekasi Timur</p>
+        </div>
+        <div class="section-title">Grafik Pemantauan Kesehatan Ibu Hamil</div>
+        <div class="row" style="margin-bottom: 10px;">
+            <div class="chart-box" style="width: 48%; float: left; margin-right: 4%;">
+                <div style="font-weight: bold; font-size: 7.5pt; text-align: center; margin-bottom: 4px;">Peningkatan Berat Badan Ibu Hamil (Gestational Weight Gain)</div>
+                <div class="chart-container" style="border: 1px solid #cbd5e1; padding: 5px; height: 160px;">
+                    @if(isset($reportData['svg_charts']['weight_gain']))
+                        <img src="data:image/svg+xml;base64,{{ base64_encode($reportData['svg_charts']['weight_gain']) }}" alt="Grafik Peningkatan Berat Badan" style="width:100%; height:auto; display:block;" />
+                    @else
+                        <div style="text-align: center; padding-top: 60px; color: #94a3b8; font-size: 8pt; font-style: italic;">Tidak ada data</div>
+                    @endif
+                </div>
+            </div>
+            <div class="chart-box" style="width: 48%; float: left;">
+                <div style="font-weight: bold; font-size: 7.5pt; text-align: center; margin-bottom: 4px;">Lingkar Lengan Atas (LiLA) - Skrining KEK</div>
+                <div class="chart-container" style="border: 1px solid #cbd5e1; padding: 5px; height: 160px;">
+                    @if(isset($reportData['svg_charts']['lila']))
+                        <img src="data:image/svg+xml;base64,{{ base64_encode($reportData['svg_charts']['lila']) }}" alt="Grafik LiLA" style="width:100%; height:auto; display:block;" />
+                    @else
+                        <div style="text-align: center; padding-top: 60px; color: #94a3b8; font-size: 8pt; font-style: italic;">Tidak ada data</div>
+                    @endif
+                </div>
+            </div>
+        </div>
+        <div style="clear: both; height: 30px;"></div>
+    @endif
+
     {{-- PAGE BREAK FOR DETAILS (If Balita and has immunization cards, break page so it fits cleanly) --}}
     @if(in_array($reportData['patient']['category'], ['bayi', 'baduta', 'balita']))
         <div class="page-break"></div>
         <div class="kop">
             <h1 class="kop-title">Posyandu {{ $reportData['patient']['posyandu_name'] }}</h1>
-            <p class="kop-subtitle">Alamat: Dusun Kenanga, Desa Kenanga, Sleman, D.I. Yogyakarta</p>
+            <p class="kop-subtitle">Alamat: Jl P Lombok 1 RW 011 Aren Jaya Bekasi Timur</p>
         </div>
         <div class="title">Kartu Imunisasi & Riwayat Vitamin</div>
         

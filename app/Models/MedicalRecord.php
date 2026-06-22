@@ -107,6 +107,17 @@ class MedicalRecord extends Model
     ];
 
     /**
+     * Get blood pressure formatted as systolic/diastolic.
+     */
+    public function getBloodPressureAttribute()
+    {
+        if ($this->systolic_bp && $this->diastolic_bp) {
+            return $this->systolic_bp . '/' . $this->diastolic_bp;
+        }
+        return $this->attributes['blood_pressure'] ?? null;
+    }
+
+    /**
      * Relationship with Patient
      */
     public function patient()

@@ -153,7 +153,7 @@
                     </div>
 
                     {{-- Identity & Birth History --}}
-                    <div class="md:col-span-12 grid grid-cols-1 md:grid-cols-4 gap-6 pt-10 mt-2 border-t border-slate-100/60">
+                    <div x-show="['bayi', 'baduta', 'balita', 'anak_sekolah'].includes(category)" class="md:col-span-12 grid grid-cols-1 md:grid-cols-4 gap-6 pt-10 mt-2 border-t border-slate-100/60">
                         <div class="space-y-3">
                             <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Nama Ayah</label>
                             <input type="text" name="father_name" value="{{ old('father_name', $record->patient->father_name) }}" placeholder="Nama ayah..."

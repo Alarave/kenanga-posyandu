@@ -90,69 +90,80 @@
 
     {{-- ── Stats Cards ── --}}
     @if($reportGenerated)
-    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
 
         {{-- Total Kunjungan --}}
-        <div class="group bg-white rounded-3xl border border-slate-100 p-6 shadow-[0_4px_20px_-8px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-8px_rgba(13,148,136,0.15)] transition-all duration-300 relative overflow-hidden">
-            <div class="absolute -right-6 -top-6 w-32 h-32 bg-teal-50 rounded-full blur-2xl group-hover:bg-teal-100 transition-colors"></div>
-            <div class="flex justify-between items-start mb-6 relative">
-                <div class="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-teal-50 to-emerald-50 rounded-2xl text-teal-600 shadow-sm border border-teal-100/50">
+        <div class="group bg-white rounded-[2rem] border border-slate-200 p-6 shadow-sm transition-all duration-300 relative overflow-hidden">
+            <div class="flex justify-between items-start mb-6">
+                <div class="w-12 h-12 flex items-center justify-center border border-teal-200 rounded-full text-teal-600 bg-teal-50/30">
                     <span class="material-symbols-outlined text-[24px]">group</span>
                 </div>
-                <span class="text-[10px] font-black text-teal-600 bg-teal-50 border border-teal-100 px-3 py-1.5 rounded-full uppercase tracking-wider">Bulan Ini</span>
+                <span class="text-[9px] font-black text-teal-600 bg-teal-50/50 border border-teal-200 px-3 py-1 rounded-full uppercase tracking-wider">Bulan Ini</span>
             </div>
-            <div class="relative">
+            <div>
                 <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Total Kunjungan</p>
-                <h3 class="text-4xl font-black text-slate-800 mt-2 mb-1 tracking-tight">{{ $totalKunjungan }}</h3>
-                <p class="text-[11px] text-slate-400 font-medium">{{ $periodLabel }}</p>
+                <h3 class="text-4xl font-black text-slate-900 mt-2 mb-1 tracking-tight">{{ $totalKunjungan }}</h3>
+                <p class="text-[11px] text-slate-400 font-semibold mt-1">{{ $periodLabel }}</p>
             </div>
         </div>
 
         {{-- Balita Stunting --}}
-        <div class="group bg-white rounded-3xl border border-slate-100 p-6 shadow-[0_4px_20px_-8px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-8px_rgba(244,63,94,0.15)] transition-all duration-300 relative overflow-hidden">
-            <div class="absolute -right-6 -top-6 w-32 h-32 bg-rose-50 rounded-full blur-2xl group-hover:bg-rose-100 transition-colors"></div>
-            <div class="flex justify-between items-start mb-6 relative">
-                <div class="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-rose-50 to-red-50 rounded-2xl text-rose-500 shadow-sm border border-rose-100/50">
+        <div class="group bg-white rounded-[2rem] border border-slate-200 p-6 shadow-sm transition-all duration-300 relative overflow-hidden">
+            <div class="flex justify-between items-start mb-6">
+                <div class="w-12 h-12 flex items-center justify-center border border-rose-200 rounded-full text-rose-500 bg-rose-50/30">
                     <span class="material-symbols-outlined text-[24px]" style="font-variation-settings:'FILL' 1;">warning</span>
                 </div>
-                <span class="text-[10px] font-black text-rose-600 bg-rose-50 border border-rose-100 px-3 py-1.5 rounded-full uppercase tracking-wider animate-pulse">Perhatian</span>
+                <span class="text-[9px] font-black text-rose-600 bg-rose-50/50 border border-rose-200 px-3 py-1 rounded-full uppercase tracking-wider">Perhatian</span>
             </div>
-            <div class="relative">
+            <div>
                 <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Balita Stunting</p>
-                <h3 class="text-4xl font-black text-slate-800 mt-2 mb-1 tracking-tight">{{ $balitaStunting }}</h3>
-                <p class="text-[11px] text-slate-400 font-medium">Ditemukan bulan ini</p>
+                <h3 class="text-4xl font-black text-slate-900 mt-2 mb-1 tracking-tight">{{ $balitaStunting }}</h3>
+                <p class="text-[11px] text-slate-400 font-semibold mt-1">Ditemukan bulan ini</p>
             </div>
         </div>
 
         {{-- Ibu Hamil --}}
-        <div class="group bg-white rounded-3xl border border-slate-100 p-6 shadow-[0_4px_20px_-8px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-8px_rgba(59,130,246,0.15)] transition-all duration-300 relative overflow-hidden">
-            <div class="absolute -right-6 -top-6 w-32 h-32 bg-blue-50 rounded-full blur-2xl group-hover:bg-blue-100 transition-colors"></div>
-            <div class="flex justify-between items-start mb-6 relative">
-                <div class="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl text-blue-500 shadow-sm border border-blue-100/50">
-                    <span class="material-symbols-outlined text-[24px]">pregnant_woman</span>
+        <div class="group bg-white rounded-[2rem] border border-slate-200 p-6 shadow-sm transition-all duration-300 relative overflow-hidden">
+            <div class="flex justify-between items-start mb-6">
+                <div class="w-12 h-12 flex items-center justify-center border border-blue-200 rounded-full text-blue-600 bg-blue-50/30">
+                    <span class="material-symbols-outlined text-[24px]">female</span>
                 </div>
-                <span class="text-[10px] font-black text-blue-600 bg-blue-50 border border-blue-100 px-3 py-1.5 rounded-full uppercase tracking-wider">Terdaftar</span>
+                <span class="text-[9px] font-black text-blue-600 bg-blue-50/50 border border-blue-200 px-3 py-1 rounded-full uppercase tracking-wider">Terdaftar</span>
             </div>
-            <div class="relative">
+            <div>
                 <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Ibu Hamil</p>
-                <h3 class="text-4xl font-black text-slate-800 mt-2 mb-1 tracking-tight">{{ $totalIbuHamil }}</h3>
-                <p class="text-[11px] text-slate-400 font-medium">Terdaftar aktif</p>
+                <h3 class="text-4xl font-black text-slate-900 mt-2 mb-1 tracking-tight">{{ $totalIbuHamil }}</h3>
+                <p class="text-[11px] text-slate-400 font-semibold mt-1">Terdaftar aktif</p>
             </div>
         </div>
 
         {{-- Cakupan Vitamin A --}}
-        <div class="group bg-white rounded-3xl border border-slate-100 p-6 shadow-[0_4px_20px_-8px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-8px_rgba(245,158,11,0.15)] transition-all duration-300 relative overflow-hidden">
-            <div class="absolute -right-6 -top-6 w-32 h-32 bg-amber-50 rounded-full blur-2xl group-hover:bg-amber-100 transition-colors"></div>
-            <div class="flex justify-between items-start mb-6 relative">
-                <div class="w-12 h-12 flex items-center justify-center bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl text-amber-500 shadow-sm border border-amber-100/50">
+        <div class="group bg-white rounded-[2rem] border border-slate-200 p-6 shadow-sm transition-all duration-300 relative overflow-hidden">
+            <div class="flex justify-between items-start mb-6">
+                <div class="w-12 h-12 flex items-center justify-center border border-amber-200 rounded-full text-amber-500 bg-amber-50/30">
                     <span class="material-symbols-outlined text-[24px]">medication</span>
                 </div>
-                <span class="text-[10px] font-black text-amber-600 bg-amber-50 border border-amber-100 px-3 py-1.5 rounded-full uppercase tracking-wider">Target: 95%</span>
+                <span class="text-[9px] font-black text-amber-600 bg-amber-50/50 border border-amber-200 px-3 py-1 rounded-full uppercase tracking-wider">Target: 95%</span>
             </div>
-            <div class="relative">
+            <div>
                 <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Cakupan Vitamin A</p>
-                <h3 class="text-4xl font-black text-slate-800 mt-2 mb-1 tracking-tight">{{ $cakupanVitaminA }}%</h3>
-                <p class="text-[11px] text-slate-400 font-medium">Capaian posyandu</p>
+                <h3 class="text-4xl font-black text-slate-900 mt-2 mb-1 tracking-tight">{{ $cakupanVitaminA }}%</h3>
+                <p class="text-[11px] text-slate-400 font-semibold mt-1">Capaian posyandu</p>
+            </div>
+        </div>
+
+        {{-- Lansia --}}
+        <div class="group bg-white rounded-[2rem] border border-slate-200 p-6 shadow-sm transition-all duration-300 relative overflow-hidden">
+            <div class="flex justify-between items-start mb-6">
+                <div class="w-12 h-12 flex items-center justify-center border border-indigo-200 rounded-full text-indigo-600 bg-indigo-50/30">
+                    <span class="material-symbols-outlined text-[24px]">elderly</span>
+                </div>
+                <span class="text-[9px] font-black text-indigo-600 bg-indigo-50/50 border border-indigo-200 px-3 py-1 rounded-full uppercase tracking-wider">Terdaftar</span>
+            </div>
+            <div>
+                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-widest">Lansia</p>
+                <h3 class="text-4xl font-black text-slate-900 mt-2 mb-1 tracking-tight">{{ $totalLansia }}</h3>
+                <p class="text-[11px] text-slate-400 font-semibold mt-1">Terdaftar aktif</p>
             </div>
         </div>
 
@@ -361,7 +372,7 @@
                             </div>
                         </td>
                         <td class="px-8 py-5 text-center">
-                            <a href="{{ route('admin.reports.individual', ['patient' => $record->patient_id, 'start_month' => $selectedMonth, 'start_year' => $selectedYear, 'end_month' => $selectedMonth, 'end_year' => $selectedYear]) }}"
+                            <a href="{{ route('admin.reports.individual', ['patient' => $record->patient_id, 'start_month' => $startMonth, 'start_year' => $startYear, 'end_month' => $endMonth, 'end_year' => $endYear]) }}"
                                class="inline-flex items-center justify-center rounded-xl bg-white border border-slate-200 shadow-sm px-4 py-2.5 text-xs font-black text-slate-700 hover:bg-teal-50 hover:text-teal-700 hover:border-teal-200 active:scale-95 transition-all">
                                 <span class="material-symbols-outlined text-[18px]">assignment_ind</span>
                                 <span class="ml-1.5">Rapor</span>

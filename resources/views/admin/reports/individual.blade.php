@@ -167,6 +167,7 @@
                 </h4>
                 
                 <div class="space-y-4">
+                    @if($cat !== 'lansia')
                     <div class="flex justify-between items-center py-2 border-b border-slate-50/80">
                         <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Nama Ibu</span>
                         <span class="text-sm font-bold text-slate-700 text-right">{{ $patient['mother_name'] }}</span>
@@ -175,6 +176,7 @@
                         <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Nama Ayah</span>
                         <span class="text-sm font-bold text-slate-700 text-right">{{ $patient['father_name'] }}</span>
                     </div>
+                    @endif
                     <div class="flex justify-between items-center py-2 border-b border-slate-50/80">
                         <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">No. Telp</span>
                         <span class="text-sm font-bold text-slate-700 font-mono">{{ $patient['phone_number'] }}</span>
@@ -261,6 +263,102 @@
             </div>
             @endif
 
+            {{-- 3.1.b Grafik Kesehatan Lansia (Hanya untuk Lansia) --}}
+            @if($cat === 'lansia')
+            <div class="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.05)] p-8 relative overflow-hidden">
+                <div class="flex items-center justify-between mb-8">
+                    <div>
+                        <h3 class="text-sm font-black text-slate-800 tracking-tight flex items-center gap-2">
+                            <span class="material-symbols-outlined text-amber-500 bg-amber-50 p-2 rounded-xl">monitoring</span>
+                            Visualisasi Grafik Faktor Risiko Metabolik
+                        </h3>
+                        <p class="text-[11px] font-medium text-slate-400 mt-1 ml-11">Tren parameter tensi, gula darah, asam urat, dan kolesterol periode ini.</p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {{-- Tensi Chart --}}
+                    <div class="bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="w-2 h-2 rounded-full bg-red-500"></span>
+                            <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Tekanan Darah (mmHg)</span>
+                        </div>
+                        <div class="h-56 w-full relative">
+                            <canvas id="tensiChartCanvas"></canvas>
+                        </div>
+                    </div>
+                    {{-- Gula Darah Chart --}}
+                    <div class="bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
+                            <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Gula Darah (mg/dL)</span>
+                        </div>
+                        <div class="h-56 w-full relative">
+                            <canvas id="sugarChartCanvas"></canvas>
+                        </div>
+                    </div>
+                    {{-- Asam Urat Chart --}}
+                    <div class="bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="w-2 h-2 rounded-full bg-purple-500"></span>
+                            <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Asam Urat (mg/dL)</span>
+                        </div>
+                        <div class="h-56 w-full relative">
+                            <canvas id="uricChartCanvas"></canvas>
+                        </div>
+                    </div>
+                    {{-- Kolesterol Chart --}}
+                    <div class="bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                            <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Kolesterol (mg/dL)</span>
+                        </div>
+                        <div class="h-56 w-full relative">
+                            <canvas id="cholesterolChartCanvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
+
+            {{-- 3.1.c Grafik Pemantauan Ibu Hamil (Hanya untuk Ibu Hamil) --}}
+            @if($cat === 'ibu_hamil')
+            <div class="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.05)] p-8 relative overflow-hidden">
+                <div class="flex items-center justify-between mb-8">
+                    <div>
+                        <h3 class="text-sm font-black text-slate-800 tracking-tight flex items-center gap-2">
+                            <span class="material-symbols-outlined text-rose-500 bg-rose-50 p-2 rounded-xl">monitoring</span>
+                            Visualisasi Grafik Pemantauan Ibu Hamil
+                        </h3>
+                        <p class="text-[11px] font-medium text-slate-400 mt-1 ml-11">Tren peningkatan berat badan dan lingkar lengan atas (LiLA) KEK periode ini.</p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {{-- Gestational Weight Gain Chart --}}
+                    <div class="bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="w-2 h-2 rounded-full bg-pink-500"></span>
+                            <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Peningkatan Berat Badan (kg)</span>
+                        </div>
+                        <div class="h-56 w-full relative">
+                            <canvas id="gwgChartCanvas"></canvas>
+                        </div>
+                    </div>
+                    {{-- LiLA Chart --}}
+                    <div class="bg-slate-50/50 p-4 rounded-2xl border border-slate-100">
+                        <div class="flex items-center gap-2 mb-4">
+                            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                            <span class="text-[10px] font-black text-slate-500 uppercase tracking-widest">Lingkar Lengan Atas / LiLA (cm)</span>
+                        </div>
+                        <div class="h-56 w-full relative">
+                            <canvas id="lilaChartCanvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
+
             {{-- 3.2. Tabel Detail Pengukuran Bulanan --}}
             <div class="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col">
                 <div class="px-8 py-6 border-b border-slate-100 bg-slate-50/30">
@@ -281,6 +379,9 @@
                                 @if(in_array($cat, ['bayi', 'baduta', 'balita']))
                                     <th class="px-5 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">LILA / LK</th>
                                     <th class="px-5 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Status Gizi</th>
+                                @elseif($cat === 'lansia')
+                                    <th class="px-5 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Tensi / Gula / Urat / Kol</th>
+                                    <th class="px-5 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Catatan</th>
                                 @else
                                     <th class="px-5 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Tensi / Gula</th>
                                     <th class="px-5 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Catatan</th>
@@ -317,6 +418,14 @@
                                                 @endphp
                                                 <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider {{ $badge }}">{{ $st ?? '-' }}</span>
                                             </td>
+                                        @elseif($cat === 'lansia')
+                                            <td class="px-5 py-4 text-sm font-medium text-slate-500">
+                                                {{ $record['blood_pressure'] ?? '-' }} / 
+                                                {{ $record['blood_sugar'] ?? '-' }} / 
+                                                {{ $record['uric_acid'] ?? '-' }} / 
+                                                {{ $record['cholesterol'] ?? '-' }}
+                                            </td>
+                                            <td class="px-5 py-4 text-sm text-slate-500 max-w-xs truncate">{{ $record['health_note'] ?? $record['complaint'] ?? '-' }}</td>
                                         @else
                                             <td class="px-5 py-4 text-sm font-medium text-slate-500">
                                                 {{ $record['blood_pressure'] ?? '-' }} / {{ $record['blood_sugar'] ?? '-' }}
@@ -336,6 +445,7 @@
             </div>
 
             {{-- 3.3. Imunisasi & Vitamin A --}}
+            @if($cat !== 'lansia')
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 
                 {{-- Riwayat Vitamin --}}
@@ -399,6 +509,7 @@
                 </div>
 
             </div>
+            @endif
 
         </div>
 
@@ -457,20 +568,25 @@
 </script>
 
 {{-- Chart.js Rendering (browser only) --}}
-@if(in_array($cat, ['bayi', 'baduta', 'balita']))
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         if (typeof Chart === 'undefined') return;
 
         const records = @json($reportData['raw_records']);
+        const category = "{{ $cat }}";
         
         // Sort ascending by date
         records.sort((a, b) => new Date(a.visit_date) - new Date(b.visit_date));
 
         const labels = records.map(r => {
+            if (!r.visit_date) return '';
             const d = new Date(r.visit_date);
-            return d.toLocaleDateString('id-ID', { month: 'short', year: '2-digit' });
+            const dateStr = d.toLocaleDateString('id-ID', { month: 'short', year: '2-digit' });
+            if (category === 'ibu_hamil' && r.gestational_age) {
+                return [r.gestational_age, dateStr];
+            }
+            return dateStr;
         });
 
         // Common Chart Options
@@ -503,67 +619,322 @@
             interaction: { mode: 'index', intersect: false }
         };
 
-        // 1. Weight Chart
-        const weightData = records.map(r => parseFloat(r.weight) || null);
-        new Chart(document.getElementById('weightChartCanvas'), {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Berat Badan (kg)',
-                    data: weightData,
-                    borderColor: '#14b8a6', // teal-500
-                    backgroundColor: 'rgba(20, 184, 166, 0.1)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#fff',
-                    pointBorderColor: '#14b8a6',
-                    pointBorderWidth: 2,
-                    pointHoverRadius: 6,
-                }]
-            },
-            options: {
-                ...commonOptions,
-                scales: {
-                    ...commonOptions.scales,
-                    y: { ...commonOptions.scales.y, suggestedMin: 0 }
-                }
+        if (['bayi', 'baduta', 'balita'].includes(category)) {
+            // 1. Weight Chart
+            const weightData = records.map(r => parseFloat(r.weight) || null);
+            const wCanvas = document.getElementById('weightChartCanvas');
+            if (wCanvas) {
+                new Chart(wCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Berat Badan (kg)',
+                            data: weightData,
+                            borderColor: '#14b8a6',
+                            backgroundColor: 'rgba(20, 184, 166, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#14b8a6',
+                            pointBorderWidth: 2,
+                            pointHoverRadius: 6,
+                        }]
+                    },
+                    options: {
+                        ...commonOptions,
+                        scales: {
+                            ...commonOptions.scales,
+                            y: { ...commonOptions.scales.y, suggestedMin: 0 }
+                        }
+                    }
+                });
             }
-        });
 
-        // 2. Height Chart
-        const heightData = records.map(r => parseFloat(r.height) || null);
-        new Chart(document.getElementById('heightChartCanvas'), {
-            type: 'line',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: 'Tinggi Badan (cm)',
-                    data: heightData,
-                    borderColor: '#3b82f6', // blue-500
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                    borderWidth: 3,
-                    fill: true,
-                    tension: 0.4,
-                    pointRadius: 4,
-                    pointBackgroundColor: '#fff',
-                    pointBorderColor: '#3b82f6',
-                    pointBorderWidth: 2,
-                    pointHoverRadius: 6,
-                }]
-            },
-            options: {
-                ...commonOptions,
-                scales: {
-                    ...commonOptions.scales,
-                    y: { ...commonOptions.scales.y, suggestedMin: 40 }
-                }
+            // 2. Height Chart
+            const heightData = records.map(r => parseFloat(r.height) || null);
+            const hCanvas = document.getElementById('heightChartCanvas');
+            if (hCanvas) {
+                new Chart(hCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Tinggi Badan (cm)',
+                            data: heightData,
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#3b82f6',
+                            pointBorderWidth: 2,
+                            pointHoverRadius: 6,
+                        }]
+                    },
+                    options: {
+                        ...commonOptions,
+                        scales: {
+                            ...commonOptions.scales,
+                            y: { ...commonOptions.scales.y, suggestedMin: 40 }
+                        }
+                    }
+                });
             }
-        });
+        } else if (category === 'lansia') {
+            // 1. Tensi Chart (Blood Pressure: Systolic & Diastolic)
+            const tensiCanvas = document.getElementById('tensiChartCanvas');
+            if (tensiCanvas) {
+                const sysData = records.map(r => parseInt(r.systolic_bp) || null);
+                const diaData = records.map(r => parseInt(r.diastolic_bp) || null);
+                new Chart(tensiCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'Sistolik (mmHg)',
+                                data: sysData,
+                                borderColor: '#ef4444',
+                                backgroundColor: 'rgba(239, 68, 68, 0.05)',
+                                borderWidth: 3,
+                                fill: true,
+                                tension: 0.4,
+                                pointRadius: 4,
+                                pointBackgroundColor: '#fff',
+                                pointBorderColor: '#ef4444',
+                                pointBorderWidth: 2,
+                            },
+                            {
+                                label: 'Diastolik (mmHg)',
+                                data: diaData,
+                                borderColor: '#3b82f6',
+                                backgroundColor: 'rgba(59, 130, 246, 0.05)',
+                                borderWidth: 3,
+                                fill: true,
+                                tension: 0.4,
+                                pointRadius: 4,
+                                pointBackgroundColor: '#fff',
+                                pointBorderColor: '#3b82f6',
+                                pointBorderWidth: 2,
+                            }
+                        ]
+                    },
+                    options: {
+                        ...commonOptions,
+                        plugins: {
+                            ...commonOptions.plugins,
+                            legend: { display: true }
+                        },
+                        scales: {
+                            ...commonOptions.scales,
+                            y: { ...commonOptions.scales.y, suggestedMin: 50, suggestedMax: 150 }
+                        }
+                    }
+                });
+            }
+
+            // 2. Gula Darah Chart
+            const sugarCanvas = document.getElementById('sugarChartCanvas');
+            if (sugarCanvas) {
+                const sugarData = records.map(r => parseInt(r.blood_sugar) || null);
+                new Chart(sugarCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Gula Darah (mg/dL)',
+                            data: sugarData,
+                            borderColor: '#eab308',
+                            backgroundColor: 'rgba(234, 179, 8, 0.05)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#eab308',
+                            pointBorderWidth: 2,
+                        }]
+                    },
+                    options: {
+                        ...commonOptions,
+                        scales: {
+                            ...commonOptions.scales,
+                            y: { ...commonOptions.scales.y, suggestedMin: 70, suggestedMax: 200 }
+                        }
+                    }
+                });
+            }
+
+            // 3. Asam Urat Chart
+            const uricCanvas = document.getElementById('uricChartCanvas');
+            if (uricCanvas) {
+                const uricData = records.map(r => parseFloat(r.uric_acid) || null);
+                new Chart(uricCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Asam Urat (mg/dL)',
+                            data: uricData,
+                            borderColor: '#8b5cf6',
+                            backgroundColor: 'rgba(139, 92, 246, 0.05)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#8b5cf6',
+                            pointBorderWidth: 2,
+                        }]
+                    },
+                    options: {
+                        ...commonOptions,
+                        scales: {
+                            ...commonOptions.scales,
+                            y: { ...commonOptions.scales.y, suggestedMin: 2, suggestedMax: 10 }
+                        }
+                    }
+                });
+            }
+
+            // 4. Kolesterol Chart
+            const cholCanvas = document.getElementById('cholesterolChartCanvas');
+            if (cholCanvas) {
+                const cholData = records.map(r => parseInt(r.cholesterol) || null);
+                new Chart(cholCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Kolesterol (mg/dL)',
+                            data: cholData,
+                            borderColor: '#3b82f6',
+                            backgroundColor: 'rgba(59, 130, 246, 0.05)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#3b82f6',
+                            pointBorderWidth: 2,
+                        }]
+                    },
+                    options: {
+                        ...commonOptions,
+                        scales: {
+                            ...commonOptions.scales,
+                            y: { ...commonOptions.scales.y, suggestedMin: 100, suggestedMax: 250 }
+                        }
+                    }
+                });
+            }
+        } else if (category === 'ibu_hamil') {
+            // 1. Gestational Weight Gain Chart
+            const gwgCanvas = document.getElementById('gwgChartCanvas');
+            if (gwgCanvas) {
+                // Find starting weight
+                let startingWeight = null;
+                for (const r of records) {
+                    if (parseFloat(r.starting_weight) > 0) {
+                        startingWeight = parseFloat(r.starting_weight);
+                        break;
+                    }
+                }
+                if (!startingWeight && records.length > 0) {
+                    startingWeight = parseFloat(records[0].weight) || 0;
+                }
+
+                const gwgData = records.map(r => {
+                    const w = parseFloat(r.weight);
+                    if (!w) return null;
+                    const startW = parseFloat(r.starting_weight) || startingWeight;
+                    return Math.max(0, w - startW);
+                });
+
+                new Chart(gwgCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Peningkatan Berat (kg)',
+                            data: gwgData,
+                            borderColor: '#ec4899',
+                            backgroundColor: 'rgba(236, 72, 153, 0.05)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#ec4899',
+                            pointBorderWidth: 2,
+                            pointHoverRadius: 6,
+                        }]
+                    },
+                    options: {
+                        ...commonOptions,
+                        scales: {
+                            ...commonOptions.scales,
+                            y: { ...commonOptions.scales.y, suggestedMin: 0, suggestedMax: 10 }
+                        }
+                    }
+                });
+            }
+
+            // 2. LiLA Chart
+            const lilaCanvas = document.getElementById('lilaChartCanvas');
+            if (lilaCanvas) {
+                const lilaData = records.map(r => parseFloat(r.upper_arm_circumference) || null);
+                new Chart(lilaCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'LiLA (cm)',
+                                data: lilaData,
+                                borderColor: '#6366f1',
+                                backgroundColor: 'rgba(99, 102, 241, 0.05)',
+                                borderWidth: 3,
+                                fill: true,
+                                tension: 0.4,
+                                pointRadius: 4,
+                                pointBackgroundColor: '#fff',
+                                pointBorderColor: '#6366f1',
+                                pointBorderWidth: 2,
+                                pointHoverRadius: 6,
+                            },
+                            {
+                                label: 'Batas KEK (23.5 cm)',
+                                data: records.map(() => 23.5),
+                                borderColor: '#ef4444',
+                                borderWidth: 1.5,
+                                borderDash: [5, 5],
+                                fill: false,
+                                pointRadius: 0,
+                                pointHoverRadius: 0,
+                            }
+                        ]
+                    },
+                    options: {
+                        ...commonOptions,
+                        plugins: {
+                            ...commonOptions.plugins,
+                            legend: { display: true }
+                        },
+                        scales: {
+                            ...commonOptions.scales,
+                            y: { ...commonOptions.scales.y, suggestedMin: 20, suggestedMax: 30 }
+                        }
+                    }
+                });
+            }
+        }
     });
 </script>
 @endpush
-@endif
 @endsection

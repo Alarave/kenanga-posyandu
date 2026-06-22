@@ -837,22 +837,6 @@
                             <p class="text-xs text-rose-500 mt-1 font-semibold">{{ $message }}</p>
                         @enderror
                     </div>
-                    <div class="space-y-2">
-                        <label class="text-xs font-bold text-slate-600">Nama Ayah Kandung</label>
-                        <input type="text" name="father_name" value="{{ old('father_name') }}" placeholder=""
-                               class="w-full h-[44px] px-4 border @error('father_name') border-rose-500 bg-rose-50/20 @else border-[#D9D9D9] @enderror rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:border-[#006C49] focus:ring-4 focus:ring-[#006C49]/5 transition-all bg-white">
-                        @error('father_name')
-                            <p class="text-xs text-rose-500 mt-1 font-semibold">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-xs font-bold text-slate-600">Nama Ibu Kandung</label>
-                        <input type="text" name="mother_name" value="{{ old('mother_name') }}" placeholder=""
-                               class="w-full h-[44px] px-4 border @error('mother_name') border-rose-500 bg-rose-50/20 @else border-[#D9D9D9] @enderror rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:border-[#006C49] focus:ring-4 focus:ring-[#006C49]/5 transition-all bg-white">
-                        @error('mother_name')
-                            <p class="text-xs text-rose-500 mt-1 font-semibold">{{ $message }}</p>
-                        @enderror
-                    </div>
                 </div>
             </div>
 

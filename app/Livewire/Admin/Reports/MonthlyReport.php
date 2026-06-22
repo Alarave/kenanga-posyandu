@@ -40,6 +40,8 @@ class MonthlyReport extends BaseAdminComponent
 
     public int $totalIbuHamil = 0;
 
+    public int $totalLansia = 0;
+
     public float $cakupanVitaminA = 0;
 
     public function mount(): void
@@ -62,6 +64,9 @@ class MonthlyReport extends BaseAdminComponent
         
         $this->startPeriod = sprintf('%04d-%02d', $this->startYear, $this->startMonth);
         $this->endPeriod = sprintf('%04d-%02d', $this->endYear, $this->endMonth);
+
+        $this->reportGenerated = true;
+        $this->loadStats();
     }
 
     public function updatedStartPeriod($value)
@@ -117,6 +122,7 @@ class MonthlyReport extends BaseAdminComponent
             ->count();
 
         $this->totalIbuHamil = (clone $basePatientQuery)->where('category', 'ibu_hamil')->count();
+        $this->totalLansia = (clone $basePatientQuery)->where('category', 'lansia')->count();
 
         $totalBalitaKunjungan = (clone $baseRecordQuery)
             ->whereHas('patient', fn ($q) => $q->where('category', 'balita'))
