@@ -42,10 +42,10 @@
                 [
                     'label' => 'Email Resmi',
                     'desc' => 'Kirim surat resmi atau proposal kerjasama.',
-                    'val' => 'kontak@posyandu.test',
+                    'val' => 'posyanduilp_kenanga1@gmail.com',
                     'icon' => 'fas fa-envelope-open-text',
                     'color' => 'bg-primary',
-                    'link' => 'mailto:kontak@posyandu.test'
+                    'link' => 'mailto:posyanduilp_kenanga1@gmail.com'
                 ],
                 [
                     'label' => 'Instagram',

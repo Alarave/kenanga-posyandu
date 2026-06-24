@@ -77,8 +77,8 @@
     </div>
 
     {{-- 2. FOTO SAMPUL --}}
-    <div class="mb-10">
-        <div class="relative w-full aspect-[21/9] rounded-2xl overflow-hidden border-2 cursor-pointer transition-all group"
+        <div class="mb-10">
+            <div class="relative w-full max-w-[360px] aspect-video rounded-2xl overflow-hidden border-2 cursor-pointer transition-all group"
              :class="coverPreview ? 'border-transparent shadow-xl' : 'border-dashed border-slate-300 bg-white hover:border-indigo-400 hover:bg-indigo-50/20'"
              @click="$refs.lwCoverInput.click()">
             <img x-show="coverPreview" :src="coverPreview"
@@ -286,8 +286,7 @@
                      @keydown.backspace.prevent="removeBlock(index)"
                      @focus="focusedIndex = index">
                     <figure class="rounded-2xl overflow-hidden shadow-lg w-full">
-                        <img<img :src="block.src"class=" w-full
- max-w-full h-auto object-contain block"> class="w-full h-auto block object-cover" alt="">
+                        <img :src="block.src" class="w-full h-auto block object-cover" alt="">
                     </figure>
                     <input type="text" x-model="block.caption"
                            placeholder="Keterangan gambar (opsional)…"
@@ -561,13 +560,13 @@
 </div>
 
 <script>
-function articleEditor() {
+function articleEditorUpdate(contentJson, title, status, categoryId, categoryName, coverUrl) {
     return {
-        titleValue: '',
-        currentStatus: null,
-        selectedCategoryId: null,
-        selectedCategoryName: '',
-        coverPreview: null,
+        titleValue: title || '',
+        currentStatus: status || 'draft',
+        selectedCategoryId: categoryId || null,
+        selectedCategoryName: categoryName || '',
+        coverPreview: coverUrl || null,
         coverUploading: false,
         isDirty: false,
         isSaving: false,
@@ -585,7 +584,18 @@ function articleEditor() {
         showStatusError: false,
 
         init() {
-            this.blocks = [{ id: this.nextId++, type: 'paragraph', content: '' }];
+            if (contentJson) {
+                try {
+                    this.blocks = JSON.parse(contentJson);
+                    this.blocks.forEach(b => {
+                        if (!b.id) b.id = this.nextId++;
+                    });
+                } catch(e) {
+                    this.blocks = [{ id: this.nextId++, type: 'paragraph', content: contentJson }];
+                }
+            } else {
+                this.blocks = [{ id: this.nextId++, type: 'paragraph', content: '' }];
+            }
         },
 
         closeAllMenus(e) {
@@ -618,55 +628,107 @@ function articleEditor() {
         },
 
         handleKeydown(event, index) {
+            const block = this.blocks[index];
+            if (!block) return;
+
             if (event.key === 'Enter') {
-            event.preventDefault();
-            let nextType = block.type;
-            if (
-                !['bullet', 'numbered'].includes(block.type)
-            ) {
-                nextType = 'paragraph';
+                event.preventDefault();
+                const continueTypes = ['bullet', 'numbered'];
+                const nextType = continueTypes.includes(block.type) ? block.type : 'paragraph';
+                const nb = { id: this.nextId++, type: nextType, content: '' };
+                this.blocks.splice(index + 1, 0, nb);
+                this.isDirty = true;
+                this.$nextTick(() => {
+                    setTimeout(() => {
+                        const el = document.getElementById('block-' + nb.id);
+                        if (el) {
+                            el.focus();
+                            placeCaretAtEnd(el);
+                        }
+                    }, 50);
+                });
+                return;
             }
 
-            const nb = {
-                id: this.nextId++,
-                type: nextType,
-                content: ''
-            };
-
-            this.blocks.splice(index + 1, 0, nb);
-
-            this.$nextTick(() => {
-                const el = document.getElementById('block-' + nb.id);
-                if (el) {
-                    el.focus();
-                    placeCaretAtEnd(el);
-                }
-            });
-
-            return;
-        }
-            } else if (event.key === 'Backspace') {
-                const block = this.blocks[index];
+            if (event.key === 'Backspace') {
                 const el = document.getElementById('block-' + block.id);
                 const isEmpty = !el || el.innerText.trim() === '';
+                const sel = window.getSelection();
+                const atStart = sel && sel.anchorOffset === 0 && sel.focusOffset === 0;
+
+                // Merge ke block sebelumnya jika caret di awal baris
+                if (atStart && index > 0) {
+                    event.preventDefault();
+                    const prevBlock = this.blocks[index - 1];
+                    const textTypes = ['paragraph', 'h1', 'h2', 'h3', 'quote', 'callout', 'bullet', 'numbered'];
+
+                    if (textTypes.includes(prevBlock.type) && textTypes.includes(block.type)) {
+                        const prevEl = document.getElementById('block-' + prevBlock.id);
+                        const currentEl = document.getElementById('block-' + block.id);
+                        const prevContent = prevEl ? prevEl.innerHTML : prevBlock.content;
+                        const currentContent = currentEl ? currentEl.innerHTML : block.content;
+                        prevBlock.content = prevContent + currentContent;
+                        this.blocks.splice(index, 1);
+                        this.isDirty = true;
+                        this.$nextTick(() => {
+                            setTimeout(() => {
+                                const el = document.getElementById('block-' + prevBlock.id);
+                                if (el) {
+                                    el.innerHTML = prevBlock.content;
+                                    placeCaretAtEnd(el);
+                                }
+                            }, 50);
+                        });
+                        return;
+                    }
+                }
+
+                // Jika heading/quote/callout kosong atau kursor di awal, ubah ke paragraf dulu
+                const convertTypes = ['h1', 'h2', 'h3', 'quote', 'callout'];
+                if (convertTypes.includes(block.type) && (isEmpty || atStart)) {
+                    if (isEmpty) {
+                        event.preventDefault();
+                        this.blocks[index] = { ...block, type: 'paragraph', content: '' };
+                        this.isDirty = true;
+                        this.$nextTick(() => {
+                            setTimeout(() => {
+                                const el = document.getElementById('block-' + block.id);
+                                if (el) {
+                                    el.focus();
+                                    placeCaretAtEnd(el);
+                                }
+                            }, 50);
+                        });
+                        return;
+                    }
+                }
+
+                // Normal: hapus block kosong
                 if (isEmpty && this.blocks.length > 1) {
                     event.preventDefault();
+                    const prevBlock = this.blocks[index - 1] || this.blocks[0];
                     this.blocks.splice(index, 1);
+                    this.isDirty = true;
                     this.$nextTick(() => {
-                        const prev = this.blocks[Math.max(0, index - 1)];
-                        if (prev) {
-                            const pel = document.getElementById('block-' + prev.id);
-                            if (pel) { pel.focus(); placeCaretAtEnd(pel); }
-                        }
+                        setTimeout(() => {
+                            const el = document.getElementById('block-' + prevBlock.id);
+                            if (el) {
+                                el.focus();
+                                placeCaretAtEnd(el);
+                            }
+                        }, 50);
                     });
                 }
-            } else if (event.key === 'Delete') {
-                const block = this.blocks[index];
+                return;
+            }
+
+            if (event.key === 'Delete') {
                 const el = document.getElementById('block-' + block.id);
                 const isEmpty = !el || el.innerText.trim() === '';
                 if (isEmpty && this.blocks.length > 1) {
                     event.preventDefault();
                     this.blocks.splice(index, 1);
+                    this.isDirty = true;
                     this.$nextTick(() => {
                         const next = this.blocks[Math.min(this.blocks.length - 1, index)];
                         if (next) {
@@ -685,7 +747,8 @@ function articleEditor() {
         },
 
         checkSelection() {
-            this.$nextTick(() => {
+            // Pakai setTimeout biar browser sempat update seleksi dulu
+            setTimeout(() => {
                 const sel = window.getSelection();
                 if (!sel || sel.isCollapsed || sel.toString().trim() === '') {
                     this.showFormatBar = false;
@@ -693,12 +756,29 @@ function articleEditor() {
                 }
                 const range = sel.getRangeAt(0);
                 const rect = range.getBoundingClientRect();
-                if (rect.width === 0) { this.showFormatBar = false; return; }
-                const x = rect.left + rect.width / 2 - 150;
-                const y = rect.top - 48;
-                this.formatBarStyle = `position:fixed;top:${y}px;left:${Math.max(8, x)}px;`;
+                if (rect.width === 0 && rect.height === 0) {
+                    this.showFormatBar = false;
+                    return;
+                }
+
+                const barWidth = 300; // perkiraan lebar popup toolbar
+                const barHeight = 40;
+                const margin = 8;
+
+                // Posisi horizontal: tengah seleksi, tapi jangan sampai keluar layar
+                let x = rect.left + rect.width / 2 - barWidth / 2;
+                x = Math.max(margin, Math.min(x, window.innerWidth - barWidth - margin));
+
+                // Posisi vertikal: defaultnya di ATAS seleksi
+                // Kalau tidak cukup ruang di atas, taruh di BAWAH
+                let y = rect.top - barHeight - margin;
+                if (y < margin) {
+                    y = rect.bottom + margin;
+                }
+
+                this.formatBarStyle = `top:${y}px;left:${x}px;`;
                 this.showFormatBar = true;
-            });
+            }, 10);
         },
 
         formatText(command) {

@@ -42,21 +42,15 @@ class ArticleCreate extends BaseAdminComponent
         ];
     }
 
-    public function saveFromAlpine(string $title, string $content, string $status, int $categoryId, ArticleService $service)
+    public function saveFromAlpine(string $title, string $content, string $status, int $categoryId)
     {
-        logger()->info('SAVE FROM ALPINE', [
-            'title' => $title,
-            'content' => $content,
-            'status' => $status,
-            'category' => $categoryId
-        ]);
-        
         $this->title       = $title;
         $this->content     = $content;
         $this->status      = $status;
         $this->category_id = $categoryId;
 
         $this->authorize('create', Article::class);
+        
         $validated = $this->validate([
             'title'       => 'required|string|max:255',
             'content'     => 'required|string|min:2',
@@ -68,10 +62,13 @@ class ArticleCreate extends BaseAdminComponent
         $validated['thumbnail'] = $validated['cover'];
         unset($validated['cover']);
 
-        $service->createArticle($validated, auth()->user());
+        // Inject service via app() karena Livewire v3 tidak support DI di method Alpine
+        app(ArticleService::class)->createArticle($validated, auth()->user());
+        
         $this->notify('Artikel berhasil disimpan.', 'success', true);
         return redirect()->route('admin.articles.index');
     }
+
     public function save(ArticleService $service)
     {
         $this->authorize('create', Article::class);
