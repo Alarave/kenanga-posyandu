@@ -24,6 +24,7 @@
 ══════════════════════════════════════════ --}}
 <div class="max-w-[720px] mx-auto px-5 md:px-0 pt-12 pb-40">
 
+
     {{-- 1. JUDUL --}}
     <div class="mb-8">
         <textarea
@@ -43,8 +44,8 @@
     </div>
 
     {{-- 2. FOTO SAMPUL --}}
-    <div class="mb-10">
-        <div class="relative w-full aspect-video rounded-2xl overflow-hidden border-2 cursor-pointer transition-all group"
+        <div class="mb-10">
+            <div class="relative w-full max-w-[360px] aspect-video rounded-2xl overflow-hidden border-2 cursor-pointer transition-all group"
              :class="coverPreview ? 'border-transparent shadow-xl' : 'border-dashed border-slate-300 bg-white hover:border-indigo-400 hover:bg-indigo-50/20'"
              @click="$refs.lwCoverInput.click()">
 
@@ -308,8 +309,7 @@
                      @keydown.backspace.prevent="removeBlock(index)"
                      @focus="focusedIndex = index">
                     <figure class="rounded-2xl overflow-hidden shadow-lg w-full">
-                        <img<img :src="block.src"class=" w-full
- max-w-full h-auto object-contain block"> class="w-full h-auto block" alt="" style="max-width:100%;height:auto;">
+                        <img :src="block.src" class="w-full h-auto block object-contain" alt="" style="max-width:100%;height:auto;">
                     </figure>
                     <input type="text" x-model="block.caption"
                            placeholder="Keterangan gambar (opsional)…"
@@ -659,29 +659,21 @@ function articleEditor() {
         // heading/quote/callout converts to paragraph instead of deleting block.
         handleKeydown(event, index) {
             const block = this.blocks[index];
+            if (!block) return;
 
             if (event.key === 'Enter') {
                 event.preventDefault();
-                // bullet & numbered: Enter = new item of same type
-                // everything else: Enter = new paragraph
                 const continueTypes = ['bullet', 'numbered'];
                 const nextType = continueTypes.includes(block.type) ? block.type : 'paragraph';
                 const nb = { id: this.nextId++, type: nextType, content: '' };
                 this.blocks.splice(index + 1, 0, nb);
+                this.isDirty = true;
                 this.$nextTick(() => {
                     setTimeout(() => {
                         const el = document.getElementById('block-' + nb.id);
-
                         if (el) {
                             el.focus();
-
-                            const range = document.createRange();
-                            range.selectNodeContents(el);
-                            range.collapse(true);
-
-                            const sel = window.getSelection();
-                            sel.removeAllRanges();
-                            sel.addRange(range);
+                            placeCaretAtEnd(el);
                         }
                     }, 50);
                 });
@@ -693,46 +685,35 @@ function articleEditor() {
                 const isEmpty = !el || el.innerText.trim() === '';
                 const sel = window.getSelection();
                 const atStart = sel && sel.anchorOffset === 0 && sel.focusOffset === 0;
-    // Merge ke block sebelumnya
+
+                // Merge ke block sebelumnya jika caret di awal baris
                 if (atStart && index > 0) {
                     event.preventDefault();
                     const prevBlock = this.blocks[index - 1];
-                    const textTypes = [
-                        'paragraph',
-                        'h1',
-                        'h2',
-                        'h3',
-                        'quote',
-                        'callout',
-                        'bullet',
-                        'numbered'
-                    ];
+                    const textTypes = ['paragraph', 'h1', 'h2', 'h3', 'quote', 'callout', 'bullet', 'numbered'];
 
-                    if (
-                        textTypes.includes(prevBlock.type) &&
-                        textTypes.includes(block.type)
-                    ) {
+                    if (textTypes.includes(prevBlock.type) && textTypes.includes(block.type)) {
                         const prevEl = document.getElementById('block-' + prevBlock.id);
                         const currentEl = document.getElementById('block-' + block.id);
                         const prevContent = prevEl ? prevEl.innerHTML : prevBlock.content;
                         const currentContent = currentEl ? currentEl.innerHTML : block.content;
                         prevBlock.content = prevContent + currentContent;
                         this.blocks.splice(index, 1);
-                        this.$nextTick(() => {
-                            const el = document.getElementById('block-' + prevBlock.id);
-
-                            if (el) {
-                                el.innerHTML = prevBlock.content;
-                                placeCaretAtEnd(el);
-                            }
-                        });
-
                         this.isDirty = true;
+                        this.$nextTick(() => {
+                            setTimeout(() => {
+                                const el = document.getElementById('block-' + prevBlock.id);
+                                if (el) {
+                                    el.innerHTML = prevBlock.content;
+                                    placeCaretAtEnd(el);
+                                }
+                            }, 50);
+                        });
                         return;
                     }
                 }
-                // FIX #6: on heading/quote/callout when empty or caret at start,
-                // convert to paragraph first instead of immediately deleting.
+
+                // Jika heading/quote/callout kosong atau kursor di awal, ubah ke paragraf dulu
                 const convertTypes = ['h1', 'h2', 'h3', 'quote', 'callout'];
                 if (convertTypes.includes(block.type) && (isEmpty || atStart)) {
                     if (isEmpty) {
@@ -741,18 +722,10 @@ function articleEditor() {
                         this.isDirty = true;
                         this.$nextTick(() => {
                             setTimeout(() => {
-                                const el = document.getElementById('block-' + nb.id);
-
+                                const el = document.getElementById('block-' + block.id);
                                 if (el) {
                                     el.focus();
-
-                                    const range = document.createRange();
-                                    range.selectNodeContents(el);
-                                    range.collapse(true);
-
-                                    const sel = window.getSelection();
-                                    sel.removeAllRanges();
-                                    sel.addRange(range);
+                                    placeCaretAtEnd(el);
                                 }
                             }, 50);
                         });
@@ -760,25 +733,18 @@ function articleEditor() {
                     }
                 }
 
-                // Normal: delete empty block
-                if (isEmpty && this.blocks.length > 1){
+                // Normal: hapus block kosong
+                if (isEmpty && this.blocks.length > 1) {
                     event.preventDefault();
+                    const prevBlock = this.blocks[index - 1] || this.blocks[0];
                     this.blocks.splice(index, 1);
                     this.isDirty = true;
                     this.$nextTick(() => {
                         setTimeout(() => {
-                            const el = document.getElementById('block-' + nb.id);
-
+                            const el = document.getElementById('block-' + prevBlock.id);
                             if (el) {
                                 el.focus();
-
-                                const range = document.createRange();
-                                range.selectNodeContents(el);
-                                range.collapse(true);
-
-                                const sel = window.getSelection();
-                                sel.removeAllRanges();
-                                sel.addRange(range);
+                                placeCaretAtEnd(el);
                             }
                         }, 50);
                     });
@@ -811,7 +777,8 @@ function articleEditor() {
         },
 
         checkSelection() {
-            this.$nextTick(() => {
+            // Pakai setTimeout biar browser sempat update seleksi dulu
+            setTimeout(() => {
                 const sel = window.getSelection();
                 if (!sel || sel.isCollapsed || sel.toString().trim() === '') {
                     this.showFormatBar = false;
@@ -819,12 +786,25 @@ function articleEditor() {
                 }
                 const range = sel.getRangeAt(0);
                 const rect = range.getBoundingClientRect();
-                if (rect.width === 0) { this.showFormatBar = false; return; }
-                const x = rect.left + rect.width / 2 - 150;
-                const y = rect.top - 48;
-                this.formatBarStyle = `position:fixed;top:${y}px;left:${Math.max(8, x)}px;`;
+                if (rect.width === 0 && rect.height === 0) {
+                    this.showFormatBar = false;
+                    return;
+                }
+                const barWidth = 300; // perkiraan lebar popup toolbar
+                const barHeight = 40;
+                const margin = 8;
+                // Posisi horizontal: tengah seleksi, tapi jangan sampai keluar layar
+                let x = rect.left + rect.width / 2 - barWidth / 2;
+                x = Math.max(margin, Math.min(x, window.innerWidth - barWidth - margin));
+                // Posisi vertikal: defaultnya di ATAS seleksi
+                // Kalau tidak cukup ruang di atas, taruh di BAWAH
+                let y = rect.top - barHeight - margin;
+                if (y < margin) {
+                    y = rect.bottom + margin;
+                }
+                this.formatBarStyle = `top:${y}px;left:${x}px;`;
                 this.showFormatBar = true;
-            });
+            }, 10);
         },
 
         formatText(command) {
@@ -1020,9 +1000,15 @@ function articleEditor() {
 
             try {
                 // Cari Livewire component via wire:id
-                const wireEl = document.querySelector('[wire\\:id]');
+                // Cari component ArticleCreate dari semua wire:id yang ada
+                // dengan mencocokkan snapshot yang mengandung nama component-nya
+                const allWireEls = [...document.querySelectorAll('[wire\\:id]')];
+                const wireEl = allWireEls.find(el => {
+                    const snap = el.getAttribute('wire:snapshot') || '';
+                    return snap.includes('article-create') || snap.includes('ArticleCreate');
+                });
                 const wireId = wireEl ? wireEl.getAttribute('wire:id') : null;
-                
+
                 if (wireId && window.Livewire) {
                     await window.Livewire.find(wireId).call(
                         'saveFromAlpine',
@@ -1032,8 +1018,21 @@ function articleEditor() {
                         this.selectedCategoryId
                     );
                 } else {
-                    console.error('Livewire component tidak ditemukan');
-                    this.isSaving = false;
+                    // Fallback: ambil component terakhir (bukan global-search yang di navbar)
+                    const fallbackEl = allWireEls[allWireEls.length - 1];
+                    const fallbackId = fallbackEl ? fallbackEl.getAttribute('wire:id') : null;
+                    if (fallbackId && window.Livewire) {
+                        await window.Livewire.find(fallbackId).call(
+                            'saveFromAlpine',
+                            this.titleValue,
+                            contentJson,
+                            this.currentStatus,
+                            this.selectedCategoryId
+                        );
+                    } else {
+                        console.error('Livewire component tidak ditemukan');
+                        this.isSaving = false;
+                    }
                 }
             } catch(e) {
                 console.error('Save error:', e);

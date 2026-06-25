@@ -462,6 +462,13 @@ class ReportService
                     'vaccine_name' => $recordForMonth->vaccine_name,
                     'complaint' => $recordForMonth->complaint,
                     'health_note' => $recordForMonth->health_note,
+                    'blood_pressure' => $recordForMonth->blood_pressure,
+                    'blood_sugar' => $recordForMonth->blood_sugar,
+                    'uric_acid' => $recordForMonth->uric_acid,
+                    'cholesterol' => $recordForMonth->cholesterol,
+                    'imt' => $recordForMonth->imt,
+                    'waist_circumference' => $recordForMonth->waist_circumference,
+                    'current_medication' => $recordForMonth->current_medication,
                 ] : null,
             ];
         }
@@ -513,6 +520,14 @@ class ReportService
      */
     public function generateIndividualSvgCharts(Patient $patient, \Illuminate\Database\Eloquent\Collection $records): array
     {
+        if ($patient->category === 'lansia') {
+            return $this->generateLansiaSvgCharts($patient, $records);
+        }
+
+        if ($patient->category === 'ibu_hamil') {
+            return $this->generateIbuHamilSvgCharts($patient, $records);
+        }
+
         // Dimensions
         $width = 540;
         $height = 200;
@@ -706,5 +721,444 @@ class ReportService
             $current->addMonth();
         }
         return $months;
+    }
+
+    /**
+     * Generate individual SVG charts for Lansia metabolic metrics
+     */
+    public function generateLansiaSvgCharts(Patient $patient, \Illuminate\Database\Eloquent\Collection $records): array
+    {
+        $width = 540;
+        $height = 200;
+        $paddingLeft = 35;
+        $paddingRight = 15;
+        $paddingTop = 15;
+        $paddingBottom = 25;
+        
+        $chartW = $width - $paddingLeft - $paddingRight;
+        $chartH = $height - $paddingTop - $paddingBottom;
+
+        // Filter records that have valid measurements
+        $bpRecords = $records->filter(fn($r) => $r->systolic_bp > 0 || $r->diastolic_bp > 0)->values();
+        $sugarRecords = $records->filter(fn($r) => $r->blood_sugar > 0)->values();
+        $uricRecords = $records->filter(fn($r) => $r->uric_acid > 0)->values();
+        $cholRecords = $records->filter(fn($r) => $r->cholesterol > 0)->values();
+
+        $generateSingleMetricSvg = function(string $title, string $field, $validRecords, float $defaultMinY, float $defaultMaxY, string $lineColor) use ($width, $height, $paddingLeft, $paddingRight, $paddingTop, $paddingBottom, $chartW, $chartH) {
+            $total = $validRecords->count();
+            
+            // Calculate Y range
+            $minY = $defaultMinY;
+            $maxY = $defaultMaxY;
+            if ($total > 0) {
+                $vals = $validRecords->pluck($field)->map(fn($v) => (float)$v);
+                $minVal = $vals->min();
+                $maxVal = $vals->max();
+                if ($maxVal > $minVal) {
+                    $minY = min($defaultMinY, floor($minVal - ($maxVal - $minVal) * 0.1));
+                    $maxY = max($defaultMaxY, ceil($maxVal + ($maxVal - $minVal) * 0.1 + 1));
+                } else {
+                    $minY = min($defaultMinY, floor($minVal * 0.8));
+                    $maxY = max($defaultMaxY, ceil($maxVal * 1.2));
+                }
+                $minY = max(0, $minY);
+            }
+
+            $getX = function(int $index) use ($total, $paddingLeft, $chartW) {
+                if ($total <= 1) {
+                    return $paddingLeft + $chartW / 2;
+                }
+                return $paddingLeft + ($index / ($total - 1)) * $chartW;
+            };
+
+            $getY = function(float $val) use ($minY, $maxY, $paddingTop, $chartH) {
+                $range = $maxY - $minY;
+                $range = $range > 0 ? $range : 1;
+                return $paddingTop + $chartH - (($val - $minY) / $range) * $chartH;
+            };
+
+            $svg = '<svg viewBox="0 0 ' . $width . ' ' . $height . '" width="' . $width . '" height="' . $height . '" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="background:#ffffff; font-family:sans-serif;">';
+            
+            // Y Grid & Ticks
+            $yTicksCount = 4;
+            for ($k = 0; $k <= $yTicksCount; $k++) {
+                $tickVal = $minY + ($k / $yTicksCount) * ($maxY - $minY);
+                $ty = $getY($tickVal);
+                $svg .= '<line x1="' . $paddingLeft . '" y1="' . $ty . '" x2="' . ($width - $paddingRight) . '" y2="' . $ty . '" stroke="#f1f5f9" stroke-width="1" />';
+                $svg .= '<text x="' . ($paddingLeft - 5) . '" y="' . ($ty + 3) . '" fill="#64748b" font-size="8" text-anchor="end">' . ($field === 'uric_acid' ? number_format($tickVal, 1) : round($tickVal)) . '</text>';
+            }
+
+            if ($total === 0) {
+                $svg .= '<text x="' . ($width / 2) . '" y="' . ($height / 2) . '" fill="#94a3b8" font-size="10" text-anchor="middle" font-style="italic">Tidak ada data pemeriksaan</text>';
+            } else {
+                // X Grid & Labels & Line points
+                $points = [];
+                foreach ($validRecords as $idx => $rec) {
+                    $cx = $getX($idx);
+                    $val = (float)$rec->$field;
+                    $cy = $getY($val);
+                    $points[] = $cx . ',' . $cy;
+
+                    // Vertical grid line
+                    $svg .= '<line x1="' . $cx . '" y1="' . $paddingTop . '" x2="' . $cx . '" y2="' . ($height - $paddingBottom) . '" stroke="#f8fafc" stroke-dasharray="2 2" stroke-width="1" />';
+                    // X axis label
+                    $dateStr = $rec->visit_date ? \Carbon\Carbon::parse($rec->visit_date)->translatedFormat('d M') : '-';
+                    $svg .= '<text x="' . $cx . '" y="' . ($height - $paddingBottom + 12) . '" fill="#64748b" font-size="7" text-anchor="middle">' . $dateStr . '</text>';
+                }
+
+                // Draw line
+                if ($total > 1) {
+                    $svg .= '<polyline points="' . implode(' ', $points) . '" fill="none" stroke="' . $lineColor . '" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />';
+                }
+
+                // Draw points
+                foreach ($validRecords as $idx => $rec) {
+                    $cx = $getX($idx);
+                    $val = (float)$rec->$field;
+                    $cy = $getY($val);
+                    $svg .= '<circle cx="' . $cx . '" cy="' . $cy . '" r="3.5" fill="' . $lineColor . '" stroke="#ffffff" stroke-width="1.5" />';
+                    
+                    // Value label for the last point or all if <= 6
+                    if ($idx === $total - 1 || $total <= 6) {
+                        $labelYOffset = ($cy < $paddingTop + 20) ? 12 : -8;
+                        $svg .= '<text x="' . $cx . '" y="' . ($cy + $labelYOffset) . '" fill="#0f172a" font-size="8" font-weight="bold" text-anchor="middle">' . ($field === 'uric_acid' ? number_format($val, 1) : $val) . '</text>';
+                    }
+                }
+            }
+
+            // Axes
+            $svg .= '<line x1="' . $paddingLeft . '" y1="' . $paddingTop . '" x2="' . $paddingLeft . '" y2="' . ($height - $paddingBottom) . '" stroke="#94a3b8" stroke-width="1.2" />';
+            $svg .= '<line x1="' . $paddingLeft . '" y1="' . ($height - $paddingBottom) . '" x2="' . ($width - $paddingRight) . '" y2="' . ($height - $paddingBottom) . '" stroke="#94a3b8" stroke-width="1.2" />';
+            
+            $svg .= '</svg>';
+            return $svg;
+        };
+
+        // Custom BP SVG with 2 lines (Systolic & Diastolic)
+        $generateBpSvg = function($validRecords) use ($width, $height, $paddingLeft, $paddingRight, $paddingTop, $paddingBottom, $chartW, $chartH) {
+            $total = $validRecords->count();
+            $minY = 50;
+            $maxY = 180;
+            
+            if ($total > 0) {
+                $sysVals = $validRecords->pluck('systolic_bp')->map(fn($v) => (float)$v);
+                $diaVals = $validRecords->pluck('diastolic_bp')->map(fn($v) => (float)$v);
+                $minVal = $diaVals->min();
+                $maxVal = $sysVals->max();
+                if ($maxVal > $minVal) {
+                    $minY = min(50, floor($minVal - ($maxVal - $minVal) * 0.1));
+                    $maxY = max(180, ceil($maxVal + ($maxVal - $minVal) * 0.1 + 1));
+                } else {
+                    $minY = min(50, floor($minVal * 0.8));
+                    $maxY = max(180, ceil($maxVal * 1.2));
+                }
+                $minY = max(0, $minY);
+            }
+
+            $getX = function(int $index) use ($total, $paddingLeft, $chartW) {
+                if ($total <= 1) {
+                    return $paddingLeft + $chartW / 2;
+                }
+                return $paddingLeft + ($index / ($total - 1)) * $chartW;
+            };
+
+            $getY = function(float $val) use ($minY, $maxY, $paddingTop, $chartH) {
+                $range = $maxY - $minY;
+                $range = $range > 0 ? $range : 1;
+                return $paddingTop + $chartH - (($val - $minY) / $range) * $chartH;
+            };
+
+            $svg = '<svg viewBox="0 0 ' . $width . ' ' . $height . '" width="' . $width . '" height="' . $height . '" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="background:#ffffff; font-family:sans-serif;">';
+            
+            // Y Grid & Ticks
+            $yTicksCount = 4;
+            for ($k = 0; $k <= $yTicksCount; $k++) {
+                $tickVal = $minY + ($k / $yTicksCount) * ($maxY - $minY);
+                $ty = $getY($tickVal);
+                $svg .= '<line x1="' . $paddingLeft . '" y1="' . $ty . '" x2="' . ($width - $paddingRight) . '" y2="' . $ty . '" stroke="#f1f5f9" stroke-width="1" />';
+                $svg .= '<text x="' . ($paddingLeft - 5) . '" y="' . ($ty + 3) . '" fill="#64748b" font-size="8" text-anchor="end">' . round($tickVal) . '</text>';
+            }
+
+            if ($total === 0) {
+                $svg .= '<text x="' . ($width / 2) . '" y="' . ($height / 2) . '" fill="#94a3b8" font-size="10" text-anchor="middle" font-style="italic">Tidak ada data pemeriksaan</text>';
+            } else {
+                $sysPoints = [];
+                $diaPoints = [];
+                foreach ($validRecords as $idx => $rec) {
+                    $cx = $getX($idx);
+                    $sys = (float)$rec->systolic_bp;
+                    $dia = (float)$rec->diastolic_bp;
+                    
+                    $sysPoints[] = $cx . ',' . $getY($sys);
+                    $diaPoints[] = $cx . ',' . $getY($dia);
+
+                    // Vertical grid line
+                    $svg .= '<line x1="' . $cx . '" y1="' . $paddingTop . '" x2="' . $cx . '" y2="' . ($height - $paddingBottom) . '" stroke="#f8fafc" stroke-dasharray="2 2" stroke-width="1" />';
+                    // X axis label
+                    $dateStr = $rec->visit_date ? \Carbon\Carbon::parse($rec->visit_date)->translatedFormat('d M') : '-';
+                    $svg .= '<text x="' . $cx . '" y="' . ($height - $paddingBottom + 12) . '" fill="#64748b" font-size="7" text-anchor="middle">' . $dateStr . '</text>';
+                }
+
+                // Draw lines
+                if ($total > 1) {
+                    $svg .= '<polyline points="' . implode(' ', $sysPoints) . '" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />';
+                    $svg .= '<polyline points="' . implode(' ', $diaPoints) . '" fill="none" stroke="#3b82f6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />';
+                }
+
+                // Draw points & labels
+                foreach ($validRecords as $idx => $rec) {
+                    $cx = $getX($idx);
+                    $sys = (float)$rec->systolic_bp;
+                    $dia = (float)$rec->diastolic_bp;
+                    
+                    $syY = $getY($sys);
+                    $diaY = $getY($dia);
+
+                    $svg .= '<circle cx="' . $cx . '" cy="' . $syY . '" r="3.5" fill="#ef4444" stroke="#ffffff" stroke-width="1.5" />';
+                    $svg .= '<circle cx="' . $cx . '" cy="' . $diaY . '" r="3.5" fill="#3b82f6" stroke="#ffffff" stroke-width="1.5" />';
+                    
+                    if ($idx === $total - 1 || $total <= 6) {
+                        $svg .= '<text x="' . $cx . '" y="' . ($syY - 8) . '" fill="#ef4444" font-size="7.5" font-weight="bold" text-anchor="middle">' . $sys . '</text>';
+                        $svg .= '<text x="' . $cx . '" y="' . ($diaY + 11) . '" fill="#3b82f6" font-size="7.5" font-weight="bold" text-anchor="middle">' . $dia . '</text>';
+                    }
+                }
+            }
+
+            // Axes
+            $svg .= '<line x1="' . $paddingLeft . '" y1="' . $paddingTop . '" x2="' . $paddingLeft . '" y2="' . ($height - $paddingBottom) . '" stroke="#94a3b8" stroke-width="1.2" />';
+            $svg .= '<line x1="' . $paddingLeft . '" y1="' . ($height - $paddingBottom) . '" x2="' . ($width - $paddingRight) . '" y2="' . ($height - $paddingBottom) . '" stroke="#94a3b8" stroke-width="1.2" />';
+            
+            $svg .= '</svg>';
+            return $svg;
+        };
+
+        return [
+            'blood_pressure' => $generateBpSvg($bpRecords),
+            'blood_sugar' => $generateSingleMetricSvg('Gula Darah', 'blood_sugar', $sugarRecords, 70, 200, '#eab308'),
+            'uric_acid' => $generateSingleMetricSvg('Asam Urat', 'uric_acid', $uricRecords, 3, 10, '#8b5cf6'),
+            'cholesterol' => $generateSingleMetricSvg('Kolesterol', 'cholesterol', $cholRecords, 100, 250, '#3b82f6'),
+        ];
+    }
+
+    /**
+     * Generate individual SVG charts for pregnant women (Ibu Hamil)
+     */
+    public function generateIbuHamilSvgCharts(Patient $patient, \Illuminate\Database\Eloquent\Collection $records): array
+    {
+        $width = 540;
+        $height = 200;
+        $paddingLeft = 35;
+        $paddingRight = 15;
+        $paddingTop = 15;
+        $paddingBottom = 25;
+        
+        $chartW = $width - $paddingLeft - $paddingRight;
+        $chartH = $height - $paddingTop - $paddingBottom;
+
+        $validRecords = $records->filter(fn($r) => $r->weight > 0 || $r->upper_arm_circumference > 0)->values();
+        $total = $validRecords->count();
+
+        // 1. Gestational Weight Gain SVG
+        $generateWeightGainSvg = function($validRecords) use ($width, $height, $paddingLeft, $paddingRight, $paddingTop, $paddingBottom, $chartW, $chartH, $total) {
+            $minY = 0;
+            $maxY = 15; // standard weight gain max is ~12-15 kg
+            
+            // Calculate starting weight
+            $firstWeight = $validRecords->first()?->weight ?? 0;
+            $startingWeight = $validRecords->where('starting_weight', '>', 0)->first()?->starting_weight ?? $firstWeight;
+
+            $gains = [];
+            if ($total > 0) {
+                foreach ($validRecords as $rec) {
+                    $startW = $rec->starting_weight > 0 ? $rec->starting_weight : $startingWeight;
+                    $gain = max(0.0, (float)$rec->weight - (float)$startW);
+                    $gains[] = $gain;
+                }
+                $maxVal = count($gains) > 0 ? max($gains) : 0;
+                $maxY = max(15.0, ceil($maxVal + 2));
+            }
+
+            $getX = function(int $index) use ($total, $paddingLeft, $chartW) {
+                if ($total <= 1) {
+                    return $paddingLeft + $chartW / 2;
+                }
+                return $paddingLeft + ($index / ($total - 1)) * $chartW;
+            };
+
+            $getY = function(float $val) use ($minY, $maxY, $paddingTop, $chartH) {
+                $range = $maxY - $minY;
+                $range = $range > 0 ? $range : 1;
+                return $paddingTop + $chartH - (($val - $minY) / $range) * $chartH;
+            };
+
+            $svg = '<svg viewBox="0 0 ' . $width . ' ' . $height . '" width="' . $width . '" height="' . $height . '" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="background:#ffffff; font-family:sans-serif;">';
+            
+            // Y Grid & Ticks
+            $yTicksCount = 4;
+            for ($k = 0; $k <= $yTicksCount; $k++) {
+                $tickVal = $minY + ($k / $yTicksCount) * ($maxY - $minY);
+                $ty = $getY($tickVal);
+                $svg .= '<line x1="' . $paddingLeft . '" y1="' . $ty . '" x2="' . ($width - $paddingRight) . '" y2="' . $ty . '" stroke="#f1f5f9" stroke-width="1" />';
+                $svg .= '<text x="' . ($paddingLeft - 5) . '" y="' . ($ty + 3) . '" fill="#64748b" font-size="8" text-anchor="end">' . round($tickVal, 1) . '</text>';
+            }
+
+            if ($total === 0) {
+                $svg .= '<text x="' . ($width / 2) . '" y="' . ($height / 2) . '" fill="#94a3b8" font-size="10" text-anchor="middle" font-style="italic">Tidak ada data pemeriksaan</text>';
+            } else {
+                $points = [];
+                foreach ($validRecords as $idx => $rec) {
+                    $cx = $getX($idx);
+                    $val = $gains[$idx];
+                    $cy = $getY($val);
+                    $points[] = $cx . ',' . $cy;
+
+                    // Vertical grid line
+                    $svg .= '<line x1="' . $cx . '" y1="' . $paddingTop . '" x2="' . $cx . '" y2="' . ($height - $paddingBottom) . '" stroke="#f8fafc" stroke-dasharray="2 2" stroke-width="1" />';
+                    // X axis label (gestational age and date)
+                    $dateStr = $rec->visit_date ? \Carbon\Carbon::parse($rec->visit_date)->translatedFormat('d M') : '-';
+                    $ageLabel = $rec->gestational_age ?: '';
+                    
+                    if ($ageLabel) {
+                        $svg .= '<text x="' . $cx . '" y="' . ($height - $paddingBottom + 10) . '" fill="#475569" font-size="6.5" font-weight="bold" text-anchor="middle">' . $ageLabel . '</text>';
+                        $svg .= '<text x="' . $cx . '" y="' . ($height - $paddingBottom + 18) . '" fill="#94a3b8" font-size="6" text-anchor="middle">' . $dateStr . '</text>';
+                    } else {
+                        $svg .= '<text x="' . $cx . '" y="' . ($height - $paddingBottom + 12) . '" fill="#94a3b8" font-size="7" text-anchor="middle">' . $dateStr . '</text>';
+                    }
+                }
+
+                // Draw line
+                if ($total > 1) {
+                    $svg .= '<polyline points="' . implode(' ', $points) . '" fill="none" stroke="#ec4899" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />';
+                }
+
+                // Draw points
+                foreach ($validRecords as $idx => $rec) {
+                    $cx = $getX($idx);
+                    $val = $gains[$idx];
+                    $cy = $getY($val);
+                    $svg .= '<circle cx="' . $cx . '" cy="' . $cy . '" r="3.5" fill="#ec4899" stroke="#ffffff" stroke-width="1.5" />';
+                    
+                    if ($idx === $total - 1 || $total <= 6) {
+                        $labelYOffset = ($cy < $paddingTop + 20) ? 12 : -8;
+                        $svg .= '<text x="' . $cx . '" y="' . ($cy + $labelYOffset) . '" fill="#0f172a" font-size="8" font-weight="bold" text-anchor="middle">' . number_format($val, 1) . ' kg</text>';
+                    }
+                }
+            }
+
+            // Axes
+            $svg .= '<line x1="' . $paddingLeft . '" y1="' . $paddingTop . '" x2="' . $paddingLeft . '" y2="' . ($height - $paddingBottom) . '" stroke="#94a3b8" stroke-width="1.2" />';
+            $svg .= '<line x1="' . $paddingLeft . '" y1="' . ($height - $paddingBottom) . '" x2="' . ($width - $paddingRight) . '" y2="' . ($height - $paddingBottom) . '" stroke="#94a3b8" stroke-width="1.2" />';
+            
+            $svg .= '</svg>';
+            return $svg;
+        };
+
+        // 2. LiLA SVG
+        $generateLilaSvg = function($validRecords) use ($width, $height, $paddingLeft, $paddingRight, $paddingTop, $paddingBottom, $chartW, $chartH, $total) {
+            $minY = 20;
+            $maxY = 32;
+            
+            if ($total > 0) {
+                $lilaVals = $validRecords->pluck('upper_arm_circumference')->map(fn($v) => (float)$v)->filter(fn($v) => $v > 0);
+                if ($lilaVals->count() > 0) {
+                    $minVal = $lilaVals->min();
+                    $maxVal = $lilaVals->max();
+                    $minY = min(20.0, floor($minVal - 2));
+                    $maxY = max(32.0, ceil($maxVal + 2));
+                }
+            }
+
+            $getX = function(int $index) use ($total, $paddingLeft, $chartW) {
+                if ($total <= 1) {
+                    return $paddingLeft + $chartW / 2;
+                }
+                return $paddingLeft + ($index / ($total - 1)) * $chartW;
+            };
+
+            $getY = function(float $val) use ($minY, $maxY, $paddingTop, $chartH) {
+                $range = $maxY - $minY;
+                $range = $range > 0 ? $range : 1;
+                return $paddingTop + $chartH - (($val - $minY) / $range) * $chartH;
+            };
+
+            $svg = '<svg viewBox="0 0 ' . $width . ' ' . $height . '" width="' . $width . '" height="' . $height . '" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="background:#ffffff; font-family:sans-serif;">';
+            
+            // Y Grid & Ticks
+            $yTicksCount = 4;
+            for ($k = 0; $k <= $yTicksCount; $k++) {
+                $tickVal = $minY + ($k / $yTicksCount) * ($maxY - $minY);
+                $ty = $getY($tickVal);
+                $svg .= '<line x1="' . $paddingLeft . '" y1="' . $ty . '" x2="' . ($width - $paddingRight) . '" y2="' . $ty . '" stroke="#f1f5f9" stroke-width="1" />';
+                $svg .= '<text x="' . ($paddingLeft - 5) . '" y="' . ($ty + 3) . '" fill="#64748b" font-size="8" text-anchor="end">' . round($tickVal, 1) . '</text>';
+            }
+
+            // Draw Threshold line at 23.5 cm (KEK boundary)
+            if (23.5 >= $minY && 23.5 <= $maxY) {
+                $kekY = $getY(23.5);
+                $svg .= '<line x1="' . $paddingLeft . '" y1="' . $kekY . '" x2="' . ($width - $paddingRight) . '" y2="' . $kekY . '" stroke="#ef4444" stroke-dasharray="4 4" stroke-width="1.5" />';
+                $svg .= '<text x="' . ($width - $paddingRight - 5) . '" y="' . ($kekY - 4) . '" fill="#ef4444" font-size="7" font-weight="bold" text-anchor="end">Batas KEK (23.5 cm)</text>';
+            }
+
+            if ($total === 0) {
+                $svg .= '<text x="' . ($width / 2) . '" y="' . ($height / 2) . '" fill="#94a3b8" font-size="10" text-anchor="middle" font-style="italic">Tidak ada data pemeriksaan</text>';
+            } else {
+                $points = [];
+                $hasPoints = false;
+                foreach ($validRecords as $idx => $rec) {
+                    $cx = $getX($idx);
+                    $val = (float)$rec->upper_arm_circumference;
+                    if ($val > 0) {
+                        $cy = $getY($val);
+                        $points[] = $cx . ',' . $cy;
+                        $hasPoints = true;
+                    }
+
+                    // Vertical grid line
+                    $svg .= '<line x1="' . $cx . '" y1="' . $paddingTop . '" x2="' . $cx . '" y2="' . ($height - $paddingBottom) . '" stroke="#f8fafc" stroke-dasharray="2 2" stroke-width="1" />';
+                    // X axis label
+                    $dateStr = $rec->visit_date ? \Carbon\Carbon::parse($rec->visit_date)->translatedFormat('d M') : '-';
+                    $ageLabel = $rec->gestational_age ?: '';
+                    
+                    if ($ageLabel) {
+                        $svg .= '<text x="' . $cx . '" y="' . ($height - $paddingBottom + 10) . '" fill="#475569" font-size="6.5" font-weight="bold" text-anchor="middle">' . $ageLabel . '</text>';
+                        $svg .= '<text x="' . $cx . '" y="' . ($height - $paddingBottom + 18) . '" fill="#94a3b8" font-size="6" text-anchor="middle">' . $dateStr . '</text>';
+                    } else {
+                        $svg .= '<text x="' . $cx . '" y="' . ($height - $paddingBottom + 12) . '" fill="#94a3b8" font-size="7" text-anchor="middle">' . $dateStr . '</text>';
+                    }
+                }
+
+                // Draw line
+                if (count($points) > 1) {
+                    $svg .= '<polyline points="' . implode(' ', $points) . '" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />';
+                }
+
+                // Draw points
+                foreach ($validRecords as $idx => $rec) {
+                    $cx = $getX($idx);
+                    $val = (float)$rec->upper_arm_circumference;
+                    if ($val > 0) {
+                        $cy = $getY($val);
+                        $svg .= '<circle cx="' . $cx . '" cy="' . $cy . '" r="3.5" fill="#6366f1" stroke="#ffffff" stroke-width="1.5" />';
+                        
+                        if ($idx === $total - 1 || $total <= 6) {
+                            $labelYOffset = ($cy < $paddingTop + 20) ? 12 : -8;
+                            $svg .= '<text x="' . $cx . '" y="' . ($cy + $labelYOffset) . '" fill="#0f172a" font-size="8" font-weight="bold" text-anchor="middle">' . number_format($val, 1) . ' cm</text>';
+                        }
+                    }
+                }
+            }
+
+            // Axes
+            $svg .= '<line x1="' . $paddingLeft . '" y1="' . $paddingTop . '" x2="' . $paddingLeft . '" y2="' . ($height - $paddingBottom) . '" stroke="#94a3b8" stroke-width="1.2" />';
+            $svg .= '<line x1="' . $paddingLeft . '" y1="' . ($height - $paddingBottom) . '" x2="' . ($width - $paddingRight) . '" y2="' . ($height - $paddingBottom) . '" stroke="#94a3b8" stroke-width="1.2" />';
+            
+            $svg .= '</svg>';
+            return $svg;
+        };
+
+        return [
+            'weight_gain' => $generateWeightGainSvg($validRecords),
+            'lila' => $generateLilaSvg($validRecords),
+        ];
     }
 }

@@ -751,8 +751,6 @@ describe('Tampilan detail kustom sesuai kategori', function () {
         $response->assertSee('Metformin');
         $response->assertSee('Tekanan Darah');
         $response->assertSee('Gula Darah');
-        $response->assertSee('Ayah Lansia Kandung');
-        $response->assertSee('Ibu Lansia Kandung');
         $response->assertSee('RW 08');
     });
 

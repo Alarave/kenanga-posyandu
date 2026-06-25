@@ -181,3 +181,41 @@ describe('performa ekspor', function () {
         expect($executionTime)->toBeLessThan(10);
     });
 });
+
+describe('laporan individu ibu hamil', function () {
+    it('dapat menghasilkan grafik SVG untuk ibu hamil', function () {
+        $patient = Patient::factory()->create([
+            'posyandu_id' => $this->posyandu1->id,
+            'category' => 'ibu_hamil',
+        ]);
+
+        MedicalRecord::factory()->create([
+            'patient_id' => $patient->id,
+            'user_id' => $this->admin->id,
+            'visit_date' => now()->subMonth(),
+            'weight' => 50.0,
+            'starting_weight' => 48.0,
+            'upper_arm_circumference' => 24.0,
+        ]);
+
+        $reportService = app(App\Services\ReportService::class);
+        $reportData = $reportService->generateIndividualReportData($patient, now()->month, now()->year, now()->month, now()->year);
+
+        expect($reportData['svg_charts'])->toHaveKey('weight_gain');
+        expect($reportData['svg_charts'])->toHaveKey('lila');
+        expect($reportData['svg_charts']['weight_gain'])->toContain('<svg');
+        expect($reportData['svg_charts']['lila'])->toContain('<svg');
+    });
+
+    it('dapat mengakses halaman rapor individu ibu hamil', function () {
+        $patient = Patient::factory()->create([
+            'posyandu_id' => $this->posyandu1->id,
+            'category' => 'ibu_hamil',
+        ]);
+
+        $this->actingAs($this->superadmin);
+        $response = $this->get(route('admin.reports.individual', $patient));
+        $response->assertOk();
+        $response->assertSee('Visualisasi Grafik Pemantauan Ibu Hamil');
+    });
+});

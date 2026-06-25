@@ -32,8 +32,10 @@ class IndividualReportExport
         // Sheet 2: Riwayat Pengukuran
         $this->renderHistorySheet($spreadsheet->createSheet()->setTitle('Riwayat Pengukuran'));
 
-        // Sheet 3: Imunisasi & Vitamin
-        $this->renderImmunizationSheet($spreadsheet->createSheet()->setTitle('Imunisasi & Vitamin'));
+        if ($this->reportData['patient']['category'] !== 'lansia') {
+            // Sheet 3: Imunisasi & Vitamin
+            $this->renderImmunizationSheet($spreadsheet->createSheet()->setTitle('Imunisasi & Vitamin'));
+        }
 
         // Set active sheet to the first one
         $spreadsheet->setActiveSheetIndex(0);
@@ -93,24 +95,36 @@ class IndividualReportExport
             'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '334155']]
         ]);
 
-        $biodataFields = [
-            ['Nama Lengkap', $patient['full_name'], 'NIK', $patient['id_number']],
-            ['Kategori', str_replace('_', ' ', ucfirst($patient['category'])), 'Jenis Kelamin', $patient['gender'] == 'L' || $patient['gender'] == 'M' ? 'Laki-laki' : 'Perempuan'],
-            ['Tanggal Lahir', $patient['birth_date'], 'Usia', $patient['age']],
-            ['Nama Ayah', $patient['father_name'], 'Nama Ibu', $patient['mother_name']],
-            ['Alamat', $patient['address'], 'No. Telepon', $patient['phone_number']],
-        ];
+        if ($patient['category'] === 'lansia') {
+            $biodataFields = [
+                ['Nama Lengkap', $patient['full_name'], 'NIK', $patient['id_number']],
+                ['Kategori', str_replace('_', ' ', ucfirst($patient['category'])), 'Jenis Kelamin', $patient['gender'] == 'L' || $patient['gender'] == 'M' ? 'Laki-laki' : 'Perempuan'],
+                ['Tanggal Lahir', $patient['birth_date'], 'Usia', $patient['age']],
+                ['Alamat', $patient['address'], 'No. Telepon', $patient['phone_number']],
+            ];
+        } else {
+            $biodataFields = [
+                ['Nama Lengkap', $patient['full_name'], 'NIK', $patient['id_number']],
+                ['Kategori', str_replace('_', ' ', ucfirst($patient['category'])), 'Jenis Kelamin', $patient['gender'] == 'L' || $patient['gender'] == 'M' ? 'Laki-laki' : 'Perempuan'],
+                ['Tanggal Lahir', $patient['birth_date'], 'Usia', $patient['age']],
+                ['Nama Ayah', $patient['father_name'], 'Nama Ibu', $patient['mother_name']],
+                ['Alamat', $patient['address'], 'No. Telepon', $patient['phone_number']],
+            ];
+        }
 
         $row = 6;
         foreach ($biodataFields as $field) {
             $sheet->setCellValue('A' . $row, $field[0]);
             $sheet->setCellValue('B' . $row, ': ' . $field[1]);
-            $sheet->setCellValue('D' . $row, $field[2]);
-            $sheet->setCellValue('E' . $row, ': ' . $field[3]);
+            
+            if (isset($field[2])) {
+                $sheet->setCellValue('D' . $row, $field[2]);
+                $sheet->setCellValue('E' . $row, ': ' . $field[3]);
+                $sheet->getStyle('D' . $row)->getFont()->setBold(true);
+            }
             
             // Format labels bold
             $sheet->getStyle('A' . $row)->getFont()->setBold(true);
-            $sheet->getStyle('D' . $row)->getFont()->setBold(true);
             $row++;
         }
 
@@ -127,28 +141,60 @@ class IndividualReportExport
         $sheet->setCellValue('A' . $row, 'Total Kunjungan');
         $sheet->setCellValue('B' . $row, ': ' . count($this->reportData['raw_records']) . ' Kali');
         
-        $lastWeight = '-';
-        $lastHeight = '-';
-        $lastStatus = '-';
-        if (!empty($this->reportData['raw_records'])) {
-            $lastRec = end($this->reportData['raw_records']);
-            $lastWeight = $lastRec['weight'] . ' kg';
-            $lastHeight = $lastRec['height'] . ' cm';
-            $lastStatus = $lastRec['nutrition_status'] ?? '-';
+        if ($patient['category'] === 'lansia') {
+            $lastBP = '-';
+            $lastSugar = '-';
+            $lastChol = '-';
+            $lastUric = '-';
+            if (!empty($this->reportData['raw_records'])) {
+                $lastRec = end($this->reportData['raw_records']);
+                $lastBP = isset($lastRec['systolic_bp']) && isset($lastRec['diastolic_bp']) && $lastRec['systolic_bp'] > 0
+                    ? $lastRec['systolic_bp'] . '/' . $lastRec['diastolic_bp'] . ' mmHg'
+                    : ($lastRec['blood_pressure'] ?? '-');
+                $lastSugar = $lastRec['blood_sugar'] ? $lastRec['blood_sugar'] . ' mg/dL' : '-';
+                $lastChol = $lastRec['cholesterol'] ? $lastRec['cholesterol'] . ' mg/dL' : '-';
+                $lastUric = $lastRec['uric_acid'] ? $lastRec['uric_acid'] . ' mg/dL' : '-';
+            }
+
+            $row++;
+            $sheet->setCellValue('A' . $row, 'Tekanan Darah Terakhir');
+            $sheet->setCellValue('B' . $row, ': ' . $lastBP);
+            $sheet->setCellValue('D' . $row, 'Gula Darah Terakhir');
+            $sheet->setCellValue('E' . $row, ': ' . $lastSugar);
+            $sheet->getStyle('A' . $row)->getFont()->setBold(true);
+            $sheet->getStyle('D' . $row)->getFont()->setBold(true);
+
+            $row++;
+            $sheet->setCellValue('A' . $row, 'Kolesterol Terakhir');
+            $sheet->setCellValue('B' . $row, ': ' . $lastChol);
+            $sheet->setCellValue('D' . $row, 'Asam Urat Terakhir');
+            $sheet->setCellValue('E' . $row, ': ' . $lastUric);
+            $sheet->getStyle('A' . $row)->getFont()->setBold(true);
+            $sheet->getStyle('D' . $row)->getFont()->setBold(true);
+        } else {
+            $lastWeight = '-';
+            $lastHeight = '-';
+            $lastStatus = '-';
+            if (!empty($this->reportData['raw_records'])) {
+                $lastRec = end($this->reportData['raw_records']);
+                $lastWeight = $lastRec['weight'] . ' kg';
+                $lastHeight = $lastRec['height'] . ' cm';
+                $lastStatus = $lastRec['nutrition_status'] ?? '-';
+            }
+
+            $row++;
+            $sheet->setCellValue('A' . $row, 'Berat Badan Terakhir');
+            $sheet->setCellValue('B' . $row, ': ' . $lastWeight);
+            $sheet->setCellValue('D' . $row, 'Tinggi Badan Terakhir');
+            $sheet->setCellValue('E' . $row, ': ' . $lastHeight);
+            $sheet->getStyle('A' . $row)->getFont()->setBold(true);
+            $sheet->getStyle('D' . $row)->getFont()->setBold(true);
+
+            $row++;
+            $sheet->setCellValue('A' . $row, 'Status Gizi Terakhir');
+            $sheet->setCellValue('B' . $row, ': ' . $lastStatus);
+            $sheet->getStyle('A' . $row)->getFont()->setBold(true);
         }
-
-        $row++;
-        $sheet->setCellValue('A' . $row, 'Berat Badan Terakhir');
-        $sheet->setCellValue('B' . $row, ': ' . $lastWeight);
-        $sheet->setCellValue('D' . $row, 'Tinggi Badan Terakhir');
-        $sheet->setCellValue('E' . $row, ': ' . $lastHeight);
-        $sheet->getStyle('A' . $row)->getFont()->setBold(true);
-        $sheet->getStyle('D' . $row)->getFont()->setBold(true);
-
-        $row++;
-        $sheet->setCellValue('A' . $row, 'Status Gizi Terakhir');
-        $sheet->setCellValue('B' . $row, ': ' . $lastStatus);
-        $sheet->getStyle('A' . $row)->getFont()->setBold(true);
 
         // Auto column widths
         foreach (range('A', 'F') as $col) {
@@ -170,20 +216,37 @@ class IndividualReportExport
         ];
 
         // Headers
-        $headers = [
-            'A3' => 'Bulan Periode',
-            'B3' => 'Tgl Kunjungan',
-            'C3' => 'Berat (kg)',
-            'D3' => 'Tinggi (cm)',
-            'E3' => 'LILA (cm)',
-            'F3' => 'Lingkar Kepala (cm)',
-            'G3' => 'Status Gizi (BB/U)',
-            'H3' => 'Status Stunting',
-            'I3' => 'Tren Gizi',
-            'J3' => 'Pemberian PMT',
-            'K3' => 'Vaksin Diberikan',
-            'L3' => 'Catatan / Keluhan'
-        ];
+        if ($this->reportData['patient']['category'] === 'lansia') {
+            $headers = [
+                'A3' => 'Bulan Periode',
+                'B3' => 'Tgl Kunjungan',
+                'C3' => 'Berat (kg)',
+                'D3' => 'Tinggi (cm)',
+                'E3' => 'Tekanan Darah (mmHg)',
+                'F3' => 'Gula Darah (mg/dL)',
+                'G3' => 'Asam Urat (mg/dL)',
+                'H3' => 'Kolesterol (mg/dL)',
+                'I3' => 'IMT',
+                'J3' => 'Lingkar Perut (cm)',
+                'K3' => 'Obat Diberikan',
+                'L3' => 'Catatan / Keluhan'
+            ];
+        } else {
+            $headers = [
+                'A3' => 'Bulan Periode',
+                'B3' => 'Tgl Kunjungan',
+                'C3' => 'Berat (kg)',
+                'D3' => 'Tinggi (cm)',
+                'E3' => 'LILA (cm)',
+                'F3' => 'Lingkar Kepala (cm)',
+                'G3' => 'Status Gizi (BB/U)',
+                'H3' => 'Status Stunting',
+                'I3' => 'Tren Gizi',
+                'J3' => 'Pemberian PMT',
+                'K3' => 'Vaksin Diberikan',
+                'L3' => 'Catatan / Keluhan'
+            ];
+        }
 
         $sheet->setCellValue('A1', 'TABEL RIWAYAT PERKEMBANGAN BULANAN');
         $sheet->mergeCells('A1:L1');
@@ -218,11 +281,27 @@ class IndividualReportExport
                 $sheet->setCellValue('B' . $row, $record['visit_date']);
                 $sheet->setCellValue('C' . $row, $record['weight'] > 0 ? (float) $record['weight'] : '-');
                 $sheet->setCellValue('D' . $row, $record['height'] > 0 ? (float) $record['height'] : '-');
-                $sheet->setCellValue('E' . $row, $record['upper_arm_circumference'] > 0 ? (float) $record['upper_arm_circumference'] : '-');
-                $sheet->setCellValue('F' . $row, $record['head_circumference'] > 0 ? (float) $record['head_circumference'] : '-');
-                $sheet->setCellValue('G' . $row, $record['nutrition_status'] ?? '-');
-                $sheet->setCellValue('H' . $row, $record['stunting_status'] ?? '-');
-                $sheet->setCellValue('I' . $row, ucfirst($record['nutrition_trend'] ?? '-'));
+                if ($this->reportData['patient']['category'] === 'lansia') {
+                    $bp = '-';
+                    if (isset($record['systolic_bp']) && isset($record['diastolic_bp']) && $record['systolic_bp'] > 0) {
+                        $bp = $record['systolic_bp'] . '/' . $record['diastolic_bp'];
+                    } elseif (isset($record['blood_pressure'])) {
+                        $bp = $record['blood_pressure'];
+                    }
+                    $sheet->setCellValue('E' . $row, $bp);
+                    $sheet->setCellValue('F' . $row, $record['blood_sugar'] ?? '-');
+                    $sheet->setCellValue('G' . $row, $record['uric_acid'] ?? '-');
+                    $sheet->setCellValue('H' . $row, $record['cholesterol'] ?? '-');
+                    $sheet->setCellValue('I' . $row, $record['imt'] ?? '-');
+                    $sheet->setCellValue('J' . $row, $record['waist_circumference'] ?? '-');
+                    $sheet->setCellValue('K' . $row, $record['current_medication'] ?? '-');
+                } else {
+                    $sheet->setCellValue('E' . $row, $record['upper_arm_circumference'] > 0 ? (float) $record['upper_arm_circumference'] : '-');
+                    $sheet->setCellValue('F' . $row, $record['head_circumference'] > 0 ? (float) $record['head_circumference'] : '-');
+                    $sheet->setCellValue('G' . $row, $record['nutrition_status'] ?? '-');
+                    $sheet->setCellValue('H' . $row, $record['stunting_status'] ?? '-');
+                    $sheet->setCellValue('I' . $row, ucfirst($record['nutrition_trend'] ?? '-'));
+                }
                 
                 // PMT / exclusive BF
                 $sheet->setCellValue('J' . $row, isset($record['pmt_given']) ? $record['pmt_given'] : '-');

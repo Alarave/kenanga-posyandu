@@ -173,13 +173,7 @@
                                     <span class="material-symbols-outlined text-[18px] text-slate-400">person</span>
                                     Nama Suami: {{ $medicalRecord->patient->husband_name }}
                                 </p>
-                            @elseif($isLansia)
-                                @if($medicalRecord->patient->father_name || $medicalRecord->patient->mother_name)
-                                    <p class="text-slate-500 text-sm font-semibold flex items-center justify-center md:justify-start gap-2 mt-1">
-                                        <span class="material-symbols-outlined text-[18px] text-slate-400">family_history</span>
-                                        Orang Tua: {{ $medicalRecord->patient->father_name ?? '-' }} (Ayah) / {{ $medicalRecord->patient->mother_name ?? '-' }} (Ibu)
-                                    </p>
-                                @endif
+
                             @endif
                             @if($medicalRecord->patient->phone_number)
                                 <p class="text-slate-500 text-sm font-semibold flex items-center justify-center md:justify-start gap-2 mt-1">

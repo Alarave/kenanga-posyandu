@@ -22,14 +22,6 @@
                     <span class="text-sm font-black text-slate-700 text-right ml-4">{{ $patient->full_name }}</span>
                 </div>
                 <div class="flex justify-between items-center py-2.5 border-b border-slate-50">
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Nama Ayah Kandung</span>
-                    <span class="text-sm font-black text-slate-700 text-right ml-4">{{ $patient->father_name ?? '-' }}</span>
-                </div>
-                <div class="flex justify-between items-center py-2.5 border-b border-slate-50">
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Nama Ibu Kandung</span>
-                    <span class="text-sm font-black text-slate-700 text-right ml-4">{{ $patient->mother_name ?? '-' }}</span>
-                </div>
-                <div class="flex justify-between items-center py-2.5 border-b border-slate-50">
                     <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Jenis Kelamin</span>
                     <span class="text-sm font-black text-slate-700">{{ ($patient->gender == 'L' || $patient->gender == 'M') ? 'Laki-laki' : 'Perempuan' }}</span>
                 </div>

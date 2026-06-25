@@ -123,23 +123,6 @@
                                    placeholder="Nama suami..."
                                    class="w-full h-16 px-6 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-slate-50/30">
                         </div>
-
-                        <!-- Nama Ayah & Ibu Kandung (Hanya untuk Lansia) -->
-                        <div class="space-y-3" x-show="category === 'lansia'">
-                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Nama Ayah Kandung</label>
-                            <input type="text" name="father_name" value="{{ old('father_name') }}"
-                                   placeholder="Nama ayah kandung..."
-                                   class="w-full h-16 px-6 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-slate-50/30"
-                                   x-bind:disabled="category !== 'lansia'">
-                        </div>
-
-                        <div class="space-y-3" x-show="category === 'lansia'">
-                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Nama Ibu Kandung</label>
-                            <input type="text" name="mother_name" value="{{ old('mother_name') }}"
-                                   placeholder="Nama ibu kandung..."
-                                   class="w-full h-16 px-6 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-slate-50/30"
-                                   x-bind:disabled="category !== 'lansia'">
-                        </div>
  
                         <div class="space-y-3">
                             <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Tempat Lahir</label>

@@ -551,11 +551,24 @@ class Analytics extends BaseAdminComponent
         $lansiaHypercholesterolemiaRate = $totalLansiaWithRecordsCount > 0 ? round(($lansiaHypercholesterolemiaCount / $totalLansiaWithRecordsCount) * 100, 1) : 0;
         $lansiaHyperuricemiaRate = $totalLansiaWithRecordsCount > 0 ? round(($lansiaHyperuricemiaCount / $totalLansiaWithRecordsCount) * 100, 1) : 0;
 
-        // Lansia trends bulanan
+        // Lansia trends bulanan & averages
         $trendLansiaHypertension = [];
         $trendLansiaHyperglycemia = [];
         $trendLansiaHypercholesterolemia = [];
         $trendLansiaHyperuricemia = [];
+
+        $trendLansiaAvgSystolic = [];
+        $trendLansiaAvgDiastolic = [];
+        $trendLansiaAvgBloodSugar = [];
+        $trendLansiaAvgUricAcid = [];
+        $trendLansiaAvgCholesterol = [];
+
+        $trendPregnancyAvgWeightGain = [];
+        $trendPregnancyAvgLila = [];
+
+        $lansiaRecordsYear = $recordsYear->filter(fn($r) => $r->patient && $r->patient->category === 'lansia');
+        $pregRecordsYear = $recordsYear->filter(fn($r) => $r->patient && $r->patient->category === 'ibu_hamil');
+
         for ($m = 1; $m <= 12; $m++) {
             $latestRecordSubqueryLM = MedicalRecord::selectRaw('MAX(id) as id')
                 ->whereYear('visit_date', $selectedYear)
@@ -588,6 +601,44 @@ class Analytics extends BaseAdminComponent
                 $trendLansiaHypercholesterolemia[] = 0;
                 $trendLansiaHyperuricemia[] = 0;
             }
+
+            // Averages calculations from cached records
+            $monthLansiaRecs = $lansiaRecordsYear->filter(fn($r) => Carbon::parse($r->visit_date)->month === $m);
+            $monthPregRecs = $pregRecordsYear->filter(fn($r) => Carbon::parse($r->visit_date)->month === $m);
+
+            // Lansia averages
+            $sysVals = $monthLansiaRecs->pluck('systolic_bp')->filter(fn($v) => (float)$v > 0);
+            $trendLansiaAvgSystolic[] = $sysVals->count() > 0 ? round($sysVals->average(), 1) : 0;
+
+            $diaVals = $monthLansiaRecs->pluck('diastolic_bp')->filter(fn($v) => (float)$v > 0);
+            $trendLansiaAvgDiastolic[] = $diaVals->count() > 0 ? round($diaVals->average(), 1) : 0;
+
+            $sugarVals = $monthLansiaRecs->pluck('blood_sugar')->filter(fn($v) => (float)$v > 0);
+            $trendLansiaAvgBloodSugar[] = $sugarVals->count() > 0 ? round($sugarVals->average(), 1) : 0;
+
+            $uricVals = $monthLansiaRecs->pluck('uric_acid')->filter(fn($v) => (float)$v > 0);
+            $trendLansiaAvgUricAcid[] = $uricVals->count() > 0 ? round($uricVals->average(), 2) : 0;
+
+            $cholVals = $monthLansiaRecs->pluck('cholesterol')->filter(fn($v) => (float)$v > 0);
+            $trendLansiaAvgCholesterol[] = $cholVals->count() > 0 ? round($cholVals->average(), 1) : 0;
+
+            // Ibu Hamil averages
+            $gains = [];
+            foreach ($monthPregRecs as $rec) {
+                if ((float)$rec->weight > 0) {
+                    $startW = (float)$rec->starting_weight;
+                    if ($startW <= 0) {
+                        $patientRecs = $pregRecordsYear->filter(fn($r) => $r->patient_id === $rec->patient_id)->sortBy('visit_date');
+                        $firstWeight = $patientRecs->first()?->weight ?? $rec->weight;
+                        $startW = $patientRecs->where('starting_weight', '>', 0)->first()?->starting_weight ?? $firstWeight;
+                    }
+                    $gains[] = max(0.0, (float)$rec->weight - (float)$startW);
+                }
+            }
+            $trendPregnancyAvgWeightGain[] = count($gains) > 0 ? round(array_sum($gains) / count($gains), 1) : 0;
+
+            $lilaVals = $monthPregRecs->pluck('upper_arm_circumference')->filter(fn($v) => (float)$v > 0);
+            $trendPregnancyAvgLila[] = $lilaVals->count() > 0 ? round($lilaVals->average(), 1) : 0;
         }
 
         return [
@@ -620,6 +671,8 @@ class Analytics extends BaseAdminComponent
             'feComplianceRate' => $feComplianceRate,
             'trendPregnancyHypertension' => $trendPregnancyHypertension,
             'trendPregnancyFe' => $trendPregnancyFe,
+            'trendPregnancyAvgWeightGain' => $trendPregnancyAvgWeightGain,
+            'trendPregnancyAvgLila' => $trendPregnancyAvgLila,
             // Lansia
             'lansiaHypertensionRate' => $lansiaHypertensionRate,
             'lansiaHyperglycemiaRate' => $lansiaHyperglycemiaRate,
@@ -629,6 +682,11 @@ class Analytics extends BaseAdminComponent
             'trendLansiaHyperglycemia' => $trendLansiaHyperglycemia,
             'trendLansiaHypercholesterolemia' => $trendLansiaHypercholesterolemia,
             'trendLansiaHyperuricemia' => $trendLansiaHyperuricemia,
+            'trendLansiaAvgSystolic' => $trendLansiaAvgSystolic,
+            'trendLansiaAvgDiastolic' => $trendLansiaAvgDiastolic,
+            'trendLansiaAvgBloodSugar' => $trendLansiaAvgBloodSugar,
+            'trendLansiaAvgUricAcid' => $trendLansiaAvgUricAcid,
+            'trendLansiaAvgCholesterol' => $trendLansiaAvgCholesterol,
         ];
     }
 

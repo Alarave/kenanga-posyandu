@@ -210,18 +210,10 @@
 }
 
 /* DIVIDER */
-.article-content .article-divider{
-    border:none;
-    border-top:1px solid #e5e7eb;
-    margin:2rem 0;
-}
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1.5rem;
-    margin: 3.5rem 0;
-    color: #cbd5e1;
-    font-size: 1.5rem;
+.article-content .article-divider {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    margin: 3rem 0;
 }
 
 /* CAPTION */

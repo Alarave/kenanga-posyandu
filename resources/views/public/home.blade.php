@@ -135,6 +135,16 @@
                     </div>
                 @endforeach
             </div>
+        @else
+            <div class="p-12 md:p-16 rounded-[3rem] bg-white border border-slate-100 shadow-sm flex flex-col items-center justify-center text-center max-w-3xl mx-auto group hover:border-teal-100 transition-all duration-300">
+                <div class="w-20 h-20 bg-teal-50 text-teal-500 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-105 transition-transform duration-300">
+                    <span class="material-symbols-outlined text-[40px] text-teal-600">calendar_today</span>
+                </div>
+                <h3 class="text-2xl font-black text-slate-900 mb-3 tracking-tight font-jakarta">Belum Ada Jadwal Kegiatan</h3>
+                <p class="text-slate-500 text-sm font-medium leading-relaxed max-w-md">
+                    Saat ini belum ada jadwal kegiatan terdekat yang direncanakan. Silakan periksa kembali halaman ini secara berkala untuk pembaruan jadwal posyandu bulanan.
+                </p>
+            </div>
         @endif
     </section>
 
