@@ -34,45 +34,45 @@
                     <span class="material-symbols-outlined text-[24px]">history</span>
                 </div>
                 <div>
-                    <h3 class="text-sm font-black text-slate-800 uppercase tracking-[0.2em]">Riwayat Pemeriksaan</h3>
-                    <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Data Antropometri Berkala</p>
+                    <h3 class="text-base font-black text-slate-800 uppercase tracking-[0.2em]">Riwayat Pemeriksaan</h3>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Data Antropometri Berkala</p>
                 </div>
             </div>
-            <a href="#" class="px-6 py-2.5 bg-slate-50 hover:bg-slate-100 rounded-full text-[10px] font-black text-slate-500 uppercase tracking-widest transition-all">Lihat Selengkapnya →</a>
+            <a href="{{ route('admin.reports.individual', $patient->id) }}" class="px-6 py-3 bg-slate-50 hover:bg-slate-100 rounded-full text-xs font-black text-slate-500 uppercase tracking-widest transition-all">Lihat Selengkapnya →</a>
         </div>
         
         <div class="overflow-x-auto">
             <table class="w-full text-left">
                 <thead>
-                    <tr class="border-b border-slate-50">
-                        <th class="pb-6 text-[10px] font-black text-slate-400 uppercase tracking-widest pl-4">Tanggal Kunjungan</th>
-                        <th class="pb-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Berat Badan</th>
-                        <th class="pb-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Tinggi Badan</th>
-                        <th class="pb-6 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest pr-4">Status Gizi</th>
+                    <tr class="border-b-2 border-slate-100">
+                        <th class="pb-5 text-xs font-black text-slate-500 uppercase tracking-widest pl-4 w-[32%]">Tanggal Kunjungan</th>
+                        <th class="pb-5 text-center text-xs font-black text-slate-500 uppercase tracking-widest w-[22%]">Berat Badan</th>
+                        <th class="pb-5 text-center text-xs font-black text-slate-500 uppercase tracking-widest w-[22%]">Tinggi Badan</th>
+                        <th class="pb-5 text-center text-xs font-black text-slate-500 uppercase tracking-widest w-[24%]">Status Gizi</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50">
                     @forelse($patient->medicalRecords()->latest()->limit(5)->get() as $record)
-                    <tr class="group hover:bg-slate-50/50 transition-colors">
-                        <td class="py-6 pl-4">
-                            <p class="text-[12px] font-black text-slate-700 mb-0.5">{{ \Carbon\Carbon::parse($record->visit_date)->translatedFormat('d F Y') }}</p>
-                            <p class="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Pemeriksaan Rutin</p>
+                    <tr class="group hover:bg-slate-50/60 transition-colors">
+                        <td class="py-5 pl-4">
+                            <p class="text-base font-black text-slate-800 mb-1.5">{{ \Carbon\Carbon::parse($record->visit_date)->translatedFormat('d F Y') }}</p>
+                            <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Pemeriksaan Rutin</p>
                         </td>
-                        <td class="py-6">
-                            <div class="flex items-baseline gap-1">
-                                <span class="text-lg font-black text-slate-900">{{ $record->weight }}</span>
-                                <span class="text-[10px] font-black text-slate-400 uppercase">kg</span>
+                        <td class="py-5 text-center">
+                            <div class="flex items-baseline justify-center gap-1.5">
+                                <span class="text-xl font-black text-slate-900">{{ number_format($record->weight, 2) }}</span>
+                                <span class="text-xs font-black text-slate-400 uppercase">kg</span>
                             </div>
                         </td>
-                        <td class="py-6">
-                            <div class="flex items-baseline gap-1">
-                                <span class="text-lg font-black text-slate-900">{{ $record->height }}</span>
-                                <span class="text-[10px] font-black text-slate-400 uppercase">cm</span>
+                        <td class="py-5 text-center">
+                            <div class="flex items-baseline justify-center gap-1.5">
+                                <span class="text-xl font-black text-slate-900">{{ number_format($record->height, 2) }}</span>
+                                <span class="text-xs font-black text-slate-400 uppercase">cm</span>
                             </div>
                         </td>
-                        <td class="py-6 text-right pr-4">
+                        <td class="py-5 text-center">
                             <span @class([
-                                'px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest inline-block shadow-sm',
+                                'inline-flex items-center justify-center px-5 py-2 rounded-xl text-xs font-black uppercase tracking-widest shadow-sm',
                                 'bg-emerald-50 text-emerald-600 border border-emerald-100' => str_contains($record->nutrition_status ?? '', 'Normal') || str_contains($record->nutrition_status ?? '', 'Baik'),
                                 'bg-amber-50 text-amber-600 border border-amber-100' => str_contains($record->nutrition_status ?? '', 'Kurang'),
                                 'bg-red-50 text-red-600 border border-red-100' => str_contains($record->nutrition_status ?? '', 'Buruk'),
@@ -83,7 +83,7 @@
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="4" class="py-12 text-center text-[11px] text-slate-400 font-bold uppercase tracking-[0.3em]">Belum ada data pemeriksaan</td></tr>
+                    <tr><td colspan="4" class="py-14 text-center text-sm text-slate-400 font-bold uppercase tracking-[0.3em]">Belum ada data pemeriksaan</td></tr>
                     @endforelse
                 </tbody>
             </table>

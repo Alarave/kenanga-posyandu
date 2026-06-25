@@ -5,6 +5,7 @@ namespace App\Livewire\Admin\PatientManagement;
 use App\Livewire\Shared\BaseAdminComponent;
 use App\Models\Patient;
 use App\Services\GrowthChartService;
+use Livewire\Attributes\Layout;
 
 /**
  * Komponen Livewire untuk menampilkan grafik pertumbuhan anak (Buku KIA Digital).
@@ -55,10 +56,10 @@ class GrowthChart extends BaseAdminComponent
         };
     }
 
+    #[Layout('layouts.admin-layout')]
     public function render()
     {
-        return view('livewire.admin.patient-management.growth-chart')
-            ->layout('layouts.admin-layout');
+        return view('livewire.admin.patient-management.growth-chart');
     }
 
     private function supportsGrowthChart(): bool

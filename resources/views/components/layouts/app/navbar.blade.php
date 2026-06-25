@@ -10,7 +10,7 @@
         <button id="mobileSidebarToggle"
             class="lg:hidden w-9 h-9 flex items-center justify-center rounded-xl
                    text-slate-500 border border-slate-200 hover:bg-slate-50 hover:border-slate-300
-                   active:scale-95 transition-all duration-150 flex-shrink-0">
+                   active:scale-95 transition-all duration-150 shrink-0">
             <i class="fas fa-bars" style="font-size:14px;"></i>
         </button>
 
@@ -21,7 +21,7 @@
     </div>
 
     {{-- ── RIGHT: Notif · Profile ── --}}
-    <div class="flex items-center gap-2 flex-shrink-0"
+    <div class="flex items-center gap-2 shrink-0"
          x-data="{ profileOpen: false }"
          @keydown.escape.window="profileOpen = false; $dispatch('close-dropdowns')"
          @close-dropdowns.window="if ($event.detail !== 'profile') profileOpen = false"
