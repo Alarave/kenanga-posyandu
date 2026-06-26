@@ -4,7 +4,7 @@
     <div class="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
         {{-- Title (centered) --}}
         <h1 class="text-center text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight font-jakarta leading-normal max-w-4xl mx-auto py-2">
-            Selamat Datang di <span class="inline-block text-transparent bg-clip-text bg-gradient-to-r from-primary to-teal-500 dark:from-teal-300 dark:to-emerald-400 italic px-4">Posyandu ILP Kenanga</span>
+            Selamat Datang di <span class="inline-block text-transparent bg-clip-text bg-linear-to-r from-primary to-teal-500 dark:from-teal-300 dark:to-emerald-400 italic px-4">Posyandu ILP Kenanga</span>
         </h1>
 
         {{-- Slogan Badge (centered) --}}
@@ -25,7 +25,7 @@
             {{-- Pilar 1: Wilayah & Sasaran --}}
             <div class="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-3xl p-8 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group text-center">
                 {{-- Decorative Top Border Hover effect --}}
-                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-primary to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div class="absolute top-0 left-0 right-0 h-1.5 bg-linear-to-r from-primary to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                 {{-- Icon --}}
                 <div class="w-14 h-14 bg-primary/10 dark:bg-primary/5 text-primary dark:text-teal-400 rounded-2xl flex items-center justify-center mb-6 border border-primary/20 shadow-xs group-hover:bg-primary group-hover:text-white transition-colors duration-300 mx-auto">
@@ -46,7 +46,7 @@
             {{-- Pilar 2: Integrasi Layanan Primer --}}
             <div class="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-3xl p-8 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group text-center">
                 {{-- Decorative Top Border Hover effect --}}
-                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-primary to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div class="absolute top-0 left-0 right-0 h-1.5 bg-linear-to-r from-primary to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                 {{-- Icon --}}
                 <div class="w-14 h-14 bg-primary/10 dark:bg-primary/5 text-primary dark:text-teal-400 rounded-2xl flex items-center justify-center mb-6 border border-primary/20 shadow-xs group-hover:bg-primary group-hover:text-white transition-colors duration-300 mx-auto">
@@ -67,7 +67,7 @@
             {{-- Pilar 3: Portal Digital --}}
             <div class="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-3xl p-8 shadow-md hover:shadow-xl hover:-translate-y-1 transition-all duration-300 relative overflow-hidden group text-center">
                 {{-- Decorative Top Border Hover effect --}}
-                <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-primary to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div class="absolute top-0 left-0 right-0 h-1.5 bg-linear-to-r from-primary to-teal-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                 {{-- Icon --}}
                 <div class="w-14 h-14 bg-primary/10 dark:bg-primary/5 text-primary dark:text-teal-400 rounded-2xl flex items-center justify-center mb-6 border border-primary/20 shadow-xs group-hover:bg-primary group-hover:text-white transition-colors duration-300 mx-auto">

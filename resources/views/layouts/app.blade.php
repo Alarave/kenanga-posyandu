@@ -65,6 +65,34 @@
         [x-cloak] {
             display: none !important;
         }
+
+        @media print {
+            /* Sembunyikan elemen navigasi dan filter saat cetak (DASH-36) */
+            header, nav, #sidebar, .sidebar, .navbar, .no-print, footer, #toast-container {
+                display: none !important;
+            }
+            body, main {
+                background: white !important;
+                color: black !important;
+            }
+            #mainContent {
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            .app-grid {
+                display: block !important;
+            }
+            /* Hilangkan bayangan & pastikan ukuran penuh */
+            .widget-card, .kpi-card, .premium-card {
+                box-shadow: none !important;
+                border: 1px solid #e2e8f0 !important;
+                page-break-inside: avoid;
+            }
+            .hero-gradient, .hero-orb-1, .hero-orb-2 {
+                background: none !important;
+                display: none !important;
+            }
+        }
     </style>
 
     @stack('styles')
@@ -76,7 +104,7 @@
         @include('components.layouts.app.sidebar')
         
         <!-- Main Content Wrapper -->
-        <div id="mainContent" class="flex-1 flex-shrink-0 flex flex-col min-h-screen transition-all duration-300 ease-in-out relative">
+        <div id="mainContent" class="flex-1 shrink-0 flex flex-col min-h-screen transition-all duration-300 ease-in-out relative">
             
             <!-- Navbar (Now part of the right-side flow) -->
             <x-layouts.app.navbar />

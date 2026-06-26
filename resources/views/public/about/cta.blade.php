@@ -1,7 +1,7 @@
 {{-- ── 7. CALL TO ACTION SECTION ── --}}
 <section class="pb-24">
     <div class="max-w-7xl mx-auto px-6 md:px-12">
-        <div class="bg-gradient-to-tr from-slate-900 to-slate-950 text-white rounded-[2.5rem] p-8 md:p-16 text-center relative overflow-hidden shadow-2xl border border-slate-800">
+        <div class="bg-linear-to-tr from-slate-900 to-slate-950 text-white rounded-[2.5rem] p-8 md:p-16 text-center relative overflow-hidden shadow-2xl border border-slate-800">
             <div class="absolute -left-10 -bottom-10 w-48 h-48 bg-primary/10 rounded-full blur-2xl"></div>
             <div class="absolute -right-10 -top-10 w-48 h-48 bg-teal-500/10 rounded-full blur-2xl"></div>
             

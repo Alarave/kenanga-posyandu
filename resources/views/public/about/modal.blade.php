@@ -1,5 +1,5 @@
 {{-- ── C. DETAIL MODAL DIALOG ── --}}
-<div id="kaderModal" class="fixed inset-0 z-50 hidden bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4 transition-opacity duration-300">
+<div id="kaderModal" class="fixed inset-0 z-50 hidden bg-slate-950/70 backdrop-blur-md items-center justify-center p-4 transition-opacity duration-300">
     <div class="bg-white/95 dark:bg-slate-900/95 border border-white/20 dark:border-slate-800 rounded-[2.5rem] max-w-2xl w-full overflow-hidden shadow-2xl relative transform scale-95 opacity-0 transition-all duration-300 flex flex-col md:flex-row" id="kaderModalContent">
         
         {{-- Close button --}}
@@ -69,6 +69,7 @@ function openKaderModal(name, role, pendidikan, alamat, email, image) {
     const content = document.getElementById('kaderModalContent');
     
     modal.classList.remove('hidden');
+    modal.classList.add('flex');
     setTimeout(() => {
         content.classList.remove('scale-95', 'opacity-0');
         content.classList.add('scale-100', 'opacity-100');
@@ -84,6 +85,7 @@ function closeKaderModal() {
     
     setTimeout(() => {
         modal.classList.add('hidden');
+        modal.classList.remove('flex');
     }, 300);
 }
 

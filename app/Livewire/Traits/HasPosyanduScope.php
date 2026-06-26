@@ -14,20 +14,34 @@ trait HasPosyanduScope
     /**
      * Terapkan scope posyandu ke query builder.
      */
-    protected function applyPosyanduScope(Builder $query, string $patientIdColumn = 'id'): Builder
+    protected function applyPosyanduScope(Builder $query, ?int $selectedPosyanduId = null): Builder
     {
         $user = Auth::user();
 
+        // Admin RW / Superadmin
         if ($user->isSuperAdmin()) {
+            if ($selectedPosyanduId) {
+                if ($query->getModel() instanceof \App\Models\MedicalRecord) {
+                    return $query->whereHas('patient', fn ($q) => $q->where('posyandu_id', $selectedPosyanduId));
+                }
+                return $query->where('posyandu_id', $selectedPosyanduId);
+            }
             return $query;
         }
 
-        // Default: Admin/Kader hanya melihat posyandu mereka
-        if ($query->getModel() instanceof \App\Models\MedicalRecord) {
-            return $query->whereHas('patient', fn ($q) => $q->where('posyandu_id', $user->posyandu_id));
+        // Admin/Kader unit specific
+        $posyanduId = $selectedPosyanduId ?? $user->posyandu_id;
+        
+        // Ensure they can only filter to their own unit
+        if ($selectedPosyanduId && $selectedPosyanduId != $user->posyandu_id) {
+            $posyanduId = $user->posyandu_id;
         }
 
-        return $query->where('posyandu_id', $user->posyandu_id);
+        if ($query->getModel() instanceof \App\Models\MedicalRecord) {
+            return $query->whereHas('patient', fn ($q) => $q->where('posyandu_id', $posyanduId));
+        }
+
+        return $query->where('posyandu_id', $posyanduId);
     }
 
     /**

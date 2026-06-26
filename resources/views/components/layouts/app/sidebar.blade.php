@@ -1,13 +1,13 @@
 {{-- Sidebar Component --}}
 <aside id="sidebar"
-    class="flex-shrink-0 flex flex-col h-screen fixed lg:sticky top-0 left-0 z-50 overflow-hidden transition-all duration-300 ease-in-out"
+    class="shrink-0 flex flex-col h-screen fixed lg:sticky top-0 left-0 z-50 overflow-hidden transition-all duration-300 ease-in-out"
     style="width:260px; background:#ffffff; border-right:1px solid rgba(0,0,0,0.07); box-shadow:1px 0 12px rgba(0,0,0,0.04);">
 
     {{-- ── Logo & Toggle ── --}}
-    <div class="h-16 flex items-center justify-between px-4 flex-shrink-0"
+    <div class="h-16 flex items-center justify-between px-4 shrink-0"
          style="border-bottom:1px solid rgba(0,0,0,0.06);">
         <a href="{{ route('dashboard') }}" class="flex items-center gap-3 group sidebar-logo min-w-0">
-            <div class="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm"
+            <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 shadow-sm"
                  style="background:linear-gradient(135deg,#006c49 0%,#0d9488 100%);">
                 <i class="fas fa-heartbeat text-white" style="font-size:15px;"></i>
             </div>
@@ -18,7 +18,7 @@
         </a>
 
         <button id="sidebarToggleBtn"
-            class="hidden lg:flex w-7 h-7 items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all flex-shrink-0"
+            class="hidden lg:flex w-7 h-7 items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all shrink-0"
             title="Toggle sidebar">
             <i id="toggleIcon" class="fas fa-chevron-left transition-transform duration-300" style="font-size:9px;"></i>
         </button>
@@ -39,13 +39,13 @@
 
         <a href="{{ route('dashboard') }}"
            class="{{ $navLinkBase }} {{ $isActive('dashboard') }}">
-            <i class="fas fa-house-chimney w-4 text-center flex-shrink-0" style="font-size:14px;"></i>
+            <i class="fas fa-house-chimney w-4 text-center shrink-0" style="font-size:14px;"></i>
             <span class="sidebar-text whitespace-nowrap transition-all duration-300 text-sm">Halaman Utama</span>
         </a>
 
         <a href="{{ route('admin.analytics') }}"
            class="{{ $navLinkBase }} {{ $isActive('admin.analytics') }}">
-            <i class="fas fa-chart-line w-4 text-center flex-shrink-0" style="font-size:14px;"></i>
+            <i class="fas fa-chart-line w-4 text-center shrink-0" style="font-size:14px;"></i>
             <span class="sidebar-text whitespace-nowrap transition-all duration-300 text-sm">Analitik & Grafik</span>
         </a>
 
@@ -76,7 +76,7 @@
         @foreach($items as $item)
         <a href="{{ route($item['route']) }}"
            class="{{ $navLinkBase }} {{ $isActive($item['pattern']) }}">
-            <i class="fas {{ $item['icon'] }} w-4 text-center flex-shrink-0" style="font-size:14px;"></i>
+            <i class="fas {{ $item['icon'] }} w-4 text-center shrink-0" style="font-size:14px;"></i>
             <span class="sidebar-text whitespace-nowrap transition-all duration-300 text-sm">{{ $item['label'] }}</span>
         </a>
         @endforeach
@@ -89,14 +89,14 @@
 
         <a href="{{ route('admin.reports.index') }}"
            class="{{ $navLinkBase }} {{ $isActive('admin.reports.*') }}">
-            <i class="fas fa-chart-bar w-4 text-center flex-shrink-0" style="font-size:14px;"></i>
+            <i class="fas fa-chart-bar w-4 text-center shrink-0" style="font-size:14px;"></i>
             <span class="sidebar-text whitespace-nowrap transition-all duration-300 text-sm">Laporan Bulanan</span>
         </a>
 
         @if(auth()->user()->isSuperAdmin())
         <a href="{{ route('admin.activity-logs.index') }}"
            class="{{ $navLinkBase }} {{ $isActive('admin.activity-logs.*') }}">
-            <i class="fas fa-clipboard-list w-4 text-center flex-shrink-0" style="font-size:14px;"></i>
+            <i class="fas fa-clipboard-list w-4 text-center shrink-0" style="font-size:14px;"></i>
             <span class="sidebar-text whitespace-nowrap transition-all duration-300 text-sm">Log Aktivitas</span>
         </a>
         @endif
@@ -108,15 +108,25 @@
             <span class="block font-bold text-slate-400" style="font-size:10px; letter-spacing:.1em; text-transform:uppercase;">Konten</span>
         </div>
 
+        @php
+            $pendingArticlesCount = \App\Models\Article::where('status', 'pending')->count();
+        @endphp
         <a href="{{ route('admin.articles.index') }}"
-           class="{{ $navLinkBase }} {{ $isActive('admin.articles.*') }}">
-            <i class="fas fa-newspaper w-4 text-center flex-shrink-0" style="font-size:14px;"></i>
-            <span class="sidebar-text whitespace-nowrap transition-all duration-300 text-sm">Artikel & Berita</span>
+           class="{{ $navLinkBase }} {{ $isActive('admin.articles.*') }} flex items-center justify-between">
+            <div class="flex items-center">
+                <i class="fas fa-newspaper w-4 text-center shrink-0" style="font-size:14px;"></i>
+                <span class="sidebar-text whitespace-nowrap transition-all duration-300 text-sm ml-1.5">Artikel & Berita</span>
+            </div>
+            @if($pendingArticlesCount > 0)
+                <span class="sidebar-text bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-md min-w-5 text-center shrink-0">
+                    {{ $pendingArticlesCount }}
+                </span>
+            @endif
         </a>
 
         <a href="{{ route('admin.gallery.index') }}"
            class="{{ $navLinkBase }} {{ $isActive('admin.gallery.*') }}">
-            <i class="fas fa-images w-4 text-center flex-shrink-0" style="font-size:14px;"></i>
+            <i class="fas fa-images w-4 text-center shrink-0" style="font-size:14px;"></i>
             <span class="sidebar-text whitespace-nowrap transition-all duration-300 text-sm">Galeri</span>
         </a>
         @endif
@@ -129,7 +139,7 @@
 
         <a href="{{ route('admin.users.index') }}"
            class="{{ $navLinkBase }} {{ $isActive('admin.users.*') }}">
-            <i class="fas fa-user-shield w-4 text-center flex-shrink-0" style="font-size:14px;"></i>
+            <i class="fas fa-user-shield w-4 text-center shrink-0" style="font-size:14px;"></i>
             <span class="sidebar-text whitespace-nowrap transition-all duration-300 text-sm">Manajemen User</span>
         </a>
         @endif
@@ -137,7 +147,7 @@
     </nav>
 
     {{-- ── User Footer ── --}}
-    <div class="flex-shrink-0 p-3" style="border-top:1px solid rgba(0,0,0,0.06);">
+    <div class="shrink-0 p-3" style="border-top:1px solid rgba(0,0,0,0.06);">
         <div class="flex items-center gap-3 p-2.5 rounded-xl transition-all duration-200 cursor-pointer hover:bg-slate-50 group">
             {{-- Avatar --}}
             <x-avatar :name="Auth::user()->name" size="small" status="online" />
@@ -151,7 +161,7 @@
             </div>
 
             {{-- Logout --}}
-            <form method="POST" action="{{ route('logout') }}" class="flex-shrink-0 sidebar-text overflow-hidden transition-all duration-300">
+            <form method="POST" action="{{ route('logout') }}" class="shrink-0 sidebar-text overflow-hidden transition-all duration-300">
                 @csrf
                 <button type="submit" class="Btn" title="Keluar">
                     <div class="sign">

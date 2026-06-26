@@ -27,15 +27,15 @@
             icon-color="text-status-warning"
             action-text="Lihat Semua →"
             action-href="{{ route('admin.patients.index') }}">
-            {{-- konten tabel --}}
+            <!-- konten tabel -->
         </x-widget.dashboard-card>
 
-        {{-- Dengan slot action custom --}}
+        <!-- Dengan slot action custom -->
         <x-widget.dashboard-card title="Jadwal Terdekat">
             <x-slot:action>
                 <x-button variant="outline" size="sm">+ Tambah</x-button>
             </x-slot:action>
-            {{-- konten --}}
+            <!-- konten -->
         </x-widget.dashboard-card>
 --}}
 
@@ -65,11 +65,11 @@
 
     {{-- Header --}}
     @if($title || isset($action))
-    <div class="px-6 py-4 border-b border-outline-variant flex items-center justify-between gap-4 flex-shrink-0
+    <div class="px-6 py-4 border-b border-outline-variant flex items-center justify-between gap-4 shrink-0
                 {{ $headerBg ? 'bg-surface-container-low' : '' }}">
         <div class="flex items-start gap-2.5 min-w-0">
             @if($icon)
-            <span class="material-symbols-outlined {{ $iconColor }} flex-shrink-0 mt-0.5"
+            <span class="material-symbols-outlined {{ $iconColor }} shrink-0 mt-0.5"
                   style="font-size:20px; font-variation-settings:'FILL' 1;">
                 {{ $icon }}
             </span>
@@ -88,11 +88,11 @@
 
         {{-- Action --}}
         @if(isset($action))
-            <div class="flex-shrink-0">{{ $action }}</div>
+            <div class="shrink-0">{{ $action }}</div>
         @elseif($actionText)
             <a href="{{ $actionHref }}"
                class="text-[13px] font-semibold text-primary hover:text-primary-container
-                      transition-colors flex-shrink-0 whitespace-nowrap">
+                      transition-colors shrink-0 whitespace-nowrap">
                 {{ $actionText }}
             </a>
         @endif
@@ -106,7 +106,7 @@
 
     {{-- Footer --}}
     @if(isset($footer))
-    <div class="px-6 py-4 border-t border-outline-variant bg-surface-container-low flex-shrink-0">
+    <div class="px-6 py-4 border-t border-outline-variant bg-surface-container-low shrink-0">
         {{ $footer }}
     </div>
     @endif

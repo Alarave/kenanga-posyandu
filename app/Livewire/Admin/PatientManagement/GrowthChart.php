@@ -5,6 +5,7 @@ namespace App\Livewire\Admin\PatientManagement;
 use App\Livewire\Shared\BaseAdminComponent;
 use App\Models\Patient;
 use App\Services\GrowthChartService;
+use Livewire\Attributes\Layout;
 
 /**
  * Komponen Livewire untuk menampilkan grafik pertumbuhan anak (Buku KIA Digital).
@@ -37,7 +38,7 @@ class GrowthChart extends BaseAdminComponent
             return;
         }
 
-        \Illuminate\Support\Facades\Log::info('Switching chart to: '.$type);
+        \Illuminate\Support\Facades\Log::info('Switching chart to: ' . $type);
         $this->activeChart = $type;
         $this->chartData = $this->getChartData(app(GrowthChartService::class));
         $this->dispatch('chart-updated', $this->chartData);
@@ -48,21 +49,29 @@ class GrowthChart extends BaseAdminComponent
      */
     public function getChartData(GrowthChartService $service): array
     {
-        return match ($this->activeChart) {
-            'wfa' => $service->getWeightForAgeData($this->patient),
-            'hfa' => $service->getHeightForAgeData($this->patient),
-            default => [],
+        if (in_array($this->patient->category, ['bayi', 'baduta', 'balita'], true)) {
+            return match ($this->activeChart) {
+                'wfa' => $service->getWeightForAgeData($this->patient),
+                'hfa' => $service->getHeightForAgeData($this->patient),
+                default => [],
+            };
+        }
+
+        return match ($this->patient->category) {
+            'lansia' => $service->getLansiaChartData($this->patient),
+            'ibu_hamil' => $service->getIbuHamilChartData($this->patient),
+            default => $service->getUmumChartData($this->patient),
         };
     }
 
+    #[Layout('layouts.admin-layout')]
     public function render()
     {
-        return view('livewire.admin.patient-management.growth-chart')
-            ->layout('layouts.admin-layout');
+        return view('livewire.admin.patient-management.growth-chart');
     }
 
     private function supportsGrowthChart(): bool
     {
-        return in_array($this->patient->category, ['bayi', 'baduta', 'balita'], true);
+        return true;
     }
 }

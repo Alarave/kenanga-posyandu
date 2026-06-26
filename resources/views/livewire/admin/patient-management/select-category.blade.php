@@ -5,11 +5,11 @@
 @section('admin-content')
 <div class="w-full space-y-10 pb-24">
     <div class="flex items-center justify-between px-4">
-        <div class="bg-white/80 backdrop-blur-md px-8 py-4 rounded-[2rem] border border-white shadow-sm flex items-center gap-4">
+        <div class="bg-white/80 backdrop-blur-md px-8 py-4 rounded-4xl border border-white shadow-sm flex items-center gap-4">
             <div class="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
             <h2 class="text-xl font-black text-slate-800 tracking-tight">Tambah Warga Baru</h2>
         </div>
-        <x-button href="{{ route('admin.patients.index') }}" variant="ghost" class="!bg-white border border-slate-200 !rounded-2xl !px-6 h-14 font-black">
+        <x-button href="{{ route('admin.patients.index') }}" variant="ghost" class="bg-white! border border-slate-200 rounded-2xl! px-6! h-14 font-black">
             <span class="material-symbols-outlined mr-2 text-[24px]">arrow_back</span> Kembali
         </x-button>
     </div>
@@ -27,7 +27,7 @@
                     <span class="material-symbols-outlined text-[40px]" style="font-variation-settings: 'FILL' 1;">child_care</span>
                 </div>
                 <h3 class="text-lg font-black text-slate-800 mb-3 group-hover:text-primary transition-colors">Balita</h3>
-                <p class="text-xs font-semibold text-slate-400 mb-8 leading-relaxed max-w-[240px]">Pendaftaran untuk bayi dan anak di bawah lima tahun untuk pemantauan tumbuh kembang dan imunisasi.</p>
+                <p class="text-xs font-semibold text-slate-400 mb-8 leading-relaxed max-w-60">Pendaftaran untuk bayi dan anak di bawah lima tahun untuk pemantauan tumbuh kembang dan imunisasi.</p>
                 <div class="mt-auto px-6 py-2.5 rounded-xl bg-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-500 group-hover:bg-primary group-hover:text-white transition-colors">
                     Pilih Kategori
                 </div>
@@ -39,7 +39,7 @@
                     <span class="material-symbols-outlined text-[40px]" style="font-variation-settings: 'FILL' 1;">pregnant_woman</span>
                 </div>
                 <h3 class="text-lg font-black text-slate-800 mb-3 group-hover:text-primary transition-colors">Ibu Hamil</h3>
-                <p class="text-xs font-semibold text-slate-400 mb-8 leading-relaxed max-w-[240px]">Pendaftaran untuk pendampingan masa kehamilan, pemeriksaan rutin, dan persiapan persalinan.</p>
+                <p class="text-xs font-semibold text-slate-400 mb-8 leading-relaxed max-w-60">Pendaftaran untuk pendampingan masa kehamilan, pemeriksaan rutin, dan persiapan persalinan.</p>
                 <div class="mt-auto px-6 py-2.5 rounded-xl bg-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-500 group-hover:bg-primary group-hover:text-white transition-colors">
                     Pilih Kategori
                 </div>
@@ -51,7 +51,7 @@
                     <span class="material-symbols-outlined text-[40px]" style="font-variation-settings: 'FILL' 1;">elderly</span>
                 </div>
                 <h3 class="text-lg font-black text-slate-800 mb-3 group-hover:text-primary transition-colors">Lansia</h3>
-                <p class="text-xs font-semibold text-slate-400 mb-8 leading-relaxed max-w-[240px]">Pendaftaran untuk warga lanjut usia guna pemeriksaan kesehatan rutin dan program kesejahteraan lansia.</p>
+                <p class="text-xs font-semibold text-slate-400 mb-8 leading-relaxed max-w-60">Pendaftaran untuk warga lanjut usia guna pemeriksaan kesehatan rutin dan program kesejahteraan lansia.</p>
                 <div class="mt-auto px-6 py-2.5 rounded-xl bg-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-500 group-hover:bg-primary group-hover:text-white transition-colors">
                     Pilih Kategori
                 </div>

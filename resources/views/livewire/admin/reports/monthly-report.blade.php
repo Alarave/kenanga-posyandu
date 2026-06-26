@@ -3,7 +3,7 @@
     <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8 relative">
         <div class="relative pl-6 z-10">
             {{-- Vertical Glowing Bar --}}
-            <div class="absolute left-0 top-1 bottom-1 w-1.5 bg-gradient-to-b from-teal-400 to-emerald-300 rounded-full shadow-[0_0_12px_rgba(45,212,191,0.6)]"></div>
+            <div class="absolute left-0 top-1 bottom-1 w-1.5 bg-linear-to-b from-teal-400 to-emerald-300 rounded-full shadow-[0_0_12px_rgba(45,212,191,0.6)]"></div>
             
             <div class="flex flex-col gap-3">
                 <div>
@@ -46,9 +46,9 @@
         <div class="flex flex-wrap items-end gap-5 relative z-10">
             {{-- Pilih Posyandu (superadmin only) --}}
             @if(auth()->user()->isSuperAdmin())
-            <div class="flex-1 min-w-[200px]">
+            <div class="flex-1 min-w-50">
                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-2">Posyandu</label>
-                <x-forms.select-input wire:model="selectedPosyanduId" class="!rounded-2xl !bg-slate-50/50 focus:!bg-white !border-slate-200/60 shadow-inner-sm transition-all" value="{{ $selectedPosyanduId }}">
+                <x-forms.select-input wire:model="selectedPosyanduId" class="rounded-2xl! bg-slate-50/50! focus:bg-white! border-slate-200/60! shadow-inner-sm transition-all" value="{{ $selectedPosyanduId }}">
                     @foreach($posyandus as $pos)
                         <option value="{{ $pos->id }}">{{ $pos->name }}</option>
                     @endforeach
@@ -57,7 +57,7 @@
             @endif
 
             {{-- Tanggal Mulai --}}
-            <div class="flex-1 min-w-[140px]">
+            <div class="flex-1 min-w-35">
                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-2">Periode Mulai</label>
                 <input type="month" wire:model.live="startPeriod" class="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50/50 text-sm font-medium focus:bg-white focus:border-teal-400 focus:ring-4 focus:ring-teal-400/10 transition-all shadow-inner-sm">
             </div>
@@ -68,7 +68,7 @@
             </div>
 
             {{-- Tanggal Akhir --}}
-            <div class="flex-1 min-w-[140px]">
+            <div class="flex-1 min-w-35">
                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest ml-1 mb-2">Periode Selesai</label>
                 <input type="month" wire:model.live="endPeriod" class="w-full h-12 px-4 rounded-2xl border border-slate-200 bg-slate-50/50 text-sm font-medium focus:bg-white focus:border-teal-400 focus:ring-4 focus:ring-teal-400/10 transition-all shadow-inner-sm">
             </div>
@@ -76,7 +76,7 @@
             {{-- Tombol Tampilkan --}}
             <button wire:click="generateReport"
                     wire:loading.attr="disabled"
-                    class="h-12 px-8 bg-gradient-to-r from-teal-600 to-emerald-500 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2 shadow-[0_8px_16px_-6px_rgba(13,148,136,0.4)]">
+                    class="h-12 px-8 bg-linear-to-r from-teal-600 to-emerald-500 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2 shadow-[0_8px_16px_-6px_rgba(13,148,136,0.4)]">
                 <span wire:loading.remove wire:target="generateReport" class="material-symbols-outlined text-[18px]">magic_button</span>
                 <svg wire:loading wire:target="generateReport" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
@@ -93,7 +93,7 @@
     <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
 
         {{-- Total Kunjungan --}}
-        <div class="group bg-white rounded-[2rem] border border-slate-200 p-6 shadow-sm transition-all duration-300 relative overflow-hidden">
+        <div class="group bg-white rounded-4xl border border-slate-200 p-6 shadow-sm transition-all duration-300 relative overflow-hidden">
             <div class="flex justify-between items-start mb-6">
                 <div class="w-12 h-12 flex items-center justify-center border border-teal-200 rounded-full text-teal-600 bg-teal-50/30">
                     <span class="material-symbols-outlined text-[24px]">group</span>
@@ -108,7 +108,7 @@
         </div>
 
         {{-- Balita Stunting --}}
-        <div class="group bg-white rounded-[2rem] border border-slate-200 p-6 shadow-sm transition-all duration-300 relative overflow-hidden">
+        <div class="group bg-white rounded-4xl border border-slate-200 p-6 shadow-sm transition-all duration-300 relative overflow-hidden">
             <div class="flex justify-between items-start mb-6">
                 <div class="w-12 h-12 flex items-center justify-center border border-rose-200 rounded-full text-rose-500 bg-rose-50/30">
                     <span class="material-symbols-outlined text-[24px]" style="font-variation-settings:'FILL' 1;">warning</span>
@@ -123,7 +123,7 @@
         </div>
 
         {{-- Ibu Hamil --}}
-        <div class="group bg-white rounded-[2rem] border border-slate-200 p-6 shadow-sm transition-all duration-300 relative overflow-hidden">
+        <div class="group bg-white rounded-4xl border border-slate-200 p-6 shadow-sm transition-all duration-300 relative overflow-hidden">
             <div class="flex justify-between items-start mb-6">
                 <div class="w-12 h-12 flex items-center justify-center border border-blue-200 rounded-full text-blue-600 bg-blue-50/30">
                     <span class="material-symbols-outlined text-[24px]">female</span>
@@ -138,7 +138,7 @@
         </div>
 
         {{-- Cakupan Vitamin A --}}
-        <div class="group bg-white rounded-[2rem] border border-slate-200 p-6 shadow-sm transition-all duration-300 relative overflow-hidden">
+        <div class="group bg-white rounded-4xl border border-slate-200 p-6 shadow-sm transition-all duration-300 relative overflow-hidden">
             <div class="flex justify-between items-start mb-6">
                 <div class="w-12 h-12 flex items-center justify-center border border-amber-200 rounded-full text-amber-500 bg-amber-50/30">
                     <span class="material-symbols-outlined text-[24px]">medication</span>
@@ -153,7 +153,7 @@
         </div>
 
         {{-- Lansia --}}
-        <div class="group bg-white rounded-[2rem] border border-slate-200 p-6 shadow-sm transition-all duration-300 relative overflow-hidden">
+        <div class="group bg-white rounded-4xl border border-slate-200 p-6 shadow-sm transition-all duration-300 relative overflow-hidden">
             <div class="flex justify-between items-start mb-6">
                 <div class="w-12 h-12 flex items-center justify-center border border-indigo-200 rounded-full text-indigo-600 bg-indigo-50/30">
                     <span class="material-symbols-outlined text-[24px]">elderly</span>
@@ -170,7 +170,7 @@
     </section>
 
     {{-- ── Tabel Detail Kunjungan (Redesigned) ── --}}
-    <section class="bg-white rounded-[2rem] border border-slate-100 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col">
+    <section class="bg-white rounded-4xl border border-slate-100 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col">
 
         {{-- Header Tabel --}}
         <div class="px-8 py-6 border-b border-slate-100/60 bg-slate-50/30 flex flex-wrap justify-between items-center gap-6">
@@ -210,7 +210,7 @@
         {{-- Search & Sort Section --}}
         <div class="px-6 lg:px-8 py-5 border-b border-slate-100/60 flex flex-col gap-4">
             {{-- Search Input --}}
-            <div class="relative w-full max-w-[400px] shrink-0 group">
+            <div class="relative w-full max-w-100 shrink-0 group">
                 <div class="absolute inset-y-0 left-0 w-10 flex items-center justify-center pointer-events-none">
                     <span class="material-symbols-outlined text-slate-400 group-focus-within:text-teal-500 transition-colors text-[20px]">search</span>
                 </div>
@@ -329,14 +329,14 @@
                                 $badgeStyle = match($status ? strtolower(trim($status)) : null) {
                                     'normal', 'gizi baik', 'baik' => 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20',
                                     'gizi kurang', 'kurang' => 'bg-amber-50 text-amber-700 ring-1 ring-amber-600/20',
-                                    'gizi lebih', 'lebih' => 'bg-indigo-50 text-indigo-700 ring-1 ring-indigo-600/20',
+                                    'gizi lebih', 'lebih', 'berisiko gizi lebih', 'obesitas' => 'bg-orange-50 text-orange-700 ring-1 ring-orange-600/20',
                                     'gizi buruk/stunting', 'gizi buruk', 'buruk', 'stunting' => 'bg-rose-50 text-rose-700 ring-1 ring-rose-600/20',
                                     default => 'bg-slate-100 text-slate-500 ring-1 ring-slate-400/20',
                                 };
                                 $icon = match($status ? strtolower(trim($status)) : null) {
                                     'gizi buruk/stunting', 'gizi buruk', 'buruk', 'stunting' => 'trending_down',
                                     'gizi kurang', 'kurang' => 'trending_down',
-                                    'gizi lebih', 'lebih' => 'trending_up',
+                                    'gizi lebih', 'lebih', 'berisiko gizi lebih', 'obesitas' => 'trending_up',
                                     'normal', 'gizi baik', 'baik' => 'check_circle',
                                     default => 'horizontal_rule',
                                 };
@@ -417,7 +417,7 @@
                     <button wire:click="gotoPage({{ $page }})"
                             class="w-10 h-10 flex items-center justify-center rounded-xl text-sm font-bold transition-all shadow-sm
                                 {{ $page === $records->currentPage()
-                                    ? 'bg-gradient-to-br from-teal-600 to-emerald-500 text-white border-transparent'
+                                    ? 'bg-linear-to-br from-teal-600 to-emerald-500 text-white border-transparent'
                                     : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:text-teal-600' }}">
                         {{ $page }}
                     </button>
