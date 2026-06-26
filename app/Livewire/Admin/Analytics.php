@@ -31,6 +31,8 @@ class Analytics extends BaseAdminComponent
 
     public int $totalKunjungan = 0;
 
+    public array $kategoriData = [];
+
     public float $stuntingRate = 0;
 
     public float $cakupanImunisasi = 0;
@@ -618,6 +620,27 @@ class Analytics extends BaseAdminComponent
             }
         }
 
+        // Count other categories: sekolah, remaja, umum, lansia
+        $sekolahCount = (clone $patientQuery)
+            ->where('category', 'sekolah')
+            ->whereHas('medicalRecords', $basePatientFilter)
+            ->count();
+
+        $remajaCount = (clone $patientQuery)
+            ->where('category', 'remaja')
+            ->whereHas('medicalRecords', $basePatientFilter)
+            ->count();
+
+        $umumCount = (clone $patientQuery)
+            ->where('category', 'umum')
+            ->whereHas('medicalRecords', $basePatientFilter)
+            ->count();
+
+        $lansiasCount = (clone $patientQuery)
+            ->where('category', 'lansia')
+            ->whereHas('medicalRecords', $basePatientFilter)
+            ->count();
+
         // Vaccine counts
         $vaccineList = ['HB-0', 'BCG', 'Polio 1', 'Polio 2', 'Polio 3', 'Polio 4', 'DPT-HB-Hib 1', 'DPT-HB-Hib 2', 'DPT-HB-Hib 3', 'PCV 1', 'PCV 2', 'PCV 3', 'RV 1', 'RV 2', 'RV 3', 'IPV 1', 'IPV 2', 'MR'];
         $vaccineCounts = [];
@@ -820,6 +843,16 @@ class Analytics extends BaseAdminComponent
             'totalLansia' => $totalLansia,
             'totalKunjungan' => $totalKunjungan,
             'kaderAktif' => $kaderAktif,
+            'kategoriData' => [
+                'bayi' => $bayis,
+                'baduta' => $badutas,
+                'balita' => $balitasCount,
+                'sekolah' => $sekolahCount,
+                'remaja' => $remajaCount,
+                'ibu_hamil' => $totalIbuHamil,
+                'umum' => $umumCount,
+                'lansia' => $lansiasCount,
+            ],
             'trendLabels' => $trendLabels,
             'trendVisitsBalita' => $trendVisitsBalita,
             'trendVisitsIbuHamil' => $trendVisitsIbuHamil,

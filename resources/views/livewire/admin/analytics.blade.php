@@ -196,6 +196,61 @@
                 @endforeach
             </div>
 
+            {{-- ── Kategori Warga Cards (7 Cards Grid) ── --}}
+            <div class="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-xs">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Kategori Warga Terdaftar</h3>
+                        <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Distribusi warga berdasarkan kategori usia dan kondisi kesehatan</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7 gap-4">
+                    @php
+                        $kategoriWarga = [
+                            ['icon' => 'baby_changing_station', 'label' => 'Bayi', 'count' => $kategoriData['bayi'] ?? 0, 'desc' => '0-11 bln', 'color' => 'blue', 'gradient' => 'from-blue-500 to-cyan-500'],
+                            ['icon' => 'child_friendly', 'label' => 'Baduta', 'count' => $kategoriData['baduta'] ?? 0, 'desc' => '12-23 bln', 'color' => 'indigo', 'gradient' => 'from-indigo-500 to-purple-500'],
+                            ['icon' => 'child_care', 'label' => 'Balita', 'count' => $kategoriData['balita'] ?? 0, 'desc' => '24-59 bln', 'color' => 'teal', 'gradient' => 'from-teal-500 to-emerald-500'],
+                            ['icon' => 'school', 'label' => 'Sekolah', 'count' => $kategoriData['sekolah'] ?? 0, 'desc' => '6-9 th', 'color' => 'amber', 'gradient' => 'from-amber-500 to-orange-500'],
+                            ['icon' => 'pregnant_woman', 'label' => 'Hamil', 'count' => $kategoriData['ibu_hamil'] ?? 0, 'desc' => 'Bumil', 'color' => 'rose', 'gradient' => 'from-rose-500 to-pink-500'],
+                            ['icon' => 'emoji_people', 'label' => 'Remaja', 'count' => $kategoriData['remaja'] ?? 0, 'desc' => '10-18 th', 'color' => 'violet', 'gradient' => 'from-violet-500 to-fuchsia-500'],
+                            ['icon' => 'groups', 'label' => 'Umum', 'count' => $kategoriData['umum'] ?? 0, 'desc' => 'Dewasa', 'color' => 'slate', 'gradient' => 'from-slate-600 to-gray-600'],
+                            ['icon' => 'elderly', 'label' => 'Lansia', 'count' => $kategoriData['lansia'] ?? 0, 'desc' => '60+ th', 'color' => 'emerald', 'gradient' => 'from-emerald-600 to-teal-600'],
+                        ];
+                    @endphp
+
+                    @foreach($kategoriWarga as $k)
+                    <div class="group relative overflow-hidden bg-white rounded-2xl border-2 border-slate-100 hover:border-{{ $k['color'] }}-300 transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
+                        {{-- Gradient Top Bar --}}
+                        <div class="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r {{ $k['gradient'] }}"></div>
+                        
+                        {{-- Icon Container --}}
+                        <div class="pt-4 px-4 pb-2">
+                            <div class="w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br {{ $k['gradient'] }} flex items-center justify-center shadow-md group-hover:scale-110 transition-transform duration-300">
+                                <span class="material-symbols-outlined text-[28px] text-white">{{ $k['icon'] }}</span>
+                            </div>
+                        </div>
+
+                        {{-- Content --}}
+                        <div class="px-4 pb-5 text-center space-y-2">
+                            <h4 class="text-sm font-bold text-slate-700 uppercase tracking-wide">{{ $k['label'] }}</h4>
+                            
+                            <div class="py-2">
+                                <span class="text-4xl font-black text-slate-900 tracking-tighter block">{{ number_format($k['count']) }}</span>
+                            </div>
+                            
+                            <div class="inline-flex items-center px-3 py-1 rounded-full bg-slate-100 text-slate-600 text-xs font-bold uppercase tracking-wider">
+                                {{ $k['desc'] }}
+                            </div>
+                        </div>
+
+                        {{-- Hover Effect Background --}}
+                        <div class="absolute inset-0 bg-gradient-to-br {{ $k['gradient'] }} opacity-0 group-hover:opacity-5 transition-opacity duration-300 pointer-events-none"></div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+
             {{-- Combined Trend Line Chart --}}
             <div class="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-xs">
                 <div class="flex items-center justify-between gap-4 mb-6">
