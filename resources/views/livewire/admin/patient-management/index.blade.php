@@ -158,32 +158,65 @@
 
     {{-- ── Data Table ── --}}
     <div class="bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-200/40 overflow-hidden">
+        {{-- Table Header Info --}}
+        <div class="px-6 py-5 border-b border-slate-100 bg-gradient-to-r from-white to-slate-50/50 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-2xl bg-teal-100 text-teal-700 flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[22px]">table_chart</span>
+                </div>
+                <div>
+                    <h3 class="text-lg font-black text-slate-800">Daftar Warga Terdaftar</h3>
+                    <p class="text-xs font-semibold text-slate-400">Total {{ $patients->total() }} data ditampilkan</p>
+                </div>
+            </div>
+        </div>
+        
         <div class="overflow-x-auto">
             <table class="w-full">
                 <thead>
-                    <tr class="bg-gradient-to-r from-slate-50 to-slate-100/80 border-b-2 border-slate-200">
-                        <th class="px-6 py-5 text-left text-xs font-black text-slate-500 uppercase tracking-wider">
+                    <tr class="bg-gradient-to-r from-slate-50 via-slate-50/80 to-transparent border-b border-slate-200">
+                        <th class="px-6 py-4 text-left">
                             <div class="flex items-center gap-3">
-                                <span class="material-symbols-outlined text-[18px]">person</span>
-                                <span>Warga</span>
+                                <div class="w-8 h-8 rounded-xl bg-slate-200 text-slate-500 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[16px]">person</span>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="text-xs font-black text-slate-600 uppercase tracking-wider">Warga</span>
+                                    <span class="text-[10px] font-semibold text-slate-400">Nama & NIK</span>
+                                </div>
                             </div>
                         </th>
-                        <th class="px-6 py-5 text-left text-xs font-black text-slate-500 uppercase tracking-wider">
+                        <th class="px-6 py-4 text-left">
                             <div class="flex items-center gap-3">
-                                <span class="material-symbols-outlined text-[18px]">categorize</span>
-                                <span>Kategori</span>
+                                <div class="w-8 h-8 rounded-xl bg-slate-200 text-slate-500 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[16px]">categorize</span>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="text-xs font-black text-slate-600 uppercase tracking-wider">Kategori</span>
+                                    <span class="text-[10px] font-semibold text-slate-400">Klasifikasi</span>
+                                </div>
                             </div>
                         </th>
-                        <th class="px-6 py-5 text-left text-xs font-black text-slate-500 uppercase tracking-wider">
+                        <th class="px-6 py-4 text-left">
                             <div class="flex items-center gap-3">
-                                <span class="material-symbols-outlined text-[18px]">local_hospital</span>
-                                <span>Posyandu & Usia</span>
+                                <div class="w-8 h-8 rounded-xl bg-slate-200 text-slate-500 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[16px]">local_hospital</span>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="text-xs font-black text-slate-600 uppercase tracking-wider">Informasi</span>
+                                    <span class="text-[10px] font-semibold text-slate-400">Posyandu & Usia</span>
+                                </div>
                             </div>
                         </th>
-                        <th class="px-6 py-5 text-right text-xs font-black text-slate-500 uppercase tracking-wider">
+                        <th class="px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-3">
-                                <span>Aksi</span>
-                                <span class="material-symbols-outlined text-[18px]">settings</span>
+                                <div class="flex flex-col items-end">
+                                    <span class="text-xs font-black text-slate-600 uppercase tracking-wider">Aksi</span>
+                                    <span class="text-[10px] font-semibold text-slate-400">Pengaturan</span>
+                                </div>
+                                <div class="w-8 h-8 rounded-xl bg-slate-200 text-slate-500 flex items-center justify-center">
+                                    <span class="material-symbols-outlined text-[16px]">settings</span>
+                                </div>
                             </div>
                         </th>
                     </tr>
@@ -204,69 +237,71 @@
                         ];
                         $config = $catConfig[$patient->category] ?? $catConfig['umum'];
                     @endphp
-                    <tr class="group hover:bg-gradient-to-r hover:from-slate-50/80 hover:to-transparent transition-all duration-300" wire:key="patient-{{ $patient->id }}">
-                        <td class="px-6 py-4">
+                    <tr class="group hover:bg-gradient-to-r hover:from-teal-50/30 hover:to-transparent transition-all duration-300" wire:key="patient-{{ $patient->id }}">
+                        <td class="px-6 py-5">
                             <div class="flex items-center gap-4">
                                 @if($patient->profile_photo)
                                     <img src="{{ asset('storage/' . $patient->profile_photo) }}" 
-                                         class="h-12 w-12 rounded-2xl object-cover border-2 border-white shadow-md group-hover:scale-110 transition-transform duration-300"
+                                         class="h-14 w-14 rounded-2xl object-cover border-2 border-white shadow-lg group-hover:scale-105 group-hover:shadow-xl transition-all duration-300"
                                          alt="{{ $patient->full_name }}">
                                 @else
-                                    <div class="h-12 w-12 rounded-2xl bg-gradient-to-br from-teal-100 to-emerald-100 text-teal-700 flex items-center justify-center font-black text-sm border-2 border-white shadow-md group-hover:scale-110 transition-transform duration-300">
+                                    <div class="h-14 w-14 rounded-2xl bg-gradient-to-br from-teal-400 to-emerald-500 text-white flex items-center justify-center font-black text-lg border-2 border-white shadow-lg group-hover:scale-105 group-hover:shadow-xl transition-all duration-300">
                                         {{ $initials }}
                                     </div>
                                 @endif
-                                <div class="min-w-0">
+                                <div class="min-w-0 flex-1">
                                     <div class="font-bold text-slate-800 text-base truncate group-hover:text-teal-700 transition-colors">{{ $patient->full_name }}</div>
-                                    <div class="text-xs font-mono text-slate-400 mt-0.5 flex items-center gap-1.5">
-                                        <span class="material-symbols-outlined text-[14px]">badge</span>
-                                        {{ $patient->id_number }}
+                                    <div class="flex items-center gap-2 mt-1">
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-slate-100 text-slate-500 text-[10px] font-mono font-semibold uppercase tracking-wider">
+                                            <span class="material-symbols-outlined text-[12px]">badge</span>
+                                            {{ $patient->id_number }}
+                                        </span>
                                     </div>
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-4">
-                            <span class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black uppercase tracking-wider border-2 {{ $config['bg'] }} {{ $config['text'] }} {{ $config['border'] }} shadow-sm">
-                                <span class="material-symbols-outlined text-[14px]">{{ $config['icon'] }}</span>
+                        <td class="px-6 py-5">
+                            <span class="inline-flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-black uppercase tracking-wide border-2 {{ $config['bg'] }} {{ $config['text'] }} {{ $config['border'] }} shadow-sm group-hover:shadow-md transition-shadow">
+                                <span class="material-symbols-outlined text-[16px]">{{ $config['icon'] }}</span>
                                 {{ $config['label'] }}
                             </span>
                         </td>
-                        <td class="px-6 py-4">
-                            <div class="space-y-1.5">
-                                <div class="flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-[16px] text-slate-400">local_pharmacy</span>
+                        <td class="px-6 py-5">
+                            <div class="space-y-2">
+                                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200">
+                                    <span class="material-symbols-outlined text-[16px] text-teal-600">local_pharmacy</span>
                                     <span class="text-sm font-bold text-slate-700">{{ $patient->posyandu->name ?? '—' }}</span>
                                 </div>
-                                <div class="flex items-center gap-2 pl-6">
-                                    <span class="material-symbols-outlined text-[16px] text-slate-300">calendar_today</span>
-                                    <span class="text-xs font-semibold text-slate-500">{{ $patient->age }} tahun</span>
+                                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-50 border border-slate-200 ml-1">
+                                    <span class="material-symbols-outlined text-[16px] text-slate-400">calendar_today</span>
+                                    <span class="text-xs font-semibold text-slate-600">{{ $patient->age }} tahun</span>
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-4">
+                        <td class="px-6 py-5">
                             <div class="flex items-center justify-end gap-2">
                                 {{-- View Detail --}}
                                 <a href="{{ route('admin.patients.show', $patient->id) }}" 
-                                   class="group/btn w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 border-2 border-slate-200 text-slate-500 hover:bg-teal-500 hover:text-white hover:border-teal-500 hover:shadow-lg hover:shadow-teal-200 transition-all duration-300 hover:scale-110 active:scale-90"
+                                   class="group/btn relative w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 border-2 border-slate-200 text-slate-500 hover:bg-teal-500 hover:text-white hover:border-teal-500 hover:shadow-lg hover:shadow-teal-200 transition-all duration-300 hover:scale-110 active:scale-95"
                                    title="Lihat Detail">
-                                    <span class="material-symbols-outlined text-[18px] group-hover/btn:scale-125 transition-transform">visibility</span>
+                                    <span class="material-symbols-outlined text-[20px] group-hover/btn:scale-125 transition-transform">visibility</span>
                                 </a>
 
                                 {{-- Edit --}}
                                 @can('update', $patient)
                                 <a href="{{ route('admin.patients.edit', $patient->id) }}" 
-                                   class="group/btn w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 border-2 border-slate-200 text-slate-500 hover:bg-amber-500 hover:text-white hover:border-amber-500 hover:shadow-lg hover:shadow-amber-200 transition-all duration-300 hover:scale-110 active:scale-90"
+                                   class="group/btn relative w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 border-2 border-slate-200 text-slate-500 hover:bg-amber-500 hover:text-white hover:border-amber-500 hover:shadow-lg hover:shadow-amber-200 transition-all duration-300 hover:scale-110 active:scale-95"
                                    title="Edit Data">
-                                    <span class="material-symbols-outlined text-[18px] group-hover/btn:rotate-12 transition-transform">edit</span>
+                                    <span class="material-symbols-outlined text-[20px] group-hover/btn:rotate-12 transition-transform">edit</span>
                                 </a>
                                 @endcan
 
                                 {{-- Delete --}}
                                 @can('delete', $patient)
                                 <button wire:click="confirmDelete({{ $patient->id }})" 
-                                        class="group/btn w-10 h-10 flex items-center justify-center rounded-xl bg-red-50 border-2 border-red-200 text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 hover:shadow-lg hover:shadow-red-200 transition-all duration-300 hover:scale-110 active:scale-90"
+                                        class="group/btn relative w-11 h-11 flex items-center justify-center rounded-2xl bg-red-50 border-2 border-red-200 text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 hover:shadow-lg hover:shadow-red-200 transition-all duration-300 hover:scale-110 active:scale-95"
                                         title="Hapus Data">
-                                    <span class="material-symbols-outlined text-[18px] group-hover/btn:scale-125 transition-transform">delete</span>
+                                    <span class="material-symbols-outlined text-[20px] group-hover/btn:scale-125 transition-transform">delete</span>
                                 </button>
                                 @endcan
                             </div>
@@ -274,15 +309,29 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="4" class="px-6 py-20 text-center">
+                        <td colspan="4" class="px-6 py-24 text-center">
                             <div class="flex flex-col items-center gap-6">
-                                <div class="w-24 h-24 rounded-full bg-slate-100 flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-[64px] text-slate-300">person_off</span>
+                                <div class="w-28 h-28 rounded-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center shadow-inner">
+                                    <span class="material-symbols-outlined text-[72px] text-slate-300">person_off</span>
                                 </div>
-                                <div>
+                                <div class="text-center">
                                     <p class="text-lg font-black text-slate-500 uppercase tracking-widest mb-2">Data Kosong</p>
-                                    <p class="text-sm font-medium text-slate-400">Belum ada data warga yang terdaftar</p>
+                                    <p class="text-sm font-medium text-slate-400 max-w-md mx-auto">Belum ada data warga yang terdaftar. Silakan tambahkan data warga baru atau import dari file Excel.</p>
                                 </div>
+                                @can('create', App\Models\Patient::class)
+                                <div class="flex gap-3 mt-2">
+                                    <a href="{{ route('admin.patients.create') }}" 
+                                       class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-teal-500 text-white font-bold text-sm hover:bg-teal-600 transition-all duration-300 hover:scale-105 shadow-lg shadow-teal-200">
+                                        <span class="material-symbols-outlined text-[18px]">add_circle</span>
+                                        <span>Tambah Warga</span>
+                                    </a>
+                                    <a href="{{ route('admin.patients.import') }}" 
+                                       class="inline-flex items-center gap-2 px-6 py-3 rounded-2xl bg-slate-100 text-slate-700 font-bold text-sm hover:bg-slate-200 transition-all duration-300 hover:scale-105">
+                                        <span class="material-symbols-outlined text-[18px]">publish</span>
+                                        <span>Import Data</span>
+                                    </a>
+                                </div>
+                                @endcan
                             </div>
                         </td>
                     </tr>
