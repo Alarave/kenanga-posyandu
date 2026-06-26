@@ -4,6 +4,8 @@ namespace App\Livewire\Admin\Analytics;
 
 use Livewire\Component;
 use App\Livewire\Traits\HasPosyanduScope;
+use App\Models\MedicalRecord;
+use App\Models\Patient;
 
 class IbuHamilAnalytics extends Component
 {
@@ -20,20 +22,32 @@ class IbuHamilAnalytics extends Component
         $this->selectedPosyandu = $selectedPosyandu;
     }
 
-    // AH-01: Validasi Total Ibu Hamil per Trimester
+    #[\Livewire\Attributes\Computed]
+    public function activePatientsQuery()
+    {
+        return $this->applyPosyanduScope(Patient::query(), $this->selectedPosyandu)
+            ->where('category', 'ibu_hamil')
+            ->where('status_mutasi', 'aktif')
+            ->whereHas('medicalRecords', function ($q) {
+                $q->whereYear('visit_date', $this->selectedYear)
+                  ->when($this->selectedMonth, fn($mq) => $mq->whereMonth('visit_date', $this->selectedMonth));
+            });
+    }
+
     #[\Livewire\Attributes\Computed]
     public function trimesterStats()
     {
-        $records = $this->applyPosyanduScope(\App\Models\MedicalRecord::query(), $this->selectedPosyandu)
-            ->whereHas('patient', function($q) {
-            $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
-        })
-        ->whereIn('id', function($query) {
-            $query->selectRaw('MAX(id)')->from('medical_records')->groupBy('patient_id');
-        })->get();
+        $patientIds = $this->activePatientsQuery()->pluck('id');
+
+        $latestRecords = MedicalRecord::whereIn('patient_id', $patientIds)
+            ->whereYear('visit_date', $this->selectedYear)
+            ->when($this->selectedMonth, fn($q) => $q->whereMonth('visit_date', $this->selectedMonth))
+            ->whereIn('id', function($query) {
+                $query->selectRaw('MAX(id)')->from('medical_records')->groupBy('patient_id');
+            })->get();
 
         $t1 = 0; $t2 = 0; $t3 = 0;
-        foreach ($records as $record) {
+        foreach ($latestRecords as $record) {
             $weeks = (int) filter_var($record->gestational_age, FILTER_SANITIZE_NUMBER_INT);
             if ($weeks > 0 && $weeks <= 13) $t1++;
             elseif ($weeks > 13 && $weeks <= 27) $t2++;
@@ -43,12 +57,10 @@ class IbuHamilAnalytics extends Component
         return ['T1' => $t1, 'T2' => $t2, 'T3' => $t3];
     }
 
-    // AH-02 & AH-03: HPL & Risiko 4T
     #[\Livewire\Attributes\Computed]
     public function riskStats()
     {
-        $patients = $this->applyPosyanduScope(\App\Models\Patient::query(), $this->selectedPosyandu)
-            ->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif')->with('medicalRecords')->get();
+        $patients = $this->activePatientsQuery()->get();
         $highRisk = 0;
         $normal = 0;
 
@@ -58,8 +70,13 @@ class IbuHamilAnalytics extends Component
                 $age = $p->birth_date->age;
                 if ($age < 20 || $age > 35) $isHighRisk = true;
             }
-            
-            $latestRecord = $p->medicalRecords->sortByDesc('visit_date')->first();
+
+            $latestRecord = MedicalRecord::where('patient_id', $p->id)
+                ->whereYear('visit_date', $this->selectedYear)
+                ->when($this->selectedMonth, fn($q) => $q->whereMonth('visit_date', $this->selectedMonth))
+                ->latest('visit_date')
+                ->first();
+
             if ($latestRecord && $latestRecord->height && $latestRecord->height < 145) {
                 $isHighRisk = true;
             }
@@ -71,32 +88,26 @@ class IbuHamilAnalytics extends Component
         return ['highRisk' => $highRisk, 'normal' => $normal];
     }
 
-    // AH-06: Anemia
     #[\Livewire\Attributes\Computed]
     public function anemiaStats()
     {
-        return $this->applyPosyanduScope(\App\Models\MedicalRecord::query(), $this->selectedPosyandu)
-            ->whereHas('patient', function($q) {
-            $q->where('category', 'ibu_hamil');
-        })
-        ->whereYear('visit_date', $this->selectedYear)
-        ->when($this->selectedMonth, fn($q) => $q->whereMonth('visit_date', $this->selectedMonth))
-        ->whereNotNull('hemoglobin')
-        ->where('hemoglobin', '<', 11)
-        ->count();
+        return $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
+            ->whereHas('patient', fn($q) => $q->where('category', 'ibu_hamil'))
+            ->whereYear('visit_date', $this->selectedYear)
+            ->when($this->selectedMonth, fn($q) => $q->whereMonth('visit_date', $this->selectedMonth))
+            ->whereNotNull('hemoglobin')
+            ->where('hemoglobin', '<', 11)
+            ->count();
     }
 
-    // AH-04: TTD Status
     #[\Livewire\Attributes\Computed]
     public function ttdStats()
     {
-        $records = $this->applyPosyanduScope(\App\Models\MedicalRecord::query(), $this->selectedPosyandu)
-            ->whereHas('patient', function($q) {
-            $q->where('category', 'ibu_hamil');
-        })
-        ->whereYear('visit_date', $this->selectedYear)
-        ->when($this->selectedMonth, fn($q) => $q->whereMonth('visit_date', $this->selectedMonth))
-        ->get();
+        $records = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
+            ->whereHas('patient', fn($q) => $q->where('category', 'ibu_hamil'))
+            ->whereYear('visit_date', $this->selectedYear)
+            ->when($this->selectedMonth, fn($q) => $q->whereMonth('visit_date', $this->selectedMonth))
+            ->get();
 
         $received = $records->where('nakes_gives_fe_mms', 1)->count();
         $notReceived = $records->where('nakes_gives_fe_mms', 0)->count();
@@ -104,20 +115,42 @@ class IbuHamilAnalytics extends Component
         return ['received' => $received, 'notReceived' => $notReceived];
     }
 
-    // AH-05: K1-K6 Kunjungan
+    #[\Livewire\Attributes\Computed]
+    public function kekStats()
+    {
+        $patientIds = $this->activePatientsQuery()->pluck('id');
+
+        $latestRecords = MedicalRecord::whereIn('patient_id', $patientIds)
+            ->whereYear('visit_date', $this->selectedYear)
+            ->when($this->selectedMonth, fn($q) => $q->whereMonth('visit_date', $this->selectedMonth))
+            ->whereIn('id', function($query) {
+                $query->selectRaw('MAX(id)')->from('medical_records')->groupBy('patient_id');
+            })->get();
+
+        $kek = 0;
+        $normal = 0;
+        foreach ($latestRecords as $r) {
+            if ($r->upper_arm_circumference && $r->upper_arm_circumference < 23.5) {
+                $kek++;
+            } else {
+                $normal++;
+            }
+        }
+        return ['kek' => $kek, 'normal' => $normal];
+    }
+
     #[\Livewire\Attributes\Computed]
     public function ancStats()
     {
-        $patients = $this->applyPosyanduScope(\App\Models\Patient::query(), $this->selectedPosyandu)
-            ->where('category', 'ibu_hamil')
-            ->where('status_mutasi', 'aktif')
-            ->with('medicalRecords')
-            ->get();
-
+        $patients = $this->activePatientsQuery()->get();
         $k1 = 0; $k2 = 0; $k3 = 0; $k4 = 0; $k5 = 0; $k6 = 0;
 
         foreach ($patients as $p) {
-            $visitCount = $p->medicalRecords->count();
+            $visitCount = MedicalRecord::where('patient_id', $p->id)
+                ->whereYear('visit_date', $this->selectedYear)
+                ->when($this->selectedMonth, fn($q) => $q->whereMonth('visit_date', $this->selectedMonth))
+                ->count();
+
             if ($visitCount >= 1) $k1++;
             if ($visitCount >= 2) $k2++;
             if ($visitCount >= 3) $k3++;
@@ -136,6 +169,7 @@ class IbuHamilAnalytics extends Component
             'riskStats' => $this->riskStats(),
             'anemiaCount' => $this->anemiaStats(),
             'ttdStats' => $this->ttdStats(),
+            'kekStats' => $this->kekStats(),
             'ancStats' => $this->ancStats()
         ]);
     }

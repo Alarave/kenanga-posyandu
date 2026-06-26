@@ -63,17 +63,14 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
         // ── 1. GLOBAL OVERVIEW STATS ────────────────────────────────
         $totalBalita = (clone $patientQuery)
             ->whereIn('category', ['balita', 'bayi', 'baduta'])
-            ->whereHas('medicalRecords', $basePatientFilter)
             ->count();
 
         $totalIbuHamil = (clone $patientQuery)
             ->where('category', 'ibu_hamil')
-            ->whereHas('medicalRecords', $basePatientFilter)
             ->count();
 
         $totalLansia = (clone $patientQuery)
             ->where('category', 'lansia')
-            ->whereHas('medicalRecords', $basePatientFilter)
             ->count();
 
         $totalKunjungan = (clone $medicalRecordQuery)

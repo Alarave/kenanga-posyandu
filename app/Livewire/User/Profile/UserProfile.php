@@ -11,10 +11,13 @@ class UserProfile extends Component
 
     public $email;
 
-    protected $rules = [
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|unique:users,email,'.Auth::id(),
-    ];
+    protected function rules()
+    {
+        return [
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,'.Auth::id(),
+        ];
+    }
 
     public function mount()
     {
