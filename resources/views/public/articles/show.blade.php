@@ -55,7 +55,7 @@
 
     {{-- ── Hero Cover Image (selalu tampil) ── --}}
     @if($article->thumbnail)
-    <div class="w-full aspect-[21/9] rounded-[3rem] overflow-hidden mb-20 shadow-2xl relative group">
+    <div class="max-w-3xl mx-auto aspect-[16/9] rounded-2xl overflow-hidden mb-16 shadow-lg relative group">
         <img src="{{ asset('storage/' . $article->thumbnail) }}"
              alt="{{ $article->title }}"
              class="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-105">
@@ -226,9 +226,19 @@
 }
 
 /* Inline formatting dari contenteditable */
+.article-content .article-paragraph { font-family: 'Georgia', serif; font-size: 1.15rem; line-height: 1.9; color: #374151; margin-bottom: 1.75rem; }
+.article-content .article-h1 { font-size: 2rem; font-weight: 900; color: #0f172a; margin: 2.5rem 0 0.75rem; line-height: 1.25; }
+.article-content .article-h2 { font-size: 1.5rem; font-weight: 900; color: #0f172a; margin: 2rem 0 0.5rem; }
+.article-content .article-h3 { font-size: 1.25rem; font-weight: 700; color: #1e293b; margin: 1.75rem 0 0.5rem; }
+.article-content .article-quote { border-left: 4px solid #0f172a; margin: 2rem 0; padding: 0.5rem 0 0.5rem 1.5rem; font-style: italic; color: #475569; }
+.article-content .article-callout { display: flex; gap: 0.75rem; background: #fffbeb; border: 1px solid #fde68a; border-radius: 0.75rem; padding: 1rem 1.25rem; margin: 1.5rem 0; color: #78350f; }
+.article-content .article-list { padding-left: 1.5rem; margin: 0.25rem 0; font-size: 1.15rem; line-height: 1.9; color: #374151; }
+.article-content .article-list--numbered { list-style: decimal; }
+.article-content .article-figure { margin: 2.5rem 0; }
+.article-content .article-image { width: 100%; height: auto; border-radius: 1rem; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+.article-content .article-video { position: relative; margin: 2rem 0; border-radius: 1rem; overflow: hidden; aspect-ratio: 16/9; background: #0f172a; }
+.article-content .article-divider { border: none; border-top: 1px solid #e5e7eb; margin: 2rem 0; }
 .article-content strong, .article-content b { font-weight: 800; color: #0f172a; }
-.article-content em, .article-content i     { font-style: italic; }
-.article-content u                           { text-decoration: underline; }
-.article-content s                           { text-decoration: line-through; color: #94a3b8; }
+.article-content em, .article-content i { font-style: italic; }
 </style>
 @endsection

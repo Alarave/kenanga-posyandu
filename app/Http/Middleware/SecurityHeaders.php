@@ -45,6 +45,8 @@ class SecurityHeaders
             "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
             "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:",
             "img-src 'self' data: blob: https:",
+            "media-src 'self' blob:",
+            "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://drive.google.com",
             "connect-src 'self'",
             "frame-ancestors 'self'",
             "base-uri 'self'",

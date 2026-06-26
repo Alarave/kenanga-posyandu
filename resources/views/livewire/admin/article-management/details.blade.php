@@ -1,48 +1,49 @@
-<div class="min-h-screen bg-white">
+<div>
     
-    {{-- ── Header Navigation ── --}}
-    <div class="bg-white border-b border-slate-200 sticky top-0 z-40">
-        <div class="max-w-4xl mx-auto px-4 md:px-6 py-4 flex items-center justify-between">
-            <a href="{{ route('admin.articles.index') }}" 
-               class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-slate-100 text-slate-600 transition-all">
-                <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+    {{-- Navigation inline --}}
+    <div class="flex items-center justify-between mb-6">
+        <a href="{{ route('admin.articles.index') }}" 
+        class="w-9 h-9 flex items-center justify-center bg-white border border-slate-200 hover:border-slate-300 rounded-xl text-slate-600 hover:text-slate-900 transition-all shadow-sm group">
+            <span class="material-symbols-outlined text-[18px] group-hover:-translate-x-0.5 transition-transform">arrow_back</span>
+        </a>
+        <div class="flex items-center gap-2">
+            <a href="{{ route('public.articles.show', $article->slug) }}" target="_blank"
+            class="h-9 px-4 flex items-center gap-2 bg-white border border-slate-200 hover:border-slate-300 rounded-xl text-xs font-bold text-slate-700 transition-all shadow-sm">
+                <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+                <span class="hidden sm:inline">Lihat di Web</span>
             </a>
-            <div class="flex items-center gap-2">
-                <a href="{{ route('public.articles.show', $article->slug) }}" 
-                   target="_blank"
-                   class="h-10 px-4 flex items-center gap-2 bg-white border border-slate-200 hover:border-slate-300 rounded-lg text-sm font-bold text-slate-700 transition-all">
-                    <span class="material-symbols-outlined text-[18px]">open_in_new</span>
-                    Lihat di Web
-                </a>
-                <a href="{{ route('admin.articles.edit', $article) }}" 
-                   class="h-10 px-4 flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 rounded-lg text-sm font-bold text-white transition-all">
-                    <span class="material-symbols-outlined text-[18px]">edit</span>
-                    Edit
-                </a>
-            </div>
+            <a href="{{ route('admin.articles.edit', $article) }}" 
+            class="h-9 px-4 flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 rounded-xl text-xs font-bold text-white transition-all shadow-sm">
+                <span class="material-symbols-outlined text-[16px]">edit</span>
+                <span class="hidden sm:inline">Edit</span>
+            </a>
+            @can('delete', $article)
+            <button wire:click="deleteArticle" wire:confirm="Hapus artikel ini secara permanen?"
+                    class="h-9 px-4 flex items-center gap-2 bg-red-50 hover:bg-red-600 border border-red-200 hover:border-red-600 rounded-xl text-xs font-bold text-red-600 hover:text-white transition-all shadow-sm">
+                <span class="material-symbols-outlined text-[16px]">delete</span>
+                <span class="hidden sm:inline">Hapus</span>
+            </button>
+            @endcan
         </div>
     </div>
 
     {{-- ── Article Content ── --}}
-    <article class="py-12">
-        <div class="max-w-4xl mx-auto px-4 md:px-6 space-y-8">
+    <article class="py-4">
+        <div class="max-w-5xl mx-auto px-6 md:px-12 space-y-8 w-full">
 
-            {{-- ── Header Image (Full Width) ── --}}
             @if($article->thumbnail && \Illuminate\Support\Facades\Storage::disk('public')->exists($article->thumbnail))
-                <div class="w-full aspect-video rounded-2xl overflow-hidden shadow-md">
+                <div class="w-full max-w-3xl mx-auto aspect-video rounded-2xl overflow-hidden shadow-md">
                     <img src="{{ asset('storage/'.$article->thumbnail) }}" 
                          alt="{{ $article->title }}" 
                          class="w-full h-full object-cover">
                 </div>
             @endif
 
-            {{-- ── Article Header (Title, Meta, Description) ── --}}
             <div class="space-y-4">
                 <h1 class="text-4xl md:text-5xl font-black text-slate-900 leading-tight">
                     {{ $article->title }}
                 </h1>
 
-                {{-- Article Meta Info (Author, Date, Reading Time) --}}
                 <div class="flex flex-wrap items-center gap-4 py-4 border-y border-slate-200">
                     <div class="flex items-center gap-3">
                         <div class="w-12 h-12 rounded-full bg-gradient-to-br from-indigo-400 to-blue-500 flex items-center justify-center text-white font-bold text-lg">
@@ -53,9 +54,7 @@
                             <p class="text-xs text-slate-500">{{ $article->created_at->format('d M Y') }}</p>
                         </div>
                     </div>
-
                     <div class="h-8 border-l border-slate-300"></div>
-
                     <div class="flex items-center gap-4 text-sm">
                         <div class="flex items-center gap-1 text-slate-600">
                             <span class="material-symbols-outlined text-[16px]">schedule</span>
@@ -63,21 +62,18 @@
                         </div>
                         <div class="flex items-center gap-1 text-slate-600">
                             <span class="material-symbols-outlined text-[16px]">article</span>
-                            <span class="font-bold">{{ str_word_count(strip_tags($article->content)) }} kata</span>
+                            <span class="font-bold">{{ str_word_count(\App\Services\ArticleService::getExcerpt($article->content, 999999)) }} kata</span>
                         </div>
                     </div>
-
                     @if($article->category)
                         <div class="h-8 border-l border-slate-300"></div>
-                        <a href="#" 
-                           class="inline-flex items-center gap-1 px-3 py-1 bg-slate-100 hover:bg-slate-200 rounded-full text-sm font-bold text-slate-700 transition-all">
+                        <span class="inline-flex items-center gap-1 px-3 py-1 bg-slate-100 rounded-full text-sm font-bold text-slate-700">
                             <span class="material-symbols-outlined text-[14px]">label</span>
                             {{ $article->category->name }}
-                        </a>
+                        </span>
                     @endif
                 </div>
 
-                {{-- Article Description (Ringkasan) --}}
                 @if($article->description)
                     <p class="text-lg text-slate-600 leading-relaxed font-medium italic border-l-4 border-indigo-600 pl-6">
                         {{ $article->description }}
@@ -85,97 +81,22 @@
                 @endif
             </div>
 
-            {{-- ── Article Body Content ── --}}
-            <div class="prose prose-lg max-w-none text-slate-800">
-                @if($article->content_blocks && count($article->content_blocks) > 0)
-                    <div class="space-y-6">
-                        @foreach($article->content_blocks as $block)
-                            @if($block['type'] === 'text' && isset($block['data']['content']))
-                                <p class="leading-8 text-base md:text-lg text-slate-700 whitespace-pre-line mb-6">
-                                    {{ $block['data']['content'] }}
-                                </p>
-
-                            @elseif($block['type'] === 'image' && isset($block['data']['url']) && !empty($block['data']['url']))
-                                <figure class="my-8 space-y-3">
-                                    <img src="{{ asset('storage/' . $block['data']['url']) }}" 
-                                         alt="{{ $block['data']['caption'] ?? 'Gambar Artikel' }}" 
-                                         class="w-full rounded-xl shadow-md">
-                                    @if(!empty($block['data']['caption']))
-                                        <figcaption class="text-sm text-slate-500 italic text-center">
-                                            {{ $block['data']['caption'] }}
-                                        </figcaption>
-                                    @endif
-                                </figure>
-
-                            @elseif($block['type'] === 'video' && isset($block['data']['url']) && !empty($block['data']['url']))
-                                @php
-                                    $ytEmbed = \App\Models\Article::getYoutubeEmbedUrl($block['data']['url']);
-                                    $gdEmbed = \App\Models\Article::getGoogleDriveEmbedUrl($block['data']['url']);
-                                @endphp
-                                <div class="my-8 space-y-3">
-                                    <div class="relative w-full bg-slate-900 rounded-xl overflow-hidden shadow-md" style="padding-bottom: 56.25%;">
-                                        @if($ytEmbed)
-                                            <iframe class="absolute inset-0 w-full h-full" 
-                                                    src="{{ $ytEmbed }}" 
-                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                                    allowfullscreen>
-                                            </iframe>
-                                        @elseif($gdEmbed)
-                                            <iframe class="absolute inset-0 w-full h-full" 
-                                                    src="{{ $gdEmbed }}" 
-                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                                    allowfullscreen>
-                                            </iframe>
-                                        @else
-                                            <div class="absolute inset-0 flex flex-col items-center justify-center bg-slate-800 text-slate-400 p-4">
-                                                <span class="material-symbols-outlined text-[48px] text-red-400">link_off</span>
-                                                <p class="text-sm font-bold mt-2">Video link tidak valid</p>
-                                                <a href="{{ $block['data']['url'] }}" target="_blank" class="text-xs text-indigo-400 underline mt-1 break-all">{{ $block['data']['url'] }}</a>
-                                            </div>
-                                        @endif
-                                    </div>
-                                    @if(!empty($block['data']['caption']))
-                                        <p class="text-sm text-slate-500 italic text-center">
-                                            {{ $block['data']['caption'] }}
-                                        </p>
-                                    @endif
-                                </div>
-
-                            @elseif($block['type'] === 'divider')
-                                <div class="flex items-center gap-4 py-8">
-                                    <div class="flex-1 border-t border-slate-200"></div>
-                                    <span class="material-symbols-outlined text-slate-300">more_horiz</span>
-                                    <div class="flex-1 border-t border-slate-200"></div>
-                                </div>
-                            @endif
-                        @endforeach
-                    </div>
-                @else
-                    {{-- Fallback untuk artikel lama tanpa blocks --}}
-                    <div class="whitespace-pre-line leading-8 text-base md:text-lg text-slate-700">
-                        {!! nl2br(e($article->content)) !!}
-                    </div>
-                @endif
+            <div class="article-content max-w-none">
+                {!! \App\Services\ArticleService::renderContent($article->content) !!}
             </div>
 
-            {{-- ── Article Footer (Author Bio) ── --}}
-            <div class="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-2xl border border-indigo-200 p-6 md:p-8 space-y-4">
+            <div class="bg-gradient-to-r from-indigo-50 to-blue-50 rounded-2xl border border-indigo-200 p-6 md:p-8">
                 <div class="flex items-start gap-4">
-                    <div class="w-16 h-16 md:w-20 md:h-20 rounded-full bg-gradient-to-br from-indigo-400 to-blue-500 flex items-center justify-center text-white font-black text-3xl flex-shrink-0">
+                    <div class="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-400 to-blue-500 flex items-center justify-center text-white font-black text-3xl flex-shrink-0">
                         {{ substr($article->user->name, 0, 1) }}
                     </div>
                     <div class="space-y-2 flex-1">
-                        <h3 class="text-lg md:text-xl font-black text-slate-900">
-                            {{ $article->user->name }}
-                        </h3>
-                        <p class="text-sm text-slate-600 leading-relaxed">
-                            Penulis artikel di Kenanga Posyandu. Berbagi pengetahuan kesehatan dan gizi untuk masyarakat.
-                        </p>
+                        <h3 class="text-lg font-black text-slate-900">{{ $article->user->name }}</h3>
+                        <p class="text-sm text-slate-600 leading-relaxed">Penulis artikel di Kenanga Posyandu. Berbagi pengetahuan kesehatan dan gizi untuk masyarakat.</p>
                     </div>
                 </div>
             </div>
 
-            {{-- ── Article Status Footer ── --}}
             <div class="flex flex-wrap items-center justify-between gap-4 py-6 border-t border-slate-200">
                 <div class="flex items-center gap-3">
                     @if($article->status === 'published')
@@ -189,26 +110,31 @@
                             Draf
                         </span>
                     @endif
-
-                    <span class="text-xs text-slate-500">
-                        Dibuat {{ $article->created_at->diffForHumans() }}
-                    </span>
+                    <span class="text-xs text-slate-500">Dibuat {{ $article->created_at->diffForHumans() }}</span>
                 </div>
-
-                <div class="flex items-center gap-2">
-                    <a href="{{ route('public.articles.show', $article->slug) }}" 
-                       target="_blank"
-                       class="h-10 px-4 flex items-center gap-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-sm font-bold text-slate-700 transition-all">
-                        <span class="material-symbols-outlined text-[18px]">open_in_new</span>
-                        Baca di Web
-                    </a>
-                </div>
+                <a href="{{ route('public.articles.show', $article->slug) }}" target="_blank"
+                   class="h-10 px-4 flex items-center gap-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-sm font-bold text-slate-700 transition-all">
+                    <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+                    Baca di Web
+                </a>
             </div>
         </div>
     </article>
-</div>
 
-                </a>
-            </div>
-    </article>
+    <style>
+    .article-content .article-paragraph { font-family: 'Georgia', serif; font-size: 1.15rem; line-height: 1.9; color: #374151; margin-bottom: 1.75rem; }
+    .article-content .article-h1 { font-size: 2rem; font-weight: 900; color: #0f172a; margin: 2.5rem 0 0.75rem; }
+    .article-content .article-h2 { font-size: 1.5rem; font-weight: 900; color: #0f172a; margin: 2rem 0 0.5rem; }
+    .article-content .article-h3 { font-size: 1.25rem; font-weight: 700; color: #1e293b; margin: 1.75rem 0 0.5rem; }
+    .article-content .article-quote { border-left: 4px solid #0f172a; margin: 2rem 0; padding: 0.5rem 0 0.5rem 1.5rem; font-style: italic; color: #475569; }
+    .article-content .article-callout { display: flex; gap: 0.75rem; background: #fffbeb; border: 1px solid #fde68a; border-radius: 0.75rem; padding: 1rem 1.25rem; margin: 1.5rem 0; color: #78350f; }
+    .article-content .article-list { padding-left: 1.5rem; margin: 0.25rem 0; font-size: 1.15rem; line-height: 1.9; color: #374151; }
+    .article-content .article-list--numbered { list-style: decimal; }
+    .article-content .article-figure { margin: 2.5rem 0; }
+    .article-content .article-image { width: 100%; height: auto; border-radius: 1rem; }
+    .article-content .article-video { position: relative; margin: 2rem 0; border-radius: 1rem; overflow: hidden; aspect-ratio: 16/9; background: #0f172a; }
+    .article-content .article-divider { border: none; border-top: 1px solid #e5e7eb; margin: 2rem 0; }
+    .article-content strong, .article-content b { font-weight: 800; color: #0f172a; }
+    .article-content em, .article-content i { font-style: italic; }
+    </style>
 </div>

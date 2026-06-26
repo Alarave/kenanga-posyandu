@@ -49,7 +49,7 @@
                         {{ $article->title }}
                     </h3>
                     <p class="text-slate-500 text-sm font-medium leading-relaxed line-clamp-2">
-                        {{ Str::limit(strip_tags($article->content), 160) }}
+                        {{ \App\Services\ArticleService::getExcerpt($article->content, 160) }}
                     </p>
                 </a>
 

@@ -76,4 +76,32 @@ class ArticleUpdate extends BaseAdminComponent
             'existingCover' => $this->existingCover,
         ]);
     }
+
+    public function saveFromAlpine(string $title, string $content, string $status, int $categoryId)
+    {
+    $this->title       = $title;
+    $this->content     = $content;
+    $this->status      = $status;
+    $this->category_id = $categoryId;
+
+    $this->authorize('update', $this->article);
+
+    $validated = $this->validate([
+        'title'       => 'required|string|max:255',
+        'content'     => 'required|string|min:2',
+        'status'      => 'required|in:published,draft',
+        'category_id' => 'required|exists:categories,id',
+        'cover'       => 'nullable|image|max:4096',
+    ]);
+
+    if (!empty($validated['cover'])) {
+        $validated['thumbnail'] = $validated['cover'];
+    }
+    unset($validated['cover']);
+
+    app(ArticleService::class)->updateArticle($this->article, $validated);
+
+    $this->notify('Artikel berhasil diperbarui.', 'success', true);
+    $this->redirect(route('admin.articles.index'));
+    }
 }

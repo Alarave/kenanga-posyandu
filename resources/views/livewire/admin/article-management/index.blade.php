@@ -86,7 +86,9 @@
     {{-- ── Articles Grid Layout (Medium Style) ── --}}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         @forelse($articles as $article)
-        <div class="group bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col h-full">
+        <div class="group relative bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col h-full cursor-pointer"
+        x-data
+        @click="window.location='{{ route('admin.articles.show', $article->id) }}'">
             {{-- Thumbnail Section --}}
             <div class="relative h-48 bg-gradient-to-br from-slate-100 to-slate-200 overflow-hidden group-hover:scale-105 transition-transform duration-500">
                 @if($article->thumbnail && Storage::disk('public')->exists($article->thumbnail))
@@ -147,38 +149,14 @@
                     </div>
                 </div>
             </div>
-
-            {{-- Action Buttons --}}
-            <div class="px-6 pb-6 pt-4 flex items-center gap-2 border-t border-slate-50">
-                <a href="{{ route('admin.articles.show', $article->id) }}"
-                   class="flex-1 h-10 flex items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white font-bold text-xs uppercase tracking-widest transition-all"
-                   title="Lihat Detail">
-                    <span class="material-symbols-outlined text-[16px]">visibility</span>
-                </a>
-
-                @if($article->status === 'published')
-                <a href="{{ route('public.articles.show', $article->slug) }}" target="_blank"
-                   class="flex-1 h-10 flex items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 hover:bg-emerald-600 hover:text-white font-bold text-xs uppercase tracking-widest transition-all"
-                   title="Lihat di Web">
-                    <span class="material-symbols-outlined text-[16px]">open_in_new</span>
-                </a>
-                @endif
-                
-                @can('update', $article)
-                <a href="{{ route('admin.articles.edit', $article->id) }}"
-                   class="flex-1 h-10 flex items-center justify-center rounded-lg bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white font-bold text-xs uppercase tracking-widest transition-all">
-                    <span class="material-symbols-outlined text-[16px]">edit</span>
-                </a>
-                @endcan
-
-                @can('delete', $article)
-                <button wire:click="deleteArticle({{ $article->id }})"
-                        wire:confirm="Hapus artikel ini secara permanen?"
-                        class="flex-1 h-10 flex items-center justify-center rounded-lg bg-red-50 text-red-600 hover:bg-red-600 hover:text-white font-bold text-xs uppercase tracking-widest transition-all">
-                    <span class="material-symbols-outlined text-[16px]">delete</span>
-                </button>
-                @endcan
-            </div>
+            @can('delete', $article)
+            <button wire:click="deleteArticle({{ $article->id }})"
+                    wire:confirm="Hapus artikel ini secara permanen?"
+                    @click.stop
+                    class="absolute top-3 right-3 z-20 w-8 h-8 bg-white/80 backdrop-blur-sm hover:bg-red-500 text-slate-500 hover:text-white rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all shadow-sm">
+                <span class="material-symbols-outlined text-[15px]">delete</span>
+            </button>
+            @endcan
         </div>
         @empty
         <div class="col-span-full py-32">

@@ -22,7 +22,7 @@
 {{-- ══════════════════════════════════════════
      CANVAS
 ══════════════════════════════════════════ --}}
-<div class="max-w-[720px] mx-auto px-5 md:px-0 pt-12 pb-40">
+<div class="max-w-[720px] mx-auto px-5 md:px-0 pt-4 pb-40">
 
 
     {{-- 1. JUDUL --}}
@@ -44,22 +44,26 @@
     </div>
 
     {{-- 2. FOTO SAMPUL --}}
-        <div class="mb-10">
-            <div class="relative w-full max-w-[360px] aspect-video rounded-2xl overflow-hidden border-2 cursor-pointer transition-all group"
-             :class="coverPreview ? 'border-transparent shadow-xl' : 'border-dashed border-slate-300 bg-white hover:border-indigo-400 hover:bg-indigo-50/20'"
-             @click="$refs.lwCoverInput.click()">
+    <div class="mb-8">
+        <p class="text-xs font-black text-slate-500 uppercase tracking-wide mb-2">
+            Foto Sampul Artikel <span class="text-red-500">*</span>
+        </p>
+        <div class="relative w-full max-w-[480px] rounded-xl overflow-hidden border-2 cursor-pointer transition-all group"
+            :class="coverPreview ? 'border-transparent shadow-xl' : 'border-dashed border-slate-300 bg-white hover:border-indigo-400 hover:bg-indigo-50/20'"
+            style="height: 200px;"
+            @click="$refs.lwCoverInput.click()">
 
             <img x-show="coverPreview" :src="coverPreview"
-                 class="absolute inset-0 w-full h-full object-cover">
+                class="absolute inset-0 w-full h-full object-cover">
 
             <div x-show="coverPreview"
-                 class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white text-sm font-bold">
+                class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white text-sm font-bold">
                 <span class="material-symbols-outlined text-[22px]">photo_camera</span>
                 Ganti Foto Sampul
             </div>
 
             <div x-show="!coverPreview && !coverUploading"
-                 class="absolute inset-0 flex flex-col items-center justify-center gap-3 text-slate-400">
+                class="absolute inset-0 flex flex-col items-center justify-center gap-3 text-slate-400">
                 <div class="w-14 h-14 rounded-xl bg-slate-100 flex items-center justify-center">
                     <span class="material-symbols-outlined text-[26px] text-slate-400">add_photo_alternate</span>
                 </div>
@@ -70,7 +74,7 @@
             </div>
 
             <div x-show="coverUploading"
-                 class="absolute inset-0 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center gap-3 z-10">
+                class="absolute inset-0 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center gap-3 z-10">
                 <div class="w-8 h-8 border-[3px] border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
                 <p class="text-xs font-bold text-indigo-600 uppercase tracking-widest">Mengunggah…</p>
             </div>
@@ -103,14 +107,13 @@
                     </div>
                     <div :id="'block-' + block.id" contenteditable="true"
                          x-init="$el.innerHTML = block.content || ''; $el.addEventListener('input', () => {block.content = $el.innerHTML;});"
-                         x-effect="if(document.activeElement !== $el){    $el.innerHTML = block.content || '';}"
                          @keydown="handleKeydown($event, index)"
                          @focus="focusedIndex = index; activeBlockId = block.id"
                          @blur="handleBlur(index)"
                          @mouseup="checkSelection()" @keyup="checkSelection()"
                          :data-placeholder="index === 0 ? 'Mulai menulis, atau klik + untuk tambah konten…' : 'Tulis paragraf…'"
                          class="flex-1 min-h-[1.8em] py-2.5 pl-3 outline-none text-[1.15rem] leading-[1.9] text-slate-700 ce-placeholder">
-                         style="font-family:'Georgia',serif; direction:ltr; unicode-bidi:normal; text-align:left;"></div>
+                         style="font-family:'Georgia',serif;"></div>
                 </div>
 
                 {{-- HEADING 1 --}}
@@ -126,7 +129,6 @@
                     </div>
                     <div :id="'block-' + block.id" contenteditable="true"
                         x-init="$el.innerHTML = block.content || ''; $el.addEventListener('input', () => {block.content = $el.innerHTML;});"
-                         x-effect="if(document.activeElement !== $el){    $el.innerHTML = block.content || '';}"
                          @keydown="handleKeydown($event, index)"
                          @focus="focusedIndex = index; activeBlockId = block.id"
                          @blur="handleBlur(index)"
@@ -149,7 +151,6 @@
                     </div>
                     <div :id="'block-' + block.id" contenteditable="true"
                          x-init="$el.innerHTML = block.content || ''; $el.addEventListener('input', () => { block.content = $el.innerHTML; isDirty = true; });"
-                         x-effect="if(document.activeElement !== $el){    $el.innerHTML = block.content || '';}"
                          @keydown="handleKeydown($event, index)"
                          @focus="focusedIndex = index; activeBlockId = block.id"
                          @blur="handleBlur(index)"
@@ -172,7 +173,6 @@
                     </div>
                     <div :id="'block-' + block.id" contenteditable="true"
                          x-init="$el.innerHTML = block.content || ''; $el.addEventListener('input', () => { block.content = $el.innerHTML; isDirty = true; });"
-                         x-effect="if(document.activeElement !== $el){    $el.innerHTML = block.content || '';}"
                          @keydown="handleKeydown($event, index)"
                          @focus="focusedIndex = index; activeBlockId = block.id"
                          @blur="handleBlur(index)"
@@ -197,8 +197,6 @@
                         <div class="w-1 rounded-full bg-slate-900 flex-shrink-0 self-stretch"></div>
                         <div :id="'block-' + block.id" contenteditable="true"
                          x-init="$el.innerHTML = block.content || ''; $el.addEventListener('input', () => {block.content = $el.innerHTML;});"
-                         x-effect="if(document.activeElement !== $el){    $el.innerHTML = block.content || '';}"
-                             x-effect="if(document.activeElement !== $el){    $el.innerHTML = block.content || '';}"
                              @keydown="handleKeydown($event, index)"
                              @focus="focusedIndex = index; activeBlockId = block.id"
                              @blur="handleBlur(index)"
@@ -237,7 +235,6 @@
                         <span class="material-symbols-outlined text-amber-600">tips_and_updates</span>
                         <div :id="'block-' + block.id" contenteditable="true"
                              x-init="$el.innerHTML = block.content || ''; $el.addEventListener('input', () => { block.content = $el.innerHTML; isDirty = true; });"
-                             x-effect="if(document.activeElement !== $el){    $el.innerHTML = block.content || '';}"
                              @keydown="handleKeydown($event, index)"
                              @focus="focusedIndex = index; activeBlockId = block.id"
                              @blur="handleBlur(index)"
@@ -263,8 +260,6 @@
                         <span class="w-1.5 h-1.5 rounded-full bg-slate-700 flex-shrink-0"></span>
                         <div :id="'block-' + block.id" contenteditable="true"
                          x-init="$el.innerHTML = block.content || ''; $el.addEventListener('input', () => {block.content = $el.innerHTML;});"
-                         x-effect="if(document.activeElement !== $el){    $el.innerHTML = block.content || '';}"
-                             x-effect="if(document.activeElement !== $el){    $el.innerHTML = block.content || '';}"
                              @keydown="handleKeydown($event, index)"
                              @focus="focusedIndex = index; activeBlockId = block.id"
                              @blur="handleBlur(index)"
@@ -290,7 +285,6 @@
                         <span class="text-sm font-bold text-slate-500 flex-shrink-0 w-5 text-right" x-text="getNumberedIndex(index) + '.'"></span>
                         <div :id="'block-' + block.id" contenteditable="true"
                          x-init="$el.innerHTML = block.content || ''; $el.addEventListener('input', () => {block.content = $el.innerHTML;});"
-                         x-effect="if(document.activeElement !== $el){    $el.innerHTML = block.content || '';}"
                              @keydown="handleKeydown($event, index)"
                              @focus="focusedIndex = index; activeBlockId = block.id"
                              @blur="handleBlur(index)"
@@ -322,20 +316,24 @@
 
                 {{-- VIDEO EMBED --}}
                 <div x-show="block.type === 'video'"
-                     class="my-4 ml-9 relative group/vid"
-                     tabindex="-1"
-                     @focus="focusedIndex = index">
-                    {{-- Input form --}}
-                    <div x-show="!block.embedSrc && !block.localSrc" class="rounded-2xl bg-slate-50 border-2 border-dashed border-slate-200 p-6">
-                        <p class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3 text-center">YouTube, Google Drive, atau Upload Video</p>
+                    class="my-3 ml-9 relative group/vid"
+                    tabindex="-1"
+                    @keydown.delete.prevent="removeBlock(index)"
+                    @keydown.backspace.prevent="removeBlock(index)"
+                    @focus="focusedIndex = index">
+
+                    {{-- Input form (hanya tampil kalau belum ada video) --}}
+                    <div x-show="!block.embedSrc && !block.localSrc"
+                        class="rounded-xl bg-slate-50 border border-dashed border-slate-200 p-4">
+                        <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 text-center">YouTube, Google Drive, atau Upload Video</p>
                         <div class="flex gap-2 mb-3">
                             <input type="text" x-model="block.url"
-                                   placeholder="https://youtube.com/watch?v=…"
-                                   @keydown.enter.prevent="embedVideo(block)"
-                                   @click.stop
-                                   class="flex-1 h-10 px-3 rounded-lg border border-slate-200 text-sm text-slate-700 focus:outline-none focus:border-indigo-400 bg-white">
+                                placeholder="https://youtube.com/watch?v=…"
+                                @keydown.enter.prevent="embedVideo(block)"
+                                @click.stop
+                                class="flex-1 h-9 px-3 rounded-lg border border-slate-200 text-sm text-slate-700 focus:outline-none focus:border-indigo-400 bg-white">
                             <button type="button" @click.stop="embedVideo(block)"
-                                    class="h-10 px-4 bg-slate-900 text-white rounded-lg text-xs font-bold uppercase tracking-wide hover:bg-indigo-600 transition-colors">
+                                    class="h-9 px-4 bg-slate-900 text-white rounded-lg text-xs font-bold uppercase tracking-wide hover:bg-indigo-600 transition-colors">
                                 Embed
                             </button>
                         </div>
@@ -346,30 +344,45 @@
                         </div>
                         <button type="button"
                                 @click.stop="pendingInsertIndex = index; $refs.videoUploadInput.click()"
-                                class="w-full h-10 border-2 border-dashed border-slate-300 hover:border-indigo-400 hover:bg-indigo-50 rounded-xl text-xs font-bold text-slate-500 hover:text-indigo-600 transition-all flex items-center justify-center gap-2">
+                                class="w-full h-9 border border-dashed border-slate-300 hover:border-indigo-400 hover:bg-indigo-50 rounded-lg text-xs font-bold text-slate-500 hover:text-indigo-600 transition-all flex items-center justify-center gap-2">
                             <span class="material-symbols-outlined text-[16px]">upload</span>
                             Upload Video dari Perangkat
                         </button>
-                        <div class="mt-3 flex justify-center">
+                        <div class="mt-2 flex justify-center">
                             <button type="button" @click.stop="removeBlock(index)"
                                     class="text-xs text-slate-400 hover:text-red-500 flex items-center gap-1 font-bold transition-colors">
                                 <span class="material-symbols-outlined text-[14px]">delete</span> Hapus blok
                             </button>
                         </div>
                     </div>
-                    {{-- Embedded iframe --}}
-                    <div x-show="block.embedSrc" class="rounded-2xl overflow-hidden shadow-lg" style="position:relative;aspect-ratio:16/9;">
-                        <iframe :src="block.embedSrc" style="position:absolute;inset:0;width:100%;height:100%;" allowfullscreen frameborder="0"></iframe>
+
+                    {{-- Video sudah ter-embed/upload --}}
+                    <div x-show="block.embedSrc || block.localSrc"
+                        class="relative rounded-xl overflow-hidden shadow-md group/vid-preview"
+                        style="max-width: 480px;">
+
+                        {{-- YouTube/Drive iframe --}}
+                        <div x-show="block.embedSrc" style="position:relative; aspect-ratio:16/9;">
+                            <iframe :src="block.embedSrc"
+                                    style="position:absolute;inset:0;width:100%;height:100%;"
+                                    allowfullscreen frameborder="0"></iframe>
+                        </div>
+
+                        {{-- Local video --}}
+                        <div x-show="block.localSrc">
+                            <video controls class="w-full h-auto rounded-xl"
+                                x-effect="if(block.localSrc){ $el.src = block.localSrc; }"></video>
+                        </div>
+
+                        {{-- Tombol hapus --}}
+                        <button type="button" @click="removeBlock(index)"
+                                class="absolute top-2 right-2 w-7 h-7 bg-black/60 hover:bg-red-500 text-white rounded-lg flex items-center justify-center opacity-0 group-hover/vid-preview:opacity-100 transition-all">
+                            <span class="material-symbols-outlined text-[14px]">delete</span>
+                        </button>
+
+                        {{-- Hint keyboard --}}
+                        <div class="mt-1 text-[10px] text-slate-400 text-center">Klik lalu tekan Delete untuk hapus</div>
                     </div>
-                    {{-- Local video --}}
-                    <div x-show="block.localSrc" class="rounded-2xl overflow-hidden shadow-lg">
-                        <video :src="block.localSrc" controls class="w-full h-auto rounded-2xl"></video>
-                    </div>
-                    <button type="button" @click="removeBlock(index)"
-                            class="absolute top-2 right-2 w-8 h-8 bg-black/60 hover:bg-red-500 text-white rounded-lg flex items-center justify-center opacity-0 group-hover/vid:opacity-100 transition-all"
-                            x-show="block.embedSrc || block.localSrc">
-                        <span class="material-symbols-outlined text-[16px]">delete</span>
-                    </button>
                 </div>
 
                 {{-- DIVIDER --}}
@@ -886,13 +899,13 @@ function articleEditor() {
             const file = event.target.files[0];
             if (!file) return;
             const url = URL.createObjectURL(file);
-            this.blocks.splice(afterIndex + 1, 0, {
-                id: this.nextId++, type: 'video', url: '', embedSrc: null, localSrc: url
-            });
+            const newBlock = { id: this.nextId++, type: 'video', url: '', embedSrc: null, localSrc: url };
+            this.blocks.splice(afterIndex + 1, 0, newBlock);
             const nb = { id: this.nextId++, type: 'paragraph', content: '' };
             this.blocks.splice(afterIndex + 2, 0, nb);
             this.isDirty = true;
             this.$refs.videoUploadInput.value = '';
+            this.blocks = [...this.blocks];
         },
 
         insertVideoBlock(afterIndex) {
@@ -915,16 +928,24 @@ function articleEditor() {
         embedVideo(block) {
             const url = (block.url || '').trim();
             const yt = url.match(
-    /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/))([^&?/\s]+)/i
-);
+                /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/))([^&?/\s]+)/i
+            );
             if (yt) {
-                block.embedSrc = 'https://www.youtube.com/embed/' + yt[1];
+                const idx = this.blocks.findIndex(b => b.id === block.id);
+                if (idx !== -1) {
+                    this.blocks[idx] = { ...this.blocks[idx], embedSrc: 'https://www.youtube.com/embed/' + yt[1], url: '' };
+                    this.blocks = [...this.blocks];
+                }
                 this.isDirty = true;
                 return;
             }
             const gd = url.match(/drive\.google\.com\/file\/d\/([^/?]+)/i);
             if (gd) {
-                block.embedSrc = 'https://drive.google.com/file/d/' + gd[1] + '/preview';
+                const idx = this.blocks.findIndex(b => b.id === block.id);
+                if (idx !== -1) {
+                    this.blocks[idx] = { ...this.blocks[idx], embedSrc: 'https://drive.google.com/file/d/' + gd[1] + '/preview', url: '' };
+                    this.blocks = [...this.blocks];
+                }
                 this.isDirty = true;
                 return;
             }
@@ -1075,11 +1096,6 @@ function focusEditable(el) {
     pointer-events: none;
     font-style: italic;
     display: block;
-}
-[contenteditable] {
-    direction: ltr !important;
-    unicode-bidi: normal !important;
-    text-align: left !important;
 }
 [contenteditable]:focus { outline: none; }
 

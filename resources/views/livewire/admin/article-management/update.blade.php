@@ -4,37 +4,6 @@
     class="min-h-screen bg-[#f8f8f7]"
 >
 
-{{-- TOPBAR --}}
-<div class="bg-white border-b border-slate-200 px-6 lg:px-10">
-    <div class="max-w-[860px] mx-auto h-14 flex items-center justify-between gap-4">
-        <div class="flex items-center gap-3 min-w-0">
-            <a href="{{ route('admin.articles.index') }}"
-               class="flex-shrink-0 w-8 h-8 flex items-center justify-center rounded-lg hover:bg-slate-100 text-slate-500 transition-all">
-                <span class="material-symbols-outlined text-[18px]">arrow_back</span>
-            </a>
-            <span class="text-sm font-bold text-slate-800">Perbarui Artikel</span>
-            <span class="text-slate-300 hidden sm:block">·</span>
-            <span class="hidden sm:block text-xs text-slate-400 font-medium">
-                #ART-{{ str_pad($article->id, 4, '0', STR_PAD_LEFT) }}
-            </span>
-        </div>
-        <div class="flex items-center gap-2 flex-shrink-0">
-            <div class="hidden sm:flex items-center gap-1.5 h-8 px-3 rounded-lg bg-slate-50 border border-slate-200 text-xs font-bold uppercase tracking-wide">
-                <span class="w-1.5 h-1.5 rounded-full"
-                      :class="currentStatus === 'published' ? 'bg-emerald-400' : 'bg-amber-400'"></span>
-                <span :class="currentStatus === 'published' ? 'text-emerald-600' : 'text-amber-600'"
-                      x-text="currentStatus === 'published' ? 'Terbit' : 'Draf'"></span>
-            </div>
-            <button type="button" @click="submitToLivewire()" :disabled="isSaving"
-                    class="h-9 px-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-xs font-bold uppercase tracking-wide transition-all disabled:opacity-50 flex items-center gap-1.5">
-                <div x-show="isSaving" class="w-3 h-3 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                <span x-show="!isSaving" class="material-symbols-outlined text-[15px]">sync</span>
-                <span x-text="isSaving ? 'Menyimpan...' : 'Simpan Perubahan'"></span>
-            </button>
-        </div>
-    </div>
-</div>
-
 {{-- HIDDEN LIVEWIRE FORM --}}
 <form wire:submit.prevent="save" x-ref="lwForm" class="sr-only" aria-hidden="true">
     <input type="text"   wire:model="title"       x-ref="lwTitle">
@@ -138,7 +107,7 @@
                          @mouseup="checkSelection()" @keyup="checkSelection()"
                          :data-placeholder="index === 0 ? 'Mulai menulis…' : 'Tulis paragraf…'"
                          class="flex-1 min-h-[1.8em] py-0.5 outline-none text-[1.15rem] leading-[1.9] text-slate-700 ce-placeholder"
-                         style="font-family:'Georgia',serif; direction:ltr; unicode-bidi:normal; text-align:left;"></div>
+                         style="font-family:'Georgia',serif;"></div>
                 </div>
 
                 {{-- HEADING 1 --}}
@@ -747,7 +716,6 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
         },
 
         checkSelection() {
-            // Pakai setTimeout biar browser sempat update seleksi dulu
             setTimeout(() => {
                 const sel = window.getSelection();
                 if (!sel || sel.isCollapsed || sel.toString().trim() === '') {
@@ -761,16 +729,13 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
                     return;
                 }
 
-                const barWidth = 300; // perkiraan lebar popup toolbar
+                const barWidth = 300;
                 const barHeight = 40;
                 const margin = 8;
 
-                // Posisi horizontal: tengah seleksi, tapi jangan sampai keluar layar
                 let x = rect.left + rect.width / 2 - barWidth / 2;
                 x = Math.max(margin, Math.min(x, window.innerWidth - barWidth - margin));
 
-                // Posisi vertikal: defaultnya di ATAS seleksi
-                // Kalau tidak cukup ruang di atas, taruh di BAWAH
                 let y = rect.top - barHeight - margin;
                 if (y < margin) {
                     y = rect.bottom + margin;
@@ -866,6 +831,7 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
             this.blocks.splice(afterIndex + 2, 0, nb);
             this.isDirty = true;
             this.$refs.videoUploadInput.value = '';
+            this.blocks = [...this.blocks];
         },
 
         insertVideoBlock(afterIndex) {
@@ -886,10 +852,23 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
 
         embedVideo(block) {
             const url = (block.url || '').trim();
-            const yt = url.match(/(?:youtube\.com.*[?]v=|youtu\.be\/)([^&?#]+)/i);/(?:youtube\.com.*[?]v=|youtu\.be\/)([^&?#]+)/i);/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/))([^&?/]+)/i);
-            if (yt) { block.embedSrc = 'https://www.youtube.com/embed/' + yt[1]; return; }
+            const yt = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/|live\/))([^&?/\s]+)/i);
+            if (yt) {
+                const idx = this.blocks.findIndex(b => b.id === block.id);
+                if (idx !== -1) {
+                    this.blocks[idx] = { ...this.blocks[idx], embedSrc: 'https://www.youtube.com/embed/' + yt[1], url: '' };
+                }
+                this.blocks = [...this.blocks];
+                this.isDirty = true;
+                return;
+            }
             const gd = url.match(/drive\.google\.com\/file\/d\/([^/?]+)/i);
-            if (gd) { block.embedSrc = `https://drive.google.com/file/d/${gd[1]}/preview`;
+            if (gd) {
+                const idx = this.blocks.findIndex(b => b.id === block.id);
+                if (idx !== -1) {
+                    this.blocks[idx] = { ...this.blocks[idx], embedSrc: 'https://drive.google.com/file/d/' + gd[1] + '/preview', url: '' };
+                }
+                this.blocks = [...this.blocks];
                 this.isDirty = true;
                 return;
             }
@@ -963,13 +942,25 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
             const contentJson = this.serializeContent();
 
             try {
-                await $wire.call(
-                    'saveFromAlpine',
-                    this.titleValue,
-                    contentJson,
-                    this.currentStatus,
-                    this.selectedCategoryId
-                );
+                const allWireEls = [...document.querySelectorAll('[wire\\:id]')];
+                const wireEl = allWireEls.find(el => {
+                    const snap = el.getAttribute('wire:snapshot') || '';
+                    return snap.includes('article-update') || snap.includes('ArticleUpdate');
+                }) ?? allWireEls[allWireEls.length - 1];
+                const wireId = wireEl ? wireEl.getAttribute('wire:id') : null;
+
+                if (wireId && window.Livewire) {
+                    await window.Livewire.find(wireId).call(
+                        'saveFromAlpine',
+                        this.titleValue,
+                        contentJson,
+                        this.currentStatus,
+                        this.selectedCategoryId
+                    );
+                } else {
+                    console.error('Livewire component tidak ditemukan');
+                    this.isSaving = false;
+                }
             } catch(e) {
                 console.error('Save error:', e);
                 this.isSaving = false;
@@ -996,11 +987,6 @@ function placeCaretAtEnd(el) {
     pointer-events: none;
     font-style: italic;
     display: block;
-}
-[contenteditable] {
-    direction: ltr !important;
-    unicode-bidi: normal !important;
-    text-align: left !important;
 }
 [contenteditable]:focus { outline: none; }
 

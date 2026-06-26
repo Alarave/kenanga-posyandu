@@ -6,6 +6,7 @@ use App\Livewire\Shared\BaseAdminComponent;
 use App\Models\Article;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
+use App\Services\ArticleService;
 
 /**
  * Komponen untuk melihat detail artikel (OOP & Clean Code).
@@ -29,5 +30,13 @@ class ArticleShow extends BaseAdminComponent
     public function render(): View
     {
         return view('livewire.admin.article-management.details');
+    }
+
+        public function deleteArticle(ArticleService $service): void
+    {
+        $this->authorize('delete', $this->article);
+        $service->deleteArticle($this->article);
+        $this->notify('Artikel berhasil dihapus.', 'success', true);
+        redirect()->route('admin.articles.index');
     }
 }

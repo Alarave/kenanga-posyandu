@@ -10,7 +10,7 @@
         </h1>
         
         <p class="text-lg text-slate-500 font-medium leading-relaxed max-w-2xl">
-            {{ Str::limit(strip_tags($featured->content), 180) }}
+            {{ \App\Services\ArticleService::getExcerpt($featured->content, 180) }}
         </p>
 
         <div class="flex items-center gap-6 pt-6">
