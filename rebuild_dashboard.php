@@ -13,11 +13,11 @@ use Illuminate\Database\Eloquent\Builder;
 class AdminDashboard extends BaseAdminComponent
 {
     // Filter Properties
-    public string $filterPeriode = "semua";
-    public ?string $filterCustomStartDate = null;
-    public ?string $filterCustomEndDate = null;
-    public string $filterPosyandu = "semua";
-    public string $filterRisiko = "semua";
+    public $filterPeriode = "semua";
+    public $filterCustomStartDate;
+    public $filterCustomEndDate;
+    public $filterPosyandu = "semua";
+    public $filterRisiko = "semua";
     public $availablePosyandus = [];
 
     // Stats Properties
@@ -26,14 +26,13 @@ class AdminDashboard extends BaseAdminComponent
     public $totalImunisasi = 0;
     public $kunjunganBaru = 0;
     
-    public $balitaStunting = [];
-    public array $nutritionStatusDistribution = [];
-    public array $monthlyWeighingData = [];
-    public $upcomingSchedule = [];
-    public $recentActivities = [];
+    public $balitaStunting;
+    public $nutritionStatusDistribution;
+    public $monthlyWeighingData;
+    public $upcomingSchedule;
+    public $recentActivities;
     public $missingImmunizations = [];
-    public $bumilRisikoTinggi = [];
-    public $recentImmunizations = [];
+
     // Dashboard metrics
     public $lansiaDemografi = ["60_69" => 0, "70_plus" => 0];
     public $bumilTrimester = ["T1" => 0, "T2" => 0, "T3" => 0];
@@ -68,9 +67,8 @@ class AdminDashboard extends BaseAdminComponent
 
     public function applyDashboardFilters(Builder $query, $type = "patient")
     {
-        /** @var \App\Models\User $user */
-        $user = Auth::user();
-        if ($user->isSuperAdmin()) {
+        // 1. Posyandu Scope
+        if (Auth::user()->isSuperAdmin()) {
             if ($this->filterPosyandu !== "semua") {
                 if ($type === "patient" || $type === "schedule") {
                     $query->where("posyandu_id", $this->filterPosyandu);
@@ -114,7 +112,6 @@ class AdminDashboard extends BaseAdminComponent
                             ($this->filterPosyandu !== "semua") || 
                             ($this->filterRisiko !== "semua");
 
-        /** @var \App\Models\User $user */
         $user = Auth::user();
         $posyanduId = $user->isSuperAdmin() ? null : $user->posyandu_id;
         $year = now()->year;
@@ -174,41 +171,6 @@ class AdminDashboard extends BaseAdminComponent
                 if (empty($missing)) return null;
                 return ["patient" => $patient, "missing_count" => count($missing), "next_vaccine" => $missing[0]];
             })->filter()->sortByDesc("missing_count")->take(5);
-
-        $this->recentImmunizations = (clone $medicalRecordQuery)
-            ->where(function ($q) {
-                $q->whereNotNull("immunization")->where("immunization", "!=", "")->where("immunization", "!=", "Tidak ada")
-                  ->orWhere(function ($sq) {
-                      $sq->whereNotNull("vaccine_name")->where("vaccine_name", "!=", "")->where("vaccine_name", "!=", "Tidak ada");
-                  });
-            })
-            ->with(["patient", "user"])
-            ->latest("visit_date")
-            ->limit(5)
-            ->get();
-
-        $this->bumilRisikoTinggi = (clone $patientQuery)
-            ->where("category", "ibu_hamil")
-            ->whereHas("medicalRecords", function ($query) use ($latestRecordSubquery) {
-                $query->whereIn("id", $latestRecordSubquery)
-                      ->where(function ($sq) {
-                          $sq->where("upper_arm_circumference", "<", 23.5)
-                             ->orWhere("blood_pressure", "like", "140/%")
-                             ->orWhere("blood_pressure", "like", "150/%")
-                             ->orWhere("blood_pressure", "like", "160/%");
-                      });
-            })
-            ->orWhere(function ($query) {
-                $query->where("category", "ibu_hamil")
-                      ->where(function ($sq) {
-                          $sq->where("birth_date", ">", now()->subYears(20))
-                             ->orWhere("birth_date", "<", now()->subYears(35));
-                      });
-            })
-            ->with(["medicalRecords" => fn($q) => $q->latest("visit_date")->limit(1)])
-            ->limit(10)
-            ->get();
-
     }
 
     protected function computeDashboardStatsRealtime()
@@ -265,30 +227,15 @@ class AdminDashboard extends BaseAdminComponent
         return ["60_69" => $group60, "70_plus" => $group70];
     }
 
-    protected function getBumilTrimester(Builder $medicalRecordQuery, Builder $latestRecordSubquery): array
-    {
-        $records = (clone $medicalRecordQuery)
-            ->whereIn("id", $latestRecordSubquery)
-            ->whereHas("patient", fn($q) => $q->where("category", "ibu_hamil"))
-            ->get(["gestational_age"]);
-
-        $t1 = 0;
-        $t2 = 0;
-        $t3 = 0;
-
+    protected function getBumilTrimester(Builder $medicalRecordQuery, Builder $latestRecordSubquery): array {
+        $records = (clone $medicalRecordQuery)->whereIn("id", $latestRecordSubquery)->whereHas("patient", fn($q) => $q->where("category", "ibu_hamil"))->get(["gestational_age"]);
+        $t1 = 0; $t2 = 0; $t3 = 0;
         foreach ($records as $record) {
             $weeks = (int) filter_var($record->gestational_age, FILTER_SANITIZE_NUMBER_INT);
             if ($weeks > 0) {
-                if ($weeks <= 13) {
-                    $t1++;
-                } elseif ($weeks <= 27) {
-                    $t2++;
-                } else {
-                    $t3++;
-                }
+                if ($weeks <= 13) { $t1++; } elseif ($weeks <= 27) { $t2++; } else { $t3++; }
             }
         }
-
         return ["T1" => $t1, "T2" => $t2, "T3" => $t3];
     }
 
@@ -321,9 +268,5 @@ class AdminDashboard extends BaseAdminComponent
         }
         return ["labels" => $labels, "data" => $data];
     }
-
-    public function render()
-    {
-        return view("livewire.admin.admin-dashboard")->layout("layouts.app");
-    }
 }
+

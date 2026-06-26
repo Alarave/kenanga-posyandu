@@ -26,7 +26,7 @@
             <div class="absolute bottom-0 left-0 w-96 h-96 bg-teal-400/10 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl"></div>
 
             <div class="relative z-10 text-center">
-                <div class="inline-flex items-center justify-center w-24 h-24 bg-teal-500 rounded-[2rem] text-white shadow-2xl mb-10">
+                <div class="inline-flex items-center justify-center w-24 h-24 bg-teal-500 rounded-4xl text-white shadow-2xl mb-10">
                     <span class="material-symbols-outlined text-[48px]">health_and_safety</span>
                 </div>
                 <h1 class="text-5xl font-black text-white mb-6 font-jakarta tracking-tight leading-tight">
@@ -44,7 +44,7 @@
 
         {{-- ── RIGHT SIDE: Auth Form ── --}}
         <div class="flex flex-col justify-center items-center px-6 py-12 lg:px-20 bg-slate-50/50">
-            <div class="w-full max-w-[500px]">
+            <div class="w-full max-w-125">
                 
                 {{-- Logo for mobile --}}
                 <div class="lg:hidden flex justify-center mb-10">

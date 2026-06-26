@@ -11,10 +11,12 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 test('admin dashboard displays correct statistics for superadmin', function () {
+    /** @var \Tests\TestCase $this */
     // Create test data
     $pedukuhan = Pedukuhan::factory()->create();
     $posyandu = Posyandu::factory()->create(['pedukuhan_id' => $pedukuhan->id]);
 
+    /** @var \App\Models\User $superadmin */
     $superadmin = User::factory()->create([
         'role' => 'superadmin',
         'posyandu_id' => null,
@@ -55,14 +57,21 @@ test('admin dashboard displays correct statistics for superadmin', function () {
     // Assert
     $response->assertStatus(200);
     $response->assertSeeLivewire('admin.admin-dashboard');
+    $response->assertSee('Total Anak');
+    $response->assertSee('Total Pemeriksaan');
+    $response->assertSee('Total Imunisasi');
+    $response->assertSee('Pemeriksaan Terbaru');
+    $response->assertSee('Imunisasi Terbaru');
 });
 
 test('admin dashboard displays scoped statistics for admin', function () {
+    /** @var \Tests\TestCase $this */
     // Create test data
     $pedukuhan = Pedukuhan::factory()->create();
     $posyandu1 = Posyandu::factory()->create(['pedukuhan_id' => $pedukuhan->id]);
     $posyandu2 = Posyandu::factory()->create(['pedukuhan_id' => $pedukuhan->id]);
 
+    /** @var \App\Models\User $admin */
     $admin = User::factory()->create([
         'role' => 'admin',
         'posyandu_id' => $posyandu1->id,
@@ -87,13 +96,20 @@ test('admin dashboard displays scoped statistics for admin', function () {
     // Assert
     $response->assertStatus(200);
     $response->assertSeeLivewire('admin.admin-dashboard');
+    $response->assertSee('Total Anak');
+    $response->assertSee('Total Pemeriksaan');
+    $response->assertSee('Total Imunisasi');
+    $response->assertSee('Pemeriksaan Terbaru');
+    $response->assertSee('Imunisasi Terbaru');
 });
 
 test('admin dashboard displays balita stunting warning', function () {
+    /** @var \Tests\TestCase $this */
     // Create test data
     $pedukuhan = Pedukuhan::factory()->create();
     $posyandu = Posyandu::factory()->create(['pedukuhan_id' => $pedukuhan->id]);
 
+    /** @var \App\Models\User $admin */
     $admin = User::factory()->create([
         'role' => 'admin',
         'posyandu_id' => $posyandu->id,
@@ -119,5 +135,9 @@ test('admin dashboard displays balita stunting warning', function () {
     // Assert
     $response->assertStatus(200);
     $response->assertSeeLivewire('admin.admin-dashboard');
+    $response->assertSee('Total Anak');
+    $response->assertSee('Total Pemeriksaan');
+    $response->assertSee('Total Imunisasi');
+    $response->assertSee('Pemeriksaan Terbaru');
+    $response->assertSee('Imunisasi Terbaru');
 });
-

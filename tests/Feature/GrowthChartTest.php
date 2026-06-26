@@ -1,4 +1,5 @@
 <?php
+
 use App\Livewire\Admin\PatientManagement\GrowthChart;
 use App\Models\MedicalRecord;
 use App\Models\Patient;
@@ -11,6 +12,7 @@ use Livewire\Livewire;
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
+    /** @var \Tests\TestCase|\stdClass $this */
     // Seed roles and permissions
     $this->seed(\Database\Seeders\RolesAndPermissionsSeeder::class);
 
@@ -25,6 +27,7 @@ beforeEach(function () {
 });
 
 it('displays growth chart for balita patient with medical records', function () {
+    /** @var \Tests\TestCase|\stdClass $this */
     // Create a balita patient
     $patient = Patient::factory()->create([
         'posyandu_id' => $this->posyandu->id,
@@ -76,6 +79,7 @@ it('displays growth chart for balita patient with medical records', function () 
 });
 
 it('shows empty state when patient has no medical records', function () {
+    /** @var \Tests\TestCase|\stdClass $this */
     // Create a balita patient without medical records
     $patient = Patient::factory()->create([
         'posyandu_id' => $this->posyandu->id,
@@ -90,6 +94,7 @@ it('shows empty state when patient has no medical records', function () {
 });
 
 it('displays growth chart on patient detail page for balita', function () {
+    /** @var \Tests\TestCase|\stdClass $this */
     // Create a balita patient
     $patient = Patient::factory()->create([
         'posyandu_id' => $this->posyandu->id,
@@ -104,7 +109,8 @@ it('displays growth chart on patient detail page for balita', function () {
         ->assertSeeLivewire('admin.patient-management.growth-chart');
 });
 
-it('does not display growth chart for non-balita patients', function () {
+it('displays health monitoring chart for non-balita patients', function () {
+    /** @var \Tests\TestCase|\stdClass $this */
     // Create an ibu_hamil patient
     $patient = Patient::factory()->create([
         'posyandu_id' => $this->posyandu->id,
@@ -116,10 +122,11 @@ it('does not display growth chart for non-balita patients', function () {
     $this->actingAs($this->admin)
         ->get(route('admin.patients.show', $patient))
         ->assertOk()
-        ->assertDontSeeLivewire('admin.patient-management.growth-chart');
+        ->assertSeeLivewire('admin.patient-management.growth-chart');
 });
 
 it('color codes data points based on nutrition status', function () {
+    /** @var \Tests\TestCase|\stdClass $this */
     // Create a balita patient
     $patient = Patient::factory()->create([
         'posyandu_id' => $this->posyandu->id,
@@ -178,7 +185,8 @@ it('color codes data points based on nutrition status', function () {
         });
 });
 
-it('does not render growth chart content for lansia patient', function () {
+it('renders health trend chart content for lansia patient', function () {
+    /** @var \Tests\TestCase|\stdClass $this */
     $patient = Patient::factory()->create([
         'posyandu_id' => $this->posyandu->id,
         'category' => 'lansia',
@@ -202,16 +210,18 @@ it('does not render growth chart content for lansia patient', function () {
     Livewire::actingAs($this->admin)
         ->test(GrowthChart::class, ['patient' => $patient])
         ->assertDontSee('Grafik Analisis Pertumbuhan WHO')
-        ->assertDontSee('Grafik Pemantauan Kesehatan Berkala')
-        ->assertSet('chartData', []);
+        ->assertSee('Grafik Pemantauan Kesehatan Berkala')
+        ->assertSet('chartData.datasets.0.label', 'Sistolik (mmHg)')
+        ->assertSet('chartData.datasets.2.label', 'Gula Darah (mg/dL)');
 
     $this->actingAs($this->admin)
         ->get(route('admin.patients.show', $patient))
         ->assertOk()
-        ->assertDontSeeLivewire('admin.patient-management.growth-chart');
+        ->assertSeeLivewire('admin.patient-management.growth-chart');
 });
 
 it('can switch chart to hfa and retrieve height for age data', function () {
+    /** @var \Tests\TestCase|\stdClass $this */
     // Seed WHO references first
     WhoHeightForAge::create([
         'gender' => 'M',
@@ -246,4 +256,3 @@ it('can switch chart to hfa and retrieve height for age data', function () {
         ->assertSet('activeChart', 'hfa')
         ->assertSet('chartData.datasets.5.label', 'Tinggi Badan Anak');
 });
-

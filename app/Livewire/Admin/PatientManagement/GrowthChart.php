@@ -38,7 +38,7 @@ class GrowthChart extends BaseAdminComponent
             return;
         }
 
-        \Illuminate\Support\Facades\Log::info('Switching chart to: '.$type);
+        \Illuminate\Support\Facades\Log::info('Switching chart to: ' . $type);
         $this->activeChart = $type;
         $this->chartData = $this->getChartData(app(GrowthChartService::class));
         $this->dispatch('chart-updated', $this->chartData);
@@ -49,10 +49,18 @@ class GrowthChart extends BaseAdminComponent
      */
     public function getChartData(GrowthChartService $service): array
     {
-        return match ($this->activeChart) {
-            'wfa' => $service->getWeightForAgeData($this->patient),
-            'hfa' => $service->getHeightForAgeData($this->patient),
-            default => [],
+        if (in_array($this->patient->category, ['bayi', 'baduta', 'balita'], true)) {
+            return match ($this->activeChart) {
+                'wfa' => $service->getWeightForAgeData($this->patient),
+                'hfa' => $service->getHeightForAgeData($this->patient),
+                default => [],
+            };
+        }
+
+        return match ($this->patient->category) {
+            'lansia' => $service->getLansiaChartData($this->patient),
+            'ibu_hamil' => $service->getIbuHamilChartData($this->patient),
+            default => $service->getUmumChartData($this->patient),
         };
     }
 
@@ -64,6 +72,6 @@ class GrowthChart extends BaseAdminComponent
 
     private function supportsGrowthChart(): bool
     {
-        return in_array($this->patient->category, ['bayi', 'baduta', 'balita'], true);
+        return true;
     }
 }

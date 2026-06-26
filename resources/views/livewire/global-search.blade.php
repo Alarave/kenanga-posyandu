@@ -35,7 +35,7 @@
         class="absolute mt-3 w-full bg-white rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-slate-100 overflow-hidden z-50 p-2"
     >
         @if(count($results['patients']) > 0 || count($results['schedules']) > 0 || count($results['articles']) > 0 || count($results['records']) > 0 || count($results['users']) > 0)
-            <div class="max-h-[500px] overflow-y-auto space-y-1">
+            <div class="max-h-125 overflow-y-auto space-y-1">
                 {{-- Patients Section --}}
                 @if(count($results['patients']) > 0)
                     <div>
@@ -83,7 +83,7 @@
                                 </div>
                                 <div class="min-w-0 flex-1">
                                     <p class="text-[14px] font-black text-slate-900 leading-tight group-hover:text-violet-600 transition-colors">{{ $user->name }}</p>
-                                    <p class="text-[11px] text-slate-500 font-bold mt-0.5 tracking-tight uppercase tracking-widest text-[9px]">{{ $user->role ?? 'Kader' }}</p>
+                                    <p class="text-slate-500 font-bold mt-0.5 uppercase tracking-widest text-[9px]">{{ $user->role ?? 'Kader' }}</p>
                                 </div>
                             </a>
                         @endforeach
@@ -118,7 +118,7 @@
                                     <i class="fas fa-newspaper text-sm"></i>
                                 </div>
                                 <div class="min-w-0 flex-1">
-                                    <p class="text-[14px] font-black text-slate-900 leading-tight group-hover:text-amber-600 transition-colors truncate max-w-[300px]">{{ $article->title }}</p>
+                                    <p class="text-[14px] font-black text-slate-900 leading-tight group-hover:text-amber-600 transition-colors truncate max-w-75">{{ $article->title }}</p>
                                     <p class="text-[11px] text-slate-500 font-bold mt-0.5 tracking-tight">Update Terakhir</p>
                                 </div>
                             </a>

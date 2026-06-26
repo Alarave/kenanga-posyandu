@@ -1,8 +1,8 @@
-<footer class="relative bg-gradient-to-br from-white via-[#f8fafc] to-[#f1f5f9] pt-24 pb-12 overflow-hidden border-t border-slate-200/60">
+<footer class="relative bg-linear-to-br from-white via-[#f8fafc] to-[#f1f5f9] pt-24 pb-12 overflow-hidden border-t border-slate-200/60">
     {{-- Background grid patterns --}}
     <div class="absolute inset-0 pointer-events-none opacity-70">
         <div class="absolute inset-0" style="background-image: linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px); bg-size: 4rem 4rem; background-size: 4rem 4rem; mask-image: radial-gradient(ellipse 60% 50% at 50% 0%, #000 70%, transparent 100%); -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 0%, #000 70%, transparent 100%);"></div>
-        <div class="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-teal-500/5 to-cyan-500/5"></div>
+        <div class="absolute inset-0 bg-linear-to-br from-emerald-500/5 via-teal-500/5 to-cyan-500/5"></div>
     </div>
 
     <div class="max-w-7xl mx-auto px-6 md:px-10 relative z-10">
@@ -11,10 +11,10 @@
             {{-- Brand Section --}}
             <div class="group">
                 <div class="flex items-center mb-6">
-                    <div class="w-11 h-11 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-600/10 group-hover:scale-105 transition-transform duration-300">
+                    <div class="w-11 h-11 rounded-xl bg-linear-to-br from-emerald-600 to-teal-500 flex items-center justify-center text-white shadow-md shadow-emerald-600/10 group-hover:scale-105 transition-transform duration-300">
                         <i class="fas fa-heartbeat text-lg"></i>
                     </div>
-                    <span class="ml-3 text-lg font-extrabold tracking-tight bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700 bg-clip-text text-transparent">
+                    <span class="ml-3 text-lg font-extrabold tracking-tight bg-linear-to-r from-slate-900 via-slate-800 to-slate-700 bg-clip-text text-transparent">
                         Posyandu <span class="text-emerald-700">Digital</span>
                     </span>
                 </div>
@@ -32,7 +32,7 @@
                     @endphp
                     @foreach($socials as $soc)
                         <a href="{{ $soc['href'] }}" 
-                           class="w-9 h-9 rounded-xl bg-white border border-slate-200/80 flex items-center justify-center text-slate-500 hover:bg-gradient-to-br hover:from-emerald-600 hover:to-teal-500 hover:text-white hover:border-transparent transition-all duration-300 shadow-sm hover:shadow-md hover:shadow-emerald-600/10">
+                           class="w-9 h-9 rounded-xl bg-white border border-slate-200/80 flex items-center justify-center text-slate-500 hover:bg-linear-to-br hover:from-emerald-600 hover:to-teal-500 hover:text-white hover:border-transparent transition-all duration-300 shadow-sm hover:shadow-md hover:shadow-emerald-600/10">
                             <i class="fab {{ $soc['icon'] }} text-xs"></i>
                         </a>
                     @endforeach
@@ -42,7 +42,7 @@
             {{-- Column 2: Layanan --}}
             <div>
                 <h4 class="text-[11px] font-extrabold uppercase tracking-widest text-slate-500 mb-6 relative pl-3">
-                    <span class="absolute left-0 top-0 bottom-0 w-[3px] rounded bg-emerald-600"></span>
+                    <span class="absolute left-0 top-0 bottom-0 w-0.75 rounded bg-emerald-600"></span>
                     Layanan Kami
                 </h4>
                 <ul class="space-y-3.5">
@@ -57,7 +57,7 @@
                     @foreach($services as $serv)
                         <li>
                             <a href="{{ route($serv['route']) }}{{ $serv['anchor'] }}" class="text-slate-600 hover:text-slate-900 text-[13.5px] font-medium transition-colors duration-300 flex items-center group">
-                                <span class="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-emerald-600 to-teal-500 mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
+                                <span class="w-1.5 h-1.5 rounded-full bg-linear-to-r from-emerald-600 to-teal-500 mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
                                 {{ $serv['label'] }}
                             </a>
                         </li>
@@ -68,7 +68,7 @@
             {{-- Column 3: Informasi --}}
             <div>
                 <h4 class="text-[11px] font-extrabold uppercase tracking-widest text-slate-500 mb-6 relative pl-3">
-                    <span class="absolute left-0 top-0 bottom-0 w-[3px] rounded bg-emerald-600"></span>
+                    <span class="absolute left-0 top-0 bottom-0 w-0.75 rounded bg-emerald-600"></span>
                     Informasi
                 </h4>
                 <ul class="space-y-3.5">
@@ -83,7 +83,7 @@
                     @foreach($info as $inf)
                         <li>
                             <a href="{{ route($inf['route']) }}" class="text-slate-600 hover:text-slate-900 text-[13.5px] font-medium transition-colors duration-300 flex items-center group">
-                                <span class="w-1.5 h-1.5 rounded-full bg-gradient-to-r from-emerald-600 to-teal-500 mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
+                                <span class="w-1.5 h-1.5 rounded-full bg-linear-to-r from-emerald-600 to-teal-500 mr-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200"></span>
                                 {{ $inf['label'] }}
                             </a>
                         </li>
@@ -94,7 +94,7 @@
             {{-- Column 4: Kontak --}}
             <div>
                 <h4 class="text-[11px] font-extrabold uppercase tracking-widest text-slate-500 mb-6 relative pl-3">
-                    <span class="absolute left-0 top-0 bottom-0 w-[3px] rounded bg-emerald-600"></span>
+                    <span class="absolute left-0 top-0 bottom-0 w-0.75 rounded bg-emerald-600"></span>
                     Kontak Kami
                 </h4>
                 <ul class="space-y-4 text-[13.5px]">

@@ -32,7 +32,7 @@
         <div class="divide-y divide-slate-50 max-h-96 overflow-y-auto custom-scrollbar">
             @forelse($notifications as $n)
             <a href="{{ $n['url'] }}" class="flex items-start gap-4 px-5 py-4 hover:bg-slate-50 transition-colors cursor-pointer {{ $n['unread'] ? 'bg-blue-50/10' : '' }}">
-                <div class="w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0 {{ $n['color'] }} shadow-sm border border-current/10">
+                <div class="w-10 h-10 rounded-2xl flex items-center justify-center shrink-0 {{ $n['color'] }} shadow-sm border border-current/10">
                     <i class="fas {{ $n['icon'] }}" style="font-size:14px;"></i>
                 </div>
                 <div class="flex-1 min-w-0">
@@ -44,7 +44,7 @@
                     </p>
                 </div>
                 @if($n['unread'])
-                <div class="w-2.5 h-2.5 rounded-full bg-blue-500 flex-shrink-0 mt-2 shadow-sm shadow-blue-500/30"></div>
+                <div class="w-2.5 h-2.5 rounded-full bg-blue-500 shrink-0 mt-2 shadow-sm shadow-blue-500/30"></div>
                 @endif
             </a>
             @empty

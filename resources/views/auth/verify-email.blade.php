@@ -13,7 +13,7 @@
 </div>
 
 @if (session('status') == 'verification-link-sent')
-    <div class="mb-8 p-6 bg-emerald-50 border border-emerald-200 rounded-[2rem] text-emerald-700 font-bold text-lg flex items-center gap-4 shadow-sm">
+    <div class="mb-8 p-6 bg-emerald-50 border border-emerald-200 rounded-4xl text-emerald-700 font-bold text-lg flex items-center gap-4 shadow-sm">
         <span class="material-symbols-outlined text-[32px]">mark_email_read</span>
         Tautan verifikasi baru telah dikirim ke email Anda.
     </div>

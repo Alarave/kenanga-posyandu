@@ -189,7 +189,7 @@
                 <div class="flex items-center justify-between px-5 py-4 border-b border-slate-50">
                     <div class="flex items-center gap-4">
                         {{-- Nomor urut --}}
-                        <span class="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-xs font-black text-slate-500 flex-shrink-0">
+                        <span class="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center text-xs font-black text-slate-500 shrink-0">
                             {{ $index + 1 }}
                         </span>
 
@@ -222,7 +222,7 @@
 
                     {{-- Tombol hapus --}}
                     <button wire:click="removePatient({{ $index }})"
-                            class="w-9 h-9 rounded-xl bg-slate-50 hover:bg-red-50 text-slate-300 hover:text-red-500 flex items-center justify-center transition-all flex-shrink-0"
+                            class="w-9 h-9 rounded-xl bg-slate-50 hover:bg-red-50 text-slate-300 hover:text-red-500 flex items-center justify-center transition-all shrink-0"
                             title="Hapus dari daftar">
                         <span class="material-symbols-outlined text-[18px]">close</span>
                     </button>
@@ -283,7 +283,7 @@
                                     str_contains($m['status_bbu'], 'Baik') => ['icon' => 'check_circle', 'class' => 'bg-emerald-50 text-emerald-700 border-emerald-200'],
                                     str_contains($m['status_bbu'], 'Kurang') => ['icon' => 'warning', 'class' => 'bg-amber-50 text-amber-700 border-amber-200'],
                                     str_contains($m['status_bbu'], 'Buruk') => ['icon' => 'error', 'class' => 'bg-red-50 text-red-700 border-red-200'],
-                                    str_contains($m['status_bbu'], 'Lebih') => ['icon' => 'info', 'class' => 'bg-purple-50 text-purple-700 border-purple-200'],
+                                    str_contains($m['status_bbu'], 'Lebih') => ['icon' => 'info', 'class' => 'bg-orange-50 text-orange-700 border-orange-200'],
                                     default => ['icon' => 'help', 'class' => 'bg-slate-50 text-slate-500 border-slate-200'],
                                 } : null;
 
@@ -292,6 +292,14 @@
                                     str_contains($m['status_tbu'], 'Pendek') => ['icon' => 'warning', 'class' => 'bg-amber-50 text-amber-700 border-amber-200'],
                                     str_contains($m['status_tbu'], 'Sangat Pendek') => ['icon' => 'error', 'class' => 'bg-red-50 text-red-700 border-red-200'],
                                     str_contains($m['status_tbu'], 'Tinggi') => ['icon' => 'info', 'class' => 'bg-blue-50 text-blue-700 border-blue-200'],
+                                    default => ['icon' => 'help', 'class' => 'bg-slate-50 text-slate-500 border-slate-200'],
+                                } : null;
+
+                                $statusBbtbIcon = isset($m['status_bbtb']) ? match(true) {
+                                    str_contains($m['status_bbtb'], 'Baik') || str_contains($m['status_bbtb'], 'Normal') => ['icon' => 'check_circle', 'class' => 'bg-emerald-50 text-emerald-700 border-emerald-200'],
+                                    str_contains($m['status_bbtb'], 'Kurang') => ['icon' => 'warning', 'class' => 'bg-amber-50 text-amber-700 border-amber-200'],
+                                    str_contains($m['status_bbtb'], 'Buruk') => ['icon' => 'error', 'class' => 'bg-red-50 text-red-700 border-red-200'],
+                                    str_contains($m['status_bbtb'], 'Lebih') || str_contains($m['status_bbtb'], 'Obesitas') => ['icon' => 'info', 'class' => 'bg-orange-50 text-orange-700 border-orange-200'],
                                     default => ['icon' => 'help', 'class' => 'bg-slate-50 text-slate-500 border-slate-200'],
                                 } : null;
                             @endphp
@@ -308,16 +316,16 @@
                                     Tinggi: {{ $m['status_tbu'] }}
                                 </span>
                             @endif
-                            @if(isset($m['status_bbtb']))
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border bg-indigo-50 text-indigo-700 border-indigo-200">
-                                    <span class="material-symbols-outlined text-[14px]">fitness_center</span>
+                            @if(isset($m['status_bbtb']) && $statusBbtbIcon)
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border {{ $statusBbtbIcon['class'] }}">
+                                    <span class="material-symbols-outlined text-[14px]">{{ $statusBbtbIcon['icon'] }}</span>
                                     BB/TB: {{ $m['status_bbtb'] }}
                                 </span>
                             @endif
                         </div>
 
                         {{-- Posisi Pengukuran --}}
-                        <div class="flex-shrink-0">
+                        <div class="shrink-0">
                             <select wire:model.live="measurements.{{ $index }}.measurement_method"
                                     class="text-xs font-bold text-slate-600 bg-slate-100 border-0 rounded-xl px-3 py-2 focus:ring-2 focus:ring-teal-300 cursor-pointer">
                                 <option value="recumbent">📏 Posisi: Terlentang</option>

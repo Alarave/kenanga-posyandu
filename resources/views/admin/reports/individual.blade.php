@@ -64,7 +64,7 @@
                 </div>
             </nav>
             <h1 class="text-3xl md:text-4xl font-black tracking-tight leading-none text-slate-800">
-                Rapor Perkembangan: <br class="md:hidden"><span class="text-transparent bg-clip-text bg-gradient-to-r {{ $theme['gradient'] }} drop-shadow-sm">{{ $patient['full_name'] }}</span>
+                Rapor Perkembangan: <br class="md:hidden"><span class="text-transparent bg-clip-text bg-linear-to-r {{ $theme['gradient'] }} drop-shadow-sm">{{ $patient['full_name'] }}</span>
             </h1>
         </div>
     </div>
@@ -134,7 +134,7 @@
                 <div class="absolute -right-16 -top-16 w-48 h-48 bg-white/40 backdrop-blur-3xl rounded-full pointer-events-none"></div>
                 
                 {{-- Profile icon/photo --}}
-                <div class="w-32 h-32 rounded-[2rem] bg-gradient-to-br {{ $theme['gradient'] }} p-1 mb-6 {{ $theme['shadow'] }} relative z-10 group-hover:scale-105 transition-transform duration-500">
+                <div class="w-32 h-32 rounded-4xl bg-linear-to-br {{ $theme['gradient'] }} p-1 mb-6 {{ $theme['shadow'] }} relative z-10 group-hover:scale-105 transition-transform duration-500">
                     <div class="w-full h-full bg-white rounded-[1.8rem] flex items-center justify-center overflow-hidden">
                         <span class="material-symbols-outlined text-[72px] {{ $theme['text'] }} opacity-90">face</span>
                     </div>
@@ -413,6 +413,7 @@
                                                         'Normal', 'Gizi Baik' => 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20',
                                                         'Gizi Kurang', 'Kurang' => 'bg-amber-50 text-amber-700 ring-1 ring-amber-600/20',
                                                         'Gizi Buruk/Stunting', 'Gizi Buruk' => 'bg-rose-50 text-rose-700 ring-1 ring-rose-600/20',
+                                                        'Gizi Lebih', 'Berisiko Gizi Lebih', 'Obesitas' => 'bg-orange-50 text-orange-700 ring-1 ring-orange-600/20',
                                                         default => 'bg-slate-100 text-slate-500 ring-1 ring-slate-400/20',
                                                     };
                                                 @endphp
@@ -482,7 +483,7 @@
                         Kelengkapan Imunisasi
                     </h4>
                     
-                    <div class="space-y-2.5 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                    <div class="space-y-2.5 max-h-75 overflow-y-auto pr-2 custom-scrollbar">
                         @foreach($reportData['immunization_status'] as $group)
                             @foreach($group['vaccines'] as $vax)
                                 <div class="flex items-center justify-between p-3 rounded-2xl border {{ $vax['received'] ? 'bg-emerald-50/50 border-emerald-100/50' : 'bg-white border-slate-100 hover:border-slate-200' }} transition-colors">

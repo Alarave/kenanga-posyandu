@@ -139,8 +139,17 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
 
         $balitaWithImunisasi = (clone $medicalRecordQuery)
             ->whereHas('patient', fn($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
-            ->whereNotNull('immunization')
-            ->where('immunization', '!=', '')
+            ->where(function ($query) {
+                $query->where(function ($q) {
+                    $q->whereNotNull('immunization')
+                      ->where('immunization', '!=', '')
+                      ->where('immunization', '!=', 'Tidak ada');
+                })->orWhere(function ($q) {
+                    $q->whereNotNull('vaccine_name')
+                      ->where('vaccine_name', '!=', '')
+                      ->where('vaccine_name', '!=', 'Tidak ada');
+                });
+            })
             ->whereYear('visit_date', $year)
             ->when($month, fn ($q) => $q->whereMonth('visit_date', $month))
             ->distinct('patient_id')
@@ -523,6 +532,22 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
             ->whereYear('visit_date', $currentYear)
             ->count();
 
+        $totalPemeriksaan = (clone $medicalRecordQuery)->count();
+
+        $totalImunisasi = (clone $medicalRecordQuery)
+            ->where(function ($query) {
+                $query->where(function ($q) {
+                    $q->whereNotNull('immunization')
+                      ->where('immunization', '!=', '')
+                      ->where('immunization', '!=', 'Tidak ada');
+                })->orWhere(function ($q) {
+                    $q->whereNotNull('vaccine_name')
+                      ->where('vaccine_name', '!=', '')
+                      ->where('vaccine_name', '!=', 'Tidak ada');
+                });
+            })
+            ->count();
+
         $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
 
         $distribution = (clone $medicalRecordQuery)
@@ -557,17 +582,74 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
             $data[] = $trends->get($key, 0);
         }
 
+        // ── DASH-04: Lansia Demografi ──
+        $lansiaList = (clone $patientQuery)->where('category', 'lansia')->get(['birth_date']);
+        $lansiaDemografi = ['60_69' => 0, '70_plus' => 0];
+        foreach ($lansiaList as $l) {
+            $age = $l->birth_date ? Carbon::parse($l->birth_date)->age : 0;
+            if ($age >= 60 && $age < 70) {
+                $lansiaDemografi['60_69']++;
+            } elseif ($age >= 70) {
+                $lansiaDemografi['70_plus']++;
+            }
+        }
+
+        // ── DASH-02: Bumil Trimester ──
+        $bumilRecords = (clone $medicalRecordQuery)
+            ->whereIn('id', $latestRecordSubquery)
+            ->whereHas('patient', fn($q) => $q->where('category', 'ibu_hamil'))
+            ->get(['gestational_age']);
+        $bumilTrimester = ['T1' => 0, 'T2' => 0, 'T3' => 0];
+        foreach ($bumilRecords as $record) {
+            $weeks = (int) filter_var($record->gestational_age, FILTER_SANITIZE_NUMBER_INT);
+            if ($weeks > 0) {
+                if ($weeks <= 13) $bumilTrimester['T1']++;
+                elseif ($weeks <= 27) $bumilTrimester['T2']++;
+                else $bumilTrimester['T3']++;
+            }
+        }
+
+        // ── DASH-06: Kehadiran Balita ──
+        $totalBalitaForHadir = (clone $patientQuery)->whereIn('category', ['balita', 'bayi', 'baduta'])->count();
+        $hadir = (clone $medicalRecordQuery)
+            ->whereHas('patient', fn($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+            ->whereMonth('visit_date', $currentMonth)
+            ->whereYear('visit_date', $currentYear)
+            ->distinct('patient_id')
+            ->count('patient_id');
+        $tidakHadir = max(0, $totalBalitaForHadir - $hadir);
+        $persentaseHadir = $totalBalitaForHadir > 0 ? round(($hadir / $totalBalitaForHadir) * 100, 1) : 0;
+        $kehadiranBalita = [
+            'hadir' => $hadir,
+            'tidak_hadir' => $tidakHadir,
+            'persentase' => $persentaseHadir,
+        ];
+
+        // ── DASH-07: Kelahiran Bulan Ini ──
+        $kelahiranBulanIni = (clone $patientQuery)
+            ->whereIn('category', ['balita', 'bayi', 'baduta'])
+            ->whereMonth('birth_date', $currentMonth)
+            ->whereYear('birth_date', $currentYear)
+            ->count();
+
         return [
             'totalBalita' => $counts->balita ?? 0,
             'totalIbuHamil' => $counts->ibu_hamil ?? 0,
             'totalRemaja' => $counts->remaja ?? 0,
             'totalLansia' => $counts->lansia ?? 0,
             'kunjunganBaru' => $kunjunganBaru,
+            'totalPemeriksaan' => $totalPemeriksaan,
+            'totalImunisasi' => $totalImunisasi,
             'nutritionStatusDistribution' => [
                 'labels' => $distribution->keys()->toArray(),
                 'data' => $distribution->values()->toArray(),
             ],
             'monthlyWeighingData' => ['labels' => $labels, 'data' => $data],
+            // New Dashboard Widgets
+            'lansiaDemografi' => $lansiaDemografi,
+            'bumilTrimester' => $bumilTrimester,
+            'kehadiranBalita' => $kehadiranBalita,
+            'kelahiranBulanIni' => $kelahiranBulanIni,
         ];
     }
 }

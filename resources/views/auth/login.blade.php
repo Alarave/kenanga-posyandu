@@ -33,7 +33,7 @@
         <div class="relative">
             <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
                    placeholder="nama@posyandu.com"
-                   class="w-full h-20 px-8 rounded-[2rem] bg-surface-container-low border-4 border-transparent text-xl font-black text-on-surface placeholder:text-slate-300 focus:outline-none focus:bg-white focus:border-primary/10 focus:ring-[12px] focus:ring-primary/5 transition-all shadow-inner group-hover:bg-surface-container">
+                   class="w-full h-20 px-8 rounded-4xl bg-surface-container-low border-4 border-transparent text-xl font-black text-on-surface placeholder:text-slate-300 focus:outline-none focus:bg-white focus:border-primary/10 focus:ring-12 focus:ring-primary/5 transition-all shadow-inner group-hover:bg-surface-container">
             <div class="absolute inset-y-0 right-8 flex items-center text-slate-300 group-focus-within:text-primary transition-colors">
                 <span class="material-symbols-outlined text-[32px]">verified_user</span>
             </div>
@@ -51,7 +51,7 @@
         <div class="relative">
             <input id="password" type="password" name="password" required
                    placeholder="••••••••"
-                   class="w-full h-20 px-8 pr-24 rounded-[2rem] bg-surface-container-low border-4 border-transparent text-2xl font-black text-on-surface placeholder:text-slate-200 focus:outline-none focus:bg-white focus:border-primary/10 focus:ring-[12px] focus:ring-primary/5 transition-all shadow-inner group-hover:bg-surface-container tracking-widest">
+                   class="w-full h-20 px-8 pr-24 rounded-4xl bg-surface-container-low border-4 border-transparent text-2xl font-black text-on-surface placeholder:text-slate-200 focus:outline-none focus:bg-white focus:border-primary/10 focus:ring-12 focus:ring-primary/5 transition-all shadow-inner group-hover:bg-surface-container tracking-widest">
             
             <button type="button" onclick="togglePassword()" id="toggleBtn"
                     class="absolute right-6 top-1/2 -translate-y-1/2 w-14 h-14 flex items-center justify-center rounded-2xl text-slate-400 hover:bg-white hover:text-primary hover:shadow-lg transition-all active:scale-95">
@@ -66,7 +66,7 @@
             <div class="relative">
                 <input id="remember_me" type="checkbox" name="remember" 
                        class="sr-only peer">
-                <div class="w-10 h-6 bg-slate-200 rounded-full peer peer-checked:bg-primary transition-all after:content-[''] after:absolute after:top-[4px] after:left-[4px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-4"></div>
+                <div class="w-10 h-6 bg-slate-200 rounded-full peer peer-checked:bg-primary transition-all after:content-[''] after:absolute after:top-1 after:left-1 after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-4"></div>
             </div>
             <span class="text-sm font-black text-slate-600 group-hover:text-primary transition-colors">Ingat Perangkat</span>
         </label>

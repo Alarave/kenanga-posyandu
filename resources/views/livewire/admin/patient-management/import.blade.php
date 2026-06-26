@@ -90,9 +90,11 @@
                             </label>
                             
                             <div id="dropzone"
-                                 class="relative border-4 border-dashed rounded-[2.5rem] p-12 text-center cursor-pointer
-                                        hover:border-teal-400 hover:bg-teal-50/50 transition-all group shadow-inner
-                                        border-slate-100 @error('file') border-red-200! bg-red-50! @enderror"
+                                 @class([
+                                     'relative border-4 border-dashed rounded-[2.5rem] p-12 text-center cursor-pointer hover:border-teal-400 hover:bg-teal-50/50 transition-all group shadow-inner',
+                                     'border-red-200 bg-red-50/50' => $errors->has('file'),
+                                     'border-slate-100' => !$errors->has('file'),
+                                 ])
                                  onclick="document.getElementById('fileInput').click()">
                                 <input type="file" id="fileInput" name="file" accept=".csv,.xlsx,.xls"
                                        class="hidden" onchange="handleFileSelect(this)">

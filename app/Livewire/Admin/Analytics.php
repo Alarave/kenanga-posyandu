@@ -46,6 +46,11 @@ class Analytics extends BaseAdminComponent
 
     public array $trendVisitsLansia = [];
 
+    // Additional Trend Arrays for Compare/Yearly Modes
+    public array $trendCompareCurrent = [];
+    public array $trendComparePrevious = [];
+    public array $trendLabelsPrevious = [];
+
     public array $trendNormal = [];
 
     public array $trendStunting = [];
@@ -68,11 +73,11 @@ class Analytics extends BaseAdminComponent
     public int $usia24plus = 0;
 
     // Recent records
-    public $recentRecords;
+    public ?object $recentRecords = null;
 
-    public $recentPregnancyRecords;
+    public ?object $recentPregnancyRecords = null;
 
-    public $recentLansiaRecords;
+    public ?object $recentLansiaRecords = null;
 
     // Vaccine distribution
     public array $vaccineLabels = [];
@@ -107,6 +112,23 @@ class Analytics extends BaseAdminComponent
 
     public ?int $selectedMonth = null; // null means full year
 
+    public ?int $selectedPosyandu = null;
+
+    public string $viewMode = 'monthly'; // 'monthly', 'yearly'
+
+    public bool $compareMode = false;
+
+    // ── ANA-15: Search on recent records tables ──
+    public string $tableSearch = '';
+
+    // ── ANA-16: Gender filter ──
+    public string $filterGender = ''; // '' = all, 'L' = male, 'P' = female
+
+    // ── ANA-22: Drill-down from chart click ──
+    public bool $showDrillDown = false;
+    public string $drillDownTitle = '';
+    public array $drillDownData = [];
+
     public function mount(): void
     {
         $this->selectedYear = (int) now()->year;
@@ -124,9 +146,95 @@ class Analytics extends BaseAdminComponent
         $this->loadData();
     }
 
-    public function updatedActiveTab(): void
+    public function updatedSelectedPosyandu(): void
     {
         $this->loadData();
+    }
+
+    public function updatedViewMode(): void
+    {
+        $this->loadData();
+    }
+
+    public function updatedCompareMode(): void
+    {
+        $this->loadData();
+    }
+
+    public function resetFilters(): void
+    {
+        $this->selectedMonth = null;
+        $this->selectedPosyandu = null;
+        $this->viewMode = 'monthly';
+        $this->compareMode = false;
+        $this->loadData();
+    }
+
+    public function updatedActiveTab(): void
+    {
+        $this->tableSearch = '';
+        $this->drillDownData = [];
+        $this->showDrillDown = false;
+        $this->loadData();
+    }
+
+    // ── ANA-15: Search filter updates ──
+    public function updatedTableSearch(): void
+    {
+        // Triggers re-render — filtering happens in blade via @php
+    }
+
+    // ── ANA-16: Gender filter ──
+    public function updatedFilterGender(): void
+    {
+        $this->loadData();
+    }
+
+    // ── ANA-22: Chart click drill-down ──
+    public function drillDown(string $label, string $type, ?int $month = null): void
+    {
+        $this->showDrillDown = true;
+        $this->drillDownTitle = "Detail: {$label}";
+
+        $query = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
+            ->with(['patient.posyandu'])
+            ->whereYear('visit_date', $this->selectedYear);
+
+        if ($month) {
+            $query->whereMonth('visit_date', $month);
+        } elseif ($this->selectedMonth) {
+            $query->whereMonth('visit_date', $this->selectedMonth);
+        }
+
+        match ($type) {
+            'stunting' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+                               ->where(fn ($q) => $q->where('nutrition_status', 'like', '%Stunting%')
+                                                    ->orWhere('nutrition_status', 'like', '%Pendek%')
+                                                    ->orWhere('stunting_status', '!=', 'Normal')),
+            'gizi_buruk' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+                                 ->where(fn ($q) => $q->where('nutrition_status', 'like', '%Buruk%')
+                                                      ->orWhere('wasting_status', 'Gizi Buruk')),
+            'balita' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta'])),
+            'ibu_hamil' => $query->whereHas('patient', fn ($q) => $q->where('category', 'ibu_hamil')),
+            'lansia' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')),
+            default => null,
+        };
+
+        $this->drillDownData = $query->latest('visit_date')->limit(50)->get()->map(fn ($r) => [
+            'name'            => $r->patient?->full_name ?? '-',
+            'nik'             => $r->patient?->id_number ?? '-',
+            'posyandu'        => $r->patient?->posyandu?->name ?? '-',
+            'nutrition_status'=> $r->nutrition_status ?? '-',
+            'visit_date'      => $r->visit_date?->format('d M Y') ?? '-',
+            'patient_id'      => $r->patient_id,
+        ])->toArray();
+    }
+
+    public function closeDrillDown(): void
+    {
+        $this->showDrillDown = false;
+        $this->drillDownData = [];
+        $this->drillDownTitle = '';
     }
 
     /**
@@ -134,6 +242,7 @@ class Analytics extends BaseAdminComponent
      */
     public function refreshStats(): void
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
         $posyanduId = $user->isSuperAdmin() ? null : $user->posyandu_id;
         
@@ -145,29 +254,39 @@ class Analytics extends BaseAdminComponent
 
     protected function loadData(): void
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
         $posyanduId = $user->isSuperAdmin() ? null : $user->posyandu_id;
         $key = "year_{$this->selectedYear}".($this->selectedMonth ? "_month_{$this->selectedMonth}" : '');
 
-        $snapshot = \App\Models\AnalyticsSnapshot::where('posyandu_id', $posyanduId)
-            ->where('key', $key)
-            ->first();
+        // Bypass snapshot if custom filters are active (DASH-09, DASH-10, DASH-11, DASH-12, DASH-31, DASH-32)
+        $isCustomFilterActive = $this->selectedMonth || $this->selectedPosyandu || $this->compareMode || $this->viewMode === 'yearly';
 
-        if ($snapshot) {
-            $data = $snapshot->data['analytics_data'];
-            $this->lastUpdated = $snapshot->last_computed_at->format('d M Y H:i');
-            
-            // Auto-refresh in background if data is older than 1 hour
-            if ($snapshot->last_computed_at->diffInHours(now()) >= 1) {
+        if (! $isCustomFilterActive) {
+            $snapshot = \App\Models\AnalyticsSnapshot::where('posyandu_id', $posyanduId)
+                ->where('key', $key)
+                ->first();
+
+            if ($snapshot) {
+                $data = $snapshot->data['analytics_data'];
+                $this->lastUpdated = $snapshot->last_computed_at->format('d M Y H:i');
+                
+                // Auto-refresh in background if data is older than 1 hour
+                if ($snapshot->last_computed_at->diffInHours(now()) >= 1) {
+                    ComputeAnalyticsSnapshot::dispatch($posyanduId, $this->selectedYear, $this->selectedMonth);
+                }
+            } else {
+                // Fallback to legacy computation if no snapshot exists
+                $data = $this->fetchAnalyticsData();
+                $this->lastUpdated = 'Live (Memproses Snapshot...)';
+
+                // Dispatch job to create snapshot for next time
                 ComputeAnalyticsSnapshot::dispatch($posyanduId, $this->selectedYear, $this->selectedMonth);
             }
         } else {
-            // Fallback to legacy computation if no snapshot exists
+            // Live calculation for custom filters
             $data = $this->fetchAnalyticsData();
-            $this->lastUpdated = 'Live (Memproses Snapshot...)';
-
-            // Dispatch job to create snapshot for next time
-            ComputeAnalyticsSnapshot::dispatch($posyanduId, $this->selectedYear, $this->selectedMonth);
+            $this->lastUpdated = 'Live (Custom Filter)';
         }
 
         foreach ($data as $k => $value) {
@@ -198,6 +317,13 @@ class Analytics extends BaseAdminComponent
             trendPregnancyHypertension: $this->trendPregnancyHypertension,
             trendPregnancyFe: $this->trendPregnancyFe,
 
+            // Additional Chart Data
+            trendCompareCurrent: $this->trendCompareCurrent,
+            trendComparePrevious: $this->trendComparePrevious,
+            trendLabelsPrevious: $this->trendLabelsPrevious,
+            viewMode: $this->viewMode,
+            compareMode: $this->compareMode,
+
             // Lansia Charts
             trendLansiaHypertension: $this->trendLansiaHypertension,
             trendLansiaHyperglycemia: $this->trendLansiaHyperglycemia,
@@ -205,26 +331,40 @@ class Analytics extends BaseAdminComponent
             trendLansiaHyperuricemia: $this->trendLansiaHyperuricemia
         );
 
-        // Recent records (filtered by month/year)
-        $medicalRecordQuery = $this->applyPosyanduScope(MedicalRecord::query())
+        // Recent records (filtered by month/year/posyandu + gender)
+        $medicalRecordQuery = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
             ->whereYear('visit_date', $this->selectedYear);
 
         if ($this->selectedMonth) {
             $medicalRecordQuery->whereMonth('visit_date', $this->selectedMonth);
         }
 
+        // ANA-16: apply gender filter when set
+        if ($this->filterGender) {
+            $medicalRecordQuery->whereHas('patient', fn ($q) => $q->where('gender', $this->filterGender));
+        }
+
+        // ANA-15: apply search when set
+        if ($this->tableSearch) {
+            $searchTerm = '%' . $this->tableSearch . '%';
+            $medicalRecordQuery->whereHas('patient', function ($q) use ($searchTerm) {
+                $q->where('full_name', 'like', $searchTerm)
+                  ->orWhere('id_number', 'like', $searchTerm);
+            });
+        }
+
         $this->recentRecords = (clone $medicalRecordQuery)
             ->with(['patient.posyandu'])
             ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
             ->latest('visit_date')
-            ->limit(5)
+            ->limit(20)
             ->get();
 
         $this->recentPregnancyRecords = (clone $medicalRecordQuery)
             ->with(['patient.posyandu'])
             ->whereHas('patient', fn ($q) => $q->where('category', 'ibu_hamil'))
             ->latest('visit_date')
-            ->limit(5)
+            ->limit(20)
             ->get();
 
         $this->recentLansiaRecords = (clone $medicalRecordQuery)
@@ -237,9 +377,10 @@ class Analytics extends BaseAdminComponent
 
     protected function fetchAnalyticsData(): array
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
-        $patientQuery = $this->applyPosyanduScope(Patient::query());
-        $medicalRecordQuery = $this->applyPosyanduScope(MedicalRecord::query());
+        $patientQuery = $this->applyPosyanduScope(Patient::query(), $this->selectedPosyandu);
+        $medicalRecordQuery = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu);
 
         $selectedYear = $this->selectedYear;
         $selectedMonth = $this->selectedMonth;
@@ -295,6 +436,37 @@ class Analytics extends BaseAdminComponent
             $trendVisitsBalita[] = $monthRecords->filter(fn($r) => $r->patient && in_array($r->patient->category, ['balita', 'bayi', 'baduta']))->count();
             $trendVisitsIbuHamil[] = $monthRecords->filter(fn($r) => $r->patient && $r->patient->category === 'ibu_hamil')->count();
             $trendVisitsLansia[] = $monthRecords->filter(fn($r) => $r->patient && $r->patient->category === 'lansia')->count();
+        }
+
+        // Compare Mode & Yearly Mode Logic
+        $this->trendCompareCurrent = [];
+        $this->trendComparePrevious = [];
+        $this->trendLabelsPrevious = [];
+
+        if ($this->viewMode === 'yearly') {
+            // Yearly mode compares this year vs last year overall visits
+            $recordsPrevYear = (clone $medicalRecordQuery)
+                ->whereYear('visit_date', $selectedYear - 1)
+                ->get();
+            
+            for ($m = 1; $m <= 12; $m++) {
+                $this->trendCompareCurrent[] = $recordsYear->filter(fn($r) => Carbon::parse($r->visit_date)->month === $m)->count();
+                $this->trendComparePrevious[] = $recordsPrevYear->filter(fn($r) => Carbon::parse($r->visit_date)->month === $m)->count();
+            }
+        } elseif ($this->compareMode && $selectedMonth) {
+            // Compare mode (Bulan Ini vs Bulan Lalu)
+            $recordsPrevMonth = (clone $medicalRecordQuery)
+                ->whereYear('visit_date', clone Carbon::create($selectedYear, $selectedMonth)->subMonth()->year)
+                ->whereMonth('visit_date', clone Carbon::create($selectedYear, $selectedMonth)->subMonth()->month)
+                ->get();
+            
+            // Group by category for bar chart
+            $categories = ['balita', 'ibu_hamil', 'lansia'];
+            foreach ($categories as $cat) {
+                $this->trendCompareCurrent[] = $recordsYear->filter(fn($r) => Carbon::parse($r->visit_date)->month === $selectedMonth && $r->patient && in_array($r->patient->category, $cat === 'balita' ? ['balita', 'bayi', 'baduta'] : [$cat]))->count();
+                $this->trendComparePrevious[] = $recordsPrevMonth->filter(fn($r) => $r->patient && in_array($r->patient->category, $cat === 'balita' ? ['balita', 'bayi', 'baduta'] : [$cat]))->count();
+            }
+            $this->trendLabelsPrevious = ['Balita', 'Ibu Hamil', 'Lansia'];
         }
 
         // ── 2. BALITA ANALYTICS ─────────────────────────────────────

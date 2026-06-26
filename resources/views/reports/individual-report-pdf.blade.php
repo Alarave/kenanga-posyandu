@@ -113,6 +113,10 @@
             background-color: #dbeafe;
             color: #1e40af;
         }
+        .badge-orange {
+            background-color: #ffedd5;
+            color: #ea580c;
+        }
 
         .chart-box {
             width: 100%;
@@ -242,6 +246,7 @@
                                         'Normal', 'Gizi Baik' => 'badge-normal',
                                         'Gizi Kurang', 'Kurang' => 'badge-warning',
                                         'Gizi Buruk/Stunting', 'Gizi Buruk' => 'badge-danger',
+                                        'Gizi Lebih', 'Berisiko Gizi Lebih', 'Obesitas' => 'badge-orange',
                                         default => 'badge-info',
                                     };
                                 @endphp

@@ -22,7 +22,7 @@
     <x-layouts.public.navbar />
 
     {{-- Main Content Section --}}
-    <main class="pt-[68px]">
+    <main class="pt-17">
         @yield('content')
     </main>
 

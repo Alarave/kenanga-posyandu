@@ -22,7 +22,7 @@
 
         <!-- GridBackground (GridShape.tsx equivalent) -->
         <!-- Top Right Grid -->
-        <div class="absolute right-0 top-0 -z-10 w-full max-w-[250px] xl:max-w-[450px]">
+        <div class="absolute right-0 top-0 -z-10 w-full max-w-62.5 xl:max-w-112.5">
             <svg width="450" height="254" viewBox="0 0 450 254" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M0.50555 45.1131L450 45.1132L450 44.6073L0.50555 44.6072L0.50555 45.1131Z" fill="url(#paint0_linear_3005_4084)" fill-opacity="0.3"/>
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M205.546 253.529L205.546 -2.13709e-05L205.04 -2.1392e-05L205.04 253.529L205.546 253.529Z" fill="url(#paint1_linear_3005_4084)" fill-opacity="0.3"/>
@@ -97,7 +97,7 @@
         </div>
         
         <!-- Bottom Left Grid (rotated 180 deg) -->
-        <div class="absolute bottom-0 left-0 -z-10 w-full max-w-[250px] rotate-180 xl:max-w-[450px]">
+        <div class="absolute bottom-0 left-0 -z-10 w-full max-w-62.5 rotate-180 xl:max-w-112.5">
             <svg width="450" height="254" viewBox="0 0 450 254" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M0.50555 45.1131L450 45.1132L450 44.6073L0.50555 44.6072L0.50555 45.1131Z" fill="url(#paint0_linear_3005_4084)" fill-opacity="0.3"/>
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M205.546 253.529L205.546 -2.13709e-05L205.04 -2.1392e-05L205.04 253.529L205.546 253.529Z" fill="url(#paint1_linear_3005_4084)" fill-opacity="0.3"/>
@@ -171,7 +171,7 @@
             </svg>
         </div>
         
-        <div class="mx-auto w-full max-w-[242px] text-center sm:max-w-[472px] my-auto py-12">
+        <div class="mx-auto w-full max-w-60.5 text-center sm:max-w-118 my-auto py-12">
             <h1 class="mb-8 font-black tracking-tight text-gray-800 dark:text-white/90 text-3xl sm:text-4xl font-jakarta">
                 ERROR
             </h1>
