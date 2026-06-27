@@ -17,19 +17,7 @@
     <input wire:model.live="search" class="bg-transparent border-none focus:ring-0 w-full font-body-md text-body-md text-on-surface placeholder-outline-variant outline-none" placeholder="Cari judul kegiatan..." type="text"/>
 </div>
 
-        {{-- Filter Capsules --}}
-        <div class="flex items-center bg-surface-container p-1 rounded-2xl border border-outline-variant">
-            <button @click="mediaFilter = 'all'" :class="mediaFilter === 'all' ? 'bg-inverse-surface text-white shadow-md' : 'text-on-surface-variant hover:text-on-surface'" class="px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all">
-                Semua
-            </button>
-            <button @click="mediaFilter = 'photo'" :class="mediaFilter === 'photo' ? 'bg-primary text-white shadow-md' : 'text-on-surface-variant hover:text-on-surface'" class="px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all">
-                Foto
-            </button>
-            <button @click="mediaFilter = 'video'" :class="mediaFilter === 'video' ? 'bg-secondary text-white shadow-md' : 'text-on-surface-variant hover:text-on-surface'" class="px-5 py-2.5 rounded-xl text-xs font-black uppercase tracking-wider transition-all">
-                Video
-            </button>
-        </div>
-    </div>
+    <div class="max-w-[1440px] mx-auto space-y-8 pb-20">
 
     {{-- ── Gallery Grid ── --}}
     @if($galleries->isEmpty())
@@ -47,9 +35,8 @@
                 @php
                     $isVideo = ($gallery->type === 'video');
                 @endphp
-                <div x-show="mediaFilter === 'all' || (mediaFilter === 'photo' && !{{ $isVideo ? 'true' : 'false' }}) || (mediaFilter === 'video' && {{ $isVideo ? 'true' : 'false' }})"
-                     class="bg-white rounded-[2.5rem] border border-slate-100 overflow-hidden group hover:border-outline-variant transition-all duration-500 shadow-md hover:shadow-xl flex flex-col h-full"
-                     x-data="{ playing: false }">
+                <div class="bg-white rounded-[2.5rem] border border-slate-100 overflow-hidden group hover:border-outline-variant transition-all duration-500 shadow-md hover:shadow-xl flex flex-col h-full"
+                    x-data="{ playing: false }">
                     
                     {{-- Media Container --}}
                     <div class="aspect-[4/3] relative overflow-hidden bg-slate-950 flex items-center justify-center">

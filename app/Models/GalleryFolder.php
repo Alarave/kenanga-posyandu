@@ -2,16 +2,19 @@
 
 namespace App\Models;
 
-use App\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Gallery extends Model
+class GalleryFolder extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory;
 
     protected $fillable = [
-        'posyandu_id', 'user_id', 'folder_id', 'title', 'description', 'photo', 'type',
+        'name',
+        'description', 
+        'cover_image',
+        'posyandu_id',
+        'created_by',
     ];
 
     public function posyandu()
@@ -19,14 +22,19 @@ class Gallery extends Model
         return $this->belongsTo(Posyandu::class);
     }
 
-    public function user()
+    public function createdBy()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function folder()
+    public function galleries()
     {
-        return $this->belongsTo(GalleryFolder::class, 'folder_id');
+        return $this->hasMany(Gallery::class, 'folder_id');
+    }
+
+    public function coverImage()
+    {
+        return $this->galleries()->whereNotNull('photo')->latest()->first();
     }
 
     public function scopeAccessibleBy($query, $user)
