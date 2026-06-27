@@ -44,15 +44,10 @@
             {{-- Hero Image / Illustration --}}
             <div class="flex-1 relative hidden md:block">
                 <div class="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white rotate-2 group-hover:rotate-0 transition-transform duration-700">
-                    <img src="https://images.unsplash.com/photo-1584362946444-1e6a47940e21?q=80&w=800&auto=format&fit=crop" 
-                         alt="Posyandu" class="w-full h-[350px] object-cover">
+                    <img src="{{ asset('assets/img/tim-kenanga.jpg') }}" 
+                         alt="Tim Kenanga" class="w-full h-[350px] object-cover">
                 </div>
-                <div class="absolute -bottom-6 -left-6 bg-white p-4 rounded-2xl shadow-xl border border-slate-100 flex items-center gap-4 animate-bounce">
-                    <div class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
-                        <i class="fas fa-check"></i>
-                    </div>
-                    <p class="text-xs font-black text-slate-800 uppercase tracking-wider">Data Terverifikasi</p>
-                </div>
+
             </div>
         </div>
     </div>
