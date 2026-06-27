@@ -37,7 +37,7 @@ class MedicalRecordRequest extends FormRequest
             'disease_history' => 'nullable|string',
             'health_note' => 'nullable|string',
             'immunization' => 'nullable|string',
-            'vaccine_name' => 'nullable|string|max:50',
+            'vaccine_name' => 'nullable|string|max:255',
             'vaccine_dose' => 'nullable|integer|min:1|max:10',
             'is_basic_immunization_complete' => 'nullable|boolean',
             'vitamin_a_color' => 'nullable|in:biru,merah,none',

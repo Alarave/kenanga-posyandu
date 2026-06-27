@@ -1113,13 +1113,17 @@
 
             {{-- Global Validation Errors --}}
             @if($errors->any())
-                <div class="bg-rose-50 border-2 border-rose-200 rounded-[2rem] p-6 flex items-center gap-4 animate-bounce">
-                    <div class="w-12 h-12 rounded-2xl bg-rose-500 text-white flex items-center justify-center shadow-lg">
+                <div class="bg-rose-50 border-2 border-rose-200 rounded-[2rem] p-6 flex items-start gap-4 animate-bounce">
+                    <div class="w-12 h-12 rounded-2xl bg-rose-500 text-white flex items-center justify-center shadow-lg shrink-0">
                         <span class="material-symbols-outlined">warning</span>
                     </div>
                     <div>
                         <h4 class="text-rose-900 font-black uppercase text-xs tracking-widest">Ada Kesalahan Input</h4>
-                        <p class="text-rose-700 text-xs font-bold mt-1">Mohon periksa kembali kolom yang bertanda merah di bawah.</p>
+                        <ul class="list-disc list-inside text-rose-700 text-xs mt-1.5 space-y-1 font-bold">
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
                     </div>
                 </div>
             @endif
@@ -1190,7 +1194,8 @@
                         <div class="md:col-span-4 space-y-3">
                             <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Tanggal Pengisian <span class="text-primary">*</span></label>
                             <input type="date" name="visit_date" value="{{ old('visit_date', date('Y-m-d')) }}" required
-                                   class="w-full h-16 px-6 border border-slate-200 rounded-[1.25rem] text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-slate-50/30">
+                                   class="w-full h-16 px-6 border @error('visit_date') border-error bg-error/5 @else border-slate-200 @enderror rounded-[1.25rem] text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-slate-50/30">
+                            @error('visit_date') <p class="text-[10px] text-rose-500 font-bold ml-1">{{ $message }}</p> @enderror
                         </div>
 
                         {{-- Identity & Birth History --}}
@@ -1198,28 +1203,32 @@
                             <div class="space-y-3">
                                 <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Nama Ayah</label>
                                 <input type="text" name="father_name" value="{{ old('father_name', $selectedPatient->father_name ?? '') }}" placeholder="Nama ayah..." :disabled="!['bayi', 'baduta', 'balita', 'anak_sekolah', 'balita'].includes(category)"
-                                       class="w-full h-14 px-5 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-slate-50/30">
+                                       class="w-full h-14 px-5 border @error('father_name') border-error bg-error/5 @else border-slate-200 @enderror rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-slate-50/30">
+                                @error('father_name') <p class="text-[10px] text-rose-500 font-bold ml-1">{{ $message }}</p> @enderror
                             </div>
                             <div class="space-y-3">
                                 <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Nama Ibu</label>
                                 <input type="text" name="mother_name" value="{{ old('mother_name', $selectedPatient->mother_name ?? '') }}" placeholder="Nama ibu..." :disabled="!['bayi', 'baduta', 'balita', 'anak_sekolah', 'balita'].includes(category)"
-                                       class="w-full h-14 px-5 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-slate-50/30">
+                                       class="w-full h-14 px-5 border @error('mother_name') border-error bg-error/5 @else border-slate-200 @enderror rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-slate-50/30">
+                                @error('mother_name') <p class="text-[10px] text-rose-500 font-bold ml-1">{{ $message }}</p> @enderror
                             </div>
                             <div class="space-y-3">
                                 <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">BB Lahir (kg)</label>
                                 <div class="relative">
                                     <input type="number" step="0.01" name="weight_at_birth" value="{{ old('weight_at_birth', $selectedPatient->weight_at_birth ?? '') }}" placeholder="0.00" :disabled="!['bayi', 'baduta', 'balita', 'anak_sekolah', 'balita'].includes(category)"
-                                           class="w-full h-14 pl-5 pr-10 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-slate-50/30">
+                                           class="w-full h-14 pl-5 pr-10 border @error('weight_at_birth') border-error bg-error/5 @else border-slate-200 @enderror rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-slate-50/30">
                                     <span class="absolute right-4 top-4 text-[10px] font-black text-slate-300">KG</span>
                                 </div>
+                                @error('weight_at_birth') <p class="text-[10px] text-rose-500 font-bold ml-1">{{ $message }}</p> @enderror
                             </div>
                             <div class="space-y-3">
                                 <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">PB Lahir (cm)</label>
                                 <div class="relative">
                                     <input type="number" step="0.1" name="height_at_birth" value="{{ old('height_at_birth', $selectedPatient->height_at_birth ?? '') }}" placeholder="0.0" :disabled="!['bayi', 'baduta', 'balita', 'anak_sekolah', 'balita'].includes(category)"
-                                           class="w-full h-14 pl-5 pr-10 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-slate-50/30">
+                                           class="w-full h-14 pl-5 pr-10 border @error('height_at_birth') border-error bg-error/5 @else border-slate-200 @enderror rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-slate-50/30">
                                     <span class="absolute right-4 top-4 text-[10px] font-black text-slate-300">CM</span>
                                 </div>
+                                @error('height_at_birth') <p class="text-[10px] text-rose-500 font-bold ml-1">{{ $message }}</p> @enderror
                             </div>
                         </div>
                     </div>
@@ -1311,17 +1320,19 @@
                                         <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Lingkar Kepala</label>
                                         <div class="relative">
                                             <input type="number" step="0.1" name="head_circumference" value="{{ old('head_circumference') }}" placeholder="0.0" :disabled="!['bayi', 'baduta', 'balita', 'anak_sekolah', 'balita'].includes(category)"
-                                                   class="w-full h-16 px-6 border border-slate-200 rounded-[1.25rem] text-sm font-bold text-slate-700 focus:outline-none focus:border-secondary focus:ring-4 focus:ring-secondary/5 transition-all bg-slate-50/30">
+                                                   class="w-full h-16 px-6 border @error('head_circumference') border-error bg-error/5 @else border-slate-200 @enderror rounded-[1.25rem] text-sm font-bold text-slate-700 focus:outline-none focus:border-secondary focus:ring-4 focus:ring-secondary/5 transition-all bg-slate-50/30">
                                             <span class="absolute right-5 top-5 text-slate-300 material-symbols-outlined">analytics</span>
                                         </div>
+                                        @error('head_circumference') <p class="text-[10px] text-rose-500 font-bold ml-1">{{ $message }}</p> @enderror
                                     </div>
                                     <div class="space-y-3">
                                         <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">LiLA (cm)</label>
                                         <div class="relative">
                                             <input type="number" step="0.1" name="upper_arm_circumference" value="{{ old('upper_arm_circumference') }}" placeholder="0.0" :disabled="!['bayi', 'baduta', 'balita', 'anak_sekolah', 'balita'].includes(category)"
-                                                   class="w-full h-16 px-6 border border-slate-200 rounded-[1.25rem] text-sm font-bold text-slate-700 focus:outline-none focus:border-secondary focus:ring-4 focus:ring-secondary/5 transition-all bg-slate-50/30">
+                                                   class="w-full h-16 px-6 border @error('upper_arm_circumference') border-error bg-error/5 @else border-slate-200 @enderror rounded-[1.25rem] text-sm font-bold text-slate-700 focus:outline-none focus:border-secondary focus:ring-4 focus:ring-secondary/5 transition-all bg-slate-50/30">
                                             <span class="absolute right-5 top-5 text-slate-300 material-symbols-outlined">straighten</span>
                                         </div>
+                                        @error('upper_arm_circumference') <p class="text-[10px] text-rose-500 font-bold ml-1">{{ $message }}</p> @enderror
                                     </div>
                                 </div>
                             </div>
@@ -1510,7 +1521,8 @@
                                 <div class="space-y-3 pt-2">
                                     <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Gejala / Temuan Lainnya</label>
                                     <textarea name="other_symptoms" rows="10" placeholder="Sebutkan gejala lain jika ada secara detail..." :disabled="!['bayi', 'baduta', 'balita', 'anak_sekolah', 'balita'].includes(category)"
-                                              class="w-full p-6 border border-slate-200 rounded-[2rem] text-sm font-bold text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all bg-slate-50/30 resize-none">{{ old('other_symptoms') }}</textarea>
+                                              class="w-full p-6 border @error('other_symptoms') border-error bg-error/5 @else border-slate-200 @enderror rounded-[2rem] text-sm font-bold text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all bg-slate-50/30 resize-none">{{ old('other_symptoms') }}</textarea>
+                                    @error('other_symptoms') <p class="text-[10px] text-rose-500 font-bold ml-1">{{ $message }}</p> @enderror
                                 </div>
                             </div>
                         </div>
@@ -1550,6 +1562,7 @@
                                                     </label>
                                                 @endforeach
                                             </div>
+                                            @error($name) <p class="text-[10px] text-rose-500 font-bold ml-1 mt-2 text-center">{{ $message }}</p> @enderror
                                         </div>
                                     @endforeach
                                 </div>
@@ -1575,6 +1588,7 @@
                                                      TIDAK
                                                  </div>
                                              </label>
+                                             @error($name) <p class="text-[10px] text-rose-500 font-bold ml-1 mt-1 text-center">{{ $message }}</p> @enderror
  
                                              {{-- Conditional Color Selector for Vitamin A --}}
                                              @if($name === 'vitamin_a')
@@ -1583,6 +1597,7 @@
                                                          <option value="biru" {{ old('vitamin_a_color') == 'biru' ? 'selected' : '' }}>🔵 Kapsul Biru (6-11 bln)</option>
                                                          <option value="merah" {{ old('vitamin_a_color') == 'merah' ? 'selected' : '' }}>🔴 Kapsul Merah (1-5 thn)</option>
                                                      </x-forms.select-input>
+                                                     @error('vitamin_a_color') <p class="text-[10px] text-rose-500 font-bold ml-1 mt-1">{{ $message }}</p> @enderror
                                                  </div>
                                              @endif
                                          </div>
@@ -1606,6 +1621,7 @@
                                      }">
                                      <label class="text-[10px] font-black text-slate-600 uppercase tracking-widest ml-1">Riwayat Imunisasi</label>
                                          <input type="hidden" name="vaccine_name" x-ref="vaccineInput" value="{{ old('vaccine_name') }}" :disabled="!['bayi', 'baduta', 'balita', 'anak_sekolah', 'balita'].includes(category)">
+                                         @error('vaccine_name') <p class="text-[10px] text-rose-500 font-bold ml-1 mb-2">{{ $message }}</p> @enderror
                                          
                                          <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                                              @foreach(['HB-0', 'Polio 0', 'BCG', 'Polio 1', 'Polio 2', 'Polio 3', 'Polio 4', 'DPT-HB-Hib 1', 'DPT-HB-Hib 2', 'DPT-HB-Hib 3', 'PCV 1', 'PCV 2', 'PCV 3', 'RV 1', 'RV 2', 'RV 3', 'IPV 1', 'IPV 2', 'MR', 'DPT-HB-Hib Lanjutan', 'MR Lanjutan', 'JE'] as $vaccine)
@@ -1627,9 +1643,10 @@
                                         <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">PMT (Makanan Tambahan)</label>
                                         <div class="relative">
                                             <input type="text" name="pmt_given" value="{{ old('pmt_given') }}" placeholder="Contoh: Biskuit, Susu..." :disabled="!['bayi', 'baduta', 'balita', 'anak_sekolah', 'balita'].includes(category)"
-                                                   class="w-full h-14 px-6 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all bg-slate-50/30">
+                                                   class="w-full h-14 px-6 border @error('pmt_given') border-error bg-error/5 @else border-slate-200 @enderror rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all bg-slate-50/30">
                                             <span class="absolute right-5 top-4 text-slate-300 material-symbols-outlined">restaurant</span>
                                         </div>
+                                        @error('pmt_given') <p class="text-[10px] text-rose-500 font-bold ml-1">{{ $message }}</p> @enderror
                                     </div>
                                 </div>
                             </div>
@@ -1657,6 +1674,7 @@
                                 <option value="Lengkap" {{ old('kpsp_status') == 'Lengkap' ? 'selected' : '' }}>✅ Lengkap / Sesuai</option>
                                 <option value="Tidak Lengkap" {{ old('kpsp_status') == 'Tidak Lengkap' ? 'selected' : '' }}>⚠️ Ada Keterlambatan</option>
                             </x-forms.select-input>
+                            @error('kpsp_status') <p class="text-[10px] text-rose-500 font-bold ml-1">{{ $message }}</p> @enderror
                         </div>
                     </div>
                 </div>
@@ -1684,7 +1702,8 @@
                         <div class="space-y-3">
                             <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Keluhan / Riwayat Sakit</label>
                             <textarea name="complaint" rows="2" :placeholder="['bayi', 'baduta', 'balita', 'anak_sekolah', 'balita'].includes(category) ? 'Catat keluhan balita jika ada...' : (category === 'ibu_hamil' ? 'Catat keluhan ibu hamil jika ada...' : 'Catat keluhan lansia jika ada...')"
-                                      class="w-full p-5 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-slate-50/30 resize-none">{{ old('complaint') }}</textarea>
+                                      class="w-full p-5 border @error('complaint') border-error bg-error/5 @else border-slate-200 @enderror rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-slate-50/30 resize-none">{{ old('complaint') }}</textarea>
+                            @error('complaint') <p class="text-[10px] text-rose-500 font-bold ml-1">{{ $message }}</p> @enderror
                         </div>
 
                     </div>

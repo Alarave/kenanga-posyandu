@@ -193,9 +193,8 @@ class AdminDashboard extends BaseAdminComponent
                 $query->whereIn("id", $latestRecordSubquery)
                       ->where(function ($sq) {
                           $sq->where("upper_arm_circumference", "<", 23.5)
-                             ->orWhere("blood_pressure", "like", "140/%")
-                             ->orWhere("blood_pressure", "like", "150/%")
-                             ->orWhere("blood_pressure", "like", "160/%");
+                             ->orWhere("systolic_bp", ">=", 140)
+                             ->orWhere("diastolic_bp", ">=", 90);
                       });
             })
             ->orWhere(function ($query) {

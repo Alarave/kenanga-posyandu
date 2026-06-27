@@ -16,7 +16,6 @@
                             Profil & Editorial
                         </span>
                     </div>
-
                 </div>
                 
                 <h1 class="text-4xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tight font-jakarta leading-[1.15] py-2">
@@ -38,17 +37,76 @@
                 </div>
             </div>
 
-            {{-- Hero Right: Image & Floating Cards --}}
+            {{-- Hero Right: Professional Image Carousel --}}
             <div class="lg:col-span-5 relative">
-                <div class="relative mx-auto max-w-112.5 lg:max-w-none">
-                    {{-- Background Accent Card --}}
-                    <div class="absolute -inset-4 bg-linear-to-tr from-primary/10 to-teal-500/10 rounded-[2.5rem] blur-xl opacity-80 -z-10"></div>
-                    
-                    {{-- Main Image Card --}}
-                    <div class="relative overflow-hidden rounded-4xl border border-white dark:border-slate-800 shadow-2xl bg-white dark:bg-slate-900 p-4">
-                        <img src="{{ asset('assets/img/about_hero_illustration.png') }}" alt="Posyandu Kenanga Illustration" class="w-full h-auto object-contain rounded-2xl transform hover:scale-[1.01] transition-transform duration-500 max-h-105">
-                    </div>
+                <div class="relative mx-auto max-w-md lg:max-w-none">
 
+                    {{-- Glow accent behind card --}}
+                    <div class="absolute -inset-6 bg-gradient-to-tr from-primary/15 via-teal-400/10 to-transparent rounded-[3rem] blur-2xl opacity-70 -z-10"></div>
+
+                    {{-- Main Carousel Card --}}
+                    <div class="relative rounded-3xl overflow-visible border border-slate-200/70 dark:border-slate-700/60 shadow-2xl bg-white dark:bg-slate-900">
+
+                        {{-- Slides Container --}}
+                        <div id="carousel-track" class="relative overflow-hidden rounded-t-3xl" style="height: 400px;">
+
+                            {{-- Slide 1 --}}
+                            <div class="carousel-slide absolute inset-0 transition-opacity duration-700 ease-in-out z-10" style="opacity:1;">
+                                <img src="{{ asset('assets/img/about_hero_illustration.png') }}"
+                                     alt="Pelayanan Posyandu Kenanga"
+                                     class="w-full h-full object-cover">
+                                <div class="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                <div class="absolute bottom-5 left-5 right-5">
+                                    <p class="text-white text-sm font-bold drop-shadow-sm">Pelayanan Kesehatan Terpadu</p>
+                                    <p class="text-white/70 text-xs mt-0.5">Posyandu ILP Kenanga RW 011</p>
+                                </div>
+                            </div>
+
+                            {{-- Slide 2 --}}
+                            <div class="carousel-slide absolute inset-0 transition-opacity duration-700 ease-in-out z-0" style="opacity:0;">
+                                <img src="{{ asset('assets/img/carousel_1.png') }}"
+                                     alt="Layanan Ibu dan Bayi"
+                                     class="w-full h-full object-cover object-top">
+                                <div class="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                <div class="absolute bottom-5 left-5 right-5">
+                                    <p class="text-white text-sm font-bold drop-shadow-sm">Layanan Ibu & Bayi</p>
+                                    <p class="text-white/70 text-xs mt-0.5">Pemantauan tumbuh kembang anak</p>
+                                </div>
+                            </div>
+
+                            {{-- Slide 3 --}}
+                            <div class="carousel-slide absolute inset-0 transition-opacity duration-700 ease-in-out z-0" style="opacity:0;">
+                                <img src="{{ asset('assets/img/carousel_2.png') }}"
+                                     alt="Pemeriksaan Lansia"
+                                     class="w-full h-full object-cover object-top">
+                                <div class="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                <div class="absolute bottom-5 left-5 right-5">
+                                    <p class="text-white text-sm font-bold drop-shadow-sm">Layanan Kesehatan Lansia</p>
+                                    <p class="text-white/70 text-xs mt-0.5">Cek kesehatan rutin untuk lansia</p>
+                                </div>
+                            </div>
+
+                            {{-- Slide 4 --}}
+                            <div class="carousel-slide absolute inset-0 transition-opacity duration-700 ease-in-out z-0" style="opacity:0;">
+                                <img src="{{ asset('assets/img/carousel_3.png') }}"
+                                     alt="Tim Kader Aktif"
+                                     class="w-full h-full object-cover object-top">
+                                <div class="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-black/60 to-transparent"></div>
+                                <div class="absolute bottom-5 left-5 right-5">
+                                    <p class="text-white text-sm font-bold drop-shadow-sm">Tim Kader Posyandu Aktif</p>
+                                    <p class="text-white/70 text-xs mt-0.5">Siap melayani dengan sepenuh hati</p>
+                                </div>
+                            </div>
+
+                            {{-- Slide Counter Badge (top right) --}}
+                            <div class="absolute top-4 right-4 z-30 bg-black/35 backdrop-blur-sm text-white text-xs font-bold px-3 py-1.5 rounded-full tracking-wide">
+                                <span id="carousel-counter">1 / 4</span>
+                            </div>
+
+                        </div>
+
+
+                    </div>
 
                 </div>
             </div>
@@ -56,3 +114,57 @@
         </div>
     </div>
 </section>
+
+<script>
+(function() {
+    var current = 0;
+    var slides  = document.querySelectorAll('.carousel-slide');
+    var dots    = document.querySelectorAll('.carousel-dot');
+    var counter = document.getElementById('carousel-counter');
+    var total   = slides.length;
+    var timer;
+
+    function show(index) {
+        current = (index + total) % total;
+
+        slides.forEach(function(s, i) {
+            s.style.opacity = (i === current) ? '1' : '0';
+            s.style.zIndex  = (i === current) ? '10' : '0';
+        });
+
+        dots.forEach(function(d, i) {
+            if (i === current) {
+                d.style.width = '24px';
+                d.style.backgroundColor = 'var(--color-primary, #0d9488)';
+            } else {
+                d.style.width = '8px';
+                d.style.backgroundColor = '';
+                d.classList.add('bg-slate-200');
+                d.classList.remove('bg-primary');
+            }
+        });
+
+        if (counter) counter.textContent = (current + 1) + ' / ' + total;
+    }
+
+    function next() { show(current + 1); }
+    function prev() { show(current - 1); }
+
+    function resetTimer() {
+        clearInterval(timer);
+        timer = setInterval(next, 5000);
+    }
+
+    var nextBtn = document.getElementById('carousel-next');
+    var prevBtn = document.getElementById('carousel-prev');
+    if (nextBtn) nextBtn.addEventListener('click', function() { next(); resetTimer(); });
+    if (prevBtn) prevBtn.addEventListener('click', function() { prev(); resetTimer(); });
+
+    dots.forEach(function(d, i) {
+        d.addEventListener('click', function() { show(i); resetTimer(); });
+    });
+
+    show(0);
+    resetTimer();
+})();
+</script>
