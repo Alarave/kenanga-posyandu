@@ -7,7 +7,7 @@
             
             <div class="flex flex-col gap-3">
                 <div>
-                    <h1 class="text-4xl font-black tracking-tight leading-none text-teal-800 drop-shadow-sm">
+                    <h1 class="font-display-sm md:font-display-lg text-display-sm-mobile md:text-display-lg text-teal-700 mb-2 tracking-tight">
                         Rekap & Laporan
                     </h1>
                     <p class="text-sm font-medium text-outline mt-3">Analisis data kunjungan dan status kesehatan warga secara komprehensif.</p>

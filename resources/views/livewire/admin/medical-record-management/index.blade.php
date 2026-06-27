@@ -9,7 +9,7 @@
 
                 {{-- Title & Subtitle --}}
                 <div class="max-w-2xl relative z-10">
-                    <h1 class="font-display-sm md:font-display-lg text-display-sm-mobile md:text-display-lg text-teal-gradient mb-2 tracking-tight">Manajemen Rekam Medis</h1>
+                    <h1 class="font-display-sm md:font-display-lg text-display-sm-mobile md:text-display-lg text-teal-700 mb-2 tracking-tight">Manajemen Rekam Medis</h1>
                     <p class="font-body-lg text-body-lg text-on-surface-variant">Kelola data kunjungan dan rekam kesehatan warga secara sistematis.</p>
                 </div>
             </div>

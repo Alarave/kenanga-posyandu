@@ -94,7 +94,7 @@
                     <label class="text-[11px] font-black text-outline-variant uppercase tracking-widest ml-1">Jenis Kelamin <span class="text-teal-500">*</span></label>
                     
                     <!-- Tampilan statis jika Ibu Hamil -->
-                    <div x-show="category === 'ibu_hamil'" class="relative">
+                    <div x-show="category === 'ibu_hamil'">
                         <div class="w-full h-16 px-6 bg-surface-container border border-outline-variant rounded-2xl flex items-center text-sm font-bold text-outline">
                             Perempuan
                         </div>
@@ -102,11 +102,14 @@
                     </div>
                     
                     <!-- Dropdown pilihan jenis kelamin untuk kategori lain -->
-                    <div x-show="category !== 'ibu_hamil'">
-                        <x-forms.select-input name="gender" placeholder="Pilih Jenis Kelamin" :placeholderDisabled="true" value="{{ old('gender', $patient->gender ?? '') }}" required x-model="gender" x-bind:disabled="category === 'ibu_hamil'">
+                    <div x-show="category !== 'ibu_hamil'" class="relative">
+                        <select name="gender" x-model="gender" x-bind:disabled="category === 'ibu_hamil'" required
+                                class="appearance-none w-full h-16 px-6 pr-12 border border-outline-variant rounded-2xl text-sm font-bold text-on-surface-variant focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-surface-container-low/30 cursor-pointer">
+                            <option value="" disabled selected>Pilih Jenis Kelamin</option>
                             <option value="M" {{ old('gender', $patient->gender ?? '') == 'M' ? 'selected' : '' }}>Laki-laki</option>
                             <option value="F" {{ old('gender', $patient->gender ?? '') == 'F' ? 'selected' : '' }}>Perempuan</option>
-                        </x-forms.select-input>
+                        </select>
+                        <span class="absolute right-6 top-5 text-slate-300 material-symbols-outlined pointer-events-none">expand_more</span>
                     </div>
                 </div>
             </div>
@@ -173,17 +176,21 @@
 
             <div class="md:col-span-2 space-y-3 pt-4">
                 <label class="text-[11px] font-black text-outline-variant uppercase tracking-widest ml-1">Kepemilikan Buku KIA</label>
-                <x-forms.select-input name="kia_book_ownership" placeholder="" value="{{ old('kia_book_ownership', $isEdit ? ($patient->kia_book_ownership ? '1' : '0') : '0') }}" x-bind:disabled="!['bayi', 'baduta', 'balita', 'anak_sekolah'].includes(category)">
-                    <option value="0" {{ old('kia_book_ownership', $isEdit ? ($patient->kia_book_ownership ? '1' : '0') : '0') == '0' ? 'selected' : '' }}>Tidak Memiliki</option>
-                    <option value="1" {{ old('kia_book_ownership', $isEdit ? ($patient->kia_book_ownership ? '1' : '0') : '0') == '1' ? 'selected' : '' }}>Ya, Memiliki</option>
-                </x-forms.select-input>
+                <div class="relative">
+                    <select name="kia_book_ownership" x-bind:disabled="!['bayi', 'baduta', 'balita', 'anak_sekolah'].includes(category)"
+                            class="appearance-none w-full h-14 px-6 pr-12 border border-outline-variant rounded-2xl text-sm font-bold text-on-surface-variant focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-surface-container-low/30 cursor-pointer">
+                        <option value="0" {{ old('kia_book_ownership', $isEdit ? ($patient->kia_book_ownership ? '1' : '0') : '0') == '0' ? 'selected' : '' }}>Tidak Memiliki</option>
+                        <option value="1" {{ old('kia_book_ownership', $isEdit ? ($patient->kia_book_ownership ? '1' : '0') : '0') == '1' ? 'selected' : '' }}>Ya, Memiliki</option>
+                    </select>
+                    <span class="absolute right-5 top-4 text-slate-300 material-symbols-outlined pointer-events-none">expand_more</span>
+                </div>
             </div>
         </div>
     </div>
 
     {{-- Dewasa/Umum --}}
     <div class="bg-white rounded-[3rem] border border-slate-100 p-10 shadow-[0_8px_30px_rgb(0,0,0,0.02)] transition-all duration-500"
-         x-show="['remaja', 'umum'].includes(category)"
+         x-show="['remaja', 'umum', 'ibu_hamil', 'lansia'].includes(category)"
          x-transition:enter="transition ease-out duration-500"
          x-transition:enter-start="opacity-0 transform translate-y-8"
          x-transition:enter-end="opacity-100 transform translate-y-0">
@@ -242,10 +249,22 @@
             {{-- Status Kehamilan --}}
             <div class="space-y-3">
                 <label class="text-[11px] font-black text-outline-variant uppercase tracking-widest ml-1">Status Kehamilan</label>
-                <x-forms.select-input name="is_pregnant" placeholder="" value="{{ old('is_pregnant', $patient->is_pregnant ?? '0') }}" x-bind:disabled="category === 'ibu_hamil' || category === 'lansia' || ['bayi', 'baduta', 'balita', 'anak_sekolah'].includes(category)">
-                    <option value="0" {{ old('is_pregnant', $patient->is_pregnant ?? '0') == '0' ? 'selected' : '' }}>Tidak Hamil</option>
-                    <option value="1" {{ old('is_pregnant', $patient->is_pregnant ?? '0') == '1' ? 'selected' : '' }}>Sedang Hamil</option>
-                </x-forms.select-input>
+                
+                <!-- Tampilan statis jika Ibu Hamil -->
+                <div x-show="category === 'ibu_hamil'">
+                    <div class="w-full h-14 px-6 bg-surface-container border border-outline-variant rounded-2xl flex items-center text-sm font-bold text-outline">
+                        Sedang Hamil
+                    </div>
+                </div>
+                
+                <div x-show="category !== 'ibu_hamil'" class="relative">
+                    <select name="is_pregnant" x-bind:disabled="category === 'ibu_hamil' || category === 'lansia' || ['bayi', 'baduta', 'balita', 'anak_sekolah'].includes(category)"
+                            class="appearance-none w-full h-14 px-6 pr-12 border border-outline-variant rounded-2xl text-sm font-bold text-on-surface-variant focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-surface-container-low/30 cursor-pointer">
+                        <option value="0" {{ old('is_pregnant', $patient->is_pregnant ?? '0') == '0' ? 'selected' : '' }}>Tidak Hamil</option>
+                        <option value="1" {{ old('is_pregnant', $patient->is_pregnant ?? '0') == '1' ? 'selected' : '' }}>Sedang Hamil</option>
+                    </select>
+                    <span class="absolute right-5 top-4 text-slate-300 material-symbols-outlined pointer-events-none">expand_more</span>
+                </div>
             </div>
         </div>
     </div>
@@ -268,17 +287,27 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div class="space-y-3">
                 <label class="text-[11px] font-black text-outline-variant uppercase tracking-widest ml-1">Status Kemandirian</label>
-                <x-forms.select-input name="independence_status" placeholder="Pilih Status Kemandirian" value="{{ old('independence_status', $patient->independence_status ?? '') }}" x-bind:disabled="category !== 'lansia'">
-                    <option value="Mandiri" {{ old('independence_status', $patient->independence_status ?? '') == 'Mandiri' ? 'selected' : '' }}>Mandiri (Tanpa Bantuan)</option>
-                    <option value="Butuh Bantuan" {{ old('independence_status', $patient->independence_status ?? '') == 'Butuh Bantuan' ? 'selected' : '' }}>Butuh Bantuan</option>
-                </x-forms.select-input>
+                <div class="relative">
+                    <select name="independence_status" x-bind:disabled="category !== 'lansia'"
+                            class="appearance-none w-full h-16 px-6 pr-12 border border-outline-variant rounded-2xl text-sm font-bold text-on-surface-variant focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-surface-container-low/30 cursor-pointer">
+                        <option value="" disabled selected>Pilih Status Kemandirian</option>
+                        <option value="Mandiri" {{ old('independence_status', $patient->independence_status ?? '') == 'Mandiri' ? 'selected' : '' }}>Mandiri (Tanpa Bantuan)</option>
+                        <option value="Butuh Bantuan" {{ old('independence_status', $patient->independence_status ?? '') == 'Butuh Bantuan' ? 'selected' : '' }}>Butuh Bantuan</option>
+                    </select>
+                    <span class="absolute right-6 top-5 text-slate-300 material-symbols-outlined pointer-events-none">expand_more</span>
+                </div>
             </div>
             <div class="space-y-3">
                 <label class="text-[11px] font-black text-outline-variant uppercase tracking-widest ml-1">Status Tinggal</label>
-                <x-forms.select-input name="living_status" placeholder="Pilih Status Tinggal" value="{{ old('living_status', $patient->living_status ?? '') }}" x-bind:disabled="category !== 'lansia'">
-                    <option value="Sendiri" {{ old('living_status', $patient->living_status ?? '') == 'Sendiri' ? 'selected' : '' }}>Tinggal Sendiri</option>
-                    <option value="Dengan Keluarga" {{ old('living_status', $patient->living_status ?? '') == 'Dengan Keluarga' ? 'selected' : '' }}>Tinggal Bersama Keluarga</option>
-                </x-forms.select-input>
+                <div class="relative">
+                    <select name="living_status" x-bind:disabled="category !== 'lansia'"
+                            class="appearance-none w-full h-16 px-6 pr-12 border border-outline-variant rounded-2xl text-sm font-bold text-on-surface-variant focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-surface-container-low/30 cursor-pointer">
+                        <option value="" disabled selected>Pilih Status Tinggal</option>
+                        <option value="Sendiri" {{ old('living_status', $patient->living_status ?? '') == 'Sendiri' ? 'selected' : '' }}>Tinggal Sendiri</option>
+                        <option value="Dengan Keluarga" {{ old('living_status', $patient->living_status ?? '') == 'Dengan Keluarga' ? 'selected' : '' }}>Tinggal Bersama Keluarga</option>
+                    </select>
+                    <span class="absolute right-6 top-5 text-slate-300 material-symbols-outlined pointer-events-none">expand_more</span>
+                </div>
             </div>
             <div class="md:col-span-2 space-y-3">
                 <label class="text-[11px] font-black text-outline-variant uppercase tracking-widest ml-1">Riwayat Penyakit Dahulu</label>
@@ -308,7 +337,7 @@
                     <input type="tel" name="phone_number" value="{{ old('phone_number', $patient->phone_number ?? '') }}" required
                            placeholder="Contoh: 0812..."
                            class="w-full h-16 px-6 border border-outline-variant rounded-2xl text-sm font-bold text-on-surface-variant focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-surface-container-low/30">
-                    <span class="absolute right-6 top-5 text-slate-300 material-symbols-outlined">call</span>
+                    <span class="absolute right-6 top-5 text-slate-300 material-symbols-outlined pointer-events-none">call</span>
                 </div>
             </div>
             <div class="space-y-3">
@@ -320,11 +349,16 @@
                         </div>
                         <input type="hidden" name="posyandu_id" value="{{ auth()->user()->posyandu_id }}">
                     @else
-                        <x-forms.select-input name="posyandu_id" placeholder="" value="{{ old('posyandu_id', $patient->posyandu_id ?? request('posyandu_id', '')) }}" required>
-                            @foreach($posyandus as $p)
-                                <option value="{{ $p->id }}" {{ old('posyandu_id', $patient->posyandu_id ?? request('posyandu_id')) == $p->id ? 'selected' : '' }}>{{ $p->name }}</option>
-                            @endforeach
-                        </x-forms.select-input>
+                        <div class="relative">
+                            <select name="posyandu_id" required
+                                    class="appearance-none w-full h-16 px-6 pr-12 border border-outline-variant rounded-2xl text-sm font-bold text-on-surface-variant focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-surface-container-low/30 cursor-pointer">
+                                <option value="" disabled selected>Pilih Unit Posyandu</option>
+                                @foreach($posyandus as $p)
+                                    <option value="{{ $p->id }}" {{ old('posyandu_id', $patient->posyandu_id ?? request('posyandu_id')) == $p->id ? 'selected' : '' }}>{{ $p->name }}</option>
+                                @endforeach
+                            </select>
+                            <span class="absolute right-6 top-5 text-slate-300 material-symbols-outlined pointer-events-none">expand_more</span>
+                        </div>
                     @endif
                 </div>
             </div>
@@ -393,35 +427,54 @@
             </div>
             <div class="space-y-3">
                 <label class="text-[11px] font-black text-outline-variant uppercase tracking-widest ml-1">Status Ekonomi</label>
-                <x-forms.select-input name="economic_status" placeholder="Pilih Status Ekonomi" value="{{ old('economic_status', $patient->economic_status ?? '') }}">
-                    <option value="Mampu" {{ old('economic_status', $patient->economic_status ?? '') == 'Mampu' ? 'selected' : '' }}>Mampu</option>
-                    <option value="Cukup Mampu" {{ old('economic_status', $patient->economic_status ?? '') == 'Cukup Mampu' ? 'selected' : '' }}>Cukup Mampu</option>
-                    <option value="Kurang Mampu" {{ old('economic_status', $patient->economic_status ?? '') == 'Kurang Mampu' ? 'selected' : '' }}>Kurang Mampu</option>
-                </x-forms.select-input>
+                <div class="relative">
+                    <select name="economic_status"
+                            class="appearance-none w-full h-16 px-6 pr-12 border border-outline-variant rounded-2xl text-sm font-bold text-on-surface-variant focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-surface-container-low/30 cursor-pointer">
+                        <option value="" disabled selected>Pilih Status Ekonomi</option>
+                        <option value="Mampu" {{ old('economic_status', $patient->economic_status ?? '') == 'Mampu' ? 'selected' : '' }}>Mampu</option>
+                        <option value="Cukup Mampu" {{ old('economic_status', $patient->economic_status ?? '') == 'Cukup Mampu' ? 'selected' : '' }}>Cukup Mampu</option>
+                        <option value="Kurang Mampu" {{ old('economic_status', $patient->economic_status ?? '') == 'Kurang Mampu' ? 'selected' : '' }}>Kurang Mampu</option>
+                    </select>
+                    <span class="absolute right-6 top-5 text-slate-300 material-symbols-outlined pointer-events-none">expand_more</span>
+                </div>
             </div>
             <div class="space-y-3">
                 <label class="text-[11px] font-black text-outline-variant uppercase tracking-widest ml-1">Kondisi Rumah</label>
-                <x-forms.select-input name="house_condition" placeholder="Pilih Kondisi Rumah" value="{{ old('house_condition', $patient->house_condition ?? '') }}">
-                    <option value="Permanen" {{ old('house_condition', $patient->house_condition ?? '') == 'Permanen' ? 'selected' : '' }}>Permanen (Tembok/Semen)</option>
-                    <option value="Semi Permanen" {{ old('house_condition', $patient->house_condition ?? '') == 'Semi Permanen' ? 'selected' : '' }}>Semi Permanen</option>
-                    <option value="Non Permanen" {{ old('house_condition', $patient->house_condition ?? '') == 'Non Permanen' ? 'selected' : '' }}>Non Permanen / Panggung</option>
-                </x-forms.select-input>
+                <div class="relative">
+                    <select name="house_condition"
+                            class="appearance-none w-full h-16 px-6 pr-12 border border-outline-variant rounded-2xl text-sm font-bold text-on-surface-variant focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-surface-container-low/30 cursor-pointer">
+                        <option value="" disabled selected>Pilih Kondisi Rumah</option>
+                        <option value="Permanen" {{ old('house_condition', $patient->house_condition ?? '') == 'Permanen' ? 'selected' : '' }}>Permanen (Tembok/Semen)</option>
+                        <option value="Semi Permanen" {{ old('house_condition', $patient->house_condition ?? '') == 'Semi Permanen' ? 'selected' : '' }}>Semi Permanen</option>
+                        <option value="Non Permanen" {{ old('house_condition', $patient->house_condition ?? '') == 'Non Permanen' ? 'selected' : '' }}>Non Permanen / Panggung</option>
+                    </select>
+                    <span class="absolute right-6 top-5 text-slate-300 material-symbols-outlined pointer-events-none">expand_more</span>
+                </div>
             </div>
             <div class="space-y-3">
                 <label class="text-[11px] font-black text-outline-variant uppercase tracking-widest ml-1">Akses Air Bersih</label>
-                <x-forms.select-input name="water_access" placeholder="Pilih Akses Air" value="{{ old('water_access', $patient->water_access ?? '') }}">
-                    <option value="PDAM" {{ old('water_access', $patient->water_access ?? '') == 'PDAM' ? 'selected' : '' }}>PDAM / Air Perpipaan</option>
-                    <option value="Sumur Terlindungi" {{ old('water_access', $patient->water_access ?? '') == 'Sumur Terlindungi' ? 'selected' : '' }}>Sumur Terlindungi / Air Tanah</option>
-                    <option value="Air Hujan" {{ old('water_access', $patient->water_access ?? '') == 'Air Hujan' ? 'selected' : '' }}>Penampungan Air Hujan</option>
-                    <option value="Lainnya" {{ old('water_access', $patient->water_access ?? '') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
-                </x-forms.select-input>
+                <div class="relative">
+                    <select name="water_access"
+                            class="appearance-none w-full h-16 px-6 pr-12 border border-outline-variant rounded-2xl text-sm font-bold text-on-surface-variant focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-surface-container-low/30 cursor-pointer">
+                        <option value="" disabled selected>Pilih Akses Air</option>
+                        <option value="PDAM" {{ old('water_access', $patient->water_access ?? '') == 'PDAM' ? 'selected' : '' }}>PDAM / Air Perpipaan</option>
+                        <option value="Sumur Terlindungi" {{ old('water_access', $patient->water_access ?? '') == 'Sumur Terlindungi' ? 'selected' : '' }}>Sumur Terlindungi / Air Tanah</option>
+                        <option value="Air Hujan" {{ old('water_access', $patient->water_access ?? '') == 'Air Hujan' ? 'selected' : '' }}>Penampungan Air Hujan</option>
+                        <option value="Lainnya" {{ old('water_access', $patient->water_access ?? '') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                    </select>
+                    <span class="absolute right-6 top-5 text-slate-300 material-symbols-outlined pointer-events-none">expand_more</span>
+                </div>
             </div>
             <div class="space-y-3">
                 <label class="text-[11px] font-black text-outline-variant uppercase tracking-widest ml-1">Kepemilikan Jamban Sehat</label>
-                <x-forms.select-input name="has_latrine" placeholder="" value="{{ old('has_latrine', $isEdit ? ($patient->has_latrine ? '1' : '0') : '1') }}">
-                    <option value="1" {{ old('has_latrine', $isEdit ? ($patient->has_latrine ? '1' : '0') : '1') == '1' ? 'selected' : '' }}>Ya, Memiliki Jamban Sehat</option>
-                    <option value="0" {{ old('has_latrine', $isEdit ? ($patient->has_latrine ? '1' : '0') : '1') == '0' ? 'selected' : '' }}>Tidak Memiliki</option>
-                </x-forms.select-input>
+                <div class="relative">
+                    <select name="has_latrine"
+                            class="appearance-none w-full h-16 px-6 pr-12 border border-outline-variant rounded-2xl text-sm font-bold text-on-surface-variant focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-surface-container-low/30 cursor-pointer">
+                        <option value="1" {{ old('has_latrine', $isEdit ? ($patient->has_latrine ? '1' : '0') : '1') == '1' ? 'selected' : '' }}>Ya, Memiliki Jamban Sehat</option>
+                        <option value="0" {{ old('has_latrine', $isEdit ? ($patient->has_latrine ? '1' : '0') : '1') == '0' ? 'selected' : '' }}>Tidak Memiliki</option>
+                    </select>
+                    <span class="absolute right-6 top-5 text-slate-300 material-symbols-outlined pointer-events-none">expand_more</span>
+                </div>
             </div>
         </div>
     </div>

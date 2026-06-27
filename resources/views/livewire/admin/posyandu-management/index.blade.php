@@ -13,7 +13,7 @@
             <div class="flex flex-col gap-4">
 
                 <div>
-                    <h1 class="text-4xl font-black tracking-tight leading-none text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">
+                    <h1 class="font-display-sm md:font-display-lg text-display-sm-mobile md:text-display-lg text-teal-700 mb-2 tracking-tight">
                         Unit & Wilayah
                     </h1>
                     <p class="text-sm font-bold text-on-surface mt-3">Kelola data unit posyandu dan wilayah binaan secara terpusat.</p>

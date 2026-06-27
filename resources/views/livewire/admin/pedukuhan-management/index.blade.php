@@ -7,7 +7,7 @@
                 <span class="material-symbols-outlined text-[16px]">chevron_right</span>
                 <span class="text-primary font-medium">Manajemen Wilayah</span>
             </div>
-            <h1 class="font-display-sm text-display-sm md:font-display-sm md:text-display-sm text-on-surface">Manajemen Wilayah Pedukuhan</h1>
+            <h1 class="font-display-sm md:font-display-lg text-display-sm-mobile md:text-display-lg text-teal-700 mb-2 tracking-tight">Manajemen Wilayah Pedukuhan</h1>
         </div>
         <a href="{{ route('admin.pedukuhans.create') }}" class="bg-primary text-on-primary px-5 py-2.5 rounded-lg font-label-md text-label-md flex items-center justify-center gap-2 hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm whitespace-nowrap">
             <span class="material-symbols-outlined">add_location</span>

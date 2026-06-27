@@ -53,7 +53,7 @@
         </div>
     @endif
  
-    <form action="{{ route('admin.patients.update', $patient->id) }}" method="POST" enctype="multipart/form-data" class="flex flex-col lg:flex-row gap-8 px-4">
+    <form action="{{ route('admin.patients.update', $patient->id) }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-8 px-4">
         @csrf
         @method('PUT')
         <input type="hidden" name="category" x-model="category">
@@ -63,7 +63,7 @@
         @include('livewire.admin.patient-management.partials.form-fields', ['patient' => $patient])
 
         {{-- ── Action Buttons ── --}}
-        <div class="w-full flex-1 mt-8">
+        <div class="w-full mt-8">
             <div class="flex items-center justify-between bg-white/50 backdrop-blur-md p-6 rounded-[2.5rem] border border-white shadow-xl">
                 <p class="text-[10px] font-bold text-outline-variant px-6 uppercase tracking-widest hidden md:block">Pastikan seluruh data yang bertanda <span class="text-teal-500 font-black">*</span> telah terisi dengan benar.</p>
                 <div class="flex items-center gap-4 ml-auto">
