@@ -230,31 +230,7 @@
                     </div>
                 </div>
 
-                <div class="hidden sm:block h-10 w-px bg-slate-200 self-end mb-0.5"></div>
 
-                {{-- Compare toggle --}}
-                <div class="flex flex-col gap-1">
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider pl-1">Bandingkan Periode</span>
-                    <button wire:click="$toggle('compareMode')" @class([
-                        'inline-flex items-center gap-3 h-10 px-4 rounded-xl border font-bold text-sm transition-all cursor-pointer',
-                        'bg-teal-50/50 border-teal-200 text-teal-800 shadow-xs' => $compareMode,
-                        'bg-white border-slate-300 text-slate-650 hover:border-slate-400' => !$compareMode,
-                    ])>
-                        {{-- Toggle track --}}
-                        <span @class([
-                            'relative inline-flex h-5 w-9 items-center rounded-full transition-colors shrink-0',
-                            'bg-teal-600' => $compareMode,
-                            'bg-slate-300' => !$compareMode,
-                        ])>
-                            <span @class([
-                                'inline-block h-3.5 w-3.5 rounded-full bg-white shadow transition-transform',
-                                'translate-x-4' => $compareMode,
-                                'translate-x-0.5' => !$compareMode,
-                            ])></span>
-                        </span>
-                        <span>Mode Bandingkan (Bulan Lalu)</span>
-                    </button>
-                </div>
             </div>
         </div>
         @endif
@@ -372,77 +348,162 @@
                 @endforeach
             </div>
 
-            {{-- Charts Row --}}
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                {{-- Nutrition Trend Line Chart --}}
-                <div class="lg:col-span-2 bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-xs">
-                    <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-bold text-slate-900">Prevalensi Pertumbuhan Balita</h3>
-                        <button onclick="downloadChart(nutritionTrendChart, 'tren_status_gizi_balita')" class="p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
-                            <span class="material-symbols-outlined text-[18px]">download</span>
-                        </button>
+            {{-- Prevalensi Pertumbuhan Balita — Full Width Card --}}
+            <div class="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-xs">
+                <div class="flex items-start justify-between gap-4 mb-6">
+                    <div>
+                        <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Prevalensi Pertumbuhan Balita</h3>
+                        <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Tren bulanan persentase status gizi balita: Normal, Risiko, dan Stunting/Gizi Buruk</p>
                     </div>
-                    <div class="relative h-85">
-                        <canvas id="nutritionTrendChart" wire:ignore></canvas>
-                        <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/95 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-300 rounded-2xl" id="error-nutritionTrendChart">
-                            <span class="material-symbols-outlined text-rose-600 text-4xl mb-2">error</span>
-                            <p class="text-sm font-extrabold text-slate-800">Gagal memuat data grafik</p>
-                            <button onclick="initCharts()" class="mt-3 px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-slate-700 cursor-pointer">Coba Lagi</button>
-                        </div>
+                    <button onclick="downloadChart(nutritionTrendChart, 'tren_status_gizi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                        <span class="material-symbols-outlined text-[20px]">download</span>
+                    </button>
+                </div>
+
+                {{-- Legend badges --}}
+                <div class="flex flex-wrap gap-3 mb-6">
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200/60">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
+                        <span class="text-xs font-bold text-emerald-700">Normal</span>
+                    </div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200/60">
+                        <span class="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block"></span>
+                        <span class="text-xs font-bold text-amber-700">Risiko Gizi</span>
+                    </div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-red-50 border border-red-200/60">
+                        <span class="w-2.5 h-2.5 rounded-full bg-red-500 inline-block"></span>
+                        <span class="text-xs font-bold text-red-700">Stunting / Gizi Buruk</span>
                     </div>
                 </div>
 
-                {{-- Nutrition Donut Chart --}}
-                <div class="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-xs flex flex-col justify-between">
-                    <div class="flex items-start justify-between mb-2">
-                        <div>
-                            <h3 class="text-lg font-bold text-slate-900">Status Gizi Balita</h3>
-                            <p class="text-xs text-slate-500 mt-1">Distribusi data pemeriksaan terbaru</p>
-                        </div>
-                        <button onclick="downloadChart(nutritionDonutChart, 'distribusi_status_gizi_balita')" class="p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
-                            <span class="material-symbols-outlined text-[18px]">download</span>
-                        </button>
+                <div class="relative h-96">
+                    <canvas id="nutritionTrendChart" wire:ignore></canvas>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/95 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-300 rounded-2xl" id="error-nutritionTrendChart">
+                        <span class="material-symbols-outlined text-rose-600 text-4xl mb-2">error</span>
+                        <p class="text-sm font-extrabold text-slate-800">Gagal memuat data grafik</p>
+                        <button onclick="initCharts()" class="mt-3 px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-slate-700 cursor-pointer">Coba Lagi</button>
                     </div>
-                    <div class="relative flex justify-center my-6">
-                        <canvas id="nutritionDonutChart" width="180" height="180" style="max-width:180px;max-height:180px;" wire:ignore></canvas>
+                </div>
+            </div>
+
+            {{-- Status Gizi Balita — Dedicated Card --}}
+            <div class="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-xs">
+                <div class="flex items-start justify-between gap-4 mb-6">
+                    <div>
+                        <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Status Gizi Balita (Pemeriksaan Terbaru)</h3>
+                        <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Distribusi persentase status gizi balita berdasarkan hasil pemeriksaan status gizi terbaru</p>
+                    </div>
+                    <button onclick="downloadChart(nutritionDonutChart, 'distribusi_status_gizi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                        <span class="material-symbols-outlined text-[20px]">download</span>
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                    {{-- Chart container --}}
+                    <div class="relative flex justify-center py-6">
+                        <canvas id="nutritionDonutChart" width="220" height="220" style="max-width:220px;max-height:220px;" wire:ignore></canvas>
                         <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/95 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-300 rounded-2xl" id="error-nutritionDonutChart">
                             <span class="material-symbols-outlined text-rose-600 text-4xl mb-2">error</span>
                             <p class="text-sm font-extrabold text-slate-800">Gagal memuat grafik</p>
                             <button onclick="initCharts()" class="mt-3 px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-slate-700 cursor-pointer">Coba Lagi</button>
                         </div>
                     </div>
-                    <div class="space-y-2 max-h-40 overflow-y-auto pr-1">
-                        @php $i = 0; @endphp
-                        @foreach($nutritionLabels as $label)
-                        @php
-                            $val = $nutritionData[$i] ?? 0;
-                            $sum = array_sum($nutritionData);
-                            $pct = $sum > 0 ? round(($val / $sum) * 100, 1) : 0;
-                        @endphp
-                        <div class="flex items-center justify-between text-xs font-bold text-slate-800 border-b border-slate-100 pb-1">
-                            <span>{{ $label }}</span>
-                            <span class="font-extrabold text-slate-900">{{ $val }} ({{ $pct }}%)</span>
+
+                    {{-- Distribution list --}}
+                    <div class="space-y-4">
+                        <h4 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Rincian Data Pemeriksaan</h4>
+                        <div class="divide-y divide-slate-100 max-h-64 overflow-y-auto pr-2">
+                            @php $i = 0; @endphp
+                            @foreach($nutritionLabels as $label)
+                            @php
+                                $val = $nutritionData[$i] ?? 0;
+                                $sum = array_sum($nutritionData);
+                                $pct = $sum > 0 ? round(($val / $sum) * 100, 1) : 0;
+                                $isNormal = str_contains(strtolower($label), 'normal') || str_contains(strtolower($label), 'baik');
+                                $isRisk   = str_contains(strtolower($label), 'risiko') || str_contains(strtolower($label), 'kurang');
+                            @endphp
+                            <div class="flex items-center justify-between py-2.5 text-sm font-bold text-slate-750">
+                                <span class="flex items-center gap-2">
+                                    <span class="w-3 h-3 rounded-full inline-block {{ $isNormal ? 'bg-emerald-500' : ($isRisk ? 'bg-amber-450' : 'bg-red-500') }}"></span>
+                                    {{ $label }}
+                                </span>
+                                <span class="font-extrabold text-slate-900">{{ $val }} <span class="text-slate-400 font-semibold">({{ $pct }}%)</span></span>
+                            </div>
+                            @php $i++; @endphp
+                            @endforeach
                         </div>
-                        @php $i++; @endphp
-                        @endforeach
+                        <div class="pt-3 border-t border-slate-100 flex justify-between items-center text-xs text-slate-500 font-bold">
+                            <span>Total Penimbangan Terdaftar</span>
+                            <span class="text-slate-800 text-sm font-black">{{ number_format(array_sum($nutritionData)) }} Balita</span>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {{-- Vaccine Bar Chart --}}
+            {{-- Capaian Imunisasi Per Jenis — Full Width Card --}}
             <div class="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-xs">
-                <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-bold text-slate-900">Capaian Imunisasi Per Jenis</h3>
-                    <button onclick="downloadChart(vaccineChart, 'capaian_imunisasi_balita')" class="p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
-                        <span class="material-symbols-outlined text-[18px]">download</span>
+                <div class="flex items-start justify-between gap-4 mb-6">
+                    <div>
+                        <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Capaian Imunisasi Per Jenis Vaksin</h3>
+                        <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Jumlah balita yang menerima setiap jenis imunisasi dasar pada periode yang dipilih</p>
+                    </div>
+                    <button onclick="downloadChart(vaccineChart, 'capaian_imunisasi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                        <span class="material-symbols-outlined text-[20px]">download</span>
                     </button>
                 </div>
-                <div class="relative h-70">
+
+                {{-- Cakupan badge --}}
+                <div class="flex items-center gap-3 mb-6 p-4 rounded-2xl bg-teal-50/60 border border-teal-200/50">
+                    <span class="material-symbols-outlined text-teal-600 text-[28px]">vaccines</span>
+                    <div>
+                        <p class="text-sm font-extrabold text-teal-900">Cakupan Imunisasi Keseluruhan: <span class="text-teal-600">{{ $cakupanImunisasi }}%</span></p>
+                        <p class="text-xs font-semibold text-teal-700 mt-0.5">dari total {{ number_format($totalBalita) }} balita terdaftar</p>
+                    </div>
+                    <div class="ml-auto flex-shrink-0">
+                        <div class="w-16 h-16 rounded-full flex items-center justify-center border-4 {{ $cakupanImunisasi >= 80 ? 'border-teal-500 bg-teal-50' : ($cakupanImunisasi >= 50 ? 'border-amber-400 bg-amber-50' : 'border-red-400 bg-red-50') }}">
+                            <span class="text-sm font-black {{ $cakupanImunisasi >= 80 ? 'text-teal-700' : ($cakupanImunisasi >= 50 ? 'text-amber-700' : 'text-red-700') }}">{{ $cakupanImunisasi }}%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative h-96">
                     <canvas id="vaccineBarChart" wire:ignore></canvas>
                     <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/95 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-300 rounded-2xl" id="error-vaccineBarChart">
                         <span class="material-symbols-outlined text-rose-600 text-4xl mb-2">error</span>
                         <p class="text-sm font-extrabold text-slate-800">Gagal memuat data grafik</p>
                         <button onclick="initCharts()" class="mt-3 px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-slate-700 cursor-pointer">Coba Lagi</button>
+                    </div>
+                </div>
+                <p class="text-xs font-semibold text-slate-400 text-center mt-4">* Klik batang grafik untuk melihat detail penerima imunisasi</p>
+            </div>
+
+            {{-- Growth Chart (BB & TB Rata-rata) --}}
+            <div class="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-xs">
+                <div class="flex items-center justify-between mb-6">
+                    <div>
+                        <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Grafik Pertumbuhan Keseluruhan Balita & Anak</h3>
+                        <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Rata-rata berat badan (kg) dan tinggi badan (cm) per bulan sepanjang tahun</p>
+                    </div>
+                    <button onclick="downloadChart(growthChart, 'pertumbuhan_balita')" class="p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                        <span class="material-symbols-outlined text-[20px]">download</span>
+                    </button>
+                </div>
+                <div class="relative h-96">
+                    <canvas id="growthChart" wire:ignore></canvas>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/95 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-300 rounded-2xl" id="error-growthChart">
+                        <span class="material-symbols-outlined text-rose-600 text-4xl mb-2">error</span>
+                        <p class="text-sm font-extrabold text-slate-800">Gagal memuat data grafik</p>
+                        <button onclick="initCharts()" class="mt-3 px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-slate-700 cursor-pointer">Coba Lagi</button>
+                    </div>
+                </div>
+                <div class="mt-5 flex flex-wrap gap-6 justify-center">
+                    <div class="flex items-center gap-2">
+                        <span class="w-8 h-0.5 bg-teal-500 inline-block rounded-full"></span>
+                        <span class="text-xs font-bold text-slate-600">Rata-rata Berat Badan (kg) — Skala Kiri</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="w-8 h-0.5 bg-violet-500 inline-block rounded-full"></span>
+                        <span class="text-xs font-bold text-slate-600">Rata-rata Tinggi Badan (cm) — Skala Kanan</span>
                     </div>
                 </div>
             </div>
@@ -832,6 +893,7 @@ let visitsTrendChart = null;
 let nutritionTrendChart = null;
 let nutritionDonutChart = null;
 let vaccineChart = null;
+let growthChart = null;
 let pregnancyRiskChart = null;
 let lansiaMetabolicChart = null;
 
@@ -868,6 +930,7 @@ function initCharts(data = null) {
     try { if (nutritionTrendChart) { nutritionTrendChart.destroy(); nutritionTrendChart = null; } } catch (e) {}
     try { if (nutritionDonutChart) { nutritionDonutChart.destroy(); nutritionDonutChart = null; } } catch (e) {}
     try { if (vaccineChart) { vaccineChart.destroy(); vaccineChart = null; } } catch (e) {}
+    try { if (growthChart) { growthChart.destroy(); growthChart = null; } } catch (e) {}
     try { if (pregnancyRiskChart) { pregnancyRiskChart.destroy(); pregnancyRiskChart = null; } } catch (e) {}
     try { if (lansiaMetabolicChart) { lansiaMetabolicChart.destroy(); lansiaMetabolicChart = null; } } catch (e) {}
 
@@ -876,6 +939,7 @@ function initCharts(data = null) {
     hideChartError('nutritionTrendChart');
     hideChartError('nutritionDonutChart');
     hideChartError('vaccineBarChart');
+    hideChartError('growthChart');
     hideChartError('pregnancyRiskChart');
     hideChartError('lansiaMetabolicChart');
 
@@ -897,6 +961,8 @@ function initCharts(data = null) {
     const normal = data ? data.trendNormal : $wire.trendNormal;
     const stunting = data ? data.trendStunting : $wire.trendStunting;
     const risk = data ? data.trendRisk : $wire.trendRisk;
+    const avgWeight = data ? data.trendAvgWeight : $wire.trendAvgWeight;
+    const avgHeight = data ? data.trendAvgHeight : $wire.trendAvgHeight;
     const nutLabels = data ? data.nutritionLabels : $wire.nutritionLabels;
     const nutData = data ? data.nutritionData : $wire.nutritionData;
     const vaxLabels = data ? data.vaccineLabels : $wire.vaccineLabels;
@@ -1061,34 +1127,44 @@ function initCharts(data = null) {
                             label: 'Normal',
                             data: normal,
                             borderColor: '#059669',
-                            backgroundColor: 'rgba(5, 150, 105, 0.03)',
-                            borderWidth: 3.5,
-                            tension: 0.35,
+                            backgroundColor: 'rgba(5, 150, 105, 0.10)',
+                            borderWidth: 3,
+                            tension: 0.4,
                             fill: true,
+                            pointBackgroundColor: '#059669',
+                            pointRadius: 4,
+                            pointHoverRadius: 7,
                         },
                         {
-                            label: 'Risiko',
+                            label: 'Risiko Gizi',
                             data: risk,
                             borderColor: '#f59e0b',
-                            backgroundColor: 'rgba(245, 158, 11, 0.03)',
-                            borderWidth: 3.5,
-                            tension: 0.35,
+                            backgroundColor: 'rgba(245, 158, 11, 0.10)',
+                            borderWidth: 3,
+                            tension: 0.4,
                             fill: true,
+                            pointBackgroundColor: '#f59e0b',
+                            pointRadius: 4,
+                            pointHoverRadius: 7,
                         },
                         {
-                            label: 'Stunting',
+                            label: 'Stunting / Gizi Buruk',
                             data: stunting,
                             borderColor: '#ef4444',
-                            backgroundColor: 'rgba(239, 68, 68, 0.03)',
-                            borderWidth: 3.5,
-                            tension: 0.35,
+                            backgroundColor: 'rgba(239, 68, 68, 0.10)',
+                            borderWidth: 3,
+                            tension: 0.4,
                             fill: true,
+                            pointBackgroundColor: '#ef4444',
+                            pointRadius: 4,
+                            pointHoverRadius: 7,
                         }
                     ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
                     onClick: (event, activeElements) => {
                         if (activeElements.length > 0) {
                             const firstPoint = activeElements[0];
@@ -1096,20 +1172,34 @@ function initCharts(data = null) {
                             const datasetIndex = firstPoint.datasetIndex;
                             const label = labels[index];
                             const month = index + 1;
-                            const datasetLabel = ['Normal', 'Risiko', 'Stunting'][datasetIndex];
+                            const datasetLabel = ['Normal', 'Risiko Gizi', 'Stunting / Gizi Buruk'][datasetIndex];
 
                             let type = 'balita';
-                            if (datasetLabel === 'Stunting') type = 'stunting';
-                            else if (datasetLabel === 'Risiko') type = 'gizi_buruk';
+                            if (datasetLabel.includes('Stunting')) type = 'stunting';
+                            else if (datasetLabel.includes('Risiko')) type = 'gizi_buruk';
 
                             $wire.call('drillDown', `Balita (${datasetLabel}) - ${label}`, type, month);
                         }
                     },
                     scales: {
                         x: { grid: { display: false } },
-                        y: { beginAtZero: true, max: 100, grid: { color: '#f1f5f9' }, ticks: { callback: function(value) { return value + '%'; } } }
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            grid: { color: '#f1f5f9' },
+                            ticks: { callback: function(value) { return value + '%'; } }
+                        }
                     },
-                    plugins: { legend: { display: true } }
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return ' ' + context.dataset.label + ': ' + context.parsed.y + '%';
+                                }
+                            }
+                        }
+                    }
                 }
             });
         } catch (e) {
@@ -1123,11 +1213,12 @@ function initCharts(data = null) {
     if (donutCtx && nutData && nutData.length > 0 && nutData.some(v => v > 0)) {
         try {
             const colors = nutLabels.map(label => {
-                if (label.includes('Normal') || label.includes('Baik')) return '#059669';
-                if (label.includes('Kurang') && !label.includes('Sangat')) return '#f59e0b';
-                if (label.includes('Risiko') || label.includes('Berisiko')) return '#f59e0b';
-                if (label.includes('Sangat') || label.includes('Buruk') || label.includes('Pendek')) return '#ef4444';
-                if (label.includes('Lebih') || label.includes('Obesitas')) return '#f59e0b';
+                const sLabel = String(label);
+                if (sLabel.includes('Normal') || sLabel.includes('Baik') || sLabel.includes('baik')) return '#059669';
+                if (sLabel.includes('Kurang') && !sLabel.includes('Sangat')) return '#f59e0b';
+                if (sLabel.includes('Risiko') || sLabel.includes('Berisiko')) return '#f59e0b';
+                if (sLabel.includes('Sangat') || sLabel.includes('Buruk') || sLabel.includes('Pendek')) return '#ef4444';
+                if (sLabel.includes('Lebih') || sLabel.includes('Obesitas')) return '#f59e0b';
                 return '#94a3b8';
             });
             nutritionDonutChart = new Chart(donutCtx, {
@@ -1148,7 +1239,7 @@ function initCharts(data = null) {
                         if (activeElements.length > 0) {
                             const firstPoint = activeElements[0];
                             const index = firstPoint.index;
-                            const label = nutLabels[index];
+                            const label = String(nutLabels[index]);
                             let type = 'balita';
                             if (label.includes('Buruk') || label.includes('Sangat Kurang')) type = 'gizi_buruk';
                             else if (label.includes('Kurang') || label.includes('Pendek') || label.includes('Stunting')) type = 'stunting';
@@ -1169,6 +1260,18 @@ function initCharts(data = null) {
     const vaxCtx = document.getElementById('vaccineBarChart');
     if (vaxCtx) {
         try {
+            // Generate gradient-style color palette per vaccine type
+            const vaxColors = vaxLabels.map((label, i) => {
+                const palette = [
+                    '#0d9488','#0891b2','#7c3aed','#059669','#d97706',
+                    '#dc2626','#2563eb','#0f766e','#7e22ce','#b45309',
+                    '#0369a1','#065f46','#9333ea','#c2410c','#1d4ed8',
+                    '#047857','#6d28d9','#92400e'
+                ];
+                return palette[i % palette.length];
+            });
+
+            const maxVal = Math.max(...vaxData, 1);
             vaccineChart = new Chart(vaxCtx, {
                 type: 'bar',
                 data: {
@@ -1176,17 +1279,49 @@ function initCharts(data = null) {
                     datasets: [{
                         label: 'Jumlah Anak',
                         data: vaxData,
-                        backgroundColor: 'rgba(13, 148, 136, 0.8)',
+                        backgroundColor: vaxColors.map(c => c + 'CC'),
+                        borderColor: vaxColors,
+                        borderWidth: 1.5,
                         borderRadius: 8,
+                        borderSkipped: false,
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
+                    onClick: (event, activeElements) => {
+                        if (activeElements.length > 0) {
+                            const index = activeElements[0].index;
+                            const vaccineName = vaxLabels[index];
+                            $wire.call('drillDown', `Imunisasi: ${vaccineName}`, 'balita');
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const val = context.parsed.y;
+                                    const pct = maxVal > 0 ? ((val / maxVal) * 100).toFixed(1) : 0;
+                                    return [
+                                        ' Penerima: ' + val + ' anak',
+                                        ' Relatif: ' + pct + '% dari tertinggi'
+                                    ];
+                                }
+                            }
+                        }
+                    },
                     scales: {
-                        x: { grid: { display: false } },
-                        y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { precision: 0 } }
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { size: 10, weight: 'bold' }, maxRotation: 45 }
+                        },
+                        y: {
+                            beginAtZero: true,
+                            grid: { color: '#f1f5f9' },
+                            ticks: { precision: 0 },
+                            title: { display: true, text: 'Jumlah Anak', font: { weight: 'bold', size: 11 }, color: '#64748b' }
+                        }
                     }
                 }
             });
@@ -1196,7 +1331,109 @@ function initCharts(data = null) {
         }
     }
 
-    // 5. Ibu Hamil Trend Chart
+    // 5. Balita Growth Chart (BB & TB rata-rata per bulan)
+    const growthCtx = document.getElementById('growthChart');
+    if (growthCtx) {
+        try {
+            growthChart = new Chart(growthCtx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Rata-rata Berat Badan (kg)',
+                            data: avgWeight,
+                            borderColor: '#0d9488',
+                            backgroundColor: 'rgba(13, 148, 136, 0.08)',
+                            borderWidth: 3.5,
+                            tension: 0.4,
+                            fill: true,
+                            yAxisID: 'yWeight',
+                            pointBackgroundColor: '#0d9488',
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                        },
+                        {
+                            label: 'Rata-rata Tinggi Badan (cm)',
+                            data: avgHeight,
+                            borderColor: '#8b5cf6',
+                            backgroundColor: 'rgba(139, 92, 246, 0.06)',
+                            borderWidth: 3.5,
+                            borderDash: [6, 3],
+                            tension: 0.4,
+                            fill: true,
+                            yAxisID: 'yHeight',
+                            pointBackgroundColor: '#8b5cf6',
+                            pointRadius: 5,
+                            pointHoverRadius: 7,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                        },
+                        yWeight: {
+                            type: 'linear',
+                            position: 'left',
+                            beginAtZero: false,
+                            grid: { color: '#f1f5f9' },
+                            ticks: {
+                                callback: function(value) { return value + ' kg'; }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Berat Badan (kg)',
+                                color: '#0d9488',
+                                font: { weight: 'bold', size: 11 }
+                            }
+                        },
+                        yHeight: {
+                            type: 'linear',
+                            position: 'right',
+                            beginAtZero: false,
+                            grid: { drawOnChartArea: false },
+                            ticks: {
+                                callback: function(value) { return value + ' cm'; }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Tinggi Badan (cm)',
+                                color: '#8b5cf6',
+                                font: { weight: 'bold', size: 11 }
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.dataset.label || '';
+                                    const value = context.parsed.y;
+                                    if (value === 0) return label + ': Tidak ada data';
+                                    if (label.includes('Berat')) return label + ': ' + value + ' kg';
+                                    return label + ': ' + value + ' cm';
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        } catch (e) {
+            console.error("Error loading growthChart:", e);
+            showChartError('growthChart');
+        }
+    }
+
+    // 6. Ibu Hamil Trend Chart
     const pregCtx = document.getElementById('pregnancyRiskChart');
     if (pregCtx) {
         try {
@@ -1303,7 +1540,7 @@ function initCharts(data = null) {
                         x: { grid: { display: false } },
                         y: { beginAtZero: true, max: 100, grid: { color: '#f1f5f9' }, ticks: { callback: function(value) { return value + '%'; } } }
                     },
-                    plugins: { legend: { display: true } }
+                    plugins: { legend: { display: false } }
                 }
             });
         } catch (e) {
@@ -1319,7 +1556,9 @@ initCharts();
 // Listen for Livewire updates
 $wire.on('charts-updated', (event) => {
     const data = Array.isArray(event) ? event[0] : event;
-    initCharts(data);
+    setTimeout(() => {
+        initCharts(data);
+    }, 50);
 });
 </script>
 @endscript

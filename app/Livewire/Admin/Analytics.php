@@ -117,6 +117,11 @@ class Analytics extends BaseAdminComponent
 
     public array $trendLansiaHyperuricemia = [];
 
+    // Balita Growth Trend
+    public array $trendAvgWeight = [];
+
+    public array $trendAvgHeight = [];
+
     public ?int $selectedMonth = null; // null means full year
 
     public ?int $selectedPosyandu = null;
@@ -331,6 +336,10 @@ class Analytics extends BaseAdminComponent
             viewMode: $this->viewMode,
             compareMode: $this->compareMode,
 
+            // Balita Growth
+            trendAvgWeight: $this->trendAvgWeight,
+            trendAvgHeight: $this->trendAvgHeight,
+
             // Lansia Charts
             trendLansiaHypertension: $this->trendLansiaHypertension,
             trendLansiaHyperglycemia: $this->trendLansiaHyperglycemia,
@@ -536,7 +545,7 @@ class Analytics extends BaseAdminComponent
         $balitaRecords = (clone $medicalRecordQuery)
             ->whereHas('patient', fn($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
             ->whereYear('visit_date', $selectedYear)
-            ->select('id', 'visit_date', 'nutrition_status', 'stunting_status', 'wasting_status')
+            ->select('id', 'visit_date', 'nutrition_status', 'stunting_status', 'wasting_status', 'weight', 'height')
             ->get();
 
         $balitaTrends = $balitaRecords->groupBy(function ($record) {
@@ -563,11 +572,20 @@ class Analytics extends BaseAdminComponent
         $trendNormal = [];
         $trendStunting = [];
         $trendRisk = [];
+        $trendAvgWeight = [];
+        $trendAvgHeight = [];
         for ($m = 1; $m <= 12; $m++) {
             $monthData = $balitaTrends->get($m);
             $trendNormal[] = $monthData ? $monthData->normal_rate : 0;
             $trendStunting[] = $monthData ? $monthData->stunting_rate : 0;
             $trendRisk[] = $monthData ? $monthData->risk_rate : 0;
+
+            // Rata-rata BB & TB per bulan
+            $monthRecs = $balitaRecords->filter(fn($r) => Carbon::parse($r->visit_date)->month === $m);
+            $weightVals = $monthRecs->map(fn($r) => (float)($r->weight ?? 0))->filter(fn($v) => $v > 0);
+            $heightVals = $monthRecs->map(fn($r) => (float)($r->height ?? 0))->filter(fn($v) => $v > 0);
+            $trendAvgWeight[] = $weightVals->count() > 0 ? round($weightVals->average(), 2) : 0;
+            $trendAvgHeight[] = $heightVals->count() > 0 ? round($heightVals->average(), 2) : 0;
         }
 
         $dist = (clone $medicalRecordQuery)
@@ -851,6 +869,8 @@ class Analytics extends BaseAdminComponent
             'trendNormal' => $trendNormal,
             'trendStunting' => $trendStunting,
             'trendRisk' => $trendRisk,
+            'trendAvgWeight' => $trendAvgWeight,
+            'trendAvgHeight' => $trendAvgHeight,
             'nutritionLabels' => array_keys($dist),
             'nutritionData' => array_values($dist),
             'stuntingByPosyandu' => $stuntingByPosyandu,

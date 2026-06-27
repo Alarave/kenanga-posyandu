@@ -58,8 +58,8 @@ class PatientRequest extends FormRequest
             'phone_number' => 'required|string|max:15',
             'posyandu_id' => 'nullable|exists:posyandus,id',
             'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'weight_at_birth' => 'nullable|numeric|min:0',
-            'height_at_birth' => 'nullable|numeric|min:0',
+            'weight_at_birth' => 'nullable|numeric|min:0.5|max:10',
+            'height_at_birth' => 'nullable|numeric|min:30|max:60',
 
             // New Detail Fields
             'husband_name' => 'nullable|string|max:255',
@@ -101,6 +101,12 @@ class PatientRequest extends FormRequest
             'birth_date.before_or_equal' => 'Tanggal lahir tidak boleh di masa depan.',
             'address.required' => 'Alamat wajib diisi.',
             'phone_number.required' => 'Nomor telepon wajib diisi.',
+            'weight_at_birth.max' => 'Berat badan lahir tidak boleh lebih dari 10 kg.',
+            'weight_at_birth.numeric' => 'Berat badan lahir harus berupa angka.',
+            'weight_at_birth.min' => 'Berat badan lahir minimal 0,5 kg.',
+            'height_at_birth.max' => 'Tinggi badan lahir tidak boleh lebih dari 60 cm.',
+            'height_at_birth.numeric' => 'Tinggi badan lahir harus berupa angka.',
+            'height_at_birth.min' => 'Tinggi badan lahir minimal 30 cm.',
         ];
     }
 }

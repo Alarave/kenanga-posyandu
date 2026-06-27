@@ -166,6 +166,12 @@ class MedicalRecordRequest extends FormRequest
             'vaccine_dose.integer' => 'Dosis vaksin harus berupa angka.',
             'vaccine_dose.min' => 'Dosis vaksin minimal 1.',
             'vitamin_a_color.in' => 'Warna Vitamin A harus Biru, Merah, atau Tidak Ada.',
+            'weight_at_birth.max' => 'Berat badan lahir tidak boleh lebih dari 10 kg.',
+            'weight_at_birth.numeric' => 'Berat badan lahir harus berupa angka.',
+            'weight_at_birth.min' => 'Berat badan lahir minimal 0,5 kg.',
+            'height_at_birth.max' => 'Tinggi badan lahir tidak boleh lebih dari 60 cm.',
+            'height_at_birth.numeric' => 'Tinggi badan lahir harus berupa angka.',
+            'height_at_birth.min' => 'Tinggi badan lahir minimal 30 cm.',
         ];
     }
 

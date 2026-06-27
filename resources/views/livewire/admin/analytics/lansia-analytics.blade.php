@@ -238,9 +238,43 @@
 
     {{-- Lansia Metabolic Risk Chart --}}
     <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-xs mt-6">
-        <h3 class="text-lg font-bold text-slate-900 mb-4">Tren Risiko Metabolik Lansia</h3>
-        <div class="relative h-85">
+        <div class="flex items-start justify-between gap-4 mb-6">
+            <div>
+                <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Tren Risiko Metabolik Lansia</h3>
+                <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Tren prevalensi bulanan risiko kesehatan metabolik pada lansia: Hipertensi, Hiperglikemia, Hiperkolesterolemia, dan Hiperurisemia</p>
+            </div>
+            <button onclick="downloadChart(lansiaMetabolicChart, 'tren_risiko_metabolik_lansia')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                <span class="material-symbols-outlined text-[20px]">download</span>
+            </button>
+        </div>
+
+        {{-- Legend badges --}}
+        <div class="flex flex-wrap gap-3 mb-6">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-rose-50 border border-rose-200/60">
+                <span class="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block"></span>
+                <span class="text-xs font-bold text-rose-700">Hipertensi (&ge;140/90 mmHg)</span>
+            </div>
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200/60">
+                <span class="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block"></span>
+                <span class="text-xs font-bold text-amber-700">Hiperglikemia (&ge;200 mg/dL)</span>
+            </div>
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200/60">
+                <span class="w-2.5 h-2.5 rounded-full bg-blue-500 inline-block"></span>
+                <span class="text-xs font-bold text-blue-700">Hiperkolesterolemia (&ge;200 mg/dL)</span>
+            </div>
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-purple-50 border border-purple-200/60">
+                <span class="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block"></span>
+                <span class="text-xs font-bold text-purple-700">Hiperurisemia (&ge;7.0 mg/dL)</span>
+            </div>
+        </div>
+
+        <div class="relative h-96">
             <canvas id="lansiaMetabolicChart" wire:ignore></canvas>
+            <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/95 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-300 rounded-2xl" id="error-lansiaMetabolicChart">
+                <span class="material-symbols-outlined text-rose-600 text-4xl mb-2">error</span>
+                <p class="text-sm font-extrabold text-slate-800">Gagal memuat data grafik</p>
+                <button onclick="initCharts()" class="mt-3 px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-slate-700 cursor-pointer">Coba Lagi</button>
+            </div>
         </div>
     </div>
 </div>

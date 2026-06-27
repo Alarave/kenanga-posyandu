@@ -97,6 +97,9 @@ class MedicalRecordService
 
             $this->logActivity('create_medical_record', $patient, $medicalRecord, null, $preparedData);
 
+            // Hitung ulang tren untuk bulan-bulan setelahnya jika data disisipkan
+            $this->recalculateSubsequentTrends($patient, $medicalRecord->visit_date);
+
             return $medicalRecord;
         });
     }
@@ -157,6 +160,12 @@ class MedicalRecordService
                 $medicalRecord->fresh()->toArray()
             );
 
+            // Hitung ulang tren untuk bulan-bulan setelahnya berdasarkan tanggal terlama (tanggal lama vs tanggal baru)
+            $oldDate = Carbon::parse($oldValues['visit_date']);
+            $newDate = $medicalRecord->visit_date;
+            $earlierDate = $oldDate->lt($newDate) ? $oldDate : $newDate;
+            $this->recalculateSubsequentTrends($patient, $earlierDate);
+
             return $medicalRecord;
         });
     }
@@ -167,14 +176,19 @@ class MedicalRecordService
     public function deleteRecord(MedicalRecord $medicalRecord): void
     {
         $recordData = $medicalRecord->toArray();
-        $patientName = $medicalRecord->patient->full_name;
-        $visitDate = $medicalRecord->visit_date->format('d/m/Y');
+        $patient = $medicalRecord->patient;
+        $visitDate = $medicalRecord->visit_date;
+        $patientName = $patient->full_name;
+        $formattedVisitDate = $visitDate->format('d/m/Y');
 
         $medicalRecord->delete();
 
+        // Hitung ulang tren untuk bulan-bulan setelah data yang dihapus
+        $this->recalculateSubsequentTrends($patient, $visitDate);
+
         $this->activityLogService->log(
             'delete_medical_record',
-            "Menghapus rekam medis untuk: {$patientName} (Tanggal: {$visitDate})",
+            "Menghapus rekam medis untuk: {$patientName} (Tanggal: {$formattedVisitDate})",
             null,
             'MedicalRecord',
             $recordData,
@@ -243,10 +257,16 @@ class MedicalRecordService
 
         $data = $this->calculateNutrition($data, $patient);
 
+        $childCategories = ['bayi', 'baduta', 'balita', 'anak_sekolah'];
+        if (in_array($patient->category, $childCategories)) {
+            $data['weight_status'] = $this->calculateWeightStatus($patient, $data);
+        } else {
+            $data['weight_status'] = null;
+        }
+
         $data['user_id'] = $user->id;
         $data['immunization'] = $data['immunization'] ?? 'Tidak ada';
         $data['complaint'] = $data['complaint'] ?? '—';
-        $childCategories = ['bayi', 'baduta', 'balita', 'anak_sekolah'];
         if (in_array($patient->category, $childCategories)) {
             $nutritionStatus = $data['nutrition_status'] ?? 'Gizi Baik';
             $stuntingStatus = $data['stunting_status'] ?? 'Normal';
@@ -320,6 +340,15 @@ class MedicalRecordService
 
         if ($weightChanged || $heightChanged) {
             $data = $this->calculateNutrition($data, $patient);
+        }
+
+        $childCategories = ['bayi', 'baduta', 'balita', 'anak_sekolah'];
+        if (in_array($patient->category, $childCategories)) {
+            if ($weightChanged || !isset($data['weight_status']) || empty($data['weight_status'])) {
+                $data['weight_status'] = $this->calculateWeightStatus($patient, $data);
+            }
+        } else {
+            $data['weight_status'] = null;
         }
 
         $data['immunization'] = $data['immunization'] ?? $medicalRecord->immunization ?? 'Tidak ada';
@@ -663,5 +692,117 @@ class MedicalRecordService
             ['medical_record_id' => $medicalRecord->id],
             $kpspData
         );
+    }
+
+    /**
+     * Hitung ulang tren gizi & status berat badan untuk seluruh rekam medis pasien setelah tanggal tertentu
+     */
+    private function recalculateSubsequentTrends(Patient $patient, Carbon $afterDate): void
+    {
+        $subsequentRecords = MedicalRecord::where('patient_id', $patient->id)
+            ->where('visit_date', '>', $afterDate)
+            ->orderBy('visit_date', 'asc')
+            ->get();
+
+        foreach ($subsequentRecords as $record) {
+            $prevRecord = MedicalRecord::where('patient_id', $patient->id)
+                ->where('visit_date', '<', $record->visit_date)
+                ->orderBy('visit_date', 'desc')
+                ->first();
+
+            // 1. Recalculate weight status
+            $currentWeight = (float) $record->weight;
+            $birthWeight = (float) ($patient->weight_at_birth ?? 0);
+            $newWeightStatus = 'N';
+
+            $childCategories = ['bayi', 'baduta', 'balita', 'anak_sekolah'];
+            if (in_array($patient->category, $childCategories)) {
+                if (!$prevRecord) {
+                    if ($birthWeight > 0 && $currentWeight > 0) {
+                        $newWeightStatus = $currentWeight > $birthWeight ? 'N' : 'T';
+                    }
+                } else {
+                    $prevWeight = (float) $prevRecord->weight;
+                    $prevStatus = $prevRecord->weight_status ?? '';
+
+                    if ($currentWeight > $prevWeight) {
+                        $newWeightStatus = 'N';
+                    } else {
+                        if ($prevStatus === 'T' || $prevStatus === '2T') {
+                            $newWeightStatus = '2T';
+                        } else {
+                            $newWeightStatus = 'T';
+                        }
+                    }
+                }
+            } else {
+                $newWeightStatus = null;
+            }
+
+            // 2. Recalculate nutrition trend
+            $newTrend = 'tetap';
+            $prevNutritionRecord = $prevRecord;
+            while ($prevNutritionRecord && !$prevNutritionRecord->nutrition_status) {
+                $prevNutritionRecord = MedicalRecord::where('patient_id', $patient->id)
+                    ->where('visit_date', '<', $prevNutritionRecord->visit_date)
+                    ->orderBy('visit_date', 'desc')
+                    ->first();
+            }
+
+            if ($prevNutritionRecord && $prevNutritionRecord->nutrition_status && $record->nutrition_status) {
+                $newTrend = $this->compareNutritionStatus(
+                    $prevNutritionRecord->nutrition_status,
+                    $record->nutrition_status
+                );
+            }
+
+            // Update record if anything changed
+            $updates = [];
+            if ($record->weight_status !== $newWeightStatus) {
+                $updates['weight_status'] = $newWeightStatus;
+            }
+            if ($record->nutrition_trend !== $newTrend) {
+                $updates['nutrition_trend'] = $newTrend;
+            }
+
+            if (!empty($updates)) {
+                $record->update($updates);
+            }
+        }
+    }
+
+    /**
+     * Hitung status berat badan (N, T, 2T) berdasarkan rekam sebelumnya
+     */
+    private function calculateWeightStatus(Patient $patient, array $data): string
+    {
+        $previousRecord = MedicalRecord::where('patient_id', $patient->id)
+            ->where('visit_date', '<', Carbon::parse($data['visit_date']))
+            ->whereNotNull('weight')
+            ->orderBy('visit_date', 'desc')
+            ->first();
+
+        $birthWeight = (float) ($patient->weight_at_birth ?? 0);
+        $currentWeight = (float) ($data['weight'] ?? 0);
+
+        if (! $previousRecord) {
+            if ($birthWeight > 0 && $currentWeight > 0) {
+                return $currentWeight > $birthWeight ? 'N' : 'T';
+            }
+            return 'N'; // First record ever, default to Naik
+        }
+
+        $prevWeight = (float) $previousRecord->weight;
+        $prevStatus = $previousRecord->weight_status ?? '';
+
+        if ($currentWeight > $prevWeight) {
+            return 'N';
+        } else {
+            if ($prevStatus === 'T' || $prevStatus === '2T') {
+                return '2T';
+            } else {
+                return 'T';
+            }
+        }
     }
 }
