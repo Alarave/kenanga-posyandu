@@ -28,10 +28,15 @@ class ArticleSeeder extends Seeder
         ];
 
         foreach ($categories as $cat) {
-            $category = Category::create($cat);
+            $category = Category::firstOrCreate(
+                ['slug' => $cat['slug']],
+                ['name' => $cat['name']]
+            );
 
             if ($cat['slug'] === 'kesehatan-ibu') {
-                Article::create([
+                Article::firstOrCreate(
+                    ['slug' => 'menjaga-kesehatan-ibu-dan-anak'],
+                [
                     'user_id' => $admin->id,
                     'category_id' => $category->id,
                     'title' => 'Menjaga Kesehatan Ibu dan Anak: Peran Posyandu dalam Masyarakat',

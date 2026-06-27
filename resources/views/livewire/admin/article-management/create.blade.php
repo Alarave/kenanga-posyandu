@@ -387,18 +387,30 @@
 
                 {{-- DIVIDER --}}
                 <div x-show="block.type === 'divider'"
-                     tabindex="0"
-                     @keydown.delete.prevent="removeBlock(index)"
-                     @keydown.backspace.prevent="removeBlock(index)"
-                     @focus="focusedIndex = index"
-                     class="my-18 ml-18 flex items-center gap-5 text-slate-300 text-headline-sm group/dv cursor-pointer focus:outline-none"
-                     @click="$el.focus()">
-                    <span>----------</span>
-                    <button type="button" @click.stop="removeBlock(index)"
-                            class="ml-9 opacity-100 hover:text-red-500 transition">
-                        <span class="material-symbols-outlined text-[15px]">close</span>
-                    </button>
-                </div>
+                    :tabindex="0"
+                    @keydown.delete.prevent="removeBlock(index)"
+                    @keydown.backspace.prevent="removeBlock(index)"
+                    @keydown.enter.prevent="
+                        const nb = { id: nextId++, type: 'paragraph', content: '' };
+                        blocks.splice(index + 1, 0, nb);
+                        isDirty = true;
+                        $nextTick(() => {
+                            setTimeout(() => {
+                                const el = document.getElementById('block-' + nb.id);
+                                if (el) el.focus();
+                            }, 50);
+                        });
+                    "
+                    @focus="focusedIndex = index"
+                    class="my-6 ml-9 cursor-pointer focus:outline-none group/dv"
+                    @click="$el.focus()">
+                    <div class="flex items-center gap-2">
+                        <div class="flex-1 border-t-2 border-dashed border-slate-400"></div>
+                        <button type="button" @click.stop="removeBlock(index)"
+                                class="opacity-0 group-hover/dv:opacity-100 w-5 h-5 flex items-center justify-center rounded-full bg-red-50 hover:bg-red-100 text-red-400 transition-all flex-shrink-0">
+                            <span class="material-symbols-outlined text-[12px]">close</span>
+                        </button>
+                    </div>
 
             </div>
         </template>
