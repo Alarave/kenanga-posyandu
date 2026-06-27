@@ -8,17 +8,10 @@
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative">
             <div class="space-y-2">
 
-                {{-- Title & Subtitle with Accent --}}
-                <div class="flex items-start gap-4">
-                    <div class="w-1.5 h-12 bg-linear-to-b from-teal-500 to-emerald-400 rounded-lg mt-1 hidden sm:block"></div>
-                    <div>
-                        <h1 class="text-display-sm tracking-tight leading-none text-transparent bg-clip-text bg-linear-to-r from-teal-600 to-emerald-500">
-                            Data Warga Terdaftar
-                        </h1>
-                        <p class="text-sm font-bold text-on-surface mt-2">
-                            Kelola data pasien posyandu di wilayah Anda secara komprehensif.
-                        </p>
-                    </div>
+                {{-- Title & Subtitle --}}
+                <div class="max-w-2xl relative z-10">
+                    <h1 class="font-display-sm md:font-display-lg text-display-sm-mobile md:text-display-lg text-teal-gradient mb-2 tracking-tight">Data Warga Terdaftar</h1>
+                    <p class="font-body-lg text-body-lg text-on-surface-variant">Kelola data pasien posyandu di wilayah Anda secara komprehensif.</p>
                 </div>
             </div>
             

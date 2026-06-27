@@ -42,10 +42,10 @@
                 <div class="inline-flex items-center justify-center w-24 h-24 bg-primary/80 backdrop-blur-md rounded-2xl text-white shadow-2xl mb-10 border border-teal-400/30">
                     <span class="material-symbols-outlined text-[48px]">health_and_safety</span>
                 </div>
-                <h1 class="text-5xl font-black text-white mb-6 font-jakarta tracking-tight leading-tight">
-                    Sistem Layanan <br> <span class="text-teal-400 italic">Posyandu Digital.</span>
+                <h1 class="text-display-lg text-surface-container-lowest mb-6 tracking-tight leading-tight">
+                    Sistem Layanan <br> <span class="text-primary-fixed-dim italic">Posyandu Digital.</span>
                 </h1>
-                <p class="text-teal-100 text-headline-sm font-medium max-w-md mx-auto opacity-90 leading-relaxed italic drop-shadow-sm">
+                <p class="text-surface-dim text-headline-sm font-medium max-w-md mx-auto opacity-90 leading-relaxed italic drop-shadow-sm">
                     Memudahkan pencatatan dan pemantauan kesehatan seluruh warga dalam satu genggaman.
                 </p>
             </div>

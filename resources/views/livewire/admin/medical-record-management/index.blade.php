@@ -7,17 +7,10 @@
         <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative">
             <div class="space-y-2">
 
-                {{-- Title & Subtitle with Accent --}}
-                <div class="flex items-start gap-4">
-                    <div class="w-1.5 h-12 bg-linear-to-b from-teal-500 to-emerald-400 rounded-lg mt-1 hidden sm:block"></div>
-                    <div>
-                        <h1 class="text-display-sm tracking-tight leading-none text-transparent bg-clip-text bg-linear-to-r from-teal-600 to-emerald-500">
-                            Manajemen Rekam Medis
-                        </h1>
-                        <p class="text-sm font-bold text-on-surface mt-2 flex items-center gap-2">
-                            Kelola data kunjungan dan rekam kesehatan warga secara sistematis.
-                        </p>
-                    </div>
+                {{-- Title & Subtitle --}}
+                <div class="max-w-2xl relative z-10">
+                    <h1 class="font-display-sm md:font-display-lg text-display-sm-mobile md:text-display-lg text-teal-gradient mb-2 tracking-tight">Manajemen Rekam Medis</h1>
+                    <p class="font-body-lg text-body-lg text-on-surface-variant">Kelola data kunjungan dan rekam kesehatan warga secara sistematis.</p>
                 </div>
             </div>
             
@@ -47,12 +40,10 @@
         <div class="flex flex-wrap items-center justify-between gap-4">
             <div class="flex flex-wrap items-center gap-3 flex-1">
                 {{-- Search Input --}}
-                <div class="relative min-w-75 flex-1 group">
-                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant group-focus-within:text-teal-500 transition-colors pointer-events-none text-[20px]">search</span>
-                    <input type="text" wire:model.live.debounce.150ms="search" 
-                           placeholder="Cari nama warga atau NIK..."
-                           class="search-input-premium w-full">
-                </div>
+                <div class="flex-1 flex items-center gap-2 px-4 py-2 bg-surface-container rounded-lg w-full md:max-w-md">
+    <span class="material-symbols-outlined text-outline">search</span>
+    <input wire:model.live.debounce.150ms="search" class="bg-transparent border-none focus:ring-0 w-full font-body-md text-body-md text-on-surface placeholder-outline-variant outline-none" placeholder="Cari nama warga atau NIK..." type="text"/>
+</div>
 
                 {{-- Posyandu Filter --}}
                 @if(auth()->user()->isSuperAdmin())

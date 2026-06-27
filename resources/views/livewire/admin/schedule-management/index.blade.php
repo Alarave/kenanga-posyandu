@@ -113,12 +113,10 @@
     {{-- ── Filters ── --}}
     <div class="bg-white rounded-2xl border border-slate-100 p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div class="flex flex-wrap items-center gap-3 flex-1">
-            <div class="relative min-w-[300px] group">
-                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant group-focus-within:text-primary transition-colors pointer-events-none text-[20px]">search</span>
-                <input type="text" wire:model.live.debounce.300ms="search" 
-                       placeholder="Cari agenda atau lokasi..."
-                       class="search-input-premium w-full">
-            </div>
+            <div class="flex-1 flex items-center gap-2 px-4 py-2 bg-surface-container rounded-lg w-full md:max-w-md">
+    <span class="material-symbols-outlined text-outline">search</span>
+    <input wire:model.live.debounce.300ms="search" class="bg-transparent border-none focus:ring-0 w-full font-body-md text-body-md text-on-surface placeholder-outline-variant outline-none" placeholder="Cari agenda atau lokasi..." type="text"/>
+</div>
 
             <x-forms.select-input 
                 wire:model.live="status"

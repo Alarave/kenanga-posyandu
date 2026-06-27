@@ -8,8 +8,9 @@ use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
-
+use Livewire\Attributes\Title;
 #[Layout('layouts.admin-layout')]
+#[Title('Manajemen Akses & Pengguna')]
 class UserManagement extends BaseAdminComponent
 {
     public string $search = '';

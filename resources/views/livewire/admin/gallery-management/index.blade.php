@@ -12,11 +12,10 @@
     {{-- ── Search & Filter Pill Bar ── --}}
     <div class="bg-white rounded-[2rem] border border-slate-100 p-6 flex flex-col lg:flex-row gap-6 items-center justify-between shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
         {{-- Search input --}}
-        <div class="relative w-full lg:max-w-md group">
-            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-teal-500 transition-colors pointer-events-none">search</span>
-            <input type="text" wire:model.live="search" placeholder="Cari judul kegiatan..." 
-                class="w-full h-12 pl-12 pr-4 bg-surface-container-low border-transparent rounded-2xl text-sm font-semibold text-on-surface-variant focus:bg-white focus:ring-0 focus:border-primary transition-all border-2 border-slate-100">
-        </div>
+        <div class="flex-1 flex items-center gap-2 px-4 py-2 bg-surface-container rounded-lg w-full md:max-w-md">
+    <span class="material-symbols-outlined text-outline">search</span>
+    <input wire:model.live="search" class="bg-transparent border-none focus:ring-0 w-full font-body-md text-body-md text-on-surface placeholder-outline-variant outline-none" placeholder="Cari judul kegiatan..." type="text"/>
+</div>
 
         {{-- Filter Capsules --}}
         <div class="flex items-center bg-surface-container p-1 rounded-2xl border border-outline-variant">

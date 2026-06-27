@@ -1,24 +1,19 @@
-
-
-<div class="max-w-[1280px] mx-auto space-y-6">
-
-    {{-- ── Page Header ── --}}
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-            <nav class="flex text-xs text-outline-variant mb-1.5 gap-1.5 items-center">
-                <a href="{{ route('dashboard') }}" class="hover:text-primary transition-colors">Beranda</a>
-                <span class="material-symbols-outlined text-[12px]">chevron_right</span>
-                <span class="text-primary font-semibold">Manajemen Wilayah</span>
-            </nav>
-            <h1 class="text-headline-md font-bold text-on-surface">Manajemen Wilayah Pedukuhan</h1>
-            <p class="text-sm text-outline mt-0.5">Data wilayah kerja Posyandu di Kecamatan Bekasi Timur.</p>
+<div class="flex-1 p-container-padding flex flex-col gap-section-margin w-full">
+    <!-- Header Section -->
+    <section class="flex flex-col gap-4 md:flex-row md:items-end justify-between">
+        <div class="flex flex-col gap-2">
+            <div class="flex items-center gap-2 font-label-sm text-label-sm text-outline">
+                <span class="">Beranda</span>
+                <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+                <span class="text-primary font-medium">Manajemen Wilayah</span>
+            </div>
+            <h1 class="font-display-sm text-display-sm md:font-display-sm md:text-display-sm text-on-surface">Manajemen Wilayah Pedukuhan</h1>
         </div>
-        <a href="{{ route('admin.pedukuhans.create') }}"
-           class="h-11 px-5 flex items-center gap-2 bg-primary text-white rounded-xl text-sm font-bold hover:bg-teal-700 active:scale-95 transition-all shadow-sm">
-            <span class="material-symbols-outlined text-[18px]">add_location</span>
+        <a href="{{ route('admin.pedukuhans.create') }}" class="bg-primary text-on-primary px-5 py-2.5 rounded-lg font-label-md text-label-md flex items-center justify-center gap-2 hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm whitespace-nowrap">
+            <span class="material-symbols-outlined">add_location</span>
             Tambah Pedukuhan Baru
         </a>
-    </div>
+    </section>
 
     {{-- Flash Messages --}}
     @if(session('success'))
@@ -34,214 +29,154 @@
     </div>
     @endif
 
-    {{-- ── Summary Cards ── --}}
     @php
         $totalPedukuhan = $pedukuhans->total();
         $totalPosyandu  = \App\Models\Posyandu::count();
         $totalWarga     = \App\Models\Patient::count();
     @endphp
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <div class="bg-white border border-outline-variant rounded-2xl p-5 flex items-center gap-4 shadow-sm">
-            <div class="w-14 h-14 bg-primary-container rounded-2xl flex items-center justify-center text-primary flex-shrink-0">
-                <span class="material-symbols-outlined text-[28px]" style="font-variation-settings:'FILL' 1;">location_city</span>
-            </div>
-            <div>
-                <p class="text-xs font-semibold text-outline uppercase tracking-wider">Total Pedukuhan</p>
-                <p class="text-display-sm text-on-surface">{{ $totalPedukuhan }}</p>
-                <p class="text-xs text-green-600 font-semibold mt-0.5">Aktif Seluruhnya</p>
-            </div>
-        </div>
-        <div class="bg-white border border-outline-variant rounded-2xl p-5 flex items-center gap-4 shadow-sm">
-            <div class="w-14 h-14 bg-blue-50 rounded-2xl flex items-center justify-center text-secondary flex-shrink-0">
-                <span class="material-symbols-outlined text-[28px]" style="font-variation-settings:'FILL' 1;">home_health</span>
-            </div>
-            <div>
-                <p class="text-xs font-semibold text-outline uppercase tracking-wider">Unit Posyandu</p>
-                <p class="text-display-sm text-on-surface">{{ $totalPosyandu }}</p>
-                <p class="text-xs text-outline-variant mt-0.5">Terdaftar di sistem</p>
-            </div>
-        </div>
-        <div class="bg-white border border-outline-variant rounded-2xl p-5 flex items-center gap-4 shadow-sm">
-            <div class="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center text-amber-600 flex-shrink-0">
-                <span class="material-symbols-outlined text-[28px]" style="font-variation-settings:'FILL' 1;">groups</span>
-            </div>
-            <div>
-                <p class="text-xs font-semibold text-outline uppercase tracking-wider">Warga Terdata</p>
-                <p class="text-display-sm text-on-surface">{{ number_format($totalWarga) }}</p>
-                <p class="text-xs text-green-600 font-semibold mt-0.5">Total terdaftar</p>
-            </div>
-        </div>
-    </div>
 
-    {{-- ── Table ── --}}
-    <div class="bg-white border border-outline-variant rounded-2xl shadow-sm overflow-hidden">
+    <!-- Summary Stats Section -->
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-card-gap">
+        <div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-card-gap flex items-center justify-between shadow-[0_4px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(0,104,95,0.08)] hover:border-primary transition-all group">
+            <div class="flex flex-col gap-1">
+                <span class="font-label-md text-label-md text-on-surface-variant">Total Pedukuhan</span>
+                <span class="font-display-sm text-display-sm text-on-surface">{{ $totalPedukuhan }}</span>
+            </div>
+            <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center group-hover:bg-primary-container transition-colors">
+                <span class="material-symbols-outlined text-primary text-[28px]">maps_home_work</span>
+            </div>
+        </div>
+        <div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-card-gap flex items-center justify-between shadow-[0_4px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(0,104,95,0.08)] hover:border-primary transition-all group">
+            <div class="flex flex-col gap-1">
+                <span class="font-label-md text-label-md text-on-surface-variant">Unit Posyandu</span>
+                <span class="font-display-sm text-display-sm text-on-surface">{{ $totalPosyandu }}</span>
+            </div>
+            <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center group-hover:bg-primary-container transition-colors">
+                <span class="material-symbols-outlined text-primary text-[28px]">home_health</span>
+            </div>
+        </div>
+        <div class="bg-surface-container-lowest rounded-lg border border-outline-variant p-card-gap flex items-center justify-between shadow-[0_4px_12px_rgba(0,0,0,0.02)] hover:shadow-[0_8px_24px_rgba(0,104,95,0.08)] hover:border-primary transition-all group">
+            <div class="flex flex-col gap-1">
+                <span class="font-label-md text-label-md text-on-surface-variant">Warga Terdata</span>
+                <span class="font-display-sm text-display-sm text-on-surface">{{ number_format($totalWarga) }}</span>
+            </div>
+            <div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center group-hover:bg-primary-container transition-colors">
+                <span class="material-symbols-outlined text-primary text-[28px]">groups</span>
+            </div>
+        </div>
+    </section>
 
-        {{-- Table Header --}}
-        <div class="px-6 py-4 border-b border-outline-variant flex flex-wrap items-center justify-between gap-3 bg-surface-container-low/50">
-            <h3 class="text-sm font-bold text-on-surface-variant">Daftar Wilayah Pedukuhan</h3>
-            <div class="flex items-center gap-2">
-                <div class="relative group">
-                    <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant group-focus-within:text-primary transition-colors pointer-events-none text-[18px]">search</span>
-                    <input type="text" wire:model.live.debounce.300ms="search"
-                           placeholder="Cari pedukuhan..."
-                           class="search-input-premium h-10 pl-11 pr-4">
+    <!-- Data Table Section -->
+    <section class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-[0_4px_12px_rgba(0,0,0,0.02)] overflow-hidden flex flex-col">
+        <!-- Table Toolbar -->
+        <div class="p-card-gap border-b border-outline-variant flex flex-col md:flex-row justify-between items-center gap-4 bg-surface-bright">
+            <h2 class="font-headline-sm text-headline-sm text-on-surface hidden md:block">Daftar Wilayah</h2>
+            <div class="flex w-full md:w-auto items-center gap-2">
+                <div class="relative w-full md:w-80">
+                    <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline-variant">search</span>
+                    <input wire:model.live.debounce.300ms="search" class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-shadow placeholder:text-outline-variant" placeholder="Cari nama pedukuhan atau kode pos..." type="text">
                 </div>
                 @if($search)
-                <button wire:click="$set('search', '')"
-                   class="h-9 px-3 flex items-center bg-white border border-outline-variant rounded-lg text-outline-variant hover:text-red-500 transition-colors">
-                    <span class="material-symbols-outlined text-[16px]">restart_alt</span>
+                <button wire:click="$set('search', '')" class="p-2 border border-outline-variant rounded-lg text-on-surface-variant hover:bg-surface-container-high transition-colors bg-surface-container-lowest" title="Reset Filter">
+                    <span class="material-symbols-outlined">filter_list_off</span>
                 </button>
                 @endif
             </div>
         </div>
+        
+        <!-- Table -->
+        <x-layouts.ui.table>
+            <x-slot:head>
+                <th class="py-4 px-6 font-semibold">Nama Pedukuhan</th>
+                <th class="py-4 px-6 font-semibold">Kode Pos</th>
+                <th class="py-4 px-6 font-semibold">Unit Posyandu</th>
+                <th class="py-4 px-6 font-semibold">Total Warga</th>
+                <th class="py-4 px-6 font-semibold text-center">Aksi</th>
+            </x-slot:head>
 
-        {{-- Table Content --}}
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-                <thead class="bg-white border-b border-outline-variant">
-                    <tr>
-                        <th class="px-6 py-4 text-xs font-bold text-outline-variant uppercase tracking-widest">Nama Pedukuhan</th>
-                        <th class="px-6 py-4 text-xs font-bold text-outline-variant uppercase tracking-widest">Kode Pos</th>
-                        <th class="px-6 py-4 text-xs font-bold text-outline-variant uppercase tracking-widest text-center">Unit Posyandu</th>
-                        <th class="px-6 py-4 text-xs font-bold text-outline-variant uppercase tracking-widest text-center">Total Warga</th>
-                        <th class="px-6 py-4 text-xs font-bold text-outline-variant uppercase tracking-widest text-right">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-50">
-                    @forelse($pedukuhans as $pedukuhan)
-                    @php
-                        $initial = strtoupper(substr($pedukuhan->name, 0, 1));
-                        $colors  = ['teal','blue','amber','indigo','emerald','rose','violet','orange'];
-                        $color   = $colors[($pedukuhan->id - 1) % count($colors)];
-                        $totalWargaPedukuhan = \App\Models\Patient::whereHas('posyandu', fn($q) => $q->where('pedukuhan_id', $pedukuhan->id))->count();
-                    @endphp
-                    <tr class="hover:bg-surface-container-low transition-colors">
-                        <td class="px-6 py-4">
-                            <div class="flex items-center gap-3">
-                                <div class="w-9 h-9 rounded-xl bg-{{ $color }}-100 text-{{ $color }}-700 flex items-center justify-center font-bold text-sm flex-shrink-0">
-                                    {{ $initial }}
-                                </div>
-                                <div>
-                                    <p class="font-bold text-on-surface text-sm">{{ $pedukuhan->name }}</p>
-                                    @if($pedukuhan->geo_location)
-                                    <p class="text-xs text-outline-variant mt-0.5">{{ Str::limit($pedukuhan->geo_location, 40) }}</p>
-                                    @endif
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-6 py-4 text-sm text-on-surface-variant font-mono">
-                            {{ $pedukuhan->postal_code ?? '—' }}
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            <span class="px-2.5 py-1 bg-surface-container rounded-lg text-sm font-bold text-on-surface-variant">
-                                {{ str_pad($pedukuhan->posyandus_count ?? $pedukuhan->posyandus()->count(), 2, '0', STR_PAD_LEFT) }}
-                            </span>
-                        </td>
-                        <td class="px-6 py-4 text-center text-sm font-semibold text-on-surface-variant">
-                            {{ number_format($totalWargaPedukuhan) }}
-                        </td>
-                        <td class="px-6 py-4 text-right">
-                            <div class="flex items-center justify-end gap-1">
-                                <a href="{{ route('admin.pedukuhans.show', $pedukuhan->id) }}"
-                                   class="w-8 h-8 flex items-center justify-center rounded-lg text-primary hover:bg-primary-container transition-colors"
-                                   title="Detail">
-                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
-                                </a>
-                                <a href="{{ route('admin.pedukuhans.edit', $pedukuhan->id) }}"
-                                   class="w-8 h-8 flex items-center justify-center rounded-lg text-secondary hover:bg-blue-50 transition-colors"
-                                   title="Edit">
-                                    <span class="material-symbols-outlined text-[18px]">edit</span>
-                                </a>
-                                <form action="{{ route('admin.pedukuhans.destroy', $pedukuhan->id) }}" method="POST" class="inline"
-                                      onsubmit="return confirm('Hapus pedukuhan \'{{ addslashes($pedukuhan->name) }}\'? Semua data posyandu terkait akan terpengaruh.')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                            class="w-8 h-8 flex items-center justify-center rounded-lg text-red-500 hover:bg-red-50 transition-colors"
-                                            title="Hapus">
-                                        <span class="material-symbols-outlined text-[18px]">delete</span>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="5" class="px-6 py-16 text-center">
-                            <div class="flex flex-col items-center gap-3 text-outline-variant">
-                                <span class="material-symbols-outlined text-[48px] text-slate-200">location_off</span>
-                                <p class="text-sm font-semibold text-outline">Belum ada data pedukuhan</p>
-                                <a href="{{ route('admin.pedukuhans.create') }}"
-                                   class="text-sm text-primary hover:underline font-medium flex items-center gap-1">
-                                    <span class="material-symbols-outlined text-[16px]">add</span>
-                                    Tambah Pedukuhan Pertama
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
+            <x-slot:body>
+                @forelse($pedukuhans as $pedukuhan)
+                @php
+                    $initial = strtoupper(substr($pedukuhan->name, 0, 2));
+                    $colors  = ['primary','secondary','tertiary'];
+                    $color   = $colors[($pedukuhan->id - 1) % count($colors)];
+                    $totalWargaPedukuhan = \App\Models\Patient::whereHas('posyandu', fn($q) => $q->where('pedukuhan_id', $pedukuhan->id))->count();
+                    
+                    $bgClass = $color === 'primary' ? 'bg-primary-container text-primary' : 
+                              ($color === 'secondary' ? 'bg-secondary-container text-secondary' : 'bg-tertiary-container text-tertiary');
+                @endphp
+                <tr class="hover:bg-surface-container-low transition-colors group">
+                    <td class="py-4 px-6 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-lg {{ $bgClass }} flex items-center justify-center font-bold text-lg">
+                            {{ $initial }}
+                        </div>
+                        <span class="font-medium text-on-surface">{{ $pedukuhan->name }}</span>
+                    </td>
+                    <td class="py-4 px-6 text-on-surface-variant">{{ $pedukuhan->postal_code ?? '—' }}</td>
+                    <td class="py-4 px-6">
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-secondary-container text-on-secondary-container border border-secondary/20">
+                            {{ $pedukuhan->posyandus_count ?? $pedukuhan->posyandus()->count() }} Unit
+                        </span>
+                    </td>
+                    <td class="py-4 px-6">{{ number_format($totalWargaPedukuhan) }}</td>
+                    <td class="py-4 px-6 text-center">
+                        <div class="flex items-center justify-center gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
+                            <a href="{{ route('admin.pedukuhans.show', $pedukuhan->id) }}" class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-primary-container rounded-md transition-colors" title="Lihat Detail">
+                                <span class="material-symbols-outlined text-[20px]">visibility</span>
+                            </a>
+                            <a href="{{ route('admin.pedukuhans.edit', $pedukuhan->id) }}" class="p-1.5 text-on-surface-variant hover:text-secondary hover:bg-secondary-container rounded-md transition-colors" title="Edit">
+                                <span class="material-symbols-outlined text-[20px]">edit</span>
+                            </a>
+                            <form action="{{ route('admin.pedukuhans.destroy', $pedukuhan->id) }}" method="POST" class="inline" onsubmit="return confirm('Hapus pedukuhan \'{{ addslashes($pedukuhan->name) }}\'? Semua data posyandu terkait akan terpengaruh.')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="p-1.5 text-on-surface-variant hover:text-error hover:bg-error-container rounded-md transition-colors" title="Hapus">
+                                    <span class="material-symbols-outlined text-[20px]">delete</span>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                @empty
+                <tr>
+                    <td colspan="5" class="py-12 px-6 text-center">
+                        <div class="flex flex-col items-center gap-3 text-outline-variant">
+                            <span class="material-symbols-outlined text-[48px] text-slate-300">location_off</span>
+                            <p class="text-sm font-semibold text-outline">Belum ada data pedukuhan</p>
+                        </div>
+                    </td>
+                </tr>
+                @endforelse
+            </x-slot:body>
+        </x-layouts.ui.table>
+        
+        <!-- Pagination -->
+        {{ $pedukuhans->links() }}
+        
+    </section>
 
-        {{-- Pagination --}}
-        <div class="px-6 py-4 bg-surface-container-low border-t border-outline-variant flex flex-wrap items-center justify-between gap-3">
-            <p class="text-xs font-medium text-outline">
-                Menampilkan {{ $pedukuhans->firstItem() ?? 0 }}–{{ $pedukuhans->lastItem() ?? 0 }}
-                dari {{ $pedukuhans->total() }} Pedukuhan
-            </p>
-            @if($pedukuhans->hasPages())
-            <div class="flex items-center gap-1">
-                @if($pedukuhans->onFirstPage())
-                    <span class="w-8 h-8 flex items-center justify-center border border-outline-variant rounded-lg text-slate-300 cursor-not-allowed bg-white">
-                        <span class="material-symbols-outlined text-[16px]">chevron_left</span>
-                    </span>
-                @else
-                    <a href="{{ $pedukuhans->previousPageUrl() }}"
-                       class="w-8 h-8 flex items-center justify-center border border-outline-variant rounded-lg text-outline hover:bg-white transition-colors bg-white">
-                        <span class="material-symbols-outlined text-[16px]">chevron_left</span>
-                    </a>
-                @endif
-
-                @foreach($pedukuhans->getUrlRange(max(1, $pedukuhans->currentPage()-1), min($pedukuhans->lastPage(), $pedukuhans->currentPage()+2)) as $page => $url)
-                    <a href="{{ $url }}"
-                       class="w-8 h-8 flex items-center justify-center rounded-lg text-sm font-semibold transition-colors
-                           {{ $page === $pedukuhans->currentPage()
-                               ? 'bg-primary text-white shadow-sm'
-                               : 'border border-outline-variant text-on-surface-variant hover:bg-white bg-white' }}">
-                        {{ $page }}
-                    </a>
-                @endforeach
-
-                @if($pedukuhans->hasMorePages())
-                    <a href="{{ $pedukuhans->nextPageUrl() }}"
-                       class="w-8 h-8 flex items-center justify-center border border-outline-variant rounded-lg text-outline hover:bg-white transition-colors bg-white">
-                        <span class="material-symbols-outlined text-[16px]">chevron_right</span>
-                    </a>
-                @else
-                    <span class="w-8 h-8 flex items-center justify-center border border-outline-variant rounded-lg text-slate-300 cursor-not-allowed bg-white">
-                        <span class="material-symbols-outlined text-[16px]">chevron_right</span>
-                    </span>
-                @endif
+    <!-- Footer Banner -->
+    <section class="mt-4">
+        <div class="relative bg-primary rounded-xl p-card-gap md:p-8 overflow-hidden shadow-md group border border-primary-fixed-dim/20">
+            <div class="absolute inset-0 bg-gradient-to-r from-primary to-primary-container opacity-90 z-0"></div>
+            <!-- Abstract map pattern background -->
+            <div class="absolute inset-0 opacity-20 mix-blend-overlay z-0" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDkwDCoSHeadjSdDNEnapKqOE8k7wYyOj8zwUIRfN6cgDr4blN0VlwvPjeud_9irDHUl0UjV6bJHhCldwk8BRRHBQi6AE07Cs2kI6LKVJhtNCGn7lo2-LA1v9NSrYEihlDnHz-28OhF7ScH5ZDdr35LgfvPJ8s27Kjn9Wktsoi9-VDGlu5_VWypwrjBZyu5wEWl_vmpTb7tnAwVzE17zQcPujppTTDGzQVV0N39My8kZhaExg4gQ5RZV7X8v4KDY24JHTMaEgX7oOM');"></div>
+            
+            <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div class="flex flex-col gap-2 max-w-lg text-on-primary">
+                    <h3 class="font-headline-md text-headline-md font-bold flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[28px]">explore</span>
+                        Visualisasi Wilayah
+                    </h3>
+                    <p class="font-body-md text-body-md text-on-primary-container/80">
+                        Pantau sebaran Unit Posyandu dan kepadatan data kesehatan warga melalui peta interaktif untuk pengambilan keputusan yang lebih tepat sasaran.
+                    </p>
+                </div>
+                <a href="{{ route('admin.posyandu.index') }}" class="bg-surface-container-lowest text-primary px-6 py-3 rounded-lg font-label-md text-label-md shadow-sm hover:bg-surface-container-high transition-colors flex items-center justify-center gap-2 w-full md:w-auto">
+                    Lihat Peta Sebaran
+                    <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+                </a>
             </div>
-            @endif
         </div>
-    </div>
-
-    {{-- ── Footer Banner ── --}}
-    <div class="bg-teal-900 rounded-2xl overflow-hidden relative min-h-[140px] flex items-center p-8">
-        <div class="absolute inset-0 opacity-20">
-            <div class="w-full h-full bg-gradient-to-r from-teal-800 to-teal-600"></div>
-        </div>
-        <div class="relative z-10">
-            <h4 class="text-white font-bold text-body-lg mb-1">Visualisasi Wilayah</h4>
-            <p class="text-teal-100 text-sm mb-4">Lihat sebaran unit posyandu dan kepadatan penduduk di seluruh pedukuhan Bekasi Timur.</p>
-            <a href="{{ route('admin.posyandu.index') }}"
-               class="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white border border-white/30 px-4 py-2 rounded-lg text-sm font-bold backdrop-blur-sm transition-colors">
-                <span class="material-symbols-outlined text-[16px]">home_health</span>
-                Lihat Unit Posyandu
-            </a>
-        </div>
-    </div>
-
+    </section>
 </div>

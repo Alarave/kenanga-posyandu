@@ -175,22 +175,20 @@
     </div>
 
     {{-- ── Main Table Card ── --}}
-    <div class="bg-white border border-slate-100 rounded-2xl shadow-sm overflow-hidden">
-        <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-                <thead>
-                    <tr class="bg-surface-container-low/50 border-b border-slate-100">
-                        <th class="px-6 py-4 text-label-lg text-outline-variant uppercase whitespace-nowrap text-xs font-black tracking-widest">Waktu & Tanggal</th>
-                        <th class="px-6 py-4 text-label-lg text-outline-variant uppercase whitespace-nowrap text-xs font-black tracking-widest">Pelaku</th>
-                        <th class="px-6 py-4 text-label-lg text-outline-variant uppercase whitespace-nowrap text-xs font-black tracking-widest">Tipe Aksi</th>
-                        <th class="px-6 py-4 text-label-lg text-outline-variant uppercase whitespace-nowrap text-xs font-black tracking-widest">Entitas</th>
-                        <th class="px-6 py-4 text-label-lg text-outline-variant uppercase whitespace-nowrap text-xs font-black tracking-widest">IP Address</th>
-                        <th class="px-6 py-4 text-label-lg text-outline-variant uppercase text-right whitespace-nowrap text-xs font-black tracking-widest">Detail</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-50">
-                    @forelse($activityLogs as $log)
-                    <tr class="hover:bg-surface-container-low/80 transition-all group">
+    <div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-[0_4px_12px_rgba(0,0,0,0.02)] overflow-hidden flex flex-col">
+        <x-layouts.ui.table>
+            <x-slot:head>
+                <th class="py-4 px-6 font-semibold whitespace-nowrap">Waktu & Tanggal</th>
+                <th class="py-4 px-6 font-semibold whitespace-nowrap">Pelaku</th>
+                <th class="py-4 px-6 font-semibold whitespace-nowrap">Tipe Aksi</th>
+                <th class="py-4 px-6 font-semibold whitespace-nowrap">Entitas</th>
+                <th class="py-4 px-6 font-semibold whitespace-nowrap">IP Address</th>
+                <th class="py-4 px-6 font-semibold text-right whitespace-nowrap">Detail</th>
+            </x-slot:head>
+            
+            <x-slot:body>
+                @forelse($activityLogs as $log)
+                <tr class="hover:bg-surface-container-low transition-colors group">
                         <td class="px-6 py-5 whitespace-nowrap">
                             <div class="flex flex-col">
                                 <span class="text-sm font-black text-on-surface">{{ $log->created_at->format('H:i:s') }}</span>
@@ -273,16 +271,11 @@
                         </td>
                     </tr>
                     @endforelse
-                </tbody>
-            </table>
-        </div>
+            </x-slot:body>
+        </x-layouts.ui.table>
         
         {{-- ── Pagination ── --}}
-        @if($activityLogs->hasPages())
-        <div class="px-8 py-6 bg-surface-container-low/50 border-t border-slate-100">
-            {{ $activityLogs->links() }}
-        </div>
-        @endif
+        {{ $activityLogs->links('components.layouts.ui.pagination-standard') }}
     </div>
 </div>
 @endsection
