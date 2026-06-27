@@ -76,7 +76,7 @@ class BulkMeasurementEntry extends Component
 
         $patient = Patient::find($id);
         if ($patient) {
-            $lastRecord = $patient->medicalRecords()->reorder()->latest('visit_date')->first();
+            $lastRecord = $patient->medicalRecords()->latest()->first();
             $this->measurements[] = [
                 'patient_id' => $patient->id,
                 'full_name' => $patient->full_name,
@@ -118,7 +118,7 @@ class BulkMeasurementEntry extends Component
             ->where('category', 'balita')
             ->whereNotIn('id', $skipIds)
             ->with(['medicalRecords' => function($query) {
-                $query->reorder()->latest('visit_date')->limit(1);
+                $query->latest()->limit(1);
             }])
             ->orderBy('full_name')
             ->get();

@@ -19,7 +19,7 @@ class GrowthChartService
     public function getWeightForAgeData(Patient $patient): array
     {
         $gender = $this->normalizeGender($patient->gender);
-        $records = $patient->medicalRecords()->reorder()->orderBy('visit_date')->get();
+        $records = $patient->medicalRecords()->orderBy('visit_date')->get();
 
         // Ambil referensi WHO 0-60 bulan
         $references = WhoWeightForAge::where('gender', $gender)
@@ -49,7 +49,7 @@ class GrowthChartService
     public function getHeightForAgeData(Patient $patient): array
     {
         $gender = $this->normalizeGender($patient->gender);
-        $records = $patient->medicalRecords()->where('height', '>', 0)->reorder()->orderBy('visit_date')->get();
+        $records = $patient->medicalRecords()->where('height', '>', 0)->orderBy('visit_date')->get();
 
         $references = WhoHeightForAge::where('gender', $gender)
             ->where('age_months', '<=', 60)
@@ -126,7 +126,6 @@ class GrowthChartService
     public function getLansiaHealthData(Patient $patient): array
     {
         $records = $patient->medicalRecords()
-            ->reorder()
             ->orderBy('visit_date')
             ->get();
 
