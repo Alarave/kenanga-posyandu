@@ -766,39 +766,39 @@
 
         {{-- Missing Immunizations Widget --}}
         <div class="widget-card p-5 relative overflow-hidden">
-            <div class="absolute -right-8 -top-8 w-32 h-32 bg-orange-50 rounded-full blur-3xl pointer-events-none">
+            <div class="absolute -right-8 -top-8 w-32 h-32 bg-red-50 rounded-full blur-3xl pointer-events-none">
             </div>
             <div class="relative z-10">
                 <div class="flex items-center justify-between mb-5">
                     <div class="flex items-center gap-2.5">
-                        <div class="w-9 h-9 rounded-xl bg-orange-500 text-white flex items-center justify-center">
+                        <div class="w-9 h-9 rounded-xl bg-red-500 text-white flex items-center justify-center">
                             <span class="material-symbols-outlined text-[18px]">vaccines</span>
                         </div>
                         <span class="font-bold text-slate-900 text-sm">Atensi Imunisasi</span>
                     </div>
                     @if (count($missingImmunizations) > 0)
-                        <span class="badge badge-amber">{{ count($missingImmunizations) }} Anak</span>
+                        <span class="badge badge-red">{{ count($missingImmunizations) }} Anak</span>
                     @endif
                 </div>
 
                 <div class="space-y-2">
                     @forelse($missingImmunizations as $item)
                         <div
-                            class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-sm transition-all">
+                            class="flex items-center justify-between p-3 rounded-xl bg-red-100 border border-red-400 hover:bg-red-200 hover:shadow-sm transition-all">
                             <div class="flex items-center gap-2.5 overflow-hidden">
                                 <div
-                                    class="w-8 h-8 rounded-lg bg-orange-100 text-orange-700 shrink-0 flex items-center justify-center font-bold text-[11px]">
+                                    class="w-8 h-8 rounded-lg bg-red-500 text-white shrink-0 flex items-center justify-center font-bold text-[11px]">
                                     {{ strtoupper(substr($item['patient']->full_name, 0, 2)) }}
                                 </div>
                                 <div class="min-w-0">
-                                    <p class="text-sm font-semibold text-slate-900 truncate">
+                                    <p class="text-sm font-semibold text-red-900 truncate">
                                         {{ $item['patient']->full_name }}</p>
-                                    <p class="text-xs text-slate-400 truncate">Target: {{ $item['next_vaccine'] }}
+                                    <p class="text-xs text-red-500 truncate">Target: {{ $item['next_vaccine'] }}
                                     </p>
                                 </div>
                             </div>
                             <a href="{{ route('admin.patients.show', $item['patient']->id) }}"
-                                class="w-7 h-7 shrink-0 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 hover:bg-orange-500 hover:text-white hover:border-orange-500 transition-all">
+                                class="w-7 h-7 shrink-0 flex items-center justify-center rounded-lg bg-red-500 border border-red-500 text-white hover:bg-red-700 hover:border-red-700 transition-all">
                                 <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
                             </a>
                         </div>
@@ -848,63 +848,140 @@
         <div class="widget-card p-5 relative overflow-hidden">
             <div class="absolute -right-8 -top-8 w-32 h-32 bg-pink-50 rounded-full blur-3xl pointer-events-none"></div>
             <div class="relative z-10">
-                <div class="flex items-center justify-between mb-5">
+                <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center gap-2.5">
                         <div class="w-9 h-9 rounded-xl bg-pink-500 text-white flex items-center justify-center">
                             <span class="material-symbols-outlined text-[18px]">pregnant_woman</span>
                         </div>
-                        <span class="font-bold text-slate-900 text-sm">Bumil per Trimester</span>
+                        <div>
+                            <span class="font-bold text-slate-900 text-sm block">Bumil per Trimester</span>
+                            <span class="text-[10px] text-slate-400">Ibu hamil terdaftar aktif</span>
+                        </div>
+                    </div>
+                    @php $totalBumil = array_sum($bumilTrimester); @endphp
+                    <div class="text-right">
+                        <span class="text-xl font-bold text-pink-600">{{ $totalBumil }}</span>
+                        <span class="text-[10px] text-slate-400 block">Total Bumil</span>
                     </div>
                 </div>
+
+                {{-- Ringkasan Risiko --}}
+                @php $risikoCount = count($bumilRisikoTinggi ?? []); @endphp
+                @if($risikoCount > 0)
+                <div class="flex items-center gap-2 mb-4 p-2.5 rounded-xl bg-red-50 border border-red-200">
+                    <span class="material-symbols-outlined text-red-500 text-[16px]">warning</span>
+                    <span class="text-xs font-semibold text-red-700">{{ $risikoCount }} bumil terdeteksi risiko tinggi</span>
+                </div>
+                @else
+                <div class="flex items-center gap-2 mb-4 p-2.5 rounded-xl bg-emerald-50 border border-emerald-200">
+                    <span class="material-symbols-outlined text-emerald-500 text-[16px]">check_circle</span>
+                    <span class="text-xs font-semibold text-emerald-700">Tidak ada bumil risiko tinggi</span>
+                </div>
+                @endif
+
                 <div class="space-y-3">
-                    @php
-                        $totalBumil = array_sum($bumilTrimester);
-                    @endphp
-                    @foreach (['T1' => 'Trimester 1 (0-13 mgg)', 'T2' => 'Trimester 2 (14-27 mgg)', 'T3' => 'Trimester 3 (28+ mgg)'] as $key => $label)
+                    @foreach ([
+                        'T1' => ['label' => 'Trimester 1', 'sub' => '0–13 minggu', 'color' => 'bg-pink-300'],
+                        'T2' => ['label' => 'Trimester 2', 'sub' => '14–27 minggu', 'color' => 'bg-pink-500'],
+                        'T3' => ['label' => 'Trimester 3', 'sub' => '28+ minggu', 'color' => 'bg-pink-700'],
+                    ] as $key => $info)
                         @php
                             $count = $bumilTrimester[$key];
-                            $percent = $totalBumil > 0 ? ($count / $totalBumil) * 100 : 0;
+                            $percent = $totalBumil > 0 ? round(($count / $totalBumil) * 100, 1) : 0;
                         @endphp
                         <div>
-                            <div class="flex justify-between text-xs font-semibold text-slate-600 mb-1">
-                                <span>{{ $label }}</span>
-                                <span>{{ $count }} orang</span>
-                            </div>
-                            <div class="w-full bg-slate-100 rounded-full h-1.5">
-                                <div class="bg-pink-500 h-1.5 rounded-full" style="width: {{ $percent }}%">
+                            <div class="flex justify-between items-center text-xs mb-1">
+                                <div>
+                                    <span class="font-semibold text-slate-700">{{ $info['label'] }}</span>
+                                    <span class="text-slate-400 ml-1">{{ $info['sub'] }}</span>
                                 </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-slate-500">{{ $count }} orang</span>
+                                    <span class="font-bold text-pink-600 w-10 text-right">{{ $percent }}%</span>
+                                </div>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2">
+                                <div class="{{ $info['color'] }} h-2 rounded-full transition-all duration-500" style="width: {{ $percent }}%"></div>
                             </div>
                         </div>
                     @endforeach
                 </div>
+
+                @if($totalBumil > 0)
+                <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between text-[10px] text-slate-400">
+                    <span>T3 perlu perhatian lebih</span>
+                    <span class="font-semibold text-pink-500">{{ $bumilTrimester['T3'] }} orang menuju persalinan</span>
+                </div>
+                @endif
             </div>
         </div>
 
         {{-- Demografi Lansia Widget --}}
         <div class="widget-card p-5 relative overflow-hidden">
-            <div class="absolute -right-8 -top-8 w-32 h-32 bg-orange-50 rounded-full blur-3xl pointer-events-none">
-            </div>
+            <div class="absolute -right-8 -top-8 w-32 h-32 bg-orange-50 rounded-full blur-3xl pointer-events-none"></div>
             <div class="relative z-10">
-                <div class="flex items-center justify-between mb-5">
+                @php
+                    $totalLansia = $lansiaDemografi['60_69'] + $lansiaDemografi['70_plus'];
+                    $pct60 = $totalLansia > 0 ? round(($lansiaDemografi['60_69'] / $totalLansia) * 100, 1) : 0;
+                    $pct70 = $totalLansia > 0 ? round(($lansiaDemografi['70_plus'] / $totalLansia) * 100, 1) : 0;
+                @endphp
+                <div class="flex items-center justify-between mb-4">
                     <div class="flex items-center gap-2.5">
                         <div class="w-9 h-9 rounded-xl bg-orange-500 text-white flex items-center justify-center">
                             <span class="material-symbols-outlined text-[18px]">elderly</span>
                         </div>
-                        <span class="font-bold text-slate-900 text-sm">Demografi Lansia</span>
+                        <div>
+                            <span class="font-bold text-slate-900 text-sm block">Demografi Lansia</span>
+                            <span class="text-[10px] text-slate-400">Usia 60 tahun ke atas</span>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-xl font-bold text-orange-600">{{ $totalLansia }}</span>
+                        <span class="text-[10px] text-slate-400 block">Total Lansia</span>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div
-                        class="p-3 rounded-xl bg-orange-50 border border-orange-100 flex flex-col justify-center items-center text-center">
-                        <span class="text-xl font-bold text-orange-700">{{ $lansiaDemografi['60_69'] }}</span>
-                        <span class="text-[10px] font-semibold text-orange-600 uppercase mt-1">60-69 Tahun</span>
+
+                {{-- Kartu dua kelompok --}}
+                <div class="grid grid-cols-2 gap-3 mb-4">
+                    <div class="p-3 rounded-xl bg-orange-50 border border-orange-200 flex flex-col justify-center items-center text-center">
+                        <span class="text-2xl font-bold text-orange-700">{{ $lansiaDemografi['60_69'] }}</span>
+                        <span class="text-[10px] font-semibold text-orange-600 uppercase mt-1">60–69 Tahun</span>
+                        <span class="text-[10px] text-orange-400 mt-0.5">{{ $pct60 }}% dari total</span>
                     </div>
-                    <div
-                        class="p-3 rounded-xl bg-red-50 border border-red-100 flex flex-col justify-center items-center text-center">
-                        <span class="text-xl font-bold text-red-700">{{ $lansiaDemografi['70_plus'] }}</span>
+                    <div class="p-3 rounded-xl bg-red-50 border border-red-200 flex flex-col justify-center items-center text-center">
+                        <span class="text-2xl font-bold text-red-700">{{ $lansiaDemografi['70_plus'] }}</span>
                         <span class="text-[10px] font-semibold text-red-600 uppercase mt-1">70+ Tahun</span>
+                        <span class="text-[10px] text-red-400 mt-0.5">{{ $pct70 }}% dari total</span>
                     </div>
                 </div>
+
+                {{-- Progress proporsi --}}
+                <div class="mb-3">
+                    <div class="flex justify-between text-[10px] text-slate-500 mb-1">
+                        <span>Proporsi kelompok usia</span>
+                    </div>
+                    <div class="w-full h-2.5 rounded-full overflow-hidden flex">
+                        <div class="bg-orange-400 h-full transition-all duration-500" style="width: {{ $pct60 }}%"></div>
+                        <div class="bg-red-500 h-full transition-all duration-500" style="width: {{ $pct70 }}%"></div>
+                    </div>
+                    <div class="flex justify-between text-[10px] mt-1">
+                        <span class="text-orange-500 font-semibold">● 60–69 thn</span>
+                        <span class="text-red-500 font-semibold">70+ thn ●</span>
+                    </div>
+                </div>
+
+                {{-- Keterangan risiko --}}
+                @if($lansiaDemografi['70_plus'] > 0)
+                <div class="flex items-center gap-2 p-2.5 rounded-xl bg-red-50 border border-red-200">
+                    <span class="material-symbols-outlined text-red-500 text-[16px]">monitor_heart</span>
+                    <span class="text-xs font-semibold text-red-700">{{ $lansiaDemografi['70_plus'] }} lansia perlu pemantauan intensif</span>
+                </div>
+                @else
+                <div class="flex items-center gap-2 p-2.5 rounded-xl bg-emerald-50 border border-emerald-200">
+                    <span class="material-symbols-outlined text-emerald-500 text-[16px]">check_circle</span>
+                    <span class="text-xs font-semibold text-emerald-700">Semua lansia di kelompok risiko rendah</span>
+                </div>
+                @endif
             </div>
         </div>
 
