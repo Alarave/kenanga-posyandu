@@ -8,7 +8,7 @@
                 <div class="flex items-start gap-4">
                     <div class="w-1.5 h-12 bg-gradient-to-b from-teal-500 to-emerald-400 rounded-lg mt-1 hidden sm:block"></div>
                     <div>
-                        <h1 class="text-display-sm tracking-tight leading-none text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">
+                        <h1 class="font-display-sm md:font-display-lg text-display-sm-mobile md:text-display-lg text-teal-700 mb-2 tracking-tight">
                             Konfigurasi Hak Akses
                         </h1>
                         <p class="text-sm font-bold text-on-surface mt-2 flex items-center gap-2">

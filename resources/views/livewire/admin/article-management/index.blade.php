@@ -8,7 +8,7 @@
             <div class="flex flex-col gap-4">
 
                 <div>
-                    <h1 class="text-4xl font-black tracking-tight leading-none text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">
+                    <h1 class="font-display-sm md:font-display-lg text-display-sm-mobile md:text-display-lg text-teal-700 mb-2 tracking-tight">
                         Artikel & Berita
                     </h1>
                     <p class="text-sm font-bold text-on-surface mt-3">Kelola konten edukasi kesehatan dan informasi penting posyandu.</p>
@@ -51,12 +51,10 @@
     {{-- ── Search & Advanced Filters (Compact & High Contrast) ── --}}
     <div class="bg-white rounded-[2rem] p-4 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 flex flex-col lg:flex-row items-center gap-4">
         {{-- Search Input --}}
-        <div class="relative flex-1 w-full group">
-            <span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-outline-variant group-focus-within:text-primary transition-colors text-[20px]">search</span>
-            <input type="text" wire:model.live.debounce.300ms="search"
-                  placeholder="Cari judul, kategori, atau penulis..."
-                  class="w-full h-12 pl-12 pr-6 bg-surface-container-low border-none rounded-2xl text-sm font-bold text-on-surface placeholder:text-outline-variant focus:ring-4 focus:ring-primary/10 transition-all">
-        </div>
+        <div class="flex-1 flex items-center gap-2 px-4 py-2 bg-surface-container rounded-lg w-full md:max-w-md">
+    <span class="material-symbols-outlined text-outline">search</span>
+    <input wire:model.live.debounce.300ms="search" class="bg-transparent border-none focus:ring-0 w-full font-body-md text-body-md text-on-surface placeholder-outline-variant outline-none" placeholder="Cari judul, kategori, atau penulis..." type="text"/>
+</div>
 
         {{-- Filters Group --}}
         <div class="flex items-center gap-3 w-full lg:w-auto">

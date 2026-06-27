@@ -78,40 +78,40 @@
                 {{-- Hero metrics (right side) --}}
                 <div class="grid grid-cols-2 gap-3 lg:w-auto lg:shrink-0 lg:grid-cols-2 xl:grid-cols-2">
                     <div class="hero-metric">
-                        <p class="text-[10px] font-bold text-outline-variant uppercase tracking-wider mb-1">Total Balita</p>
-                        <p class="text-headline-md font-bold text-white leading-none"
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Total Balita</p>
+                        <p class="text-headline-md font-bold text-slate-900 leading-none"
                             style="font-variant-numeric:tabular-nums;">
                             {{ number_format($totalBalita) }}</p>
                         @if ($kelahiranBulanIni > 0)
-                            <p class="text-[10px] text-sky-400 font-semibold mt-1.5">+{{ $kelahiranBulanIni }} bulan
+                            <p class="text-[10px] text-teal-600 font-semibold mt-1.5">+{{ $kelahiranBulanIni }} bulan
                                 ini</p>
                         @else
-                            <p class="text-[10px] text-outline mt-1.5">anak terdaftar</p>
+                            <p class="text-[10px] text-slate-400 mt-1.5">anak terdaftar</p>
                         @endif
                     </div>
                     <div class="hero-metric">
-                        <p class="text-[10px] font-bold text-outline-variant uppercase tracking-wider mb-1">Pemeriksaan
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Pemeriksaan
                             (YTD)</p>
-                        <p class="text-headline-md font-bold text-white leading-none"
+                        <p class="text-headline-md font-bold text-slate-900 leading-none"
                             style="font-variant-numeric:tabular-nums;">
                             {{ number_format($totalPemeriksaan) }}</p>
-                        <p class="text-[10px] text-outline mt-1.5">kunjungan total</p>
+                        <p class="text-[10px] text-slate-400 mt-1.5">kunjungan total</p>
                     </div>
                     <div class="hero-metric">
-                        <p class="text-[10px] font-bold text-outline-variant uppercase tracking-wider mb-1">Imunisasi (YTD)
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Imunisasi (YTD)
                         </p>
-                        <p class="text-headline-md font-bold text-white leading-none"
+                        <p class="text-headline-md font-bold text-slate-900 leading-none"
                             style="font-variant-numeric:tabular-nums;">
                             {{ number_format($totalImunisasi) }}</p>
-                        <p class="text-[10px] text-outline mt-1.5">dosis diberikan</p>
+                        <p class="text-[10px] text-slate-400 mt-1.5">dosis diberikan</p>
                     </div>
                     <div class="hero-metric">
-                        <p class="text-[10px] font-bold text-outline-variant uppercase tracking-wider mb-1">Kunjungan Bulan
+                        <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Kunjungan Bulan
                             Ini</p>
-                        <p class="text-headline-md font-bold text-white leading-none"
+                        <p class="text-headline-md font-bold text-slate-900 leading-none"
                             style="font-variant-numeric:tabular-nums;">
                             {{ number_format($kunjunganBaru) }}</p>
-                        <p class="text-[10px] text-outline mt-1.5">{{ now()->translatedFormat('F Y') }}</p>
+                        <p class="text-[10px] text-slate-400 mt-1.5">{{ now()->translatedFormat('F Y') }}</p>
                     </div>
                 </div>
             </div>

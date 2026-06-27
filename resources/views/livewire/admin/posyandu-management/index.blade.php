@@ -13,7 +13,7 @@
             <div class="flex flex-col gap-4">
 
                 <div>
-                    <h1 class="text-4xl font-black tracking-tight leading-none text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">
+                    <h1 class="font-display-sm md:font-display-lg text-display-sm-mobile md:text-display-lg text-teal-700 mb-2 tracking-tight">
                         Unit & Wilayah
                     </h1>
                     <p class="text-sm font-bold text-on-surface mt-3">Kelola data unit posyandu dan wilayah binaan secara terpusat.</p>
@@ -88,11 +88,10 @@
 
     {{-- ── Search Bar ── --}}
     <div class="bg-white rounded-[32px] border border-slate-100 p-6 flex flex-col md:flex-row gap-4 items-center">
-        <div class="relative flex-1 w-full group">
-            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-teal-500 transition-colors pointer-events-none" style="font-variation-settings: 'wght' 300;">search</span>
-            <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari nama posyandu, kode, atau alamat..." 
-                class="w-full h-12 pl-12 pr-4 bg-surface-container-low border-transparent rounded-2xl text-sm font-semibold text-on-surface-variant focus:bg-white focus:ring-0 focus:border-primary transition-all border-2">
-        </div>
+        <div class="flex-1 flex items-center gap-2 px-4 py-2 bg-surface-container rounded-lg w-full md:max-w-md">
+    <span class="material-symbols-outlined text-outline">search</span>
+    <input wire:model.live.debounce.300ms="search" class="bg-transparent border-none focus:ring-0 w-full font-body-md text-body-md text-on-surface placeholder-outline-variant outline-none" placeholder="Cari nama posyandu, kode, atau alamat..." type="text"/>
+</div>
     </div>
 
     {{-- ── Data Table (Consistent with Patients) ── --}}

@@ -48,10 +48,10 @@
                 Previous
             </span>
         @else
-            <button wire:click="previousPage('{{ $paginator->getPageName() }}')" rel="prev" aria-label="Previous Page" class="flex items-center h-10 justify-center rounded-xl border border-outline-variant dark:border-slate-800 bg-white dark:bg-inverse-surface px-4 text-on-surface-variant dark:text-slate-300 hover:bg-surface-container-low dark:hover:bg-inverse-surface/80 active:scale-95 shadow-sm text-sm font-semibold transition-all cursor-pointer">
+            <a href="{{ $paginator->previousPageUrl() }}" rel="prev" aria-label="Previous Page" class="flex items-center h-10 justify-center rounded-xl border border-outline-variant dark:border-slate-800 bg-white dark:bg-inverse-surface px-4 text-on-surface-variant dark:text-slate-300 hover:bg-surface-container-low dark:hover:bg-inverse-surface/80 active:scale-95 shadow-sm text-sm font-semibold transition-all cursor-pointer">
                 <span class="material-symbols-outlined text-[20px] mr-1.5">chevron_left</span>
                 Previous
-            </button>
+            </a>
         @endif
 
         {{-- Page Numbers --}}
@@ -59,9 +59,9 @@
             <div class="flex items-center gap-1.5">
                 {{-- First Page --}}
                 @if($start > 1)
-                    <button wire:click="gotoPage(1, '{{ $paginator->getPageName() }}')" aria-label="Go to page 1" class="flex items-center justify-center w-10 h-10 rounded-xl text-sm font-semibold text-on-surface-variant dark:text-outline-variant hover:bg-surface-container dark:hover:bg-inverse-surface/80 hover:text-primary transition-all">
+                    <a href="{{ $paginator->url(1) }}" aria-label="Go to page 1" class="flex items-center justify-center w-10 h-10 rounded-xl text-sm font-semibold text-on-surface-variant dark:text-outline-variant hover:bg-surface-container dark:hover:bg-inverse-surface/80 hover:text-primary transition-all">
                         1
-                    </button>
+                    </a>
                     @if($start > 2)
                         <span class="flex items-center justify-center w-10 h-10 text-outline-variant dark:text-on-surface-variant text-sm select-none">...</span>
                     @endif
@@ -74,9 +74,9 @@
                             {{ $page }}
                         </span>
                     @else
-                        <button wire:click="gotoPage({{ $page }}, '{{ $paginator->getPageName() }}')" aria-label="Go to page {{ $page }}" class="flex items-center justify-center w-10 h-10 rounded-xl text-sm font-semibold text-on-surface-variant dark:text-outline-variant hover:bg-surface-container dark:hover:bg-inverse-surface/80 hover:text-primary transition-all">
+                        <a href="{{ $paginator->url($page) }}" aria-label="Go to page {{ $page }}" class="flex items-center justify-center w-10 h-10 rounded-xl text-sm font-semibold text-on-surface-variant dark:text-outline-variant hover:bg-surface-container dark:hover:bg-inverse-surface/80 hover:text-primary transition-all">
                             {{ $page }}
-                        </button>
+                        </a>
                     @endif
                 @endforeach
 
@@ -85,19 +85,19 @@
                     @if($end < $last - 1)
                         <span class="flex items-center justify-center w-10 h-10 text-outline-variant dark:text-on-surface-variant text-sm select-none">...</span>
                     @endif
-                    <button wire:click="gotoPage({{ $last }}, '{{ $paginator->getPageName() }}')" aria-label="Go to page {{ $last }}" class="flex items-center justify-center w-10 h-10 rounded-xl text-sm font-semibold text-on-surface-variant dark:text-outline-variant hover:bg-surface-container dark:hover:bg-inverse-surface/80 hover:text-primary transition-all">
+                    <a href="{{ $paginator->url($last) }}" aria-label="Go to page {{ $last }}" class="flex items-center justify-center w-10 h-10 rounded-xl text-sm font-semibold text-on-surface-variant dark:text-outline-variant hover:bg-surface-container dark:hover:bg-inverse-surface/80 hover:text-primary transition-all">
                         {{ $last }}
-                    </button>
+                    </a>
                 @endif
             </div>
         @endif
 
         {{-- Next Page Button --}}
         @if($paginator->hasMorePages())
-            <button wire:click="nextPage('{{ $paginator->getPageName() }}')" rel="next" aria-label="Next Page" class="flex items-center h-10 justify-center rounded-xl border border-outline-variant dark:border-slate-800 bg-white dark:bg-inverse-surface px-4 text-on-surface-variant dark:text-slate-300 hover:bg-surface-container-low dark:hover:bg-inverse-surface/80 active:scale-95 shadow-sm text-sm font-semibold transition-all cursor-pointer">
+            <a href="{{ $paginator->nextPageUrl() }}" rel="next" aria-label="Next Page" class="flex items-center h-10 justify-center rounded-xl border border-outline-variant dark:border-slate-800 bg-white dark:bg-inverse-surface px-4 text-on-surface-variant dark:text-slate-300 hover:bg-surface-container-low dark:hover:bg-inverse-surface/80 active:scale-95 shadow-sm text-sm font-semibold transition-all cursor-pointer">
                 Next
                 <span class="material-symbols-outlined text-[20px] ml-1.5">chevron_right</span>
-            </button>
+            </a>
         @else
             <span class="flex items-center h-10 justify-center rounded-xl border border-outline-variant dark:border-slate-800 bg-surface-container-low dark:bg-inverse-surface/50 px-4 text-outline-variant dark:text-on-surface-variant text-sm font-semibold cursor-not-allowed select-none">
                 Next

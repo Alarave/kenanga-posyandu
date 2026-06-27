@@ -119,12 +119,10 @@
 
         {{-- ── Pencarian Tambahan ── --}}
         <div class="relative" x-data>
-            <div class="relative">
-                <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant text-[22px]">search</span>
-                <input type="text" wire:model.live.debounce.300ms="search"
-                    placeholder="Cari nama balita untuk ditambahkan secara manual..."
-                    class="w-full h-14 pl-12 pr-4 rounded-2xl border border-outline-variant bg-white shadow-sm text-sm font-bold text-on-surface placeholder-slate-400 focus:outline-none focus:border-primary focus:ring-2 focus:ring-teal-100 transition-all">
-            </div>
+            <div class="flex-1 flex items-center gap-2 px-4 py-2 bg-surface-container rounded-lg w-full md:max-w-md">
+    <span class="material-symbols-outlined text-outline">search</span>
+    <input wire:model.live.debounce.300ms="search" class="bg-transparent border-none focus:ring-0 w-full font-body-md text-body-md text-on-surface placeholder-outline-variant outline-none" placeholder="Cari nama balita untuk ditambahkan secara manual..." type="text"/>
+</div>
 
             @if(count($searchResults) > 0)
                 <div class="absolute z-50 left-0 right-0 mt-2 bg-white rounded-2xl shadow-2xl border border-slate-100 overflow-hidden">

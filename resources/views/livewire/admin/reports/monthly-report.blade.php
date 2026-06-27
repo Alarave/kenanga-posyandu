@@ -7,7 +7,7 @@
             
             <div class="flex flex-col gap-3">
                 <div>
-                    <h1 class="text-4xl font-black tracking-tight leading-none text-teal-800 drop-shadow-sm">
+                    <h1 class="font-display-sm md:font-display-lg text-display-sm-mobile md:text-display-lg text-teal-700 mb-2 tracking-tight">
                         Rekap & Laporan
                     </h1>
                     <p class="text-sm font-medium text-outline mt-3">Analisis data kunjungan dan status kesehatan warga secara komprehensif.</p>
@@ -400,39 +400,9 @@
 
         {{-- Pagination --}}
         @if($records instanceof \Illuminate\Pagination\LengthAwarePaginator && $records->hasPages())
-        <div class="px-8 py-5 bg-white border-t border-slate-100/60 flex flex-wrap justify-between items-center gap-4">
-            <p class="text-sm font-medium text-outline">
-                Menampilkan <span class="font-bold text-on-surface-variant">{{ $records->firstItem() }}</span>–<span class="font-bold text-on-surface-variant">{{ $records->lastItem() }}</span> dari <span class="font-bold text-on-surface-variant">{{ $total }}</span> data
-            </p>
-            <div class="flex items-center gap-1.5">
-                {{-- Prev --}}
-                <button wire:click="previousPage"
-                        @disabled($records->onFirstPage())
-                        class="w-10 h-10 flex items-center justify-center bg-white border border-outline-variant rounded-xl text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white shadow-sm">
-                    <span class="material-symbols-outlined text-[20px]">chevron_left</span>
-                </button>
-
-                {{-- Page Numbers --}}
-                @foreach($records->getUrlRange(max(1, $records->currentPage() - 2), min($records->lastPage(), $records->currentPage() + 2)) as $page => $url)
-                    <button wire:click="gotoPage({{ $page }})"
-                            class="w-10 h-10 flex items-center justify-center rounded-xl text-sm font-bold transition-all shadow-sm
-                                {{ $page === $records->currentPage()
-                                    ? 'bg-linear-to-br from-teal-600 to-emerald-500 text-white border-transparent'
-                                    : 'bg-white border border-outline-variant text-on-surface-variant hover:bg-surface-container-low hover:text-primary' }}">
-                        {{ $page }}
-                    </button>
-                @endforeach
-
-                {{-- Next --}}
-                <button wire:click="nextPage"
-                        @disabled($records->currentPage() === $records->lastPage())
-                        class="w-10 h-10 flex items-center justify-center bg-white border border-outline-variant rounded-xl text-on-surface-variant hover:bg-surface-container-low hover:text-primary transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white shadow-sm">
-                    <span class="material-symbols-outlined text-[20px]">chevron_right</span>
-                </button>
-            </div>
-        </div>
+            {{ $records->links() }}
         @elseif($records->count() > 0)
-        <div class="px-8 py-5 bg-white border-t border-slate-100/60">
+        <div class="p-4 border-t border-outline-variant">
             <p class="text-sm font-medium text-outline">Menampilkan total <span class="font-bold text-on-surface-variant">{{ $total }}</span> data</p>
         </div>
         @endif
