@@ -34,6 +34,7 @@ class AdminDashboard extends BaseAdminComponent
     public $missingImmunizations = [];
     public $bumilRisikoTinggi = [];
     public $recentImmunizations = [];
+    public $demographicStats = [];
     // Dashboard metrics
     public $lansiaDemografi = ["60_69" => 0, "70_plus" => 0];
     public $bumilTrimester = ["T1" => 0, "T2" => 0, "T3" => 0];
@@ -244,6 +245,7 @@ class AdminDashboard extends BaseAdminComponent
         $this->lansiaDemografi = $this->getLansiaDemografi($patientQuery);
         $this->bumilTrimester = $this->getBumilTrimester($medicalRecordQuery, $latestRecordSubquery);
         $this->kehadiranBalita = $this->getKehadiranBalita($patientQuery, $medicalRecordQuery, $currentMonth, $currentYear);
+        $this->demographicStats = $this->getDemographicStats($patientQuery);
         
         $this->kelahiranBulanIni = (clone $patientQuery)
             ->whereIn("category", ["bayi", "baduta", "balita"])
@@ -263,6 +265,49 @@ class AdminDashboard extends BaseAdminComponent
             }
         }
         return ["60_69" => $group60, "70_plus" => $group70];
+    }
+
+    protected function getDemographicStats(Builder $patientQuery): array
+    {
+        $stats = [
+            'bayi' => 0,
+            'baduta' => 0,
+            'balita' => 0,
+            'anak_sekolah' => 0,
+            'ibu_hamil' => 0,
+            'remaja' => 0,
+            'lansia' => 0,
+            'umum' => 0,
+        ];
+        
+        $patients = (clone $patientQuery)->get(['category', 'birth_date']);
+        foreach($patients as $p) {
+            if ($p->category === 'ibu_hamil') {
+                $stats['ibu_hamil']++;
+            } elseif ($p->category === 'lansia') {
+                $stats['lansia']++;
+            } elseif ($p->category === 'remaja') {
+                $stats['remaja']++;
+            } elseif ($p->category === 'anak_sekolah') {
+                $stats['anak_sekolah']++;
+            } elseif ($p->category === 'umum' || $p->category === 'lainnya') {
+                $stats['umum']++;
+            } elseif (in_array($p->category, ['balita', 'bayi', 'baduta'])) {
+                if ($p->birth_date) {
+                    $ageMonths = $p->birth_date->diffInMonths(now());
+                    if ($ageMonths < 12) {
+                        $stats['bayi']++;
+                    } elseif ($ageMonths < 24) {
+                        $stats['baduta']++;
+                    } else {
+                        $stats['balita']++;
+                    }
+                } else {
+                    $stats['balita']++;
+                }
+            }
+        }
+        return $stats;
     }
 
     protected function getBumilTrimester(Builder $medicalRecordQuery, Builder $latestRecordSubquery): array

@@ -79,6 +79,8 @@ class Analytics extends BaseAdminComponent
 
     public int $usia24plus = 0;
 
+    public array $demographicStats = [];
+
     // Recent records
     public ?object $recentRecords = null;
 
@@ -439,6 +441,46 @@ class Analytics extends BaseAdminComponent
             ->whereIn('role', ['staff', 'medical', 'admin', 'kader'])
             ->when(! $user->isSuperAdmin() && $user->posyandu_id, fn ($q) => $q->where('posyandu_id', $user->posyandu_id))
             ->count();
+
+        // Demographic stats calculation
+        $demographicStats = [
+            'bayi' => 0,
+            'baduta' => 0,
+            'balita' => 0,
+            'anak_sekolah' => 0,
+            'ibu_hamil' => 0,
+            'remaja' => 0,
+            'lansia' => 0,
+            'umum' => 0,
+        ];
+        
+        $allPatients = (clone $patientQuery)->get(['category', 'birth_date']);
+        foreach($allPatients as $p) {
+            if ($p->category === 'ibu_hamil') {
+                $demographicStats['ibu_hamil']++;
+            } elseif ($p->category === 'lansia') {
+                $demographicStats['lansia']++;
+            } elseif ($p->category === 'remaja') {
+                $demographicStats['remaja']++;
+            } elseif ($p->category === 'anak_sekolah') {
+                $demographicStats['anak_sekolah']++;
+            } elseif ($p->category === 'umum' || $p->category === 'lainnya') {
+                $demographicStats['umum']++;
+            } elseif (in_array($p->category, ['balita', 'bayi', 'baduta'])) {
+                if ($p->birth_date) {
+                    $ageMonths = Carbon::parse($p->birth_date)->diffInMonths($determinationDate);
+                    if ($ageMonths < 12) {
+                        $demographicStats['bayi']++;
+                    } elseif ($ageMonths < 24) {
+                        $demographicStats['baduta']++;
+                    } else {
+                        $demographicStats['balita']++;
+                    }
+                } else {
+                    $demographicStats['balita']++;
+                }
+            }
+        }
 
         // Combined Monthly Visits Trend (12 Months)
         $recordsYear = (clone $medicalRecordQuery)
@@ -841,6 +883,7 @@ class Analytics extends BaseAdminComponent
             'totalLansia' => $totalLansia,
             'totalKunjungan' => $totalKunjungan,
             'kaderAktif' => $kaderAktif,
+            'demographicStats' => $demographicStats,
             'trendLabels' => $trendLabels,
             'trendVisitsBalita' => $trendVisitsBalita,
             'trendVisitsIbuHamil' => $trendVisitsIbuHamil,

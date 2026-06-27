@@ -1,181 +1,264 @@
-<div class="space-y-6">
-    {{-- Material Symbols & Fonts --}}
+<div class="space-y-5">
     @push('styles')
-        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
-            rel="stylesheet" />
         <style>
-            .hero-gradient {
-                background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #134e4a 100%);
-            }
-
-            .hero-orb-1 {
-                background: radial-gradient(circle, rgba(20, 184, 166, 0.25) 0%, transparent 70%);
-            }
-
-            .hero-orb-2 {
-                background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, transparent 70%);
-            }
-
-            .kpi-card {
-                background: white;
-                border: 1px solid rgba(0, 0, 0, 0.06);
-                border-radius: 16px;
-                padding: 1.25rem;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-                transition: all 200ms ease-out;
-                cursor: default;
-            }
-
-            .kpi-card:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 8px 24px -4px rgba(0, 104, 73, 0.12);
-                border-color: rgba(0, 104, 73, 0.15);
-            }
-
-            .kpi-icon {
-                width: 44px;
-                height: 44px;
-                border-radius: 12px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin-bottom: 1rem;
-                transition: transform 300ms ease;
-            }
-
-            .kpi-card:hover .kpi-icon {
-                transform: scale(1.08);
-            }
-
-            .widget-card {
-                background: white;
-                border: 1px solid rgba(0, 0, 0, 0.06);
+            /* ── Dashboard custom styles ── */
+            .dash-hero {
+                background: linear-gradient(135deg, #0f766e 0%, #042f2e 100%);
                 border-radius: 20px;
-                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+                overflow: hidden;
+                position: relative;
+                box-shadow: 0 10px 25px -5px rgba(4, 47, 46, 0.4);
+            }
+            .dash-hero-orb-a {
+                position: absolute; top: -40px; left: 30%;
+                width: 300px; height: 300px;
+                background: radial-gradient(circle, rgba(20,184,166,0.18) 0%, transparent 70%);
+                border-radius: 50%; pointer-events: none;
+            }
+            .dash-hero-orb-b {
+                position: absolute; bottom: -60px; right: 10%;
+                width: 280px; height: 280px;
+                background: radial-gradient(circle, rgba(99,102,241,0.15) 0%, transparent 70%);
+                border-radius: 50%; pointer-events: none;
+            }
+            .dash-hero-grid {
+                position: absolute; inset: 0; opacity: 0.03;
+                background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjAuNSIgZmlsbD0ibm9uZSI+PHBhdGggZD0iTTQwIDBMMCA0ME0wIDBsNDAgNDAiLz48L2c+PC9zdmc+');
+            }
+
+            /* KPI Cards */
+            .kpi-card {
+                background: #fff;
+                border: 1px solid rgba(0,0,0,0.06);
+                border-radius: 16px;
+                padding: 1.25rem 1.375rem;
+                box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+                transition: all 180ms ease-out;
+            }
+            .kpi-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 24px -4px rgba(0,104,73,0.1);
+                border-color: rgba(0,104,73,0.14);
+            }
+            .kpi-icon {
+                width: 42px; height: 42px;
+                border-radius: 11px;
+                display: flex; align-items: center; justify-content: center;
+                transition: transform 250ms ease;
+            }
+            .kpi-card:hover .kpi-icon { transform: scale(1.07); }
+
+            /* Metric mini card inside hero */
+            .hero-metric {
+                background: rgba(255,255,255,0.07);
+                border: 1px solid rgba(255,255,255,0.1);
+                border-radius: 14px;
+                padding: 0.875rem 1.125rem;
+                backdrop-filter: blur(8px);
+                transition: background 200ms;
+            }
+            .hero-metric:hover { background: rgba(255,255,255,0.11); }
+
+            /* Widget card */
+            .widget-card {
+                background: #fff;
+                border: 1px solid rgba(0,0,0,0.06);
+                border-radius: 18px;
+                box-shadow: 0 1px 4px rgba(0,0,0,0.04);
                 overflow: hidden;
             }
-
             .widget-header {
-                padding: 1.25rem 1.5rem;
-                border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
+                padding: 1.125rem 1.375rem;
+                border-bottom: 1px solid rgba(0,0,0,0.05);
+                display: flex; align-items: center; justify-content: space-between;
             }
 
-            .table-row-hover:hover {
-                background: #f8fafb;
+            /* Filter bar */
+            .filter-bar {
+                background: #fff;
+                border: 1px solid rgba(0,0,0,0.06);
+                border-radius: 16px;
+                padding: 1rem 1.375rem;
+                box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+            }
+            .filter-select {
+                border-radius: 10px;
+                border: 1px solid #e2e8f0;
+                background: #f8fafc;
+                font-size: 0.8125rem;
+                font-weight: 500;
+                height: 38px;
+                padding: 0 0.75rem;
+                color: #334155;
+                transition: border-color 150ms, box-shadow 150ms;
+                width: 100%;
+            }
+            .filter-select:focus {
+                outline: none;
+                border-color: #006c49;
+                box-shadow: 0 0 0 3px rgba(0,108,73,0.1);
+            }
+
+            /* Table rows */
+            .dash-tr:hover { background: #f8fafb; }
+
+            /* Progress bar animated */
+            .progress-fill {
+                transition: width 800ms cubic-bezier(0.4,0,0.2,1);
+            }
+
+            /* Alert banner */
+            .alert-critical {
+                background: linear-gradient(135deg, #dc2626, #b91c1c);
+                border-radius: 14px;
+                color: white;
             }
 
             @keyframes ping-slow {
-
-                0%,
-                100% {
-                    transform: scale(1);
-                    opacity: 0.8;
-                }
-
-                50% {
-                    transform: scale(1.8);
-                    opacity: 0;
-                }
+                0%,100% { transform: scale(1); opacity: 0.8; }
+                50%      { transform: scale(1.8); opacity: 0; }
             }
+            .animate-ping-slow { animation: ping-slow 2s ease-in-out infinite; }
 
-            .animate-ping-slow {
+            /* Pulse indicator */
+            .live-dot {
+                position: relative; display: inline-flex; width: 8px; height: 8px;
+            }
+            .live-dot::before {
+                content: ''; position: absolute; inset: 0;
+                border-radius: 50%; background: #14b8a6;
                 animation: ping-slow 2s ease-in-out infinite;
             }
+            .live-dot::after {
+                content: ''; position: absolute; inset: 1px;
+                border-radius: 50%; background: #14b8a6;
+            }
+
+            /* Circular progress */
+            .circular-progress { transform: rotate(-90deg); }
+            .circular-progress circle.track { fill: none; stroke: #e2e8f0; }
+            .circular-progress circle.fill { fill: none; stroke-linecap: round; transition: stroke-dashoffset 1s ease; }
         </style>
     @endpush
 
     @php
         $hour = now()->hour;
-        $sapa =
-            $hour < 11
-                ? 'Selamat Pagi'
-                : ($hour < 15
-                    ? 'Selamat Siang'
-                    : ($hour < 18
-                        ? 'Selamat Sore'
-                        : 'Selamat Malam'));
+        $sapa = $hour < 11 ? 'Selamat Pagi' : ($hour < 15 ? 'Selamat Siang' : ($hour < 18 ? 'Selamat Sore' : 'Selamat Malam'));
+        $sapaIcon = $hour < 11 ? 'wb_sunny' : ($hour < 15 ? 'light_mode' : ($hour < 18 ? 'wb_twilight' : 'nights_stay'));
         $user = Auth::user();
-        $posyanduName = $user->posyandu?->name ?? 'Posyandu';
+        $posyanduName = $user->posyandu?->name ?? 'Semua Wilayah';
+        $todayStr = now()->translatedFormat('l, d F Y');
     @endphp
 
     {{-- ── Hero Section ── --}}
-    <section class="relative rounded-2xl overflow-hidden" style="background:#0f172a;">
-        {{-- Background layers --}}
-        <div class="absolute inset-0 hero-gradient"></div>
-        <div class="absolute top-0 left-1/4 w-72 h-72 hero-orb-1 rounded-full filter blur-[60px] animate-pulse"></div>
-        <div class="absolute bottom-0 right-1/4 w-72 h-72 hero-orb-2 rounded-full filter blur-[60px]"
-            style="animation:pulse 4s ease-in-out 1.5s infinite;"></div>
-        {{-- Grid overlay --}}
-        <div class="absolute inset-0 opacity-[0.04]"
-            style="background-image:url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjAuNSIgZmlsbD0ibm9uZSI+PHBhdGggZD0iTTQwIDBMMCA0ME0wIDBsNDAgNDAiLz48L2c+PC9zdmc+');">
-        </div>
+    <section class="dash-hero">
+        <div class="dash-hero-orb-a"></div>
+        <div class="dash-hero-orb-b"></div>
+        <div class="dash-hero-grid"></div>
 
-        <div class="relative z-10 px-8 py-10 md:px-12 md:py-12 max-w-3xl">
-            {{-- Live badge --}}
-            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full mb-6"
-                style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.1);">
-                <span class="relative flex h-2 w-2">
-                    <span
-                        class="animate-ping-slow absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
-                    <span class="relative inline-flex h-2 w-2 rounded-full bg-teal-400"></span>
-                </span>
-                <span class="text-xs font-semibold text-teal-100 tracking-wide">Sistem Informasi Posyandu Aktif</span>
-            </div>
+        <div class="relative z-10 px-7 py-8 md:px-10 md:py-10">
+            {{-- Top row: greeting + date + actions --}}
+            <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+                <div class="flex-1 min-w-0">
+                    {{-- Live badge --}}
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-4"
+                         style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.1);">
+                        <span class="live-dot shrink-0"></span>
+                        <span class="text-xs font-semibold text-teal-100 tracking-wide">Sistem Aktif</span>
+                        <span class="text-teal-200/50 text-xs">·</span>
+                        <span class="text-xs text-teal-100/80">{{ $todayStr }}</span>
+                    </div>
 
-            <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight"
-                style="letter-spacing:-0.02em;">
-                {{ $sapa }},
-                <span class="text-transparent bg-clip-text"
-                    style="background-image:linear-gradient(135deg,#5eead4,#a7f3d0);">
-                    {{ explode(' ', $user->name)[0] }}!
-                </span>
-            </h1>
+                    <h1 class="text-2xl md:text-3xl lg:text-4xl font-bold text-white leading-tight mb-2"
+                        style="letter-spacing:-0.025em;">
+                        <span class="material-symbols-outlined text-yellow-300 align-middle"
+                              style="font-size:1.75rem; margin-right:6px;">{{ $sapaIcon }}</span>
+                        {{ $sapa }},
+                        <span class="text-transparent bg-clip-text"
+                              style="background-image:linear-gradient(135deg,#5eead4 0%,#a7f3d0 100%);">
+                            {{ explode(' ', $user->name)[0] }}!
+                        </span>
+                    </h1>
 
-            <p class="text-slate-300 text-base max-w-xl leading-relaxed mb-8 font-normal" style="opacity:0.85;">
-                Pantau indikator kesehatan masyarakat secara real-time dan tingkatkan kualitas pelayanan Posyandu di
-                wilayah Anda.
-            </p>
+                    <p class="text-teal-50/90 text-sm max-w-lg leading-relaxed font-normal">
+                        Pantau indikator kesehatan masyarakat secara real-time. Wilayah aktif:
+                        <span class="text-teal-300 font-bold">{{ $posyanduName }}</span>
+                    </p>
 
-            <div class="flex flex-wrap items-center gap-3">
-                @can('create', App\Models\Patient::class)
-                    <a href="{{ route('admin.patients.create') }}"
-                        class="inline-flex items-center gap-2 h-11 px-6 rounded-xl font-semibold text-sm text-white transition-all hover:-translate-y-0.5 hover:shadow-lg"
-                        style="background:rgba(20,184,166,1); box-shadow:0 4px 14px rgba(20,184,166,0.35);">
-                        <span class="material-symbols-outlined text-[20px]">person_add</span>
-                        Registrasi Warga
-                    </a>
-                @endcan
+                    {{-- Quick action buttons --}}
+                    <div class="flex flex-wrap items-center gap-3 mt-6">
+                        @can('create', App\Models\Patient::class)
+                            <a href="{{ route('admin.patients.create') }}"
+                               class="inline-flex items-center gap-2 h-10 px-5 rounded-xl font-bold text-xs text-teal-900 bg-teal-400 transition-all hover:-translate-y-0.5 hover:bg-teal-300 active:scale-95 shadow-lg shadow-teal-500/30">
+                                <span class="material-symbols-outlined text-[18px]">person_add</span>
+                                Registrasi Warga
+                            </a>
+                        @endcan
+                        @can('create', App\Models\MedicalRecord::class)
+                            <a href="{{ route('admin.medical-records.create') }}"
+                               class="inline-flex items-center gap-2 h-10 px-5 rounded-xl font-semibold text-xs text-white transition-all hover:-translate-y-0.5 hover:bg-white/20 active:scale-95"
+                               style="background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2);">
+                                <span class="material-symbols-outlined text-[18px]">add_circle</span>
+                                Input Rekam Medis
+                            </a>
+                        @endcan
+                        <a href="{{ route('admin.reports.index') }}"
+                           class="inline-flex items-center gap-2 h-10 px-5 rounded-xl font-semibold text-xs text-white transition-all hover:-translate-y-0.5 hover:bg-white/20 active:scale-95 no-print"
+                           style="background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.2);">
+                            <span class="material-symbols-outlined text-[18px]">bar_chart</span>
+                            Laporan
+                        </a>
+                    </div>
+                </div>
 
-                @can('create', App\Models\MedicalRecord::class)
-                    <a href="{{ route('admin.medical-records.create') }}"
-                        class="inline-flex items-center gap-2 h-11 px-6 rounded-xl font-semibold text-sm text-white transition-all hover:-translate-y-0.5"
-                        style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15); backdrop-filter:blur(8px);">
-                        <span class="material-symbols-outlined text-[20px]">add_circle</span>
-                        Input Rekam Medis
-                    </a>
-                @endcan
-
-                <button onclick="window.print()"
-                    class="inline-flex items-center gap-2 h-11 px-6 rounded-xl font-semibold text-sm text-white transition-all hover:-translate-y-0.5 no-print"
-                    style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.15); backdrop-filter:blur(8px);">
-                    <span class="material-symbols-outlined text-[20px]">print</span>
-                    Cetak Laporan
-                </button>
+                {{-- Hero metrics (right side) --}}
+                <div class="grid grid-cols-2 gap-3 lg:w-auto lg:shrink-0 lg:grid-cols-2 xl:grid-cols-2">
+                    <div class="hero-metric">
+                        <p class="text-[10px] font-bold text-teal-100/70 uppercase tracking-wider mb-1">Total Balita</p>
+                        <p class="text-2xl font-bold text-white leading-none" style="font-variant-numeric:tabular-nums;">
+                            {{ number_format($totalBalita) }}</p>
+                        @if($kelahiranBulanIni > 0)
+                            <p class="text-[10px] text-teal-300 font-semibold mt-1.5">+{{ $kelahiranBulanIni }} bulan ini</p>
+                        @else
+                            <p class="text-[10px] text-teal-100/50 mt-1.5">anak terdaftar</p>
+                        @endif
+                    </div>
+                    <div class="hero-metric">
+                        <p class="text-[10px] font-bold text-teal-100/70 uppercase tracking-wider mb-1">Pemeriksaan (YTD)</p>
+                        <p class="text-2xl font-bold text-white leading-none" style="font-variant-numeric:tabular-nums;">
+                            {{ number_format($totalPemeriksaan) }}</p>
+                        <p class="text-[10px] text-teal-100/50 mt-1.5">kunjungan total</p>
+                    </div>
+                    <div class="hero-metric">
+                        <p class="text-[10px] font-bold text-teal-100/70 uppercase tracking-wider mb-1">Imunisasi (YTD)</p>
+                        <p class="text-2xl font-bold text-white leading-none" style="font-variant-numeric:tabular-nums;">
+                            {{ number_format($totalImunisasi) }}</p>
+                        <p class="text-[10px] text-teal-100/50 mt-1.5">dosis diberikan</p>
+                    </div>
+                    <div class="hero-metric">
+                        <p class="text-[10px] font-bold text-teal-100/70 uppercase tracking-wider mb-1">Kunjungan Bulan Ini</p>
+                        <p class="text-2xl font-bold text-white leading-none" style="font-variant-numeric:tabular-nums;">
+                            {{ number_format($kunjunganBaru) }}</p>
+                        <p class="text-[10px] text-teal-100/50 mt-1.5">{{ now()->translatedFormat('F Y') }}</p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
     {{-- ── Global Filter Bar ── --}}
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 relative z-20">
-        <div class="flex flex-col md:flex-row gap-4 items-end">
+    <div class="filter-bar">
+        <div class="flex flex-col sm:flex-row gap-3 items-end">
+            <div class="flex items-center gap-2 shrink-0 self-center sm:self-auto">
+                <span class="material-symbols-outlined text-[18px] text-slate-400">filter_list</span>
+                <span class="text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Filter Data</span>
+            </div>
+
             <!-- Filter Periode -->
-            <div class="w-full md:w-1/4">
-                <label class="block text-xs font-semibold text-slate-500 mb-1.5">Periode Pencarian</label>
-                <select wire:model.live="filterPeriode" class="w-full rounded-xl border-slate-200 text-sm focus:ring-teal-500 focus:border-teal-500 bg-slate-50/50">
-                    <option value="semua">Sepanjang Waktu (Semua)</option>
+            <div class="flex-1 min-w-0">
+                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Periode</label>
+                <select wire:model.live="filterPeriode" class="filter-select">
+                    <option value="semua">Sepanjang Waktu</option>
                     <option value="bulan_ini">Bulan Ini</option>
                     <option value="bulan_lalu">Bulan Lalu</option>
                     <option value="tahun_ini">Tahun Ini</option>
@@ -184,26 +267,26 @@
                 </select>
             </div>
 
-            <!-- Custom Date Range -->
             @if($filterPeriode === 'custom')
-            <div class="w-full md:w-1/4 flex gap-2">
-                <div class="w-1/2">
-                    <label class="block text-xs font-semibold text-slate-500 mb-1.5">Dari Tanggal</label>
-                    <input type="date" wire:model.live="filterCustomStartDate" class="w-full rounded-xl border-slate-200 text-sm focus:ring-teal-500 bg-slate-50/50">
+            <div class="flex gap-2 flex-1 min-w-0">
+                <div class="flex-1">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Dari</label>
+                    <input type="date" wire:model.live="filterCustomStartDate"
+                           class="filter-select" style="padding:0 0.625rem;">
                 </div>
-                <div class="w-1/2">
-                    <label class="block text-xs font-semibold text-slate-500 mb-1.5">Sampai</label>
-                    <input type="date" wire:model.live="filterCustomEndDate" class="w-full rounded-xl border-slate-200 text-sm focus:ring-teal-500 bg-slate-50/50">
+                <div class="flex-1">
+                    <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Sampai</label>
+                    <input type="date" wire:model.live="filterCustomEndDate"
+                           class="filter-select" style="padding:0 0.625rem;">
                 </div>
             </div>
             @endif
 
-            <!-- Filter Posyandu -->
             @if(Auth::user()->isSuperAdmin())
-            <div class="w-full md:w-1/4">
-                <label class="block text-xs font-semibold text-slate-500 mb-1.5">Wilayah / Dusun (Posyandu)</label>
-                <select wire:model.live="filterPosyandu" class="w-full rounded-xl border-slate-200 text-sm focus:ring-teal-500 focus:border-teal-500 bg-slate-50/50">
-                    <option value="semua">Semua Wilayah</option>
+            <div class="flex-1 min-w-0">
+                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Wilayah</label>
+                <select wire:model.live="filterPosyandu" class="filter-select">
+                    <option value="semua">Semua Posyandu</option>
                     @foreach($availablePosyandus as $pos)
                         <option value="{{ $pos->id }}">{{ $pos->name }}</option>
                     @endforeach
@@ -211,117 +294,161 @@
             </div>
             @endif
 
-            <!-- Filter Risiko -->
-            <div class="w-full md:w-1/4">
-                <label class="block text-xs font-semibold text-slate-500 mb-1.5">Kategori Risiko</label>
-                <select wire:model.live="filterRisiko" class="w-full rounded-xl border-slate-200 text-sm focus:ring-teal-500 focus:border-teal-500 bg-slate-50/50">
+            <div class="flex-1 min-w-0">
+                <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1">Kategori</label>
+                <select wire:model.live="filterRisiko" class="filter-select">
                     <option value="semua">Semua Warga</option>
-                    <option value="risiko_tinggi">Hanya Risiko Tinggi</option>
+                    <option value="risiko_tinggi">Risiko Tinggi</option>
                 </select>
             </div>
 
-            <!-- Reset -->
-            <div class="w-full md:w-auto">
-                <button wire:click="resetFilters" class="w-full md:w-auto h-10.5 px-5 rounded-xl font-medium text-sm text-slate-600 bg-slate-100 hover:bg-slate-200 transition flex items-center justify-center gap-2">
-                    <span class="material-symbols-outlined text-[18px]">restart_alt</span>
+            <div class="shrink-0 flex items-center gap-2">
+                <button wire:click="resetFilters"
+                        class="h-9 px-4 rounded-xl font-semibold text-xs text-slate-600 bg-slate-100 hover:bg-slate-200 transition-colors flex items-center gap-1.5 whitespace-nowrap">
+                    <span class="material-symbols-outlined text-[15px]">restart_alt</span>
                     Reset
                 </button>
-            </div>
-            
-            <div wire:loading wire:target="filterPeriode, filterCustomStartDate, filterCustomEndDate, filterPosyandu, filterRisiko, resetFilters" class="ml-auto flex items-center text-teal-600 text-sm font-medium">
-                <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-teal-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
-                Memuat Data...
+
+                <div wire:loading wire:target="filterPeriode, filterCustomStartDate, filterCustomEndDate, filterPosyandu, filterRisiko, resetFilters"
+                     class="flex items-center gap-1.5 text-teal-600 text-xs font-semibold">
+                    <svg class="animate-spin h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Memuat...
+                </div>
             </div>
         </div>
     </div>
 
-    {{-- ── Critical Alerts (DASH-23) ── --}}
+    {{-- ── Critical Alert Banner ── --}}
     @php
         $giziBurukCount = $balitaStunting->filter(function($b) {
             $mr = $b->medicalRecords->first();
             return $mr && (
-                $mr->nutrition_status === 'Gizi Buruk' || 
-                $mr->wasting_status === 'Gizi Buruk' || 
+                $mr->nutrition_status === 'Gizi Buruk' ||
+                $mr->wasting_status === 'Gizi Buruk' ||
                 $mr->stunting_status === 'Sangat Pendek'
             );
         })->count();
     @endphp
-
     @if($giziBurukCount > 0)
-        <div class="bg-red-500 text-white p-5 rounded-2xl mb-6 shadow-md flex flex-col md:flex-row items-center justify-between gap-4 mt-6">
-            <div class="flex items-center gap-4">
-                <div class="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center shrink-0">
-                    <span class="material-symbols-outlined text-[28px] text-white">warning</span>
+        <div class="alert-critical p-4 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3.5">
+                <div class="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[22px] text-white">warning</span>
                 </div>
                 <div>
-                    <h4 class="font-bold text-lg leading-tight text-white mb-1">Perhatian: Kasus Gizi Buruk Terdeteksi!</h4>
-                    <p class="text-red-50 text-sm">Terdapat {{ $giziBurukCount }} anak balita dengan status Gizi Buruk atau Sangat Pendek yang memerlukan penanganan segera.</p>
+                    <h4 class="font-bold text-sm text-white leading-tight">Perhatian: {{ $giziBurukCount }} Kasus Gizi Buruk Terdeteksi!</h4>
+                    <p class="text-red-100 text-xs mt-0.5">Balita dengan status Gizi Buruk atau Sangat Pendek perlu penanganan segera.</p>
                 </div>
             </div>
-            <a href="{{ route('admin.patients.index') }}" class="shrink-0 bg-white text-red-600 px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-red-50 transition-colors shadow-sm">
-                Lihat Data Pasien
+            <a href="{{ route('admin.patients.index') }}"
+               class="shrink-0 bg-white text-red-600 px-4 py-2 rounded-xl font-bold text-xs hover:bg-red-50 transition-colors">
+                Lihat Data →
             </a>
         </div>
     @endif
 
-    {{-- ── KPI Cards ── --}}
+    {{-- ── Demographic Grid ── --}}
+    <section class="mb-5">
+        <x-widget.demographic-grid :stats="$demographicStats" />
+    </section>
+
+    {{-- ── KPI Summary Row ── --}}
     @php
-        $stats = [
+        $stuntingCount = count($balitaStunting);
+        $bumilRisikoCount = count($bumilRisikoTinggi);
+        $missingVaxCount = count($missingImmunizations);
+        $kpiCards = [
             [
-                'label' => 'Total Anak',
-                'value' => $totalBalita,
-                'icon' => 'child_care',
-                'bg' => '#eff6ff',
-                'fg' => '#2563eb',
-                'unit' => 'anak',
-                'link' => route('admin.patients.index', ['category' => 'balita'])
+                'label'   => 'Total Balita/Bayi',
+                'value'   => $totalBalita,
+                'unit'    => 'anak',
+                'icon'    => 'child_care',
+                'bg'      => '#eff6ff',
+                'fg'      => '#2563eb',
+                'sub'     => $kelahiranBulanIni > 0 ? "+{$kelahiranBulanIni} bulan ini" : null,
+                'link'    => route('admin.patients.index', ['category' => 'balita']),
             ],
             [
-                'label' => 'Total Pemeriksaan (YTD)',
-                'value' => $totalPemeriksaan,
-                'icon' => 'medical_services',
-                'bg' => '#ecfdf5',
-                'fg' => '#059669',
-                'unit' => 'kali',
-                'link' => route('admin.medical-records.index')
+                'label'   => 'Total Pemeriksaan',
+                'value'   => $totalPemeriksaan,
+                'unit'    => 'kunjungan',
+                'icon'    => 'medical_services',
+                'bg'      => '#ecfdf5',
+                'fg'      => '#059669',
+                'sub'     => "Bulan ini: {$kunjunganBaru}",
+                'link'    => route('admin.medical-records.index'),
             ],
             [
-                'label' => 'Total Imunisasi (YTD)',
-                'value' => $totalImunisasi,
-                'icon' => 'vaccines',
-                'bg' => '#f0fdfa',
-                'fg' => '#0f766e',
-                'unit' => 'dosis',
-                'link' => null
+                'label'   => 'Total Imunisasi',
+                'value'   => $totalImunisasi,
+                'unit'    => 'dosis',
+                'icon'    => 'vaccines',
+                'bg'      => '#f0fdfa',
+                'fg'      => '#0f766e',
+                'sub'     => $missingVaxCount > 0 ? "{$missingVaxCount} anak belum lengkap" : 'Semua terpenuhi',
+                'link'    => null,
+            ],
+            [
+                'label'   => 'Partisipasi Penimbangan',
+                'value'   => $kehadiranBalita['persentase'],
+                'unit'    => '%',
+                'icon'    => 'how_to_reg',
+                'bg'      => '#f0fdf4',
+                'fg'      => '#16a34a',
+                'sub'     => "{$kehadiranBalita['hadir']} hadir · {$kehadiranBalita['tidak_hadir']} absen",
+                'link'    => null,
+            ],
+            [
+                'label'   => 'Atensi Gizi',
+                'value'   => $stuntingCount,
+                'unit'    => 'kasus',
+                'icon'    => 'warning',
+                'bg'      => '#fef2f2',
+                'fg'      => '#dc2626',
+                'sub'     => $giziBurukCount > 0 ? "{$giziBurukCount} gizi buruk" : 'Pantau rutin',
+                'link'    => route('admin.patients.index'),
+            ],
+            [
+                'label'   => 'Bumil Risiko Tinggi',
+                'value'   => $bumilRisikoCount,
+                'unit'    => 'orang',
+                'icon'    => 'pregnant_woman',
+                'bg'      => '#fff1f2',
+                'fg'      => '#e11d48',
+                'sub'     => "Perlu pantauan khusus",
+                'link'    => route('admin.patients.index'),
             ],
         ];
     @endphp
 
-    <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        @foreach ($stats as $s)
-            @if(isset($s['link']) && $s['link'])
-                <a href="{{ $s['link'] }}" class="kpi-card block cursor-pointer">
+    <section class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+        @foreach($kpiCards as $card)
+            @if($card['link'])
+                <a href="{{ $card['link'] }}" class="kpi-card group">
             @else
                 <div class="kpi-card">
             @endif
-                <div class="kpi-icon" style="background:{{ $s['bg'] }}; color:{{ $s['fg'] }};">
-                    <span class="material-symbols-outlined text-[22px]">{{ $s['icon'] }}</span>
+                <div class="flex items-start justify-between mb-3">
+                    <div class="kpi-icon" style="background:{{ $card['bg'] }}; color:{{ $card['fg'] }};">
+                        <span class="material-symbols-outlined text-[20px]">{{ $card['icon'] }}</span>
+                    </div>
+                    @if($card['link'])
+                        <span class="material-symbols-outlined text-[14px] text-slate-300 group-hover:text-slate-500 transition-colors">arrow_outward</span>
+                    @endif
                 </div>
-                <p class="text-xs font-semibold text-slate-500 mb-1">{{ $s['label'] }}</p>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1 leading-tight">{{ $card['label'] }}</p>
                 <div class="flex items-baseline gap-1">
-                    <span class="text-2xl font-bold text-slate-900"
-                        style="letter-spacing:-0.03em; font-variant-numeric:tabular-nums;">{{ number_format($s['value'] ?? 0) }}</span>
-                    <span class="text-xs font-medium text-slate-400">{{ $s['unit'] }}</span>
+                    <span class="text-xl font-bold text-slate-900 leading-none"
+                          style="font-variant-numeric:tabular-nums; letter-spacing:-0.02em;">{{ number_format($card['value']) }}</span>
+                    <span class="text-[10px] font-medium text-slate-400">{{ $card['unit'] }}</span>
                 </div>
-                @if($s['label'] === 'Total Anak' && isset($kelahiranBulanIni) && $kelahiranBulanIni > 0)
-                    <p class="text-[10px] font-semibold text-emerald-600 mt-2 bg-emerald-50 inline-block px-2 py-0.5 rounded-full">
-                        +{{ $kelahiranBulanIni }} kelahiran bulan ini
-                    </p>
+                @if($card['sub'])
+                    <p class="text-[10px] font-medium text-slate-400 mt-1.5 truncate leading-tight">{{ $card['sub'] }}</p>
                 @endif
-            @if(isset($s['link']) && $s['link'])
+            @if($card['link'])
                 </a>
             @else
                 </div>
@@ -329,106 +456,101 @@
         @endforeach
     </section>
 
+    {{-- ── Analytics Chart ── --}}
+    <div class="widget-card p-5">
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2.5">
+                <div class="w-9 h-9 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center shrink-0">
+                    <span class="material-symbols-outlined text-[20px]">monitoring</span>
+                </div>
+                <div>
+                    <h3 class="font-bold text-slate-900 text-sm">Tren Kunjungan & Layanan</h3>
+                    <p class="text-xs text-slate-400 mt-0.5">Statistik pemeriksaan 12 bulan terakhir</p>
+                </div>
+            </div>
+        </div>
+        <div class="relative w-full h-70">
+            <canvas id="dashboardVisitsChart" wire:ignore></canvas>
+        </div>
+    </div>
+
     {{-- ── Main Grid ── --}}
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
 
         {{-- Left: 8 Columns --}}
-        <div class="lg:col-span-8 space-y-6">
+        <div class="lg:col-span-8 space-y-5">
 
             {{-- Stunting Alert Table --}}
             <div class="widget-card">
                 <div class="widget-header">
                     <div class="flex items-center gap-3">
-                        <div
-                            class="w-9 h-9 rounded-xl bg-red-50 text-red-500 flex items-center justify-center shrink-0">
+                        <div class="w-9 h-9 rounded-xl bg-red-50 text-red-500 flex items-center justify-center shrink-0">
                             <span class="material-symbols-outlined text-[20px]">warning</span>
                         </div>
                         <div>
                             <h3 class="font-bold text-slate-900 text-sm">Prioritas Atensi Gizi</h3>
-                            <p class="text-xs text-slate-500 mt-0.5">Status stunting & gizi buruk terdeteksi</p>
+                            <p class="text-xs text-slate-400 mt-0.5">Status stunting & gizi buruk terdeteksi</p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 border border-red-100">
+                    <div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-red-50 border border-red-100">
                         <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
-                        <span class="text-xs font-semibold text-red-600">{{ count($balitaStunting) }} Kasus</span>
+                        <span class="text-xs font-bold text-red-600">{{ count($balitaStunting) }} Kasus</span>
                     </div>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
                         <thead>
                             <tr style="background:#f9fafb; border-bottom:1px solid rgba(0,0,0,0.05);">
-                                <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                    Balita</th>
-                                <th
-                                    class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider text-center">
-                                    Usia</th>
-                                <th
-                                    class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider text-center">
-                                    Status</th>
-                                <th
-                                    class="px-6 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                    Aksi</th>
+                                <th class="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Balita</th>
+                                <th class="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider text-center">Usia</th>
+                                <th class="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider text-center">Status</th>
+                                <th class="px-5 py-3 text-right text-[10px] font-bold text-slate-400 uppercase tracking-wider">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($balitaStunting as $balita)
-                                <tr class="table-row-hover transition-colors"
-                                    style="border-bottom:1px solid rgba(0,0,0,0.04);">
-                                    <td class="px-6 py-4">
+                                <tr class="dash-tr transition-colors border-b border-slate-50">
+                                    <td class="px-5 py-3.5">
                                         <div class="flex items-center gap-3">
-                                            <div
-                                                class="w-9 h-9 rounded-xl bg-slate-100 text-slate-500 flex items-center justify-center font-bold text-xs shrink-0">
+                                            <div class="w-8 h-8 rounded-lg bg-red-50 text-red-600 flex items-center justify-center font-bold text-xs shrink-0">
                                                 {{ strtoupper(substr($balita->full_name, 0, 2)) }}
                                             </div>
                                             <div>
-                                                <span
-                                                    class="block text-sm font-semibold text-slate-800">{{ $balita->full_name }}</span>
-                                                <span class="text-xs text-slate-400">ID: {{ $balita->id }}</span>
+                                                <span class="block text-sm font-semibold text-slate-800">{{ $balita->full_name }}</span>
+                                                <span class="text-xs text-slate-400">ID #{{ $balita->id }}</span>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-slate-600 text-center">{{ $balita->age }}</td>
-                                    <td class="px-6 py-4 text-center">
+                                    <td class="px-5 py-3.5 text-sm text-slate-600 text-center font-medium">{{ $balita->age }}</td>
+                                    <td class="px-5 py-3.5 text-center">
                                         @php
                                             $latestRecord = $balita->medicalRecords->first();
                                             $displayStatus = 'Atensi Gizi';
                                             if ($latestRecord) {
-                                                $possibleStatuses = [
-                                                    $latestRecord->stunting_status,
-                                                    $latestRecord->nutrition_status,
-                                                    $latestRecord->wasting_status,
-                                                ];
-                                                foreach ($possibleStatuses as $ps) {
-                                                    if (
-                                                        str_contains($ps, 'Sangat') ||
-                                                        str_contains($ps, 'Buruk') ||
-                                                        str_contains($ps, 'Pendek')
-                                                    ) {
-                                                        $displayStatus = $ps;
-                                                        break;
+                                                foreach ([$latestRecord->stunting_status, $latestRecord->nutrition_status, $latestRecord->wasting_status] as $ps) {
+                                                    if (str_contains((string)$ps, 'Sangat') || str_contains((string)$ps, 'Buruk') || str_contains((string)$ps, 'Pendek')) {
+                                                        $displayStatus = $ps; break;
                                                     }
                                                 }
                                             }
                                         @endphp
                                         <span class="badge badge-red">{{ $displayStatus }}</span>
                                     </td>
-                                    <td class="px-6 py-4 text-right">
+                                    <td class="px-5 py-3.5 text-right">
                                         <a href="{{ route('admin.patients.show', $balita->id) }}"
-                                            class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-slate-50 text-slate-400 hover:bg-teal-500 hover:text-white transition-all">
-                                            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                                           class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-slate-50 text-slate-400 hover:bg-red-500 hover:text-white transition-all">
+                                            <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
                                         </a>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="px-6 py-16 text-center">
-                                        <div class="flex flex-col items-center gap-3">
-                                            <div
-                                                class="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300">
-                                                <span class="material-symbols-outlined text-[28px]">verified_user</span>
+                                    <td colspan="4" class="px-5 py-14 text-center">
+                                        <div class="flex flex-col items-center gap-2.5">
+                                            <div class="w-12 h-12 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-400">
+                                                <span class="material-symbols-outlined text-[24px]">verified_user</span>
                                             </div>
-                                            <p class="text-sm font-medium text-slate-400">Semua data terpantau normal
-                                            </p>
+                                            <p class="text-sm font-semibold text-slate-500">Semua data terpantau normal</p>
                                         </div>
                                     </td>
                                 </tr>
@@ -447,52 +569,53 @@
                         </div>
                         <div>
                             <h3 class="font-bold text-slate-900 text-sm">Ibu Hamil Risiko Tinggi</h3>
-                            <p class="text-xs text-slate-500 mt-0.5">Pemantauan khusus bumil berisiko</p>
+                            <p class="text-xs text-slate-400 mt-0.5">Pemantauan khusus bumil berisiko</p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-rose-50 border border-rose-100">
+                    <div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-rose-50 border border-rose-100">
                         <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse"></span>
-                        <span class="text-xs font-semibold text-rose-600">{{ count($bumilRisikoTinggi) }} Kasus</span>
+                        <span class="text-xs font-bold text-rose-600">{{ count($bumilRisikoTinggi) }} Kasus</span>
                     </div>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
                         <thead>
                             <tr style="background:#f9fafb; border-bottom:1px solid rgba(0,0,0,0.05);">
-                                <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Ibu Hamil</th>
-                                <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider text-center">Usia</th>
-                                <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider text-center">Kondisi</th>
-                                <th class="px-6 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wider">Aksi</th>
+                                <th class="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Ibu Hamil</th>
+                                <th class="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider text-center">Usia</th>
+                                <th class="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider text-center">Kondisi</th>
+                                <th class="px-5 py-3 text-right text-[10px] font-bold text-slate-400 uppercase tracking-wider">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($bumilRisikoTinggi as $bumil)
-                                <tr class="table-row-hover transition-colors" style="border-bottom:1px solid rgba(0,0,0,0.04);">
-                                    <td class="px-6 py-4">
+                                <tr class="dash-tr transition-colors border-b border-slate-50">
+                                    <td class="px-5 py-3.5">
                                         <div class="flex items-center gap-3">
-                                            <div class="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-xs shrink-0">
+                                            <div class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-xs shrink-0">
                                                 {{ strtoupper(substr($bumil->full_name, 0, 2)) }}
                                             </div>
                                             <div>
                                                 <span class="block text-sm font-semibold text-slate-800">{{ $bumil->full_name }}</span>
-                                                <span class="text-xs text-slate-400">ID: {{ $bumil->id }}</span>
+                                                <span class="text-xs text-slate-400">ID #{{ $bumil->id }}</span>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-slate-600 text-center">{{ $bumil->age }}</td>
-                                    <td class="px-6 py-4 text-center">
+                                    <td class="px-5 py-3.5 text-sm text-slate-600 text-center font-medium">{{ $bumil->age }}</td>
+                                    <td class="px-5 py-3.5 text-center">
                                         <span class="badge badge-red">Risiko Tinggi</span>
                                     </td>
-                                    <td class="px-6 py-4 text-right">
-                                        <a href="{{ route('admin.patients.show', $bumil->id) }}" class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-slate-50 text-slate-400 hover:bg-rose-500 hover:text-white transition-all">
-                                            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                                    <td class="px-5 py-3.5 text-right">
+                                        <a href="{{ route('admin.patients.show', $bumil->id) }}"
+                                           class="inline-flex w-8 h-8 items-center justify-center rounded-lg bg-slate-50 text-slate-400 hover:bg-rose-500 hover:text-white transition-all">
+                                            <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
                                         </a>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="px-6 py-12 text-center text-slate-400 text-sm">
-                                        Tidak ada ibu hamil dengan risiko tinggi.
+                                    <td colspan="4" class="px-5 py-10 text-center">
+                                        <p class="text-sm font-medium text-slate-400">Tidak ada ibu hamil dengan risiko tinggi.</p>
                                     </td>
                                 </tr>
                             @endforelse
@@ -505,42 +628,36 @@
             <div class="widget-card">
                 <div class="widget-header">
                     <div class="flex items-center gap-3">
-                        <div
-                            class="w-9 h-9 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center shrink-0">
+                        <div class="w-9 h-9 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center shrink-0">
                             <span class="material-symbols-outlined text-[20px]">history</span>
                         </div>
                         <div>
                             <h3 class="font-bold text-slate-900 text-sm">Pemeriksaan Terbaru</h3>
-                            <p class="text-xs text-slate-500 mt-0.5">Kunjungan pemeriksaan terbaru</p>
+                            <p class="text-xs text-slate-400 mt-0.5">5 kunjungan pemeriksaan terakhir</p>
                         </div>
                     </div>
                     <a href="{{ route('admin.medical-records.index') }}"
-                        class="text-xs font-semibold text-teal-600 hover:text-teal-700 hover:underline transition-colors">
-                        Lihat Semua →
+                       class="text-xs font-semibold text-teal-600 hover:text-teal-700 flex items-center gap-1 transition-colors">
+                        Lihat Semua
+                        <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
                     </a>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
                         <thead>
                             <tr style="background:#f9fafb; border-bottom:1px solid rgba(0,0,0,0.05);">
-                                <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                    Pasien</th>
-                                <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                    Waktu Visit</th>
-                                <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                    Unit Posyandu</th>
-                                <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                    Petugas</th>
+                                <th class="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Pasien</th>
+                                <th class="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Tanggal Visit</th>
+                                <th class="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Unit Posyandu</th>
+                                <th class="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Petugas</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($recentActivities as $activity)
-                                <tr class="table-row-hover transition-colors"
-                                    style="border-bottom:1px solid rgba(0,0,0,0.04);">
-                                    <td class="px-6 py-4">
+                                <tr class="dash-tr transition-colors border-b border-slate-50">
+                                    <td class="px-5 py-3.5">
                                         <div class="flex items-center gap-3">
-                                            <div
-                                                class="w-9 h-9 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold text-xs shrink-0">
+                                            <div class="w-8 h-8 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center font-bold text-xs shrink-0">
                                                 {{ strtoupper(substr($activity->patient->full_name, 0, 2)) }}
                                             </div>
                                             <div>
@@ -553,13 +670,13 @@
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-slate-600">
+                                    <td class="px-5 py-3.5 text-sm text-slate-600 font-medium">
                                         {{ $activity->visit_date->translatedFormat('d M Y') }}
                                     </td>
-                                    <td class="px-6 py-4">
+                                    <td class="px-5 py-3.5">
                                         <span class="badge badge-blue">{{ $activity->patient->posyandu->name }}</span>
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-slate-600">
+                                    <td class="px-5 py-3.5 text-sm text-slate-600">
                                         {{ $activity->user->name ?? '-' }}
                                     </td>
                                 </tr>
@@ -573,13 +690,12 @@
             <div class="widget-card">
                 <div class="widget-header">
                     <div class="flex items-center gap-3">
-                        <div
-                            class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
+                        <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
                             <span class="material-symbols-outlined text-[20px]">vaccines</span>
                         </div>
                         <div>
                             <h3 class="font-bold text-slate-900 text-sm">Imunisasi Terbaru</h3>
-                            <p class="text-xs text-slate-500 mt-0.5">Pemberian imunisasi terbaru</p>
+                            <p class="text-xs text-slate-400 mt-0.5">Pemberian imunisasi terakhir tercatat</p>
                         </div>
                     </div>
                 </div>
@@ -587,48 +703,40 @@
                     <table class="w-full text-left">
                         <thead>
                             <tr style="background:#f9fafb; border-bottom:1px solid rgba(0,0,0,0.05);">
-                                <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                    Balita</th>
-                                <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                    Tanggal Imunisasi</th>
-                                <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                    Jenis Imunisasi</th>
-                                <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                    Petugas</th>
+                                <th class="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Balita</th>
+                                <th class="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Tanggal</th>
+                                <th class="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Jenis</th>
+                                <th class="px-5 py-3 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Petugas</th>
                             </tr>
                         </thead>
                         <tbody>
                             @forelse($recentImmunizations as $vaxRecord)
-                                <tr class="table-row-hover transition-colors"
-                                    style="border-bottom:1px solid rgba(0,0,0,0.04);">
-                                    <td class="px-6 py-4">
+                                <tr class="dash-tr transition-colors border-b border-slate-50">
+                                    <td class="px-5 py-3.5">
                                         <div class="flex items-center gap-3">
-                                            <div
-                                                class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold text-xs shrink-0">
+                                            <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold text-xs shrink-0">
                                                 {{ strtoupper(substr($vaxRecord->patient->full_name, 0, 2)) }}
                                             </div>
                                             <div>
-                                                <span
-                                                    class="block text-sm font-semibold text-slate-800">{{ $vaxRecord->patient->full_name }}</span>
-                                                <span class="text-xs text-slate-400">ID:
-                                                    {{ $vaxRecord->patient->id }}</span>
+                                                <span class="block text-sm font-semibold text-slate-800">{{ $vaxRecord->patient->full_name }}</span>
+                                                <span class="text-xs text-slate-400">ID #{{ $vaxRecord->patient->id }}</span>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-slate-600">
+                                    <td class="px-5 py-3.5 text-sm text-slate-600 font-medium">
                                         {{ $vaxRecord->visit_date->translatedFormat('d M Y') }}
                                     </td>
-                                    <td class="px-6 py-4">
+                                    <td class="px-5 py-3.5">
                                         <span class="badge badge-teal">{{ $vaxRecord->vaccine_name && $vaxRecord->vaccine_name !== 'Tidak ada' ? $vaxRecord->vaccine_name : $vaxRecord->immunization }}</span>
                                     </td>
-                                    <td class="px-6 py-4 text-sm text-slate-600">
+                                    <td class="px-5 py-3.5 text-sm text-slate-600">
                                         {{ $vaxRecord->user->name ?? '-' }}
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="4" class="px-6 py-12 text-center text-slate-400 text-sm">
-                                        Belum ada data pemberian imunisasi terbaru.
+                                    <td colspan="4" class="px-5 py-10 text-center">
+                                        <p class="text-sm font-medium text-slate-400">Belum ada data imunisasi terbaru.</p>
                                     </td>
                                 </tr>
                             @endforelse
@@ -639,70 +747,67 @@
         </div>
 
         {{-- Right Side: 4 Columns --}}
-        <div class="lg:col-span-4 flex flex-col gap-5">
+        <div class="lg:col-span-4 flex flex-col gap-4">
 
             {{-- Upcoming Schedule Widget --}}
             <div class="widget-card p-5 relative overflow-hidden">
-                <div class="absolute -right-8 -top-8 w-32 h-32 bg-teal-50 rounded-full blur-3xl pointer-events-none">
-                </div>
+                <div class="absolute -right-8 -top-8 w-32 h-32 bg-teal-50 rounded-full blur-3xl pointer-events-none"></div>
                 <div class="relative z-10">
-                    <div class="flex items-center justify-between mb-5">
+                    <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-2.5">
-                            <div class="w-9 h-9 rounded-xl bg-teal-600 text-white flex items-center justify-center">
+                            <div class="w-9 h-9 rounded-xl bg-teal-600 text-white flex items-center justify-center shrink-0">
                                 <span class="material-symbols-outlined text-[18px]">event</span>
                             </div>
                             <span class="font-bold text-slate-900 text-sm">Agenda Terdekat</span>
                         </div>
-                        <span class="badge badge-teal">Live</span>
+                        <span class="live-dot"></span>
                     </div>
 
                     @if ($upcomingSchedule)
-                        <div class="space-y-4">
-                            <div class="flex items-center gap-4">
-                                <div
-                                    class="w-14 h-14 rounded-2xl bg-slate-900 flex flex-col items-center justify-center text-white shadow-lg shrink-0">
-                                    <span
-                                        class="text-[9px] font-bold uppercase opacity-50">{{ \Carbon\Carbon::parse($upcomingSchedule->start_time)->translatedFormat('M') }}</span>
-                                    <span
-                                        class="text-xl font-bold leading-none">{{ \Carbon\Carbon::parse($upcomingSchedule->start_time)->format('d') }}</span>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3.5">
+                                <div class="w-12 h-12 rounded-xl bg-slate-900 flex flex-col items-center justify-center text-white shadow-md shrink-0">
+                                    <span class="text-[8px] font-bold uppercase opacity-60 tracking-wider">{{ \Carbon\Carbon::parse($upcomingSchedule->start_time)->translatedFormat('M') }}</span>
+                                    <span class="text-xl font-bold leading-none">{{ \Carbon\Carbon::parse($upcomingSchedule->start_time)->format('d') }}</span>
                                 </div>
                                 <div class="min-w-0">
-                                    <h4 class="font-bold text-slate-900 text-sm leading-tight truncate">
-                                        {{ $upcomingSchedule->title }}</h4>
+                                    <h4 class="font-bold text-slate-900 text-sm leading-snug truncate">{{ $upcomingSchedule->title }}</h4>
                                     <p class="text-xs text-slate-500 flex items-center gap-1 mt-1">
-                                        <span
-                                            class="material-symbols-outlined text-[14px] text-teal-500">schedule</span>
+                                        <span class="material-symbols-outlined text-[13px] text-teal-500">schedule</span>
                                         {{ \Carbon\Carbon::parse($upcomingSchedule->start_time)->format('H:i') }} WIB
                                     </p>
                                 </div>
                             </div>
 
-                            <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
-                                <span class="material-symbols-outlined text-[18px] text-teal-500 shrink-0">location_on</span>
-                                <span class="text-sm text-slate-700 font-medium truncate">{{ $upcomingSchedule->location ?: 'Pusat Posyandu' }}</span>
+                            <div class="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-50 border border-slate-100">
+                                <span class="material-symbols-outlined text-[16px] text-teal-500 shrink-0">location_on</span>
+                                <span class="text-xs text-slate-700 font-medium truncate">{{ $upcomingSchedule->location ?: 'Pusat Posyandu' }}</span>
                             </div>
 
                             @if(\Carbon\Carbon::parse($upcomingSchedule->start_time)->isToday())
-                            <div class="pt-3 border-t border-slate-100 mt-3">
-                                <p class="text-[11px] font-bold text-teal-600 mb-2.5 uppercase tracking-wider">Target Imunisasi Hari Ini</p>
-                                <div class="space-y-2">
+                            <div class="p-3 rounded-xl bg-teal-50 border border-teal-100">
+                                <p class="text-[10px] font-bold text-teal-700 mb-2 uppercase tracking-wider flex items-center gap-1.5">
+                                    <span class="live-dot"></span>
+                                    Target Imunisasi Hari Ini
+                                </p>
+                                <div class="space-y-1.5">
                                     @forelse($missingImmunizations->take(3) as $item)
-                                        <div class="flex items-center justify-between bg-white border border-slate-100 p-2 rounded-lg shadow-sm">
+                                        <div class="flex items-center justify-between bg-white border border-teal-100 p-2 rounded-lg">
                                             <div class="flex items-center gap-2 overflow-hidden">
-                                                <div class="w-6 h-6 rounded bg-orange-50 text-orange-600 flex shrink-0 items-center justify-center font-bold text-[10px]">
+                                                <div class="w-6 h-6 rounded bg-teal-100 text-teal-700 flex shrink-0 items-center justify-center font-bold text-[9px]">
                                                     {{ strtoupper(substr($item['patient']->full_name, 0, 2)) }}
                                                 </div>
                                                 <div class="min-w-0">
-                                                    <p class="text-xs font-semibold text-slate-800 truncate">{{ $item['patient']->full_name }}</p>
-                                                    <p class="text-[10px] text-slate-500 truncate">{{ $item['next_vaccine'] }}</p>
+                                                    <p class="text-[11px] font-semibold text-slate-800 truncate">{{ $item['patient']->full_name }}</p>
+                                                    <p class="text-[10px] text-slate-400 truncate">{{ $item['next_vaccine'] }}</p>
                                                 </div>
                                             </div>
                                         </div>
                                     @empty
-                                        <p class="text-xs text-slate-400 italic">Tidak ada target khusus.</p>
+                                        <p class="text-[10px] text-teal-500 italic">Tidak ada target khusus.</p>
                                     @endforelse
                                     @if(count($missingImmunizations) > 3)
-                                        <p class="text-[10px] text-center text-teal-600 font-medium mt-1">
+                                        <p class="text-[10px] text-center text-teal-600 font-semibold mt-1">
                                             + {{ count($missingImmunizations) - 3 }} warga lainnya
                                         </p>
                                     @endif
@@ -711,18 +816,23 @@
                             @endif
 
                             <a href="{{ route('admin.schedules.index') }}"
-                                class="w-full h-11 bg-teal-600 text-white rounded-xl font-semibold text-sm flex items-center justify-center hover:bg-teal-700 transition-colors gap-2">
-                                <span class="material-symbols-outlined text-[18px]">calendar_month</span>
-                                Buka Kalender
+                                class="w-full h-10 bg-teal-600 text-white rounded-xl font-semibold text-xs flex items-center justify-center hover:bg-teal-700 transition-colors gap-1.5 mt-1">
+                                <span class="material-symbols-outlined text-[16px]">calendar_month</span>
+                                Buka Kalender Jadwal
                             </a>
                         </div>
                     @else
-                        <div class="flex flex-col items-center py-6 text-center">
-                            <div
-                                class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300 mb-3">
+                        <div class="flex flex-col items-center py-8 text-center">
+                            <div class="w-12 h-12 rounded-xl bg-slate-50 flex items-center justify-center text-slate-300 mb-2.5">
                                 <span class="material-symbols-outlined text-[24px]">event_busy</span>
                             </div>
-                            <p class="text-sm font-medium text-slate-400">Tidak ada jadwal terdekat</p>
+                            <p class="text-sm font-semibold text-slate-500">Tidak ada jadwal terdekat</p>
+                            <p class="text-xs text-slate-400 mt-0.5">Buat jadwal kegiatan baru</p>
+                            <a href="{{ route('admin.schedules.index') }}"
+                               class="mt-3 text-xs font-semibold text-teal-600 hover:text-teal-700 flex items-center gap-1">
+                                Kelola Jadwal
+                                <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                            </a>
                         </div>
                     @endif
                 </div>
@@ -730,49 +840,46 @@
 
             {{-- Missing Immunizations Widget --}}
             <div class="widget-card p-5 relative overflow-hidden">
-                <div class="absolute -right-8 -top-8 w-32 h-32 bg-orange-50 rounded-full blur-3xl pointer-events-none">
-                </div>
+                <div class="absolute -right-8 -top-8 w-32 h-32 bg-orange-50 rounded-full blur-3xl pointer-events-none"></div>
                 <div class="relative z-10">
-                    <div class="flex items-center justify-between mb-5">
+                    <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-2.5">
-                            <div class="w-9 h-9 rounded-xl bg-orange-500 text-white flex items-center justify-center">
+                            <div class="w-9 h-9 rounded-xl bg-orange-500 text-white flex items-center justify-center shrink-0">
                                 <span class="material-symbols-outlined text-[18px]">vaccines</span>
                             </div>
-                            <span class="font-bold text-slate-900 text-sm">Atensi Imunisasi</span>
+                            <div>
+                                <span class="font-bold text-slate-900 text-sm block">Atensi Imunisasi</span>
+                                <span class="text-[10px] text-slate-400">Belum lengkap vaksinasi</span>
+                            </div>
                         </div>
                         @if (count($missingImmunizations) > 0)
-                            <span class="badge badge-amber">{{ count($missingImmunizations) }} Anak</span>
+                            <span class="badge badge-amber">{{ count($missingImmunizations) }}</span>
                         @endif
                     </div>
 
-                    <div class="space-y-2">
+                    <div class="space-y-1.5">
                         @forelse($missingImmunizations as $item)
-                            <div
-                                class="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-sm transition-all">
-                                <div class="flex items-center gap-2.5 overflow-hidden">
-                                    <div
-                                        class="w-8 h-8 rounded-lg bg-orange-100 text-orange-700 shrink-0 flex items-center justify-center font-bold text-[11px]">
+                            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100 hover:bg-white hover:shadow-sm transition-all">
+                                <div class="flex items-center gap-2 overflow-hidden">
+                                    <div class="w-8 h-8 rounded-lg bg-orange-100 text-orange-700 shrink-0 flex items-center justify-center font-bold text-[10px]">
                                         {{ strtoupper(substr($item['patient']->full_name, 0, 2)) }}
                                     </div>
                                     <div class="min-w-0">
-                                        <p class="text-sm font-semibold text-slate-900 truncate">
-                                            {{ $item['patient']->full_name }}</p>
-                                        <p class="text-xs text-slate-400 truncate">Target: {{ $item['next_vaccine'] }}
-                                        </p>
+                                        <p class="text-xs font-semibold text-slate-900 truncate">{{ $item['patient']->full_name }}</p>
+                                        <p class="text-[10px] text-slate-400 truncate">Next: {{ $item['next_vaccine'] }}</p>
                                     </div>
                                 </div>
                                 <a href="{{ route('admin.patients.show', $item['patient']->id) }}"
-                                    class="w-7 h-7 shrink-0 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 hover:bg-orange-500 hover:text-white hover:border-orange-500 transition-all">
-                                    <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
+                                   class="w-7 h-7 shrink-0 flex items-center justify-center rounded-lg bg-white border border-slate-200 text-slate-400 hover:bg-orange-500 hover:text-white hover:border-orange-500 transition-all">
+                                    <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
                                 </a>
                             </div>
                         @empty
                             <div class="flex flex-col items-center py-6 text-center">
-                                <div
-                                    class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300 mb-3">
-                                    <span class="material-symbols-outlined text-[24px]">verified</span>
+                                <div class="w-11 h-11 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-400 mb-2">
+                                    <span class="material-symbols-outlined text-[22px]">verified</span>
                                 </div>
-                                <p class="text-sm font-medium text-slate-400">Semua Imunisasi Terpenuhi</p>
+                                <p class="text-sm font-semibold text-slate-500">Semua Imunisasi Terpenuhi</p>
                             </div>
                         @endforelse
                     </div>
@@ -1133,6 +1240,105 @@
         </div>
     </section>
 
-
-
 </div>
+
+@push('scripts')
+<script>
+document.addEventListener('livewire:initialized', () => {
+    let visitsChart = null;
+
+    function initDashboardChart() {
+        const ctx = document.getElementById('dashboardVisitsChart');
+        if (!ctx) return;
+
+        if (visitsChart) {
+            visitsChart.destroy();
+        }
+
+        const data = @json($monthlyWeighingData);
+        
+        Chart.defaults.font.family = "'Public Sans', sans-serif";
+        Chart.defaults.font.weight = '600';
+        Chart.defaults.color = '#64748b';
+
+        visitsChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: data.labels,
+                datasets: [{
+                    label: 'Total Kunjungan',
+                    data: data.data,
+                    borderColor: '#0d9488',
+                    backgroundColor: 'rgba(13, 148, 136, 0.1)',
+                    borderWidth: 3,
+                    pointBackgroundColor: '#ffffff',
+                    pointBorderColor: '#0d9488',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#1e293b',
+                        padding: 12,
+                        titleFont: { size: 13, family: "'Public Sans', sans-serif" },
+                        bodyFont: { size: 13, family: "'Public Sans', sans-serif" },
+                        displayColors: false,
+                        cornerRadius: 8,
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: '#f1f5f9',
+                            drawBorder: false,
+                        },
+                        ticks: {
+                            precision: 0,
+                            padding: 10
+                        },
+                        border: { display: false }
+                    },
+                    x: {
+                        grid: {
+                            display: false,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            padding: 10
+                        },
+                        border: { display: false }
+                    }
+                },
+                interaction: {
+                    intersect: false,
+                    mode: 'index',
+                },
+            }
+        });
+    }
+
+    // Initialize on load
+    initDashboardChart();
+
+    // Re-initialize when Livewire updates the data
+    Livewire.hook('commit', ({ component, commit, respond, succeed, fail }) => {
+        succeed(({ snapshot, effect }) => {
+            if(component.name === 'admin.admin-dashboard') {
+                setTimeout(() => {
+                    initDashboardChart();
+                }, 50);
+            }
+        });
+    });
+});
+</script>
+@endpush

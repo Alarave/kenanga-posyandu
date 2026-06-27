@@ -21,24 +21,53 @@
         
         {{-- ── LEFT SIDE: Branding & Illustration (Visible on Desktop) ── --}}
         <div class="hidden lg:flex flex-col justify-center items-center bg-teal-900 relative overflow-hidden px-20">
-            {{-- Decorative circles --}}
-            <div class="absolute top-0 right-0 w-96 h-96 bg-teal-500/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
-            <div class="absolute bottom-0 left-0 w-96 h-96 bg-teal-400/10 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl"></div>
+            
+            {{-- Image Slider Background (CSS Animated - Black & White) --}}
+            <style>
+                @keyframes sliderAnim {
+                    0% { opacity: 0; transform: scale(1); }
+                    5% { opacity: 1; transform: scale(1.01); }
+                    33% { opacity: 1; transform: scale(1.03); }
+                    38% { opacity: 0; transform: scale(1.04); }
+                    100% { opacity: 0; transform: scale(1); }
+                }
+                .slide-img {
+                    position: absolute;
+                    inset: 0;
+                    background-size: cover;
+                    background-position: center;
+                    opacity: 0;
+                    filter: grayscale(100%); /* Mengubah gambar menjadi hitam putih */
+                    animation: sliderAnim 15s infinite;
+                }
+                .slide-1 { background-image: url('/images/slider/1.jpg'); animation-delay: 0s; }
+                .slide-2 { background-image: url('/images/slider/2.jpg'); animation-delay: 5s; }
+                .slide-3 { background-image: url('/images/slider/3.jpg'); animation-delay: 10s; }
+            </style>
+            <div class="absolute inset-0 z-0">
+                <div class="slide-img slide-1"></div>
+                <div class="slide-img slide-2"></div>
+                <div class="slide-img slide-3"></div>
+                
+                {{-- Dark Slate Overlay to ensure text readability over any image --}}
+                <div class="absolute inset-0 bg-slate-950/70"></div>
+                <div class="absolute inset-0 bg-linear-to-t from-slate-950/90 via-slate-900/60 to-transparent"></div>
+            </div>
+
+            {{-- Decorative circles (Keep them above slider, below text) --}}
+            <div class="absolute top-0 right-0 w-96 h-96 bg-teal-500/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl z-0"></div>
+            <div class="absolute bottom-0 left-0 w-96 h-96 bg-teal-400/10 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl z-0"></div>
 
             <div class="relative z-10 text-center">
-                <div class="inline-flex items-center justify-center w-24 h-24 bg-teal-500 rounded-4xl text-white shadow-2xl mb-10">
+                <div class="inline-flex items-center justify-center w-24 h-24 bg-teal-500/80 backdrop-blur-md rounded-4xl text-white shadow-2xl mb-10 border border-teal-400/30">
                     <span class="material-symbols-outlined text-[48px]">health_and_safety</span>
                 </div>
                 <h1 class="text-5xl font-black text-white mb-6 font-jakarta tracking-tight leading-tight">
                     Sistem Layanan <br> <span class="text-teal-400 italic">Posyandu Digital.</span>
                 </h1>
-                <p class="text-teal-100 text-xl font-medium max-w-md mx-auto opacity-80 leading-relaxed italic">
+                <p class="text-teal-100 text-xl font-medium max-w-md mx-auto opacity-90 leading-relaxed italic drop-shadow-sm">
                     Memudahkan pencatatan dan pemantauan kesehatan seluruh warga dalam satu genggaman.
                 </p>
-            </div>
-            
-            <div class="absolute bottom-10 left-10 text-teal-500/30 font-black text-6xl uppercase tracking-[0.2em] pointer-events-none select-none">
-                POSYANDU
             </div>
         </div>
 
@@ -57,7 +86,7 @@
                 </div>
 
                 {{-- The Form Card --}}
-                <div class="auth-card p-10 md:p-14 rounded-[3.5rem] shadow-2xl">
+                <div class="auth-card p-10 md:p-14 rounded-[3.5rem] shadow-2xl bg-white">
                     
                     {{-- Alert Messages (Session) --}}
                     @if (session('status'))

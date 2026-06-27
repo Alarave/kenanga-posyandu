@@ -4,6 +4,8 @@ namespace App\Livewire\Admin\Analytics;
 
 use Livewire\Component;
 use App\Livewire\Traits\HasPosyanduScope;
+use App\Models\MedicalRecord;
+use App\Models\Patient;
 
 class LansiaAnalytics extends Component
 {
@@ -20,13 +22,24 @@ class LansiaAnalytics extends Component
         $this->selectedPosyandu = $selectedPosyandu;
     }
 
-    // AL-01: Kategori Umur
+    #[\Livewire\Attributes\Computed]
+    public function activePatientsQuery()
+    {
+        return $this->applyPosyanduScope(Patient::query(), $this->selectedPosyandu)
+            ->where('category', 'lansia')
+            ->where('status_mutasi', 'aktif')
+            ->whereHas('medicalRecords', function ($q) {
+                $q->whereYear('visit_date', $this->selectedYear)
+                  ->when($this->selectedMonth, fn($mq) => $mq->whereMonth('visit_date', $this->selectedMonth));
+            });
+    }
+
     #[\Livewire\Attributes\Computed]
     public function ageCategories()
     {
-        $patients = $this->applyPosyanduScope(\App\Models\Patient::query(), $this->selectedPosyandu)
-            ->where('category', 'lansia')->where('status_mutasi', 'aktif')->get();
+        $patients = $this->activePatientsQuery()->get();
         $pra = 0; $lansia = 0; $resti = 0;
+
         foreach ($patients as $p) {
             if ($p->birth_date) {
                 $age = $p->birth_date->age;
@@ -38,17 +51,16 @@ class LansiaAnalytics extends Component
         return ['pra' => $pra, 'lansia' => $lansia, 'resti' => $resti];
     }
 
-    // AL-02: IMT
     #[\Livewire\Attributes\Computed]
     public function imtStats()
     {
-        $records = $this->applyPosyanduScope(\App\Models\MedicalRecord::query(), $this->selectedPosyandu)
-            ->whereHas('patient', function($q) {
-            $q->where('category', 'lansia')->where('status_mutasi', 'aktif');
-        })
-        ->whereYear('visit_date', $this->selectedYear)
-        ->when($this->selectedMonth, fn($q) => $q->whereMonth('visit_date', $this->selectedMonth))
-        ->get();
+        $patientIds = $this->activePatientsQuery()->pluck('id');
+        $records = MedicalRecord::whereIn('patient_id', $patientIds)
+            ->whereYear('visit_date', $this->selectedYear)
+            ->when($this->selectedMonth, fn($q) => $q->whereMonth('visit_date', $this->selectedMonth))
+            ->whereIn('id', function($query) {
+                $query->selectRaw('MAX(id)')->from('medical_records')->groupBy('patient_id');
+            })->get();
 
         $kurang = 0; $normal = 0; $lebih = 0; $obesitas = 0;
         foreach ($records as $r) {
@@ -63,17 +75,14 @@ class LansiaAnalytics extends Component
         return ['kurang' => $kurang, 'normal' => $normal, 'lebih' => $lebih, 'obesitas' => $obesitas];
     }
 
-    // AL-03 to AL-06: Metabolic Risks
     #[\Livewire\Attributes\Computed]
     public function metabolicRisks()
     {
-        $records = $this->applyPosyanduScope(\App\Models\MedicalRecord::query(), $this->selectedPosyandu)
-            ->whereHas('patient', function($q) {
-            $q->where('category', 'lansia')->where('status_mutasi', 'aktif');
-        })
-        ->whereYear('visit_date', $this->selectedYear)
-        ->when($this->selectedMonth, fn($q) => $q->whereMonth('visit_date', $this->selectedMonth))
-        ->get();
+        $records = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
+            ->whereHas('patient', fn($q) => $q->where('category', 'lansia'))
+            ->whereYear('visit_date', $this->selectedYear)
+            ->when($this->selectedMonth, fn($q) => $q->whereMonth('visit_date', $this->selectedMonth))
+            ->get();
 
         $hipertensi = 0; $gula = 0; $kolesterol = 0; $asamUrat = 0;
         foreach ($records as $r) {
@@ -85,12 +94,10 @@ class LansiaAnalytics extends Component
         return ['hipertensi' => $hipertensi, 'gula' => $gula, 'kolesterol' => $kolesterol, 'asamUrat' => $asamUrat];
     }
 
-    // AL-07: Kemandirian
     #[\Livewire\Attributes\Computed]
     public function independenceStats()
     {
-        $patients = $this->applyPosyanduScope(\App\Models\Patient::query(), $this->selectedPosyandu)
-            ->where('category', 'lansia')->where('status_mutasi', 'aktif')->get();
+        $patients = $this->activePatientsQuery()->get();
         $a = 0; $b = 0; $c = 0;
         foreach ($patients as $p) {
             if ($p->independence_status == 'A') $a++;
