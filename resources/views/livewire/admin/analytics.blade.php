@@ -1,74 +1,40 @@
 @push('styles')
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet" />
-    <style>
-        .hero-gradient {
-            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #134e4a 100%);
-        }
-
-        .hero-orb-1 {
-            background: radial-gradient(circle, rgba(20, 184, 166, 0.25) 0%, transparent 70%);
-        }
-
-        .hero-orb-2 {
-            background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, transparent 70%);
-        }
-
-        @keyframes ping-slow {
-
-            0%,
-            100% {
-                transform: scale(1);
-                opacity: 0.8;
-            }
-
-            50% {
-                transform: scale(1.8);
-                opacity: 0;
-            }
-        }
-
-        .animate-ping-slow {
-            animation: ping-slow 2s ease-in-out infinite;
-        }
-    </style>
+    
 @endpush
 
 <div class="max-w-7xl mx-auto space-y-6 pb-20 px-4 sm:px-6">
 
     {{-- ── Hero Section (Analitik) ── --}}
-    <section class="relative rounded-2xl overflow-hidden" style="background:#0f172a;">
+    <section class="relative rounded-2xl overflow-hidden bg-inverse-surface">
         {{-- Background layers --}}
         <div class="absolute inset-0 hero-gradient"></div>
-        <div class="absolute top-0 left-1/4 w-72 h-72 hero-orb-1 rounded-full filter blur-[60px] animate-pulse"></div>
-        <div class="absolute bottom-0 right-1/4 w-72 h-72 hero-orb-2 rounded-full filter blur-[60px]"
-            style="animation:pulse 4s ease-in-out 1.5s infinite;"></div>
+        <div class="absolute top-0 left-1/4 w-72 h-72 hero-orb-1 rounded-lg filter blur-[60px] animate-pulse"></div>
+        <div class="absolute bottom-0 right-1/4 w-72 h-72 hero-orb-2 rounded-lg filter blur-[60px] hero-pulse-delayed"></div>
         {{-- Grid overlay --}}
-        <div class="absolute inset-0 opacity-[0.04]"
-            style="background-image:url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjAuNSIgZmlsbD0ibm9uZSI+PHBhdGggZD0iTTQwIDBMMCA0ME0wIDBsNDAgNDAiLz48L2c+PC9zdmc+');">
-        </div>
+        <div class="absolute inset-0 opacity-[0.04] bg-hero-grid"></div>
 
         <div
             class="relative z-10 px-8 py-10 md:px-12 md:py-12 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
             <div class="space-y-3">
                 {{-- Live badge --}}
-                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full"
-                    style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.1);">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-white/10 border border-white/10">
                     <span class="relative flex h-2.5 w-2.5">
                         <span
-                            class="animate-ping-slow absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
-                        <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-teal-400"></span>
+                            class="animate-ping-slow absolute inline-flex h-full w-full rounded-lg bg-teal-400 opacity-75"></span>
+                        <span class="relative inline-flex h-2.5 w-2.5 rounded-lg bg-teal-400"></span>
                     </span>
                     <span class="text-xs font-bold text-teal-100 tracking-wide uppercase">Sistem Analitik Pelayanan
                         Kesehatan</span>
                 </div>
 
-                <h1 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight leading-tight"
-                    style="letter-spacing:-0.02em;">
+                <h1 class="text-display-sm text-white tracking-tight leading-tight"
+                    >
                     Dashboard Analitik & Wawasan Posyandu
                 </h1>
 
-                <p class="text-slate-300 text-sm md:text-base leading-relaxed font-medium" style="opacity:0.9;">
+                <p class="text-slate-300 text-sm md:text-base leading-relaxed font-medium opacity-90" >
                     Data Wawasan Klinis & Keaktifan Posyandu Periode Tahun <strong
                         class="text-white font-black">{{ $selectedYear }}</strong>
                     @if (auth()->user()->posyandu)
@@ -89,9 +55,9 @@
     {{-- ── Accessible Tab Navigation ── --}}
     <div class="w-full no-print">
         <div
-            class="bg-surface-container-lowest p-1.5 rounded-full border border-outline-variant flex flex-wrap md:flex-nowrap items-center gap-1 shadow-sm w-full">
+            class="bg-surface-container-lowest p-1.5 rounded-lg border border-outline-variant flex flex-wrap md:flex-nowrap items-center gap-1 shadow-sm w-full">
             <button wire:click="$set('activeTab', 'overview')" @class([
-                'flex-1 px-4 md:px-10 py-4 rounded-full font-headline-sm transition-all flex items-center justify-center gap-2 cursor-pointer',
+                'flex-1 px-4 md:px-10 py-4 rounded-lg font-headline-sm transition-all flex items-center justify-center gap-2 cursor-pointer',
                 'bg-primary text-on-primary shadow-md' => $activeTab === 'overview',
                 'hover:bg-surface-container-high text-on-surface-variant' =>
                     $activeTab !== 'overview',
@@ -100,7 +66,7 @@
                 Overview
             </button>
             <button wire:click="$set('activeTab', 'balita')" @class([
-                'flex-1 px-4 md:px-10 py-4 rounded-full font-headline-sm transition-all flex items-center justify-center gap-2 cursor-pointer',
+                'flex-1 px-4 md:px-10 py-4 rounded-lg font-headline-sm transition-all flex items-center justify-center gap-2 cursor-pointer',
                 'bg-primary text-on-primary shadow-md' => $activeTab === 'balita',
                 'hover:bg-surface-container-high text-on-surface-variant' =>
                     $activeTab !== 'balita',
@@ -109,7 +75,7 @@
                 Balita
             </button>
             <button wire:click="$set('activeTab', 'pregnancy')" @class([
-                'flex-1 px-4 md:px-10 py-4 rounded-full font-headline-sm transition-all flex items-center justify-center gap-2 cursor-pointer',
+                'flex-1 px-4 md:px-10 py-4 rounded-lg font-headline-sm transition-all flex items-center justify-center gap-2 cursor-pointer',
                 'bg-primary text-on-primary shadow-md' => $activeTab === 'pregnancy',
                 'hover:bg-surface-container-high text-on-surface-variant' =>
                     $activeTab !== 'pregnancy',
@@ -118,7 +84,7 @@
                 Ibu Hamil
             </button>
             <button wire:click="$set('activeTab', 'lansia')" @class([
-                'flex-1 px-4 md:px-10 py-4 rounded-full font-headline-sm transition-all flex items-center justify-center gap-2 cursor-pointer',
+                'flex-1 px-4 md:px-10 py-4 rounded-lg font-headline-sm transition-all flex items-center justify-center gap-2 cursor-pointer',
                 'bg-primary text-on-primary shadow-md' => $activeTab === 'lansia',
                 'hover:bg-surface-container-high text-on-surface-variant' =>
                     $activeTab !== 'lansia',
@@ -131,7 +97,7 @@
 
     <!-- Unified Control Card -->
     <div
-        class="bg-white/80 backdrop-blur-md border border-outline-variant/50 rounded-3xl p-8 shadow-lg transition-all duration-300">
+        class="bg-white/80 backdrop-blur-md border border-outline-variant/50 rounded-2xl p-8 shadow-lg transition-all duration-300">
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-end pb-6 border-b border-outline-variant/20">
             <div
                 class="lg:col-span-9 grid grid-cols-1 {{ auth()->user()->isSuperAdmin() ? 'md:grid-cols-3' : 'md:grid-cols-2' }} gap-4">
@@ -140,7 +106,7 @@
                 @if (auth()->user()->isSuperAdmin())
                     <div class="space-y-2">
                         <label
-                            class="flex items-center gap-2 text-label-sm font-bold text-outline uppercase tracking-wider">
+                            class="flex items-center gap-2 text-label-sm text-outline uppercase tracking-wider">
                             <span class="material-symbols-outlined text-[18px]">location_on</span>
                             Wilayah
                         </label>
@@ -161,7 +127,7 @@
                 {{-- Tahun --}}
                 <div class="space-y-2">
                     <label
-                        class="flex items-center gap-2 text-label-sm font-bold text-outline uppercase tracking-wider">
+                        class="flex items-center gap-2 text-label-sm text-outline uppercase tracking-wider">
                         <span class="material-symbols-outlined text-[18px]">calendar_today</span>
                         Tahun
                     </label>
@@ -180,7 +146,7 @@
                 {{-- Bulan --}}
                 <div class="space-y-2">
                     <label
-                        class="flex items-center gap-2 text-label-sm font-bold text-outline uppercase tracking-wider">
+                        class="flex items-center gap-2 text-label-sm text-outline uppercase tracking-wider">
                         <span class="material-symbols-outlined text-[18px]">event_note</span>
                         Bulan
                     </label>
@@ -205,11 +171,11 @@
             {{-- Action Buttons --}}
             <div class="lg:col-span-3 flex items-center gap-3">
                 <button wire:click="resetFilters"
-                    class="flex-1 h-11 px-4 rounded-xl border border-outline-variant text-label-md font-bold text-on-surface-variant hover:bg-surface-container-low transition-all active:scale-95 cursor-pointer">
+                    class="flex-1 h-11 px-4 rounded-xl border border-outline-variant text-label-md text-on-surface-variant hover:bg-surface-container-low transition-all active:scale-95 cursor-pointer">
                     Reset
                 </button>
                 <button wire:click="refreshStats" wire:loading.attr="disabled"
-                    class="flex-2 h-11 px-4 rounded-xl bg-primary text-on-primary text-label-md font-bold hover:shadow-lg hover:opacity-90 transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
+                    class="flex-2 h-11 px-4 rounded-xl bg-primary text-on-primary text-label-md hover:shadow-lg hover:opacity-90 transition-all flex items-center justify-center gap-2 active:scale-95 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed">
                     <span class="material-symbols-outlined text-[20px]" wire:loading.class="animate-spin"
                         wire:target="refreshStats">refresh</span>
                     Perbarui
@@ -224,18 +190,18 @@
                 {{-- Mode (Only for Overview tab) --}}
                 @if ($activeTab === 'overview')
                     <div class="flex items-center gap-3">
-                        <span class="text-label-sm font-bold text-outline uppercase tracking-wider">Mode</span>
+                        <span class="text-label-sm text-outline uppercase tracking-wider">Mode</span>
                         <div
-                            class="bg-surface-container-low p-1 rounded-full flex items-center border border-outline-variant/20">
+                            class="bg-surface-container-low p-1 rounded-lg flex items-center border border-outline-variant/20">
                             <button wire:click="$set('viewMode', 'monthly')"
                                 @class([
-                                    'px-4 py-1 rounded-full text-[12px] font-bold cursor-pointer transition-all',
+                                    'px-4 py-1 rounded-lg text-[12px] font-bold cursor-pointer transition-all',
                                     'bg-white shadow-sm text-primary' => $viewMode === 'monthly',
                                     'text-outline hover:text-on-surface' => $viewMode !== 'monthly',
                                 ])>Bulanan</button>
                             <button wire:click="$set('viewMode', 'yearly')"
                                 @class([
-                                    'px-4 py-1 rounded-full text-[12px] font-bold cursor-pointer transition-all',
+                                    'px-4 py-1 rounded-lg text-[12px] font-bold cursor-pointer transition-all',
                                     'bg-white shadow-sm text-primary' => $viewMode === 'yearly',
                                     'text-outline hover:text-on-surface' => $viewMode !== 'yearly',
                                 ])>Tahunan</button>
@@ -244,14 +210,14 @@
 
                     {{-- Bandingkan (Only for Overview tab) --}}
                     <div class="flex items-center gap-3">
-                        <span class="text-label-sm font-bold text-outline uppercase tracking-wider">Bandingkan</span>
+                        <span class="text-label-sm text-outline uppercase tracking-wider">Bandingkan</span>
                         <button wire:click="$toggle('compareMode')" @class([
-                            'relative inline-flex h-5 w-10 items-center rounded-full transition-colors cursor-pointer',
+                            'relative inline-flex h-5 w-10 items-center rounded-lg transition-colors cursor-pointer',
                             'bg-primary' => $compareMode,
                             'bg-outline-variant/50 hover:bg-outline-variant' => !$compareMode,
                         ])>
                             <span @class([
-                                'inline-block h-3.5 w-3.5 transform rounded-full bg-white transition shadow-sm',
+                                'inline-block h-3.5 w-3.5 transform rounded-lg bg-white transition shadow-sm',
                                 'translate-x-5' => $compareMode,
                                 'translate-x-1' => !$compareMode,
                             ])></span>
@@ -263,7 +229,7 @@
 
             {{-- Timestamp --}}
             <div
-                class="flex items-center gap-2 px-4 py-1.5 bg-surface-container-low/50 rounded-full border border-outline-variant/20">
+                class="flex items-center gap-2 px-4 py-1.5 bg-surface-container-low/50 rounded-lg border border-outline-variant/20">
                 <span class="material-symbols-outlined text-[14px] text-outline">history</span>
                 <span class="text-[10px] text-outline font-medium uppercase tracking-wider">Update:
                     {{ $lastUpdated }}</span>
@@ -321,30 +287,30 @@
                 @foreach ($overviewCards as $c)
                     <div @class([
                         'relative overflow-hidden bg-white rounded-2xl p-6 border-2 transition-all duration-300 group shadow-xs',
-                        'border-slate-200 hover:border-slate-400' => $c['color'] === 'slate',
-                        'border-teal-200 hover:border-teal-500' => $c['color'] === 'teal',
-                        'border-rose-200 hover:border-rose-500' => $c['color'] === 'rose',
-                        'border-indigo-200 hover:border-indigo-500' => $c['color'] === 'indigo',
+                        'border-outline-variant hover:border-slate-400' => $c['color'] === 'slate',
+                        'border-primary hover:border-primary' => $c['color'] === 'teal',
+                        'border-error hover:border-error' => $c['color'] === 'rose',
+                        'border-secondary hover:border-secondary' => $c['color'] === 'indigo',
                     ])>
                         <div class="relative z-10 flex items-center justify-between mb-3">
                             <div @class([
                                 'w-11 h-11 rounded-lg flex items-center justify-center',
-                                'bg-slate-900 text-white' => $c['color'] === 'slate',
-                                'bg-teal-600 text-white' => $c['color'] === 'teal',
-                                'bg-rose-600 text-white' => $c['color'] === 'rose',
-                                'bg-indigo-600 text-white' => $c['color'] === 'indigo',
+                                'bg-inverse-surface text-white' => $c['color'] === 'slate',
+                                'bg-primary text-white' => $c['color'] === 'teal',
+                                'bg-error text-white' => $c['color'] === 'rose',
+                                'bg-secondary text-white' => $c['color'] === 'indigo',
                             ])>
                                 <span class="material-symbols-outlined text-[24px]">{{ $c['icon'] }}</span>
                             </div>
                             <span
-                                class="text-xs font-black uppercase tracking-wider text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">{{ $c['unit'] }}</span>
+                                class="text-xs font-black uppercase tracking-wider text-outline bg-surface-container px-2 py-0.5 rounded-md">{{ $c['unit'] }}</span>
                         </div>
 
                         <div class="space-y-1">
-                            <h3 class="text-3xl font-black text-slate-900 tracking-tight">{{ $c['val'] }}</h3>
-                            <p class="text-sm font-extrabold text-slate-800 uppercase tracking-tight">
+                            <h3 class="text-display-sm text-on-surface tracking-tight">{{ $c['val'] }}</h3>
+                            <p class="text-sm font-extrabold text-on-surface uppercase tracking-tight">
                                 {{ $c['label'] }}</p>
-                            <p class="text-xs text-slate-500 mt-2 border-t border-slate-100 pt-2 font-medium">
+                            <p class="text-xs text-outline mt-2 border-t border-slate-100 pt-2 font-medium">
                                 {{ $c['desc'] }}</p>
                         </div>
                     </div>
@@ -352,16 +318,16 @@
             </div>
 
             {{-- Combined Trend Line Chart --}}
-            <div class="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-xs">
+            <div class="bg-white rounded-2xl p-6 md:p-8 border border-outline-variant shadow-xs">
                 <div class="flex items-center justify-between gap-4 mb-6">
                     <div>
-                        <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Tren Kunjungan
+                        <h3 class="text-body-lg md:text-headline-sm font-extrabold text-on-surface tracking-tight">Tren Kunjungan
                             Bulanan Gabungan</h3>
-                        <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Perbandingan tren frekuensi
+                        <p class="text-xs md:text-sm text-outline font-semibold mt-1">Perbandingan tren frekuensi
                             kunjungan pasien per kategori di posyandu (Dapat diklik untuk detail)</p>
                     </div>
                     <button onclick="downloadChart(visitsTrendChart, 'tren_kunjungan')"
-                        class="p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center"
+                        class="p-2.5 text-outline hover:text-on-surface rounded-xl bg-surface-container-low border border-outline-variant transition-colors shadow-xs cursor-pointer flex items-center justify-center"
                         title="Unduh Gambar Grafik">
                         <span class="material-symbols-outlined text-[20px]">download</span>
                     </button>
@@ -370,10 +336,10 @@
                     <canvas id="visitsTrendChart" wire:ignore></canvas>
                     <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/95 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-300 rounded-2xl"
                         id="error-visitsTrendChart">
-                        <span class="material-symbols-outlined text-rose-600 text-4xl mb-2">error</span>
-                        <p class="text-sm font-extrabold text-slate-800">Gagal memuat data grafik</p>
+                        <span class="material-symbols-outlined text-error text-4xl mb-2">error</span>
+                        <p class="text-sm font-extrabold text-on-surface">Gagal memuat data grafik</p>
                         <button onclick="initCharts()"
-                            class="mt-3 px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-slate-700 cursor-pointer">Coba
+                            class="mt-3 px-4 py-2 bg-inverse-surface text-white rounded-xl text-label-sm tracking-wider hover:bg-slate-700 cursor-pointer">Coba
                             Lagi</button>
                     </div>
                 </div>
@@ -426,30 +392,30 @@
                 @foreach ($balitaCards as $c)
                     <div @class([
                         'relative overflow-hidden bg-white rounded-2xl p-6 border-2 transition-all duration-300 group shadow-xs',
-                        'border-teal-200 hover:border-teal-500' => $c['color'] === 'teal',
-                        'border-red-200 hover:border-red-500' => $c['color'] === 'red',
+                        'border-primary hover:border-primary' => $c['color'] === 'teal',
+                        'border-error hover:border-error' => $c['color'] === 'red',
                         'border-blue-200 hover:border-blue-500' => $c['color'] === 'blue',
                         'border-amber-200 hover:border-amber-500' => $c['color'] === 'amber',
                     ])>
                         <div class="relative z-10 flex items-center justify-between mb-3">
                             <div @class([
                                 'w-11 h-11 rounded-lg flex items-center justify-center',
-                                'bg-teal-600 text-white' => $c['color'] === 'teal',
-                                'bg-red-600 text-white' => $c['color'] === 'red',
-                                'bg-blue-600 text-white' => $c['color'] === 'blue',
+                                'bg-primary text-white' => $c['color'] === 'teal',
+                                'bg-error text-white' => $c['color'] === 'red',
+                                'bg-secondary text-white' => $c['color'] === 'blue',
                                 'bg-amber-600 text-white' => $c['color'] === 'amber',
                             ])>
                                 <span class="material-symbols-outlined text-[24px]">{{ $c['icon'] }}</span>
                             </div>
                             <span
-                                class="text-xs font-black uppercase tracking-wider text-slate-500 bg-slate-100 px-2 py-0.5 rounded-md">{{ $c['unit'] }}</span>
+                                class="text-xs font-black uppercase tracking-wider text-outline bg-surface-container px-2 py-0.5 rounded-md">{{ $c['unit'] }}</span>
                         </div>
 
                         <div class="space-y-1">
-                            <h3 class="text-3xl font-black text-slate-900 tracking-tight">{{ $c['val'] }}</h3>
-                            <p class="text-sm font-extrabold text-slate-800 uppercase tracking-tight">
+                            <h3 class="text-display-sm text-on-surface tracking-tight">{{ $c['val'] }}</h3>
+                            <p class="text-sm font-extrabold text-on-surface uppercase tracking-tight">
                                 {{ $c['label'] }}</p>
-                            <p class="text-xs text-slate-500 mt-2 border-t border-slate-100 pt-2 font-medium">
+                            <p class="text-xs text-outline mt-2 border-t border-slate-100 pt-2 font-medium">
                                 {{ $c['desc'] }}</p>
                         </div>
                     </div>
@@ -459,11 +425,11 @@
             {{-- Charts Row --}}
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {{-- Nutrition Trend Line Chart --}}
-                <div class="lg:col-span-2 bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-xs">
+                <div class="lg:col-span-2 bg-white rounded-2xl p-6 md:p-8 border border-outline-variant shadow-xs">
                     <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-bold text-slate-900">Prevalensi Pertumbuhan Balita</h3>
+                        <h3 class="text-body-lg font-bold text-on-surface">Prevalensi Pertumbuhan Balita</h3>
                         <button onclick="downloadChart(nutritionTrendChart, 'tren_status_gizi_balita')"
-                            class="p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center"
+                            class="p-2.5 text-outline hover:text-on-surface rounded-xl bg-surface-container-low border border-outline-variant transition-colors shadow-xs cursor-pointer flex items-center justify-center"
                             title="Unduh Gambar Grafik">
                             <span class="material-symbols-outlined text-[18px]">download</span>
                         </button>
@@ -472,10 +438,10 @@
                         <canvas id="nutritionTrendChart" wire:ignore></canvas>
                         <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/95 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-300 rounded-2xl"
                             id="error-nutritionTrendChart">
-                            <span class="material-symbols-outlined text-rose-600 text-4xl mb-2">error</span>
-                            <p class="text-sm font-extrabold text-slate-800">Gagal memuat data grafik</p>
+                            <span class="material-symbols-outlined text-error text-4xl mb-2">error</span>
+                            <p class="text-sm font-extrabold text-on-surface">Gagal memuat data grafik</p>
                             <button onclick="initCharts()"
-                                class="mt-3 px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-slate-700 cursor-pointer">Coba
+                                class="mt-3 px-4 py-2 bg-inverse-surface text-white rounded-xl text-label-sm tracking-wider hover:bg-slate-700 cursor-pointer">Coba
                                 Lagi</button>
                         </div>
                     </div>
@@ -483,27 +449,26 @@
 
                 {{-- Nutrition Donut Chart --}}
                 <div
-                    class="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-xs flex flex-col justify-between">
+                    class="bg-white rounded-2xl p-6 md:p-8 border border-outline-variant shadow-xs flex flex-col justify-between">
                     <div class="flex items-start justify-between mb-2">
                         <div>
-                            <h3 class="text-lg font-bold text-slate-900">Status Gizi Balita</h3>
-                            <p class="text-xs text-slate-500 mt-1">Distribusi data pemeriksaan terbaru</p>
+                            <h3 class="text-body-lg font-bold text-on-surface">Status Gizi Balita</h3>
+                            <p class="text-xs text-outline mt-1">Distribusi data pemeriksaan terbaru</p>
                         </div>
                         <button onclick="downloadChart(nutritionDonutChart, 'distribusi_status_gizi_balita')"
-                            class="p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center"
+                            class="p-2.5 text-outline hover:text-on-surface rounded-xl bg-surface-container-low border border-outline-variant transition-colors shadow-xs cursor-pointer flex items-center justify-center"
                             title="Unduh Gambar Grafik">
                             <span class="material-symbols-outlined text-[18px]">download</span>
                         </button>
                     </div>
                     <div class="relative flex justify-center my-6">
-                        <canvas id="nutritionDonutChart" width="180" height="180"
-                            style="max-width:180px;max-height:180px;" wire:ignore></canvas>
+                        <canvas id="nutritionDonutChart" class="max-w-[180px] max-h-[180px]" width="180" height="180" wire:ignore></canvas>
                         <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/95 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-300 rounded-2xl"
                             id="error-nutritionDonutChart">
-                            <span class="material-symbols-outlined text-rose-600 text-4xl mb-2">error</span>
-                            <p class="text-sm font-extrabold text-slate-800">Gagal memuat grafik</p>
+                            <span class="material-symbols-outlined text-error text-4xl mb-2">error</span>
+                            <p class="text-sm font-extrabold text-on-surface">Gagal memuat grafik</p>
                             <button onclick="initCharts()"
-                                class="mt-3 px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-slate-700 cursor-pointer">Coba
+                                class="mt-3 px-4 py-2 bg-inverse-surface text-white rounded-xl text-label-sm tracking-wider hover:bg-slate-700 cursor-pointer">Coba
                                 Lagi</button>
                         </div>
                     </div>
@@ -516,9 +481,9 @@
                                 $pct = $sum > 0 ? round(($val / $sum) * 100, 1) : 0;
                             @endphp
                             <div
-                                class="flex items-center justify-between text-xs font-bold text-slate-800 border-b border-slate-100 pb-1">
+                                class="flex items-center justify-between text-xs font-bold text-on-surface border-b border-slate-100 pb-1">
                                 <span>{{ $label }}</span>
-                                <span class="font-extrabold text-slate-900">{{ $val }}
+                                <span class="font-extrabold text-on-surface">{{ $val }}
                                     ({{ $pct }}%)</span>
                             </div>
                             @php $i++; @endphp
@@ -528,11 +493,11 @@
             </div>
 
             {{-- Vaccine Bar Chart --}}
-            <div class="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-xs">
+            <div class="bg-white rounded-2xl p-6 md:p-8 border border-outline-variant shadow-xs">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-lg font-bold text-slate-900">Capaian Imunisasi Per Jenis</h3>
+                    <h3 class="text-body-lg font-bold text-on-surface">Capaian Imunisasi Per Jenis</h3>
                     <button onclick="downloadChart(vaccineChart, 'capaian_imunisasi_balita')"
-                        class="p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center"
+                        class="p-2.5 text-outline hover:text-on-surface rounded-xl bg-surface-container-low border border-outline-variant transition-colors shadow-xs cursor-pointer flex items-center justify-center"
                         title="Unduh Gambar Grafik">
                         <span class="material-symbols-outlined text-[18px]">download</span>
                     </button>
@@ -541,10 +506,10 @@
                     <canvas id="vaccineBarChart" wire:ignore></canvas>
                     <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/95 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-300 rounded-2xl"
                         id="error-vaccineBarChart">
-                        <span class="material-symbols-outlined text-rose-600 text-4xl mb-2">error</span>
-                        <p class="text-sm font-extrabold text-slate-800">Gagal memuat data grafik</p>
+                        <span class="material-symbols-outlined text-error text-4xl mb-2">error</span>
+                        <p class="text-sm font-extrabold text-on-surface">Gagal memuat data grafik</p>
                         <button onclick="initCharts()"
-                            class="mt-3 px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-slate-700 cursor-pointer">Coba
+                            class="mt-3 px-4 py-2 bg-inverse-surface text-white rounded-xl text-label-sm tracking-wider hover:bg-slate-700 cursor-pointer">Coba
                             Lagi</button>
                     </div>
                 </div>
@@ -552,57 +517,57 @@
 
             {{-- Detailed Stunting per Posyandu --}}
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-xs">
-                    <h3 class="text-lg font-bold text-slate-900 mb-6">Prevalensi Stunting per Wilayah Posyandu</h3>
+                <div class="bg-white rounded-2xl p-6 md:p-8 border border-outline-variant shadow-xs">
+                    <h3 class="text-body-lg font-bold text-on-surface mb-6">Prevalensi Stunting per Wilayah Posyandu</h3>
                     <div class="space-y-6">
                         @forelse($stuntingByPosyandu as $item)
                             <div>
-                                <div class="flex justify-between items-end mb-2 text-xs font-bold text-slate-700">
+                                <div class="flex justify-between items-end mb-2 text-xs font-bold text-on-surface-variant">
                                     <span>{{ $item['name'] }} ({{ $item['stunting'] }}/{{ $item['total'] }}
                                         Balita)</span>
-                                    <span class="font-extrabold text-slate-900">{{ $item['rate'] }}%</span>
+                                    <span class="font-extrabold text-on-surface">{{ $item['rate'] }}%</span>
                                 </div>
-                                <div class="h-3 w-full bg-slate-100 rounded-full overflow-hidden">
-                                    <div class="h-full rounded-full {{ $item['color'] }}"
+                                <div class="h-3 w-full bg-surface-container rounded-lg overflow-hidden">
+                                    <div class="h-full rounded-lg {{ $item['color'] }}"
                                         style="width: {{ $item['width'] }}%"></div>
                                 </div>
                             </div>
                         @empty
-                            <p class="text-xs text-slate-400 text-center py-6">Tidak ada data posyandu</p>
+                            <p class="text-xs text-outline-variant text-center py-6">Tidak ada data posyandu</p>
                         @endforelse
                     </div>
                 </div>
 
                 {{-- Demographic segments and insights --}}
                 <div class="space-y-6 flex flex-col justify-between">
-                    <div class="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-xs">
-                        <h3 class="text-lg font-bold text-slate-900 mb-6 text-center">Segmentasi Usia Terpantau</h3>
+                    <div class="bg-white rounded-2xl p-6 md:p-8 border border-outline-variant shadow-xs">
+                        <h3 class="text-body-lg font-bold text-on-surface mb-6 text-center">Segmentasi Usia Terpantau</h3>
                         <div class="grid grid-cols-3 gap-4">
-                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center">
-                                <span class="block text-2xl font-black text-slate-900">{{ $usia0_12 }}</span>
-                                <span class="text-xs md:text-sm font-bold text-slate-600 uppercase tracking-wider">0–12
+                            <div class="p-4 bg-surface-container-low border border-outline-variant rounded-2xl text-center">
+                                <span class="block text-headline-md font-black text-on-surface">{{ $usia0_12 }}</span>
+                                <span class="text-xs md:text-sm font-bold text-on-surface-variant uppercase tracking-wider">0–12
                                     Bulan</span>
                             </div>
-                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center">
-                                <span class="block text-2xl font-black text-slate-900">{{ $usia12_24 }}</span>
+                            <div class="p-4 bg-surface-container-low border border-outline-variant rounded-2xl text-center">
+                                <span class="block text-headline-md font-black text-on-surface">{{ $usia12_24 }}</span>
                                 <span
-                                    class="text-xs md:text-sm font-bold text-slate-600 uppercase tracking-wider">12–24
+                                    class="text-xs md:text-sm font-bold text-on-surface-variant uppercase tracking-wider">12–24
                                     Bulan</span>
                             </div>
-                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center">
-                                <span class="block text-2xl font-black text-slate-900">{{ $usia24plus }}</span>
-                                <span class="text-xs md:text-sm font-bold text-slate-600 uppercase tracking-wider">>24
+                            <div class="p-4 bg-surface-container-low border border-outline-variant rounded-2xl text-center">
+                                <span class="block text-headline-md font-black text-on-surface">{{ $usia24plus }}</span>
+                                <span class="text-xs md:text-sm font-bold text-on-surface-variant uppercase tracking-wider">>24
                                     Bulan</span>
                             </div>
                         </div>
                     </div>
 
                     <div
-                        class="bg-slate-900 rounded-2xl p-6 md:p-8 text-white relative overflow-hidden flex-1 flex flex-col justify-center">
+                        class="bg-inverse-surface rounded-2xl p-6 md:p-8 text-white relative overflow-hidden flex-1 flex flex-col justify-center">
                         <div class="relative z-10 space-y-3">
                             <div class="flex items-center gap-3">
                                 <span class="material-symbols-outlined text-teal-400 text-[24px]">insights</span>
-                                <h4 class="text-sm font-bold uppercase tracking-wider text-teal-300">Wawasan Balita
+                                <h4 class="text-label-md tracking-wider text-teal-300">Wawasan Balita
                                 </h4>
                             </div>
                             <p class="text-xs md:text-sm text-slate-300 leading-relaxed font-semibold">
@@ -622,27 +587,27 @@
             </div>
 
             {{-- Recent Records for Balita --}}
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+            <div class="bg-white rounded-2xl border border-outline-variant shadow-xs overflow-hidden">
                 <div
-                    class="px-6 py-5 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50/50">
+                    class="px-6 py-5 border-b border-outline-variant flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-surface-container-low/50">
                     <div>
-                        <h3 class="text-lg font-bold text-slate-900">Pemeriksaan Balita Terbaru</h3>
-                        <p class="text-xs text-slate-500 mt-0.5">Daftar rekam medis pemeriksaan balita terkini</p>
+                        <h3 class="text-body-lg font-bold text-on-surface">Pemeriksaan Balita Terbaru</h3>
+                        <p class="text-xs text-outline mt-0.5">Daftar rekam medis pemeriksaan balita terkini</p>
                     </div>
                     <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto items-center">
                         <div class="relative w-full sm:w-64">
                             <span
-                                class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                                class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-outline-variant">
                                 <span class="material-symbols-outlined text-[20px]">search</span>
                             </span>
                             <input type="text" wire:model.live.debounce.300ms="tableSearch"
-                                class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-teal-500 focus:border-teal-500 shadow-xs"
+                                class="w-full pl-10 pr-4 py-2.5 bg-white border border-outline-variant rounded-xl text-sm font-semibold text-on-surface placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-primary focus:border-primary shadow-xs"
                                 placeholder="Cari Nama atau NIK Anak...">
                         </div>
                         <div class="flex items-center gap-2 w-full sm:w-auto">
-                            <span class="text-sm font-bold text-slate-700 whitespace-nowrap">Gender:</span>
+                            <span class="text-sm font-bold text-on-surface-variant whitespace-nowrap">Gender:</span>
                             <select wire:model.live="filterGender"
-                                class="w-full sm:w-36 py-2 px-3 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-teal-500 focus:border-teal-500 shadow-xs">
+                                class="w-full sm:w-36 py-2 px-3 bg-white border border-outline-variant rounded-xl text-sm font-semibold text-on-surface focus:outline-hidden focus:ring-2 focus:ring-primary focus:border-primary shadow-xs">
                                 <option value="">Semua</option>
                                 <option value="L">Laki-laki</option>
                                 <option value="P">Perempuan</option>
@@ -653,51 +618,51 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
                         <thead>
-                            <tr class="bg-slate-100 border-b border-slate-200">
-                                <th class="px-6 py-3.5 text-xs font-bold text-slate-700 uppercase tracking-wider">Nama
+                            <tr class="bg-surface-container border-b border-outline-variant">
+                                <th class="px-6 py-3.5 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Nama
                                     Anak</th>
-                                <th class="px-6 py-3.5 text-xs font-bold text-slate-700 uppercase tracking-wider">Unit
+                                <th class="px-6 py-3.5 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Unit
                                     Posyandu</th>
-                                <th class="px-6 py-3.5 text-xs font-bold text-slate-700 uppercase tracking-wider">
+                                <th class="px-6 py-3.5 text-xs font-bold text-on-surface-variant uppercase tracking-wider">
                                     Status Gizi</th>
-                                <th class="px-6 py-3.5 text-xs font-bold text-slate-700 uppercase tracking-wider">
+                                <th class="px-6 py-3.5 text-xs font-bold text-on-surface-variant uppercase tracking-wider">
                                     Tanggal</th>
                                 <th
-                                    class="px-6 py-3.5 text-right text-xs font-bold text-slate-700 uppercase tracking-wider">
+                                    class="px-6 py-3.5 text-right text-xs font-bold text-on-surface-variant uppercase tracking-wider">
                                     Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-250">
                             @forelse($recentRecords as $record)
-                                <tr class="hover:bg-slate-50 text-slate-800">
+                                <tr class="hover:bg-surface-container-low text-on-surface">
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-3">
                                             <div
-                                                class="w-8 h-8 rounded-lg bg-teal-50 text-teal-700 flex items-center justify-center font-extrabold text-sm border border-teal-100">
+                                                class="w-8 h-8 rounded-lg bg-primary-container text-on-primary-container flex items-center justify-center font-extrabold text-sm border border-teal-100">
                                                 {{ strtoupper(substr($record->patient?->full_name ?? 'B', 0, 2)) }}
                                             </div>
                                             <div>
                                                 <span
-                                                    class="block font-bold text-slate-900">{{ $record->patient?->full_name }}</span>
-                                                <span class="text-xs font-bold text-slate-500 uppercase block">NIK:
+                                                    class="block font-bold text-on-surface">{{ $record->patient?->full_name }}</span>
+                                                <span class="text-xs font-bold text-outline uppercase block">NIK:
                                                     {{ $record->patient?->id_number ?: '-' }}</span>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4 text-xs font-bold text-slate-700">
+                                    <td class="px-6 py-4 text-xs font-bold text-on-surface-variant">
                                         {{ $record->patient?->posyandu?->name ?? '-' }}</td>
                                     <td class="px-6 py-4">
                                         <span
-                                            class="inline-flex px-3 py-1 rounded-full text-xs font-bold bg-teal-550/10 text-teal-700 border border-teal-100">
+                                            class="inline-flex px-3 py-1 rounded-lg text-xs font-bold bg-teal-550/10 text-on-primary-container border border-teal-100">
                                             {{ $record->nutrition_status ?: 'Normal' }}
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 text-xs font-bold text-slate-600">
+                                    <td class="px-6 py-4 text-xs font-bold text-on-surface-variant">
                                         {{ \Carbon\Carbon::parse($record->visit_date)->translatedFormat('d M Y') }}
                                     </td>
                                     <td class="px-6 py-4 text-right">
                                         <a href="{{ route('admin.patients.show', $record->patient_id) }}"
-                                            class="w-9 h-9 inline-flex items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:bg-teal-600 hover:text-white transition-all shadow-xs">
+                                            class="w-9 h-9 inline-flex items-center justify-center rounded-xl bg-surface-container text-outline hover:bg-primary hover:text-white transition-all shadow-xs">
                                             <span class="material-symbols-outlined text-[20px]">visibility</span>
                                         </a>
                                     </td>
@@ -705,7 +670,7 @@
                             @empty
                                 <tr>
                                     <td colspan="5"
-                                        class="px-6 py-10 text-center text-sm text-slate-500 font-bold bg-white">Belum
+                                        class="px-6 py-10 text-center text-sm text-outline font-bold bg-white">Belum
                                         ada pemeriksaan balita</td>
                                 </tr>
                             @endforelse
@@ -722,21 +687,21 @@
             <livewire:admin.analytics.ibu-hamil-analytics :selected-year="$selectedYear" :selected-month="$selectedMonth" :selected-posyandu="$selectedPosyandu" />
 
             {{-- Recent Records for Ibu Hamil --}}
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+            <div class="bg-white rounded-2xl border border-outline-variant shadow-xs overflow-hidden">
                 <div
-                    class="px-6 py-5 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50/50">
+                    class="px-6 py-5 border-b border-outline-variant flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-surface-container-low/50">
                     <div>
-                        <h3 class="text-lg font-bold text-slate-900">Pemeriksaan Ibu Hamil Terbaru</h3>
-                        <p class="text-xs text-slate-500 mt-0.5">Daftar rekam medis pemeriksaan ibu hamil terkini</p>
+                        <h3 class="text-body-lg font-bold text-on-surface">Pemeriksaan Ibu Hamil Terbaru</h3>
+                        <p class="text-xs text-outline mt-0.5">Daftar rekam medis pemeriksaan ibu hamil terkini</p>
                     </div>
                     <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto items-center">
                         <div class="relative w-full sm:w-64">
                             <span
-                                class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                                class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-outline-variant">
                                 <span class="material-symbols-outlined text-[20px]">search</span>
                             </span>
                             <input type="text" wire:model.live.debounce.300ms="tableSearch"
-                                class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-teal-500 focus:border-teal-500 shadow-xs"
+                                class="w-full pl-10 pr-4 py-2.5 bg-white border border-outline-variant rounded-xl text-sm font-semibold text-on-surface placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-primary focus:border-primary shadow-xs"
                                 placeholder="Cari Nama atau NIK Ibu...">
                         </div>
                     </div>
@@ -744,51 +709,51 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
                         <thead>
-                            <tr class="bg-slate-100 border-b border-slate-200">
-                                <th class="px-6 py-3.5 text-xs font-bold text-slate-700 uppercase tracking-wider">Nama
+                            <tr class="bg-surface-container border-b border-outline-variant">
+                                <th class="px-6 py-3.5 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Nama
                                     Ibu</th>
-                                <th class="px-6 py-3.5 text-xs font-bold text-slate-700 uppercase tracking-wider">Unit
+                                <th class="px-6 py-3.5 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Unit
                                     Posyandu</th>
-                                <th class="px-6 py-3.5 text-xs font-bold text-slate-700 uppercase tracking-wider">Usia
+                                <th class="px-6 py-3.5 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Usia
                                     Kehamilan</th>
-                                <th class="px-6 py-3.5 text-xs font-bold text-slate-700 uppercase tracking-wider">
+                                <th class="px-6 py-3.5 text-xs font-bold text-on-surface-variant uppercase tracking-wider">
                                     Tanggal</th>
                                 <th
-                                    class="px-6 py-3.5 text-right text-xs font-bold text-slate-700 uppercase tracking-wider">
+                                    class="px-6 py-3.5 text-right text-xs font-bold text-on-surface-variant uppercase tracking-wider">
                                     Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-250">
                             @forelse($recentPregnancyRecords as $record)
-                                <tr class="hover:bg-slate-50 text-slate-800">
+                                <tr class="hover:bg-surface-container-low text-on-surface">
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-3">
                                             <div
-                                                class="w-8 h-8 rounded-lg bg-rose-50 text-rose-700 flex items-center justify-center font-extrabold text-sm border border-rose-100">
+                                                class="w-8 h-8 rounded-lg bg-error-container text-rose-700 flex items-center justify-center font-extrabold text-sm border border-rose-100">
                                                 {{ strtoupper(substr($record->patient?->full_name ?? 'I', 0, 2)) }}
                                             </div>
                                             <div>
                                                 <span
-                                                    class="block font-bold text-slate-900">{{ $record->patient?->full_name }}</span>
-                                                <span class="text-xs font-bold text-slate-500 uppercase block">NIK:
+                                                    class="block font-bold text-on-surface">{{ $record->patient?->full_name }}</span>
+                                                <span class="text-xs font-bold text-outline uppercase block">NIK:
                                                     {{ $record->patient?->id_number ?: '-' }}</span>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4 text-xs font-bold text-slate-700">
+                                    <td class="px-6 py-4 text-xs font-bold text-on-surface-variant">
                                         {{ $record->patient?->posyandu?->name ?? '-' }}</td>
                                     <td class="px-6 py-4">
                                         <span
-                                            class="inline-flex px-3 py-1 rounded-full text-xs font-bold bg-rose-50 text-rose-750 border border-rose-100">
+                                            class="inline-flex px-3 py-1 rounded-lg text-xs font-bold bg-error-container text-rose-750 border border-rose-100">
                                             {{ $record->gestational_age ?: 'N/A' }}
                                         </span>
                                     </td>
-                                    <td class="px-6 py-4 text-xs font-bold text-slate-600">
+                                    <td class="px-6 py-4 text-xs font-bold text-on-surface-variant">
                                         {{ \Carbon\Carbon::parse($record->visit_date)->translatedFormat('d M Y') }}
                                     </td>
                                     <td class="px-6 py-4 text-right">
                                         <a href="{{ route('admin.patients.show', $record->patient_id) }}"
-                                            class="w-9 h-9 inline-flex items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:bg-rose-600 hover:text-white transition-all shadow-xs">
+                                            class="w-9 h-9 inline-flex items-center justify-center rounded-xl bg-surface-container text-outline hover:bg-error hover:text-white transition-all shadow-xs">
                                             <span class="material-symbols-outlined text-[20px]">visibility</span>
                                         </a>
                                     </td>
@@ -796,7 +761,7 @@
                             @empty
                                 <tr>
                                     <td colspan="5"
-                                        class="px-6 py-10 text-center text-sm text-slate-500 font-bold bg-white">Belum
+                                        class="px-6 py-10 text-center text-sm text-outline font-bold bg-white">Belum
                                         ada pemeriksaan ibu hamil</td>
                                 </tr>
                             @endforelse
@@ -813,27 +778,27 @@
             <livewire:admin.analytics.lansia-analytics :selected-year="$selectedYear" :selected-month="$selectedMonth" :selected-posyandu="$selectedPosyandu" />
 
             {{-- Recent Records for Lansia --}}
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+            <div class="bg-white rounded-2xl border border-outline-variant shadow-xs overflow-hidden">
                 <div
-                    class="px-6 py-5 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50/50">
+                    class="px-6 py-5 border-b border-outline-variant flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-surface-container-low/50">
                     <div>
-                        <h3 class="text-lg font-bold text-slate-900">Pemeriksaan Lansia Terbaru</h3>
-                        <p class="text-xs text-slate-500 mt-0.5">Daftar rekam medis pemeriksaan lansia terkini</p>
+                        <h3 class="text-body-lg font-bold text-on-surface">Pemeriksaan Lansia Terbaru</h3>
+                        <p class="text-xs text-outline mt-0.5">Daftar rekam medis pemeriksaan lansia terkini</p>
                     </div>
                     <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto items-center">
                         <div class="relative w-full sm:w-64">
                             <span
-                                class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+                                class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-outline-variant">
                                 <span class="material-symbols-outlined text-[20px]">search</span>
                             </span>
                             <input type="text" wire:model.live.debounce.300ms="tableSearch"
-                                class="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-teal-500 focus:border-teal-500 shadow-xs"
+                                class="w-full pl-10 pr-4 py-2.5 bg-white border border-outline-variant rounded-xl text-sm font-semibold text-on-surface placeholder-slate-400 focus:outline-hidden focus:ring-2 focus:ring-primary focus:border-primary shadow-xs"
                                 placeholder="Cari Nama atau NIK Lansia...">
                         </div>
                         <div class="flex items-center gap-2 w-full sm:w-auto">
-                            <span class="text-sm font-bold text-slate-700 whitespace-nowrap">Gender:</span>
+                            <span class="text-sm font-bold text-on-surface-variant whitespace-nowrap">Gender:</span>
                             <select wire:model.live="filterGender"
-                                class="w-full sm:w-36 py-2 px-3 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:outline-hidden focus:ring-2 focus:ring-teal-500 focus:border-teal-500 shadow-xs">
+                                class="w-full sm:w-36 py-2 px-3 bg-white border border-outline-variant rounded-xl text-sm font-semibold text-on-surface focus:outline-hidden focus:ring-2 focus:ring-primary focus:border-primary shadow-xs">
                                 <option value="">Semua</option>
                                 <option value="L">Laki-laki</option>
                                 <option value="P">Perempuan</option>
@@ -844,53 +809,53 @@
                 <div class="overflow-x-auto">
                     <table class="w-full text-left">
                         <thead>
-                            <tr class="bg-slate-100 border-b border-slate-200">
-                                <th class="px-6 py-3.5 text-xs font-bold text-slate-700 uppercase tracking-wider">Nama
+                            <tr class="bg-surface-container border-b border-outline-variant">
+                                <th class="px-6 py-3.5 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Nama
                                     Lansia</th>
-                                <th class="px-6 py-3.5 text-xs font-bold text-slate-700 uppercase tracking-wider">Unit
+                                <th class="px-6 py-3.5 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Unit
                                     Posyandu</th>
-                                <th class="px-6 py-3.5 text-xs font-bold text-slate-700 uppercase tracking-wider">
+                                <th class="px-6 py-3.5 text-xs font-bold text-on-surface-variant uppercase tracking-wider">
                                     Tekanan Darah</th>
-                                <th class="px-6 py-3.5 text-xs font-bold text-slate-700 uppercase tracking-wider">Gula
+                                <th class="px-6 py-3.5 text-xs font-bold text-on-surface-variant uppercase tracking-wider">Gula
                                     Darah</th>
-                                <th class="px-6 py-3.5 text-xs font-bold text-slate-700 uppercase tracking-wider">
+                                <th class="px-6 py-3.5 text-xs font-bold text-on-surface-variant uppercase tracking-wider">
                                     Tanggal</th>
                                 <th
-                                    class="px-6 py-3.5 text-right text-xs font-bold text-slate-700 uppercase tracking-wider">
+                                    class="px-6 py-3.5 text-right text-xs font-bold text-on-surface-variant uppercase tracking-wider">
                                     Aksi</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-250">
                             @forelse($recentLansiaRecords as $record)
-                                <tr class="hover:bg-slate-50 text-slate-800">
+                                <tr class="hover:bg-surface-container-low text-on-surface">
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-3">
                                             <div
-                                                class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-700 flex items-center justify-center font-extrabold text-sm border border-indigo-100">
+                                                class="w-8 h-8 rounded-lg bg-secondary-container text-indigo-700 flex items-center justify-center font-extrabold text-sm border border-indigo-100">
                                                 {{ strtoupper(substr($record->patient?->full_name ?? 'L', 0, 2)) }}
                                             </div>
                                             <div>
                                                 <span
-                                                    class="block font-bold text-slate-900">{{ $record->patient?->full_name }}</span>
-                                                <span class="text-xs font-bold text-slate-500 uppercase block">NIK:
+                                                    class="block font-bold text-on-surface">{{ $record->patient?->full_name }}</span>
+                                                <span class="text-xs font-bold text-outline uppercase block">NIK:
                                                     {{ $record->patient?->id_number ?: '-' }}</span>
                                             </div>
                                         </div>
                                     </td>
-                                    <td class="px-6 py-4 text-xs font-bold text-slate-700">
+                                    <td class="px-6 py-4 text-xs font-bold text-on-surface-variant">
                                         {{ $record->patient?->posyandu?->name ?? '-' }}</td>
-                                    <td class="px-6 py-4 text-xs font-bold text-slate-800">
+                                    <td class="px-6 py-4 text-xs font-bold text-on-surface">
                                         {{ $record->systolic_bp ?: '-' }}/{{ $record->diastolic_bp ?: '-' }} mmHg
                                     </td>
-                                    <td class="px-6 py-4 text-xs font-bold text-slate-800">
+                                    <td class="px-6 py-4 text-xs font-bold text-on-surface">
                                         {{ $record->blood_sugar ?: '-' }} mg/dL
                                     </td>
-                                    <td class="px-6 py-4 text-xs font-bold text-slate-600">
+                                    <td class="px-6 py-4 text-xs font-bold text-on-surface-variant">
                                         {{ \Carbon\Carbon::parse($record->visit_date)->translatedFormat('d M Y') }}
                                     </td>
                                     <td class="px-6 py-4 text-right">
                                         <a href="{{ route('admin.patients.show', $record->patient_id) }}"
-                                            class="w-9 h-9 inline-flex items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:bg-indigo-600 hover:text-white transition-all shadow-xs">
+                                            class="w-9 h-9 inline-flex items-center justify-center rounded-xl bg-surface-container text-outline hover:bg-secondary hover:text-white transition-all shadow-xs">
                                             <span class="material-symbols-outlined text-[20px]">visibility</span>
                                         </a>
                                     </td>
@@ -898,7 +863,7 @@
                             @empty
                                 <tr>
                                     <td colspan="6"
-                                        class="px-6 py-10 text-center text-sm text-slate-500 font-bold bg-white">Belum
+                                        class="px-6 py-10 text-center text-sm text-outline font-bold bg-white">Belum
                                         ada pemeriksaan lansia</td>
                                 </tr>
                             @endforelse
@@ -912,66 +877,66 @@
     {{-- ── ANA-22: Drill-down Modal ── --}}
     @if ($showDrillDown)
         <div
-            class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
+            class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-inverse-surface/60 backdrop-blur-xs animate-fadeIn">
             <div
-                class="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[85vh] animate-scaleUp">
+                class="relative w-full max-w-4xl bg-white rounded-2xl shadow-2xl border border-outline-variant overflow-hidden flex flex-col max-h-[85vh] animate-scaleUp">
                 {{-- Modal Header --}}
-                <div class="px-8 py-6 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+                <div class="px-8 py-6 border-b border-outline-variant flex items-center justify-between bg-surface-container-low">
                     <div>
-                        <h3 class="text-xl font-extrabold text-slate-900">{{ $drillDownTitle }}</h3>
-                        <p class="text-xs text-slate-500 mt-1 font-bold">Menampilkan hingga 50 rekam medis pencocokan
+                        <h3 class="text-headline-sm font-extrabold text-on-surface">{{ $drillDownTitle }}</h3>
+                        <p class="text-xs text-outline mt-1 font-bold">Menampilkan hingga 50 rekam medis pencocokan
                             terbaru</p>
                     </div>
                     <button wire:click="closeDrillDown"
-                        class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:text-slate-900 transition-colors cursor-pointer border border-slate-200">
+                        class="w-10 h-10 flex items-center justify-center rounded-xl bg-surface-container text-outline hover:text-on-surface transition-colors cursor-pointer border border-outline-variant">
                         <span class="material-symbols-outlined">close</span>
                     </button>
                 </div>
 
                 {{-- Modal Body --}}
                 <div class="flex-1 overflow-y-auto p-6">
-                    <div class="overflow-x-auto border border-slate-200 rounded-2xl">
+                    <div class="overflow-x-auto border border-outline-variant rounded-2xl">
                         <table class="w-full text-left">
                             <thead>
-                                <tr class="bg-slate-100 border-b border-slate-200">
-                                    <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">
+                                <tr class="bg-surface-container border-b border-outline-variant">
+                                    <th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">
                                         Nama Pasien</th>
-                                    <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">
+                                    <th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">
                                         Unit Posyandu</th>
-                                    <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">
+                                    <th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">
                                         Status / Keterangan</th>
-                                    <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">
+                                    <th class="px-6 py-4 text-xs font-bold text-on-surface-variant uppercase tracking-wider">
                                         Tanggal Kunjungan</th>
                                     <th
-                                        class="px-6 py-4 text-right text-xs font-bold text-slate-700 uppercase tracking-wider">
+                                        class="px-6 py-4 text-right text-xs font-bold text-on-surface-variant uppercase tracking-wider">
                                         Aksi</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-200">
                                 @forelse($drillDownData as $row)
-                                    <tr class="hover:bg-slate-50 text-slate-800">
+                                    <tr class="hover:bg-surface-container-low text-on-surface">
                                         <td class="px-6 py-4">
                                             <div>
                                                 <span
-                                                    class="block font-bold text-slate-900">{{ $row['name'] }}</span>
+                                                    class="block font-bold text-on-surface">{{ $row['name'] }}</span>
                                                 <span
-                                                    class="text-[10px] text-slate-500 uppercase block font-semibold">NIK:
+                                                    class="text-[10px] text-outline uppercase block font-semibold">NIK:
                                                     {{ $row['nik'] }}</span>
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4 text-xs font-bold text-slate-700">{{ $row['posyandu'] }}
+                                        <td class="px-6 py-4 text-xs font-bold text-on-surface-variant">{{ $row['posyandu'] }}
                                         </td>
                                         <td class="px-6 py-4">
                                             <span
-                                                class="inline-flex px-3 py-1 rounded-full text-xs font-bold bg-teal-50 text-teal-700 border border-teal-100">
+                                                class="inline-flex px-3 py-1 rounded-lg text-xs font-bold bg-primary-container text-on-primary-container border border-teal-100">
                                                 {{ $row['nutrition_status'] }}
                                             </span>
                                         </td>
-                                        <td class="px-6 py-4 text-xs font-bold text-slate-600">
+                                        <td class="px-6 py-4 text-xs font-bold text-on-surface-variant">
                                             {{ $row['visit_date'] }}</td>
                                         <td class="px-6 py-4 text-right">
                                             <a href="{{ route('admin.patients.show', $row['patient_id']) }}"
-                                                class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-slate-100 text-slate-500 hover:bg-teal-600 hover:text-white transition-all shadow-xs">
+                                                class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-surface-container text-outline hover:bg-primary hover:text-white transition-all shadow-xs">
                                                 <span class="material-symbols-outlined text-[18px]">visibility</span>
                                             </a>
                                         </td>
@@ -979,7 +944,7 @@
                                 @empty
                                     <tr>
                                         <td colspan="5"
-                                            class="px-6 py-10 text-center text-sm text-slate-500 font-bold bg-white">
+                                            class="px-6 py-10 text-center text-sm text-outline font-bold bg-white">
                                             Tidak ada data detail untuk periode/filter ini</td>
                                     </tr>
                                 @endforelse
@@ -989,9 +954,9 @@
                 </div>
 
                 {{-- Modal Footer --}}
-                <div class="px-8 py-5 bg-slate-50 border-t border-slate-200 flex justify-end">
+                <div class="px-8 py-5 bg-surface-container-low border-t border-outline-variant flex justify-end">
                     <button wire:click="closeDrillDown"
-                        class="px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-bold uppercase tracking-wider shadow-md transition-colors cursor-pointer">
+                        class="px-6 py-2.5 bg-inverse-surface hover:bg-inverse-surface text-white rounded-xl text-label-sm tracking-wider shadow-md transition-colors cursor-pointer">
                         Tutup
                     </button>
                 </div>

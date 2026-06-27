@@ -3,7 +3,7 @@
 @section('title', 'Tentang Kami - Posyandu ILP Kenanga RW 011')
 
 @section('content')
-<div class="bg-slate-50 dark:bg-gray-950 min-h-screen">
+<div class="bg-surface-container-low dark:bg-gray-950 min-h-screen">
     
     {{-- ── 1. HERO SECTION ── --}}
     @include('public.about.hero')

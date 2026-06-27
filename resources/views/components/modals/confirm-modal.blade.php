@@ -105,7 +105,7 @@
         <div class="p-6 text-center">
 
             {{-- Icon --}}
-            <div class="w-14 h-14 {{ $iconConfig['bg'] }} rounded-full flex items-center justify-center mx-auto mb-4">
+            <div class="w-14 h-14 {{ $iconConfig['bg'] }} rounded-lg flex items-center justify-center mx-auto mb-4">
                 <span class="material-symbols-outlined text-[28px] {{ $iconConfig['color'] }}"
                       style="font-variation-settings:'FILL' 1;">
                     {{ $iconConfig['icon'] }}

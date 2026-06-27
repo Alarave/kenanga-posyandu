@@ -6,11 +6,13 @@ use App\Models\Posyandu;
 use App\Models\Schedule;
 use App\Services\ScheduleService;
 use Illuminate\View\View;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 /**
  * Komponen untuk memperbarui jadwal (OOP & Clean Code).
  */
+#[Layout('layouts.admin-layout')]
 class ScheduleUpdate extends Component
 {
     public Schedule $schedule;
@@ -82,6 +84,7 @@ class ScheduleUpdate extends Component
      */
     public function render(): View
     {
+        /** @var \App\Models\User $user */
         $user = auth()->user();
         $posyandus = $user->isSuperAdmin()
             ? Posyandu::orderBy('name')->get()
@@ -89,6 +92,6 @@ class ScheduleUpdate extends Component
 
         return view('livewire.admin.schedule-management.update', [
             'posyandus' => $posyandus,
-        ])->layout('layouts.admin-layout');
+        ]);
     }
 }

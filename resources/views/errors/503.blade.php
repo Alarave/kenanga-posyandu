@@ -172,7 +172,7 @@
         </div>
         
         <div class="mx-auto w-full max-w-[242px] text-center sm:max-w-[472px] my-auto py-12">
-            <h1 class="mb-8 font-black tracking-tight text-gray-800 dark:text-white/90 text-3xl sm:text-4xl font-jakarta">
+            <h1 class="mb-8 font-black tracking-tight text-gray-800 dark:text-white/90 text-display-sm sm:text-4xl font-jakarta">
                 ERROR 503
             </h1>
 
@@ -240,7 +240,7 @@
                 </svg>
             </div>
 
-            <p class="mt-10 mb-6 text-base text-gray-600 dark:text-gray-400 sm:text-lg font-jakarta">
+            <p class="mt-10 mb-6 text-base text-gray-600 dark:text-gray-400 sm:text-body-lg font-jakarta">
                 Layanan sedang tidak tersedia atau sedang dalam pemeliharaan rutin. Silakan kembali beberapa saat lagi.
             </p>
 

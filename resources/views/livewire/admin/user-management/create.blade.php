@@ -1,28 +1,28 @@
 @extends('layouts.admin-layout')
 
-@section('admin-title', 'Tambah Pengguna Baru')
+@section('title', 'Tambah Pengguna Baru')
 
 @section('admin-content')
-<div class="max-w-4xl mx-auto">
+<div class="max-w-4xl mx-auto space-y-8">
     <!-- Header Section -->
-    <div class="mb-10 flex items-center justify-between">
-        <div>
-            <h2 class="text-3xl font-black text-slate-800 tracking-tight mb-2">Tambah Pengguna Baru</h2>
-            <p class="text-slate-500 font-medium">Lengkapi formulir di bawah untuk mendaftarkan akun baru ke sistem.</p>
+    <div class="flex items-center justify-between">
+        <div class="flex flex-col gap-2">
+            <h2 class="text-display-sm text-on-surface tracking-tight">Tambah Pengguna Baru</h2>
+            <p class="text-body-md text-outline">Lengkapi formulir di bawah untuk mendaftarkan akun baru ke sistem.</p>
         </div>
-        <a href="{{ route('admin.users.index') }}" class="w-12 h-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-blue-600 hover:border-blue-100 hover:bg-blue-50 transition-all shadow-sm">
-            <i class="fas fa-times text-lg"></i>
+        <a href="{{ route('admin.users.index') }}" class="w-12 h-12 rounded-lg bg-surface-container-lowest border border-outline-variant flex items-center justify-center text-outline-variant hover:text-primary hover:bg-surface-container-low transition-all shadow-sm">
+            <span class="material-symbols-outlined text-[24px]">close</span>
         </a>
     </div>
 
     @if ($errors->any())
-        <div class="mb-8 p-6 bg-red-50 border border-red-100 rounded-[2rem] flex items-start space-x-4">
-            <div class="w-10 h-10 bg-red-500 rounded-xl flex items-center justify-center text-white flex-shrink-0">
-                <i class="fas fa-exclamation-circle text-lg"></i>
+        <div class="p-6 bg-error-container border border-error rounded-2xl flex items-start space-x-4 animate-in fade-in duration-300">
+            <div class="w-10 h-10 bg-error rounded-lg flex items-center justify-center text-on-error flex-shrink-0 shadow-sm">
+                <span class="material-symbols-outlined text-[24px]">error</span>
             </div>
             <div>
-                <h4 class="text-red-800 font-black text-sm uppercase tracking-widest mb-2">Terjadi Kesalahan</h4>
-                <ul class="list-disc list-inside text-red-600 text-sm font-medium space-y-1">
+                <h4 class="text-on-error-container font-black text-label-md mb-2">TERJADI KESALAHAN</h4>
+                <ul class="list-disc list-inside text-error text-label-md space-y-1">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
@@ -31,14 +31,13 @@
         </div>
     @endif
 
-    <form action="{{ route('admin.users.store') }}" method="POST" enctype="multipart/form-data" class="space-y-8" x-data="{ role: '{{ old('role', '') }}' }">
+    <form action="{{ route('admin.users.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6" x-data="{ role: '{{ old('role', '') }}' }">
         @csrf
         
         <!-- Main Form Card -->
-        <div class="bg-white rounded-[2.5rem] p-8 md:p-12 shadow-2xl shadow-slate-200/60 border border-slate-50 relative overflow-hidden">
-            <div class="absolute top-0 right-0 w-64 h-64 bg-blue-50/50 rounded-full blur-3xl -mr-32 -mt-32"></div>
-            
-            <div class="relative grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-8">
+        <div class="bg-surface-container-lowest rounded-2xl p-8 md:p-10 shadow-card border border-outline-variant relative overflow-hidden">
+            <div class="relative grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                
                 <!-- Name -->
                 <x-forms.form-group label="Nama Lengkap" for="name" required>
                     <x-forms.text-input name="name" placeholder="Masukkan nama lengkap" value="{{ old('name') }}" required />
@@ -70,9 +69,9 @@
                      x-transition:enter="transition ease-out duration-300"
                      x-transition:enter-start="opacity-0 transform -translate-y-4"
                      x-transition:enter-end="opacity-100 transform translate-y-0"
-                     class="md:col-span-2 mt-2 p-8 bg-gradient-to-br from-emerald-50/40 to-teal-50/20 dark:from-slate-800/40 dark:to-slate-900/30 rounded-[2rem] border border-emerald-100/50 dark:border-slate-800 space-y-6">
+                     class="md:col-span-2 mt-4 p-8 bg-surface-container-low rounded-2xl border border-outline-variant space-y-6">
                     
-                    <h3 class="text-lg font-black text-emerald-800 dark:text-emerald-400 flex items-center gap-2 mb-4">
+                    <h3 class="text-headline-sm font-bold text-primary flex items-center gap-2 mb-2">
                         <span class="material-symbols-outlined">badge</span>
                         Informasi Profil Kader
                     </h3>
@@ -95,14 +94,14 @@
 
                         <!-- Pendidikan (Selectable Cards) -->
                         <div class="md:col-span-2">
-                            <label class="block text-xs font-black text-slate-400 dark:text-gray-300 uppercase tracking-widest mb-3">Pendidikan Terakhir</label>
+                            <label class="block text-label-sm text-outline-variant mb-3">Pendidikan Terakhir</label>
                             <input type="hidden" name="pendidikan" id="pendidikan" value="{{ old('pendidikan') }}">
                             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3" x-data="{ selected: '{{ old('pendidikan') }}' }">
                                 @foreach(['SD', 'SMP', 'SLTA', 'Diploma', 'Sarjana', 'Magister', 'Doktor'] as $edu)
                                     <button type="button" 
                                             @click="selected = '{{ $edu }}'; document.getElementById('pendidikan').value = '{{ $edu }}'"
-                                            :class="selected === '{{ $edu }}' ? 'bg-primary text-white border-primary shadow-lg shadow-primary/20' : 'bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-350 border-slate-200 dark:border-slate-700 hover:border-slate-300'"
-                                            class="px-4 py-3 rounded-2xl border text-center font-bold text-sm transition-all focus:outline-none">
+                                            :class="selected === '{{ $edu }}' ? 'bg-primary text-on-primary border-primary shadow-sm' : 'bg-surface-container-lowest text-on-surface-variant border-outline-variant hover:bg-surface-container-low'"
+                                            class="px-4 py-3 rounded-lg border text-center font-bold text-label-md transition-all focus:outline-none">
                                         {{ $edu }}
                                     </button>
                                 @endforeach
@@ -111,33 +110,33 @@
 
                         <!-- Alamat -->
                         <div class="md:col-span-2">
-                            <label class="block text-xs font-black text-slate-400 dark:text-gray-300 uppercase tracking-widest mb-3">Alamat Lengkap</label>
-                            <textarea name="alamat" rows="3" placeholder="Masukkan alamat lengkap..." class="w-full px-5 py-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl text-slate-800 dark:text-slate-100 font-medium placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all">{{ old('alamat') }}</textarea>
+                            <label class="block text-label-sm text-outline-variant mb-3">Alamat Lengkap</label>
+                            <textarea name="alamat" rows="3" placeholder="Masukkan alamat lengkap..." class="w-full px-5 py-4 bg-surface-container-lowest border border-outline-variant rounded-lg text-on-surface text-body-md placeholder-outline-variant focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all">{{ old('alamat') }}</textarea>
                         </div>
 
                         <!-- Foto Profil / Image Upload with Instant Live Preview -->
-                        <div class="md:col-span-2 flex flex-col md:flex-row items-center gap-6 p-6 bg-white dark:bg-slate-800 rounded-3xl border border-slate-100 dark:border-slate-700 mt-4">
-                            <div class="w-24 h-24 rounded-full overflow-hidden border-2 border-slate-200 dark:border-slate-600 bg-slate-50 flex-shrink-0 relative">
+                        <div class="md:col-span-2 flex flex-col md:flex-row items-center gap-6 p-6 bg-surface-container-lowest rounded-2xl border border-outline-variant mt-2">
+                            <div class="w-24 h-24 rounded-lg overflow-hidden border border-outline-variant bg-surface-container-low flex-shrink-0 relative">
                                 <img id="image-preview" 
                                      src="{{ asset('assets/img/kaders/placeholder.svg') }}" 
                                      class="w-full h-full object-cover">
                             </div>
                             <div class="flex-grow text-center md:text-left">
-                                <h4 class="text-sm font-bold text-slate-850 dark:text-gray-200">Foto Profil Kader</h4>
-                                <p class="text-xs text-slate-500 dark:text-gray-400 mb-3">Gunakan foto wajah yang jelas dengan format JPG/PNG (Maks. 2MB)</p>
+                                <h4 class="text-label-md font-bold text-on-surface mb-1">Foto Profil Kader</h4>
+                                <p class="text-label-sm text-outline mb-4">Gunakan foto wajah yang jelas dengan format JPG/PNG (Maks. 2MB)</p>
                                 <input type="file" name="image" id="image-upload" class="hidden" accept="image/*" 
                                        onchange="const file = this.files[0]; if(file){ const reader = new FileReader(); reader.onload = e => document.getElementById('image-preview').src = e.target.result; reader.readAsDataURL(file); }">
-                                <button type="button" onclick="document.getElementById('image-upload').click()" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-bold text-xs rounded-xl transition-all uppercase tracking-wider">
+                                <x-button type="button" variant="outline" size="sm" onclick="document.getElementById('image-upload').click()">
                                     Pilih Foto Kader
-                                </button>
+                                </x-button>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Separator -->
-                <div class="md:col-span-2 py-4">
-                    <div class="h-px bg-slate-100 w-full"></div>
+                <div class="md:col-span-2 py-2">
+                    <div class="h-px bg-outline-variant/30 w-full"></div>
                 </div>
 
                 <!-- Password -->
@@ -151,14 +150,14 @@
                 </x-forms.form-group>
 
                 <!-- Active Status -->
-                <div class="md:col-span-2 flex items-center justify-between p-6 bg-slate-50 dark:bg-slate-900 rounded-3xl mt-4">
+                <div class="md:col-span-2 flex items-center justify-between p-6 bg-surface-container-low rounded-2xl border border-outline-variant mt-2">
                     <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 bg-white dark:bg-gray-800 rounded-2xl flex items-center justify-center text-blue-600 shadow-sm">
-                            <i class="fas fa-user-shield text-lg"></i>
+                        <div class="w-12 h-12 bg-surface-container-lowest rounded-lg border border-outline-variant flex items-center justify-center text-primary shadow-sm">
+                            <span class="material-symbols-outlined text-[24px]">verified_user</span>
                         </div>
                         <div>
-                            <h4 class="text-sm font-bold text-slate-800 dark:text-gray-200">Status Akun</h4>
-                            <p class="text-xs text-slate-500 dark:text-gray-400">Aktifkan untuk memberikan akses masuk secepatnya.</p>
+                            <h4 class="text-label-md font-bold text-on-surface">Status Akun</h4>
+                            <p class="text-label-sm text-outline mt-0.5">Aktifkan untuk memberikan akses masuk ke sistem.</p>
                         </div>
                     </div>
                     <x-forms.switch name="is_active" checked />
@@ -167,11 +166,11 @@
         </div>
 
         <!-- Action Buttons -->
-        <div class="flex items-center justify-end space-x-4 pt-4">
-            <x-button href="{{ route('admin.users.index') }}" variant="outline" class="px-10 py-4 rounded-2xl border-slate-200 text-slate-500 hover:bg-slate-50">Batalkan</x-button>
-            <button type="submit" class="px-10 py-4 bg-blue-600 text-white text-xs font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-500/20 active:scale-95 flex items-center">
-                <i class="fas fa-check mr-3"></i> SIMPAN PENGGUNA
-            </button>
+        <div class="flex items-center justify-end space-x-4">
+            <x-button href="{{ route('admin.users.index') }}" variant="ghost" size="lg">Batalkan</x-button>
+            <x-button type="submit" variant="primary" size="lg" icon="check">
+                SIMPAN PENGGUNA
+            </x-button>
         </div>
     </form>
 </div>

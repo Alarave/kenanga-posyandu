@@ -14,7 +14,7 @@
         $user?->isSuperAdmin()          => 'bg-violet-100 text-violet-700',
         $user?->isAdmin()               => 'bg-blue-100 text-blue-700',
         $user?->isKader()               => 'bg-emerald-100 text-emerald-700',
-        default                         => 'bg-slate-100 text-slate-600',
+        default                         => 'bg-surface-container text-on-surface-variant',
     };
 
     // Avatar gradient
@@ -39,7 +39,7 @@
         {{-- Mobile hamburger --}}
         <button id="mobileSidebarToggle"
             class="lg:hidden w-9 h-9 flex items-center justify-center rounded-xl
-                   text-slate-500 border border-slate-200 hover:bg-slate-50
+                   text-outline border border-outline-variant hover:bg-surface-container-low
                    active:scale-95 transition-all duration-150 flex-shrink-0">
             <i class="fas fa-bars" style="font-size:14px;"></i>
         </button>
@@ -56,7 +56,7 @@
         {{-- ── Mobile search toggle ── --}}
         <button id="mobileSearchBtn"
             class="lg:hidden w-9 h-9 flex items-center justify-center rounded-xl
-                   text-slate-500 border border-slate-200 hover:bg-slate-50
+                   text-outline border border-outline-variant hover:bg-surface-container-low
                    active:scale-95 transition-all duration-150">
             <i class="fas fa-search" style="font-size:13px;"></i>
         </button>
@@ -67,13 +67,13 @@
         @endif
 
         {{-- ── Divider ── --}}
-        <div class="hidden sm:block w-px h-6 bg-slate-100 mx-1"></div>
+        <div class="hidden sm:block w-px h-6 bg-surface-container mx-1"></div>
 
         {{-- ── Profile dropdown ── --}}
         <div class="relative">
             <button @click="profileOpen = !profileOpen; if(profileOpen) $dispatch('close-dropdowns', 'profile')"
                 class="flex items-center gap-3 pl-1.5 pr-4 py-1.5 rounded-[1.25rem]
-                       hover:bg-slate-50 active:scale-95 transition-all duration-300 group bg-white border border-slate-100 shadow-sm hover:shadow-md hover:border-teal-100">
+                       hover:bg-surface-container-low active:scale-95 transition-all duration-300 group bg-white border border-slate-100 shadow-sm hover:shadow-md hover:border-teal-100">
 
                 {{-- Avatar with Ring --}}
                 <x-avatar :name="$name" size="medium" status="online" />
@@ -81,17 +81,17 @@
                 {{-- Name + role --}}
                 <div class="hidden md:flex flex-col items-start leading-tight">
                     <div class="flex items-center gap-2 mb-0.5">
-                        <span class="text-slate-900 font-black text-[14px] tracking-tight">
+                        <span class="text-on-surface font-black text-[14px] tracking-tight">
                             {{ explode(' ', $name)[0] }}
                         </span>
                         <span class="px-2 py-0.5 rounded-lg {{ $badgeClass }} text-[9px] uppercase font-black tracking-widest shadow-sm">
                             {{ $role }}
                         </span>
                     </div>
-                    <span class="text-slate-400 font-bold text-[10px] tracking-tight">{{ $user?->email }}</span>
+                    <span class="text-outline-variant font-bold text-[10px] tracking-tight">{{ $user?->email }}</span>
                 </div>
 
-                <i class="fas fa-chevron-down text-slate-300 group-hover:text-teal-600 transition-all duration-300 hidden md:block"
+                <i class="fas fa-chevron-down text-slate-300 group-hover:text-primary transition-all duration-300 hidden md:block"
                    :class="profileOpen ? 'rotate-180' : ''"
                    style="font-size:11px;"></i>
             </button>
@@ -106,11 +106,11 @@
                        border border-slate-100 overflow-hidden z-50 p-2">
 
                 {{-- User Card Section (More Compact) --}}
-                <div class="px-4 py-4 rounded-3xl mb-2 relative overflow-hidden group/card bg-slate-50 border border-slate-100">
+                <div class="px-4 py-4 rounded-2xl mb-2 relative overflow-hidden group/card bg-surface-container-low border border-slate-100">
                     <div class="flex items-center gap-3.5 relative z-10">
                         <x-avatar :name="$name" size="medium" />
                         <div class="min-w-0">
-                            <p class="text-slate-900 font-black text-[14px] truncate leading-tight mb-0.5">{{ $name }}</p>
+                            <p class="text-on-surface font-black text-[14px] truncate leading-tight mb-0.5">{{ $name }}</p>
                             <span class="inline-flex items-center px-2 py-0.5 rounded-lg text-[8.5px] font-black uppercase tracking-wider {{ $badgeClass }} shadow-sm">
                                 {{ $role }}
                             </span>
@@ -138,15 +138,15 @@
 
                     @foreach($menuItems as $item)
                     <a href="{{ $item['href'] }}"
-                       class="flex items-center gap-3.5 px-3 py-2.5 text-slate-600 hover:bg-slate-50
-                              hover:text-slate-900 rounded-xl transition-all group font-bold relative">
+                       class="flex items-center gap-3.5 px-3 py-2.5 text-on-surface-variant hover:bg-surface-container-low
+                              hover:text-on-surface rounded-xl transition-all group font-bold relative">
                         <div @class([
                             'w-8 h-8 rounded-lg flex items-center justify-center transition-all flex-shrink-0 shadow-sm',
-                            'bg-emerald-50 text-emerald-600' => $item['color'] === 'emerald',
-                            'bg-blue-50 text-blue-600' => $item['color'] === 'blue',
+                            'bg-emerald-50 text-primary' => $item['color'] === 'emerald',
+                            'bg-blue-50 text-secondary' => $item['color'] === 'blue',
                             'bg-amber-50 text-amber-600' => $item['color'] === 'amber',
                             'bg-violet-50 text-violet-600' => $item['color'] === 'violet',
-                            'bg-indigo-50 text-indigo-600' => $item['color'] === 'indigo',
+                            'bg-secondary-container text-secondary' => $item['color'] === 'indigo',
                         ])>
                             <i class="fas {{ $item['icon'] }} text-[12px] group-hover:scale-110 transition-transform"></i>
                         </div>
@@ -180,13 +180,13 @@
 <div id="mobileSearchBar"
     class="hidden lg:hidden px-4 py-2.5 bg-white border-b border-slate-100 shadow-sm">
     <div class="relative">
-        <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+        <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-outline-variant pointer-events-none"
            style="font-size:12px;"></i>
         <input type="text"
             placeholder="Cari pasien, jadwal, artikel…"
-            class="w-full h-9 pl-9 pr-4 rounded-xl border border-slate-200 bg-slate-50
-                   text-slate-700 placeholder-slate-400 text-[13px] font-medium
-                   focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-slate-300
+            class="w-full h-9 pl-9 pr-4 rounded-xl border border-outline-variant bg-surface-container-low
+                   text-on-surface-variant placeholder-slate-400 text-[13px] font-medium
+                   focus:outline-none focus:ring-2 focus:ring-slate-900/10 focus:border-outline-variant
                    focus:bg-white transition-all">
     </div>
 </div>

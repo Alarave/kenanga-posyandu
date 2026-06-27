@@ -8,16 +8,16 @@ use Illuminate\View\Component;
 
 class DataCard extends Component
 {
-    public $title;
+    public ?string $title;
 
-    public $icon;
+    public ?string $icon;
 
-    public $variant;
+    public string $variant;
 
     /**
      * Create a new component instance.
      */
-    public function __construct($title = null, $icon = null, $variant = 'default')
+    public function __construct(?string $title = null, ?string $icon = null, string $variant = 'default')
     {
         $this->title = $title;
         $this->icon = $icon;

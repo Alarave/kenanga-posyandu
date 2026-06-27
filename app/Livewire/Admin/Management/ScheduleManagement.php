@@ -56,6 +56,7 @@ class ScheduleManagement extends BaseAdminComponent
      */
     public function mount(): void
     {
+        /** @var \App\Models\User $user */
         $user = auth()->user();
         if (! $user->isSuperAdmin()) {
             $this->selected_posyandu_id = $user->posyandu_id;
@@ -90,7 +91,9 @@ class ScheduleManagement extends BaseAdminComponent
             'posyandu_id' => $this->selected_posyandu_id,
         ];
 
-        $service->createSchedule($data, auth()->user());
+        /** @var \App\Models\User $user */
+        $user = auth()->user();
+        $service->createSchedule($data, $user);
 
         $this->reset(['title', 'description', 'start_time', 'end_time', 'location', 'new_status', 'showCreateModal']);
         $this->notify('Jadwal baru berhasil ditambahkan.');
@@ -121,6 +124,8 @@ class ScheduleManagement extends BaseAdminComponent
 
     /**
      * Menghitung statistik untuk Dashboard Jadwal.
+     * 
+     * @param \Illuminate\Database\Eloquent\Builder $query
      */
     private function getStats($query): array
     {
@@ -142,6 +147,8 @@ class ScheduleManagement extends BaseAdminComponent
 
     /**
      * Mendapatkan agenda mendatang paling dekat.
+     * 
+     * @param \Illuminate\Database\Eloquent\Builder $query
      */
     private function getUpcomingAgenda($query): ?Schedule
     {

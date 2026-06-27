@@ -4,7 +4,7 @@
     @if($message) 
         role="alert" 
         aria-live="polite"
-        class="mt-1 text-sm text-red-600 font-medium flex items-center gap-1"
+        class="mt-1 text-sm text-error font-medium flex items-center gap-1"
     @endif
 >
     @if($message)

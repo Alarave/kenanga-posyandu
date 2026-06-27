@@ -7,9 +7,9 @@ use Livewire\Component;
 
 class UserProfile extends Component
 {
-    public $name;
+    public string $name = '';
 
-    public $email;
+    public string $email = '';
 
     protected function rules()
     {
@@ -29,7 +29,9 @@ class UserProfile extends Component
     {
         $this->validate();
 
-        Auth::user()->update([
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $user->update([
             'name' => $this->name,
             'email' => $this->email,
         ]);

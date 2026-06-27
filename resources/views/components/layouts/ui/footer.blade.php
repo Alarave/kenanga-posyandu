@@ -11,7 +11,7 @@
 
         <div class="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-wider text-outline">
             <span>v1.0.0</span>
-            <span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+            <span class="w-1 h-1 rounded-lg bg-outline-variant"></span>
             <span>Admin Dashboard</span>
         </div>
 

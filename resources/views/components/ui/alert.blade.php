@@ -23,7 +23,7 @@
                 </svg>'
         ],
         'error' => [
-            'container' => 'border-red-500 bg-red-50/60 dark:border-red-500/30 dark:bg-red-500/15',
+            'container' => 'border-error bg-red-50/60 dark:border-error/30 dark:bg-red-500/15',
             'iconColor' => 'text-red-500',
             'defaultTitle' => 'Ada Kesalahan!',
             'iconSvg' => '
@@ -59,19 +59,19 @@
         </div>
 
         <div class="flex-1">
-            <h4 class="mb-1 text-sm md:text-base font-bold text-slate-800 dark:text-white/95">
+            <h4 class="mb-1 text-sm md:text-base font-bold text-on-surface dark:text-white/95">
                 {{ $title ?? $config['defaultTitle'] }}
             </h4>
 
             @if($message)
-                <p class="text-xs md:text-sm text-slate-600 dark:text-slate-300 font-medium leading-relaxed">{{ $message }}</p>
+                <p class="text-xs md:text-sm text-on-surface-variant dark:text-slate-300 font-medium leading-relaxed">{{ $message }}</p>
             @endif
 
             @if(count($messages) > 0)
                 <ul class="mt-2 space-y-1.5">
                     @foreach ($messages as $msg)
-                        <li class="text-xs md:text-sm text-slate-600 dark:text-slate-300 font-medium flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-current opacity-60"></span>
+                        <li class="text-xs md:text-sm text-on-surface-variant dark:text-slate-300 font-medium flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-lg bg-current opacity-60"></span>
                             {{ $msg }}
                         </li>
                     @endforeach
@@ -79,7 +79,7 @@
             @endif
 
             @if($showLink)
-                <a href="{{ $linkHref }}" class="inline-block mt-3 text-xs md:text-sm font-semibold text-slate-600 hover:text-slate-800 underline transition-colors">
+                <a href="{{ $linkHref }}" class="inline-block mt-3 text-xs md:text-sm font-semibold text-on-surface-variant hover:text-on-surface underline transition-colors">
                     {{ $linkText }}
                 </a>
             @endif

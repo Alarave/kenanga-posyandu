@@ -33,7 +33,7 @@
             @keydown.enter.prevent="focusFirstBlock()"
             placeholder="Judul artikel…"
             rows="1"
-            class="w-full resize-none bg-transparent border-none outline-none text-4xl md:text-5xl font-black text-slate-900 leading-tight tracking-tight placeholder:text-slate-300 overflow-hidden"
+            class="w-full resize-none bg-transparent border-none outline-none text-4xl md:text-5xl font-black text-on-surface leading-tight tracking-tight placeholder:text-slate-300 overflow-hidden"
             style="font-family:'Georgia',serif;"
         ></textarea>
         @error('title')
@@ -45,11 +45,11 @@
 
     {{-- 2. FOTO SAMPUL --}}
     <div class="mb-8">
-        <p class="text-xs font-black text-slate-500 uppercase tracking-wide mb-2">
+        <p class="text-xs font-black text-outline uppercase tracking-wide mb-2">
             Foto Sampul Artikel <span class="text-red-500">*</span>
         </p>
         <div class="relative w-full max-w-[480px] rounded-xl overflow-hidden border-2 cursor-pointer transition-all group"
-            :class="coverPreview ? 'border-transparent shadow-xl' : 'border-dashed border-slate-300 bg-white hover:border-indigo-400 hover:bg-indigo-50/20'"
+            :class="coverPreview ? 'border-transparent shadow-xl' : 'border-dashed border-outline-variant bg-white hover:border-indigo-400 hover:bg-secondary-container/20'"
             style="height: 200px;"
             @click="$refs.lwCoverInput.click()">
 
@@ -63,20 +63,20 @@
             </div>
 
             <div x-show="!coverPreview && !coverUploading"
-                class="absolute inset-0 flex flex-col items-center justify-center gap-3 text-slate-400">
-                <div class="w-14 h-14 rounded-xl bg-slate-100 flex items-center justify-center">
-                    <span class="material-symbols-outlined text-[26px] text-slate-400">add_photo_alternate</span>
+                class="absolute inset-0 flex flex-col items-center justify-center gap-3 text-outline-variant">
+                <div class="w-14 h-14 rounded-xl bg-surface-container flex items-center justify-center">
+                    <span class="material-symbols-outlined text-[26px] text-outline-variant">add_photo_alternate</span>
                 </div>
                 <div class="text-center">
-                    <p class="text-sm font-bold text-slate-600">Klik untuk upload foto sampul</p>
-                    <p class="text-xs text-slate-400 mt-0.5">Wajib diisi · JPG/PNG · Maks 2MB</p>
+                    <p class="text-sm font-bold text-on-surface-variant">Klik untuk upload foto sampul</p>
+                    <p class="text-xs text-outline-variant mt-0.5">Wajib diisi · JPG/PNG · Maks 2MB</p>
                 </div>
             </div>
 
             <div x-show="coverUploading"
                 class="absolute inset-0 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center gap-3 z-10">
-                <div class="w-8 h-8 border-[3px] border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-                <p class="text-xs font-bold text-indigo-600 uppercase tracking-widest">Mengunggah…</p>
+                <div class="w-8 h-8 border-[3px] border-indigo-600 border-t-transparent rounded-lg animate-spin"></div>
+                <p class="text-xs font-bold text-secondary uppercase tracking-widest">Mengunggah…</p>
             </div>
         </div>
         @error('cover')
@@ -99,8 +99,8 @@
                     <div class="absolute left-0 top-[6px] w-7">
                         <button type="button" @click.stop="toggleBlockMenu(index, $event)"
                                 x-show="hoveredIndex === index || blockMenuAt === index"
-                                class="w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all bg-white shadow-sm"
-                                :class="blockMenuAt === index ? 'border-indigo-500 text-indigo-500 rotate-45' : 'border-slate-300 text-slate-400 hover:border-slate-700 hover:text-slate-700'">
+                                class="w-7 h-7 rounded-lg border-2 flex items-center justify-center transition-all bg-white shadow-sm"
+                                :class="blockMenuAt === index ? 'border-secondary text-indigo-500 rotate-45' : 'border-outline-variant text-outline-variant hover:border-outline hover:text-on-surface-variant'">
                             <span class="material-symbols-outlined text-[16px] leading-none">add</span>
                         </button>
                         <div x-show="hoveredIndex !== index && blockMenuAt !== index" class="w-7 h-7"></div>
@@ -112,7 +112,7 @@
                          @blur="handleBlur(index)"
                          @mouseup="checkSelection()" @keyup="checkSelection()"
                          :data-placeholder="index === 0 ? 'Mulai menulis, atau klik + untuk tambah konten…' : 'Tulis paragraf…'"
-                         class="flex-1 min-h-[1.8em] py-2.5 pl-3 outline-none text-[1.15rem] leading-[1.9] text-slate-700 ce-placeholder">
+                         class="flex-1 min-h-[1.8em] py-2.5 pl-3 outline-none text-[1.15rem] leading-[1.9] text-on-surface-variant ce-placeholder">
                          style="font-family:'Georgia',serif;"></div>
                 </div>
 
@@ -121,8 +121,8 @@
                     <div class="flex-shrink-0 w-7 mt-[4px]">
                         <button type="button" @click.stop="toggleBlockMenu(index, $event)"
                                 x-show="hoveredIndex === index || blockMenuAt === index"
-                                class="w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all bg-white shadow-sm"
-                                :class="blockMenuAt === index ? 'border-indigo-500 text-indigo-500 rotate-45' : 'border-slate-300 text-slate-400 hover:border-slate-700 hover:text-slate-700'">
+                                class="w-7 h-7 rounded-lg border-2 flex items-center justify-center transition-all bg-white shadow-sm"
+                                :class="blockMenuAt === index ? 'border-secondary text-indigo-500 rotate-45' : 'border-outline-variant text-outline-variant hover:border-outline hover:text-on-surface-variant'">
                             <span class="material-symbols-outlined text-[16px] leading-none">add</span>
                         </button>
                         <div x-show="hoveredIndex !== index && blockMenuAt !== index" class="w-7 h-7"></div>
@@ -134,7 +134,7 @@
                          @blur="handleBlur(index)"
                          @mouseup="checkSelection()" @keyup="checkSelection()"
                          :data-placeholder="'Heading 1'"
-                         class="flex-1 min-h-[1.2em] py-1 outline-none font-black text-slate-900 ce-placeholder"
+                         class="flex-1 min-h-[1.2em] py-1 outline-none font-black text-on-surface ce-placeholder"
                          style="font-family:'Georgia',serif; font-size:2rem; line-height:1.25;"></div>
                 </div>
 
@@ -143,8 +143,8 @@
                     <div class="flex-shrink-0 w-7 mt-[4px]">
                         <button type="button" @click.stop="toggleBlockMenu(index, $event)"
                                 x-show="hoveredIndex === index || blockMenuAt === index"
-                                class="w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all bg-white shadow-sm"
-                                :class="blockMenuAt === index ? 'border-indigo-500 text-indigo-500 rotate-45' : 'border-slate-300 text-slate-400 hover:border-slate-700 hover:text-slate-700'">
+                                class="w-7 h-7 rounded-lg border-2 flex items-center justify-center transition-all bg-white shadow-sm"
+                                :class="blockMenuAt === index ? 'border-secondary text-indigo-500 rotate-45' : 'border-outline-variant text-outline-variant hover:border-outline hover:text-on-surface-variant'">
                             <span class="material-symbols-outlined text-[16px] leading-none">add</span>
                         </button>
                         <div x-show="hoveredIndex !== index && blockMenuAt !== index" class="w-7 h-7"></div>
@@ -156,7 +156,7 @@
                          @blur="handleBlur(index)"
                          @mouseup="checkSelection()" @keyup="checkSelection()"
                          :data-placeholder="'Heading 2'"
-                         class="flex-1 min-h-[1.2em] py-1 outline-none font-black text-slate-900 ce-placeholder"
+                         class="flex-1 min-h-[1.2em] py-1 outline-none font-black text-on-surface ce-placeholder"
                          style="font-family:'Georgia',serif; font-size:1.5rem; line-height:1.35;"></div>
                 </div>
 
@@ -165,8 +165,8 @@
                     <div class="flex-shrink-0 w-7 mt-[4px]">
                         <button type="button" @click.stop="toggleBlockMenu(index, $event)"
                                 x-show="hoveredIndex === index || blockMenuAt === index"
-                                class="w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all bg-white shadow-sm"
-                                :class="blockMenuAt === index ? 'border-indigo-500 text-indigo-500 rotate-45' : 'border-slate-300 text-slate-400 hover:border-slate-700 hover:text-slate-700'">
+                                class="w-7 h-7 rounded-lg border-2 flex items-center justify-center transition-all bg-white shadow-sm"
+                                :class="blockMenuAt === index ? 'border-secondary text-indigo-500 rotate-45' : 'border-outline-variant text-outline-variant hover:border-outline hover:text-on-surface-variant'">
                             <span class="material-symbols-outlined text-[16px] leading-none">add</span>
                         </button>
                         <div x-show="hoveredIndex !== index && blockMenuAt !== index" class="w-7 h-7"></div>
@@ -178,7 +178,7 @@
                          @blur="handleBlur(index)"
                          @mouseup="checkSelection()" @keyup="checkSelection()"
                          :data-placeholder="'Heading 3'"
-                         class="flex-1 min-h-[1.2em] py-1 outline-none font-bold text-slate-900 ce-placeholder"
+                         class="flex-1 min-h-[1.2em] py-1 outline-none font-bold text-on-surface ce-placeholder"
                          style="font-family:'Georgia',serif; font-size:1.25rem; line-height:1.4;"></div>
                 </div>
 
@@ -187,14 +187,14 @@
                     <div class="flex-shrink-0 w-7 mt-[6px]">
                         <button type="button" @click.stop="toggleBlockMenu(index, $event)"
                                 x-show="hoveredIndex === index || blockMenuAt === index"
-                                class="w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all bg-white shadow-sm"
-                                :class="blockMenuAt === index ? 'border-indigo-500 text-indigo-500 rotate-45' : 'border-slate-300 text-slate-400 hover:border-slate-700 hover:text-slate-700'">
+                                class="w-7 h-7 rounded-lg border-2 flex items-center justify-center transition-all bg-white shadow-sm"
+                                :class="blockMenuAt === index ? 'border-secondary text-indigo-500 rotate-45' : 'border-outline-variant text-outline-variant hover:border-outline hover:text-on-surface-variant'">
                             <span class="material-symbols-outlined text-[16px] leading-none">add</span>
                         </button>
                         <div x-show="hoveredIndex !== index && blockMenuAt !== index" class="w-7 h-7"></div>
                     </div>
                     <div class="flex-1 flex gap-3">
-                        <div class="w-1 rounded-full bg-slate-900 flex-shrink-0 self-stretch"></div>
+                        <div class="w-1 rounded-lg bg-inverse-surface flex-shrink-0 self-stretch"></div>
                         <div :id="'block-' + block.id" contenteditable="true"
                          x-init="$el.innerHTML = block.content || ''; $el.addEventListener('input', () => {block.content = $el.innerHTML;});"
                              @keydown="handleKeydown($event, index)"
@@ -202,7 +202,7 @@
                              @blur="handleBlur(index)"
                              @mouseup="checkSelection()" @keyup="checkSelection()"
                              :data-placeholder="'Kutipan…'"
-                             class="flex-1 min-h-[1.8em] py-1 outline-none text-[1.15rem] leading-[1.9] text-slate-600 italic ce-placeholder"
+                             class="flex-1 min-h-[1.8em] py-1 outline-none text-[1.15rem] leading-[1.9] text-on-surface-variant italic ce-placeholder"
                              style="font-family:'Georgia',serif;"></div>
                     </div>
                 </div>
@@ -212,8 +212,8 @@
                     <div class="flex-shrink-0 w-7 mt-[6px]">
                         <button type="button" @click.stop="toggleBlockMenu(index, $event)"
                                 x-show="hoveredIndex === index || blockMenuAt === index"
-                                class="w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all bg-white shadow-sm"
-                                :class="blockMenuAt === index ? 'border-indigo-500 text-indigo-500 rotate-45' : 'border-slate-300 text-slate-400 hover:border-slate-700 hover:text-slate-700'">
+                                class="w-7 h-7 rounded-lg border-2 flex items-center justify-center transition-all bg-white shadow-sm"
+                                :class="blockMenuAt === index ? 'border-secondary text-indigo-500 rotate-45' : 'border-outline-variant text-outline-variant hover:border-outline hover:text-on-surface-variant'">
                             <span class="material-symbols-outlined text-[16px] leading-none">add</span>
                         </button>
                         <div x-show="hoveredIndex !== index && blockMenuAt !== index" class="w-7 h-7"></div>
@@ -250,14 +250,14 @@
                     <div class="flex-shrink-0 w-7 mt-[6px]">
                         <button type="button" @click.stop="toggleBlockMenu(index, $event)"
                                 x-show="hoveredIndex === index || blockMenuAt === index"
-                                class="w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all bg-white shadow-sm"
-                                :class="blockMenuAt === index ? 'border-indigo-500 text-indigo-500 rotate-45' : 'border-slate-300 text-slate-400 hover:border-slate-700 hover:text-slate-700'">
+                                class="w-7 h-7 rounded-lg border-2 flex items-center justify-center transition-all bg-white shadow-sm"
+                                :class="blockMenuAt === index ? 'border-secondary text-indigo-500 rotate-45' : 'border-outline-variant text-outline-variant hover:border-outline hover:text-on-surface-variant'">
                             <span class="material-symbols-outlined text-[16px] leading-none">add</span>
                         </button>
                         <div x-show="hoveredIndex !== index && blockMenuAt !== index" class="w-7 h-7"></div>
                     </div>
                     <div class="flex-1 flex items-center gap-2 py-0.5">
-                        <span class="w-1.5 h-1.5 rounded-full bg-slate-700 flex-shrink-0"></span>
+                        <span class="w-1.5 h-1.5 rounded-lg bg-slate-700 flex-shrink-0"></span>
                         <div :id="'block-' + block.id" contenteditable="true"
                          x-init="$el.innerHTML = block.content || ''; $el.addEventListener('input', () => {block.content = $el.innerHTML;});"
                              @keydown="handleKeydown($event, index)"
@@ -265,7 +265,7 @@
                              @blur="handleBlur(index)"
                              @mouseup="checkSelection()" @keyup="checkSelection()"
                              :data-placeholder="'Item list…'"
-                             class="flex-1 min-h-[1.8em] outline-none text-[1.15rem] leading-[1.9] text-slate-700 ce-placeholder"
+                             class="flex-1 min-h-[1.8em] outline-none text-[1.15rem] leading-[1.9] text-on-surface-variant ce-placeholder"
                              style="font-family:'Georgia',serif;"></div>
                     </div>
                 </div>
@@ -275,14 +275,14 @@
                     <div class="flex-shrink-0 w-7 mt-[6px]">
                         <button type="button" @click.stop="toggleBlockMenu(index, $event)"
                                 x-show="hoveredIndex === index || blockMenuAt === index"
-                                class="w-7 h-7 rounded-full border-2 flex items-center justify-center transition-all bg-white shadow-sm"
-                                :class="blockMenuAt === index ? 'border-indigo-500 text-indigo-500 rotate-45' : 'border-slate-300 text-slate-400 hover:border-slate-700 hover:text-slate-700'">
+                                class="w-7 h-7 rounded-lg border-2 flex items-center justify-center transition-all bg-white shadow-sm"
+                                :class="blockMenuAt === index ? 'border-secondary text-indigo-500 rotate-45' : 'border-outline-variant text-outline-variant hover:border-outline hover:text-on-surface-variant'">
                             <span class="material-symbols-outlined text-[16px] leading-none">add</span>
                         </button>
                         <div x-show="hoveredIndex !== index && blockMenuAt !== index" class="w-7 h-7"></div>
                     </div>
                     <div class="flex-1 flex items-center gap-2 py-0.5">
-                        <span class="text-sm font-bold text-slate-500 flex-shrink-0 w-5 text-right" x-text="getNumberedIndex(index) + '.'"></span>
+                        <span class="text-sm font-bold text-outline flex-shrink-0 w-5 text-right" x-text="getNumberedIndex(index) + '.'"></span>
                         <div :id="'block-' + block.id" contenteditable="true"
                          x-init="$el.innerHTML = block.content || ''; $el.addEventListener('input', () => {block.content = $el.innerHTML;});"
                              @keydown="handleKeydown($event, index)"
@@ -290,7 +290,7 @@
                              @blur="handleBlur(index)"
                              @mouseup="checkSelection()" @keyup="checkSelection()"
                              :data-placeholder="'Item bernomor…'"
-                             class="flex-1 min-h-[1.8em] outline-none text-[1.15rem] leading-[1.9] text-slate-700 ce-placeholder"
+                             class="flex-1 min-h-[1.8em] outline-none text-[1.15rem] leading-[1.9] text-on-surface-variant ce-placeholder"
                              style="font-family:'Georgia',serif;"></div>
                     </div>
                 </div>
@@ -307,7 +307,7 @@
                     </figure>
                     <input type="text" x-model="block.caption"
                            placeholder="Keterangan gambar (opsional)…"
-                           class="w-full mt-2 text-center text-sm text-slate-400 italic bg-transparent border-none outline-none placeholder:text-slate-300">
+                           class="w-full mt-2 text-center text-sm text-outline-variant italic bg-transparent border-none outline-none placeholder:text-slate-300">
                     <button type="button" @click="removeBlock(index)"
                             class="absolute top-2 right-2 w-8 h-8 bg-black/60 hover:bg-red-500 text-white rounded-lg flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-all">
                         <span class="material-symbols-outlined text-[16px]">delete</span>
@@ -324,33 +324,33 @@
 
                     {{-- Input form (hanya tampil kalau belum ada video) --}}
                     <div x-show="!block.embedSrc && !block.localSrc"
-                        class="rounded-xl bg-slate-50 border border-dashed border-slate-200 p-4">
-                        <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 text-center">YouTube, Google Drive, atau Upload Video</p>
+                        class="rounded-xl bg-surface-container-low border border-dashed border-outline-variant p-4">
+                        <p class="text-[11px] font-black text-outline-variant uppercase tracking-widest mb-3 text-center">YouTube, Google Drive, atau Upload Video</p>
                         <div class="flex gap-2 mb-3">
                             <input type="text" x-model="block.url"
                                 placeholder="https://youtube.com/watch?v=…"
                                 @keydown.enter.prevent="embedVideo(block)"
                                 @click.stop
-                                class="flex-1 h-9 px-3 rounded-lg border border-slate-200 text-sm text-slate-700 focus:outline-none focus:border-indigo-400 bg-white">
+                                class="flex-1 h-9 px-3 rounded-lg border border-outline-variant text-sm text-on-surface-variant focus:outline-none focus:border-indigo-400 bg-white">
                             <button type="button" @click.stop="embedVideo(block)"
-                                    class="h-9 px-4 bg-slate-900 text-white rounded-lg text-xs font-bold uppercase tracking-wide hover:bg-indigo-600 transition-colors">
+                                    class="h-9 px-4 bg-inverse-surface text-white rounded-lg text-label-sm tracking-wide hover:bg-secondary transition-colors">
                                 Embed
                             </button>
                         </div>
-                        <div class="flex items-center gap-3 text-xs text-slate-400 mb-2">
-                            <div class="flex-1 h-px bg-slate-200"></div>
+                        <div class="flex items-center gap-3 text-xs text-outline-variant mb-2">
+                            <div class="flex-1 h-px bg-surface-container-high"></div>
                             <span class="font-bold uppercase tracking-widest">atau</span>
-                            <div class="flex-1 h-px bg-slate-200"></div>
+                            <div class="flex-1 h-px bg-surface-container-high"></div>
                         </div>
                         <button type="button"
                                 @click.stop="pendingInsertIndex = index; $refs.videoUploadInput.click()"
-                                class="w-full h-9 border border-dashed border-slate-300 hover:border-indigo-400 hover:bg-indigo-50 rounded-lg text-xs font-bold text-slate-500 hover:text-indigo-600 transition-all flex items-center justify-center gap-2">
+                                class="w-full h-9 border border-dashed border-outline-variant hover:border-indigo-400 hover:bg-secondary-container rounded-lg text-xs font-bold text-outline hover:text-secondary transition-all flex items-center justify-center gap-2">
                             <span class="material-symbols-outlined text-[16px]">upload</span>
                             Upload Video dari Perangkat
                         </button>
                         <div class="mt-2 flex justify-center">
                             <button type="button" @click.stop="removeBlock(index)"
-                                    class="text-xs text-slate-400 hover:text-red-500 flex items-center gap-1 font-bold transition-colors">
+                                    class="text-xs text-outline-variant hover:text-red-500 flex items-center gap-1 font-bold transition-colors">
                                 <span class="material-symbols-outlined text-[14px]">delete</span> Hapus blok
                             </button>
                         </div>
@@ -381,7 +381,7 @@
                         </button>
 
                         {{-- Hint keyboard --}}
-                        <div class="mt-1 text-[10px] text-slate-400 text-center">Klik lalu tekan Delete untuk hapus</div>
+                        <div class="mt-1 text-[10px] text-outline-variant text-center">Klik lalu tekan Delete untuk hapus</div>
                     </div>
                 </div>
 
@@ -391,7 +391,7 @@
                      @keydown.delete.prevent="removeBlock(index)"
                      @keydown.backspace.prevent="removeBlock(index)"
                      @focus="focusedIndex = index"
-                     class="my-18 ml-18 flex items-center gap-5 text-slate-300 text-xl group/dv cursor-pointer focus:outline-none"
+                     class="my-18 ml-18 flex items-center gap-5 text-slate-300 text-headline-sm group/dv cursor-pointer focus:outline-none"
                      @click="$el.focus()">
                     <span>----------</span>
                     <button type="button" @click.stop="removeBlock(index)"
@@ -411,7 +411,7 @@
             x-transition:enter-end="opacity-100 translate-y-0 scale-100"
             x-transition:leave="transition ease-in duration-75"
             x-transition:leave-end="opacity-0 scale-95"
-            class="fixed z-[200] bg-slate-900 rounded-xl shadow-2xl flex items-center gap-0.5 p-1"
+            class="fixed z-[200] bg-inverse-surface rounded-xl shadow-2xl flex items-center gap-0.5 p-1"
             :style="formatBarStyle"
             style="display:none"
             @mousedown.prevent
@@ -442,69 +442,69 @@
             x-transition:leave="transition ease-in duration-75"
             x-transition:leave-end="opacity-0 scale-95"
             @click.away="blockMenuAt = null"
-            class="fixed z-[100] bg-white rounded-2xl border border-slate-200 shadow-2xl w-56 overflow-y-auto max-h-[min(420px,70vh)]"
+            class="fixed z-[100] bg-white rounded-2xl border border-outline-variant shadow-2xl w-56 overflow-y-auto max-h-[min(420px,70vh)]"
             :style="menuStyle"
             style="display:none"
         >
             <div class="p-1">
-                <p class="px-3 pt-2 pb-1 text-[10px] font-black text-slate-400 uppercase tracking-widest">Teks</p>
+                <p class="px-3 pt-2 pb-1 text-[10px] font-black text-outline-variant uppercase tracking-widest">Teks</p>
                 <button type="button" @click="changeBlockType(blockMenuAt, 'paragraph'); blockMenuAt = null"
-                        class="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors text-left">
-                    <span class="material-symbols-outlined text-[18px] text-slate-500">text_fields</span>
-                    <p class="text-sm font-semibold text-slate-700">Teks</p>
+                        class="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-surface-container-low transition-colors text-left">
+                    <span class="material-symbols-outlined text-[18px] text-outline">text_fields</span>
+                    <p class="text-sm font-semibold text-on-surface-variant">Teks</p>
                 </button>
                 <button type="button" @click="changeBlockType(blockMenuAt, 'h1'); blockMenuAt = null"
-                        class="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors text-left">
-                    <span class="text-[14px] font-black text-slate-500 w-[18px] text-center">H1</span>
-                    <p class="text-sm font-semibold text-slate-700">Heading 1</p>
+                        class="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-surface-container-low transition-colors text-left">
+                    <span class="text-[14px] font-black text-outline w-[18px] text-center">H1</span>
+                    <p class="text-sm font-semibold text-on-surface-variant">Heading 1</p>
                 </button>
                 <button type="button" @click="changeBlockType(blockMenuAt, 'h2'); blockMenuAt = null"
-                        class="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors text-left">
-                    <span class="text-[14px] font-black text-slate-500 w-[18px] text-center">H2</span>
-                    <p class="text-sm font-semibold text-slate-700">Heading 2</p>
+                        class="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-surface-container-low transition-colors text-left">
+                    <span class="text-[14px] font-black text-outline w-[18px] text-center">H2</span>
+                    <p class="text-sm font-semibold text-on-surface-variant">Heading 2</p>
                 </button>
                 <button type="button" @click="changeBlockType(blockMenuAt, 'h3'); blockMenuAt = null"
-                        class="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors text-left">
-                    <span class="text-[14px] font-black text-slate-500 w-[18px] text-center">H3</span>
-                    <p class="text-sm font-semibold text-slate-700">Heading 3</p>
+                        class="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-surface-container-low transition-colors text-left">
+                    <span class="text-[14px] font-black text-outline w-[18px] text-center">H3</span>
+                    <p class="text-sm font-semibold text-on-surface-variant">Heading 3</p>
                 </button>
                 <button type="button" @click="changeBlockType(blockMenuAt, 'quote'); blockMenuAt = null"
-                        class="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors text-left">
-                    <span class="material-symbols-outlined text-[18px] text-slate-500">format_quote</span>
-                    <p class="text-sm font-semibold text-slate-700">Kutipan</p>
+                        class="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-surface-container-low transition-colors text-left">
+                    <span class="material-symbols-outlined text-[18px] text-outline">format_quote</span>
+                    <p class="text-sm font-semibold text-on-surface-variant">Kutipan</p>
                 </button>
                 <button type="button" @click="changeBlockType(blockMenuAt, 'callout'); blockMenuAt = null"
-                        class="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors text-left">
+                        class="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-surface-container-low transition-colors text-left">
                     <span class="material-symbols-outlined text-[18px] text-amber-500">lightbulb</span>
-                    <p class="text-sm font-semibold text-slate-700">Callout</p>
+                    <p class="text-sm font-semibold text-on-surface-variant">Callout</p>
                 </button>
                 <button type="button" @click="changeBlockType(blockMenuAt, 'bullet'); blockMenuAt = null"
-                        class="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors text-left">
-                    <span class="material-symbols-outlined text-[18px] text-slate-500">format_list_bulleted</span>
-                    <p class="text-sm font-semibold text-slate-700">Bulleted List</p>
+                        class="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-surface-container-low transition-colors text-left">
+                    <span class="material-symbols-outlined text-[18px] text-outline">format_list_bulleted</span>
+                    <p class="text-sm font-semibold text-on-surface-variant">Bulleted List</p>
                 </button>
                 <button type="button" @click="changeBlockType(blockMenuAt, 'numbered'); blockMenuAt = null"
-                        class="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors text-left">
-                    <span class="material-symbols-outlined text-[18px] text-slate-500">format_list_numbered</span>
-                    <p class="text-sm font-semibold text-slate-700">Numbered List</p>
+                        class="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-surface-container-low transition-colors text-left">
+                    <span class="material-symbols-outlined text-[18px] text-outline">format_list_numbered</span>
+                    <p class="text-sm font-semibold text-on-surface-variant">Numbered List</p>
                 </button>
 
-                <p class="px-3 pt-2 pb-1 text-[10px] font-black text-slate-400 uppercase tracking-widest">Media</p>
-                <label class="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors text-left cursor-pointer">
-                    <span class="material-symbols-outlined text-[18px] text-slate-500">image</span>
-                    <p class="text-sm font-semibold text-slate-700">Foto</p>
+                <p class="px-3 pt-2 pb-1 text-[10px] font-black text-outline-variant uppercase tracking-widest">Media</p>
+                <label class="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-surface-container-low transition-colors text-left cursor-pointer">
+                    <span class="material-symbols-outlined text-[18px] text-outline">image</span>
+                    <p class="text-sm font-semibold text-on-surface-variant">Foto</p>
                     <input type="file" accept="image/*" class="sr-only"
                            @change="insertImageBlockFromMenu($event, blockMenuAt); blockMenuAt = null">
                 </label>
                 <button type="button" @click="insertVideoBlock(blockMenuAt); blockMenuAt = null"
-                        class="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors text-left">
-                    <span class="material-symbols-outlined text-[18px] text-slate-500">play_circle</span>
-                    <p class="text-sm font-semibold text-slate-700">Video</p>
+                        class="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-surface-container-low transition-colors text-left">
+                    <span class="material-symbols-outlined text-[18px] text-outline">play_circle</span>
+                    <p class="text-sm font-semibold text-on-surface-variant">Video</p>
                 </button>
                 <button type="button" @click="insertDivider(blockMenuAt); blockMenuAt = null"
-                        class="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors text-left">
-                    <span class="material-symbols-outlined text-[18px] text-slate-500">horizontal_rule</span>
-                    <p class="text-sm font-semibold text-slate-700">Pemisah</p>
+                        class="w-full flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-surface-container-low transition-colors text-left">
+                    <span class="material-symbols-outlined text-[18px] text-outline">horizontal_rule</span>
+                    <p class="text-sm font-semibold text-on-surface-variant">Pemisah</p>
                 </button>
             </div>
         </div>
@@ -517,20 +517,20 @@
     </div>
 
     {{-- 4. KATEGORI & STATUS --}}
-    <div class="border-t-2 border-dashed border-slate-200 pt-8 space-y-5">
-        <p class="text-[11px] font-black text-slate-400 uppercase tracking-[0.2em]">Pengaturan Artikel</p>
+    <div class="border-t-2 border-dashed border-outline-variant pt-8 space-y-5">
+        <p class="text-[11px] font-black text-outline-variant uppercase tracking-[0.2em]">Pengaturan Artikel</p>
 
         {{-- Kategori --}}
         <div class="space-y-1.5">
-            <label class="text-xs font-bold text-slate-500 uppercase tracking-wide">
+            <label class="text-xs font-bold text-outline uppercase tracking-wide">
                 Kategori <span class="text-red-500">*</span>
             </label>
             <div class="relative" x-data="{ open: false }">
                 <button type="button" @click="open = !open"
                         class="w-full flex items-center justify-between h-11 px-4 rounded-xl border-2 text-sm font-bold transition-all"
                         :class="selectedCategoryId
-                            ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
-                            : (showCategoryError ? 'border-red-400 bg-red-50 text-red-500' : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300')">
+                            ? 'border-secondary bg-secondary-container text-indigo-700'
+                            : (showCategoryError ? 'border-red-400 bg-red-50 text-red-500' : 'border-outline-variant bg-white text-outline hover:border-outline-variant')">
                     <div class="flex items-center gap-2">
                         <span class="material-symbols-outlined text-[16px]">folder</span>
                         <span x-text="selectedCategoryName || 'Pilih kategori artikel'"></span>
@@ -539,11 +539,11 @@
                           :class="open ? 'rotate-180' : ''" style="transition:transform 0.2s">expand_more</span>
                 </button>
                 <div x-show="open" @click.away="open = false" x-transition
-                     class="absolute top-[calc(100%+4px)] left-0 right-0 bg-white rounded-xl border border-slate-200 shadow-xl z-30 overflow-hidden max-h-52 overflow-y-auto">
+                     class="absolute top-[calc(100%+4px)] left-0 right-0 bg-white rounded-xl border border-outline-variant shadow-xl z-30 overflow-hidden max-h-52 overflow-y-auto">
                     @foreach($categories as $cat)
                         <button type="button"
                                 @click="selectedCategoryId = {{ $cat->id }}; selectedCategoryName = '{{ addslashes($cat->name) }}'; open = false; isDirty = true; showCategoryError = false"
-                                class="w-full text-left px-4 py-3 text-sm font-medium text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors border-b border-slate-50 last:border-0">
+                                class="w-full text-left px-4 py-3 text-sm font-medium text-on-surface-variant hover:bg-secondary-container hover:text-indigo-700 transition-colors border-b border-slate-50 last:border-0">
                             {{ $cat->name }}
                         </button>
                     @endforeach
@@ -561,23 +561,23 @@
 
         {{-- Status --}}
         <div class="space-y-1.5">
-            <label class="text-xs font-bold text-slate-500 uppercase tracking-wide">
+            <label class="text-xs font-bold text-outline uppercase tracking-wide">
                 Status Publikasi <span class="text-red-500">*</span>
             </label>
             <div class="grid grid-cols-2 gap-2">
                 <button type="button" @click="currentStatus = 'draft'; isDirty = true; showStatusError = false"
-                        class="h-11 flex items-center justify-center gap-2 rounded-xl border-2 text-xs font-bold uppercase tracking-wide transition-all"
+                        class="h-11 flex items-center justify-center gap-2 rounded-xl border-2 text-label-sm tracking-wide transition-all"
                         :class="currentStatus === 'draft'
-                            ? 'border-slate-800 bg-slate-800 text-white'
-                            : (showStatusError ? 'border-red-300 text-red-400 bg-red-50' : 'border-slate-200 text-slate-500 hover:border-slate-300 bg-white')">
+                            ? 'border-slate-800 bg-inverse-surface text-white'
+                            : (showStatusError ? 'border-red-300 text-red-400 bg-red-50' : 'border-outline-variant text-outline hover:border-outline-variant bg-white')">
                     <span class="material-symbols-outlined text-[15px]">draft</span>
                     Simpan Draf
                 </button>
                 <button type="button" @click="currentStatus = 'published'; isDirty = true; showStatusError = false"
-                        class="h-11 flex items-center justify-center gap-2 rounded-xl border-2 text-xs font-bold uppercase tracking-wide transition-all"
+                        class="h-11 flex items-center justify-center gap-2 rounded-xl border-2 text-label-sm tracking-wide transition-all"
                         :class="currentStatus === 'published'
-                            ? 'border-emerald-500 bg-emerald-500 text-white'
-                            : (showStatusError ? 'border-red-300 text-red-400 bg-red-50' : 'border-slate-200 text-slate-500 hover:border-slate-300 bg-white')">
+                            ? 'border-emerald-500 bg-primary text-white'
+                            : (showStatusError ? 'border-red-300 text-red-400 bg-red-50' : 'border-outline-variant text-outline hover:border-outline-variant bg-white')">
                     <span class="material-symbols-outlined text-[15px]">publish</span>
                     Terbitkan
                 </button>
@@ -594,8 +594,8 @@
 
         {{-- Submit --}}
         <button type="button" @click="submitToLivewire()" :disabled="isSaving"
-                class="w-full h-14 bg-slate-900 hover:bg-indigo-600 text-white rounded-xl text-sm font-black uppercase tracking-widest shadow-lg transition-all active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-3 mt-2">
-            <div x-show="isSaving" class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                class="w-full h-14 bg-inverse-surface hover:bg-secondary text-white rounded-xl text-sm font-black uppercase tracking-widest shadow-lg transition-all active:scale-[0.99] disabled:opacity-60 flex items-center justify-center gap-3 mt-2">
+            <div x-show="isSaving" class="w-5 h-5 border-2 border-white/30 border-t-white rounded-lg animate-spin"></div>
             <span x-show="!isSaving" class="material-symbols-outlined text-[20px]">send</span>
             <span x-text="isSaving ? 'Menyimpan...' : 'Simpan Artikel'"></span>
         </button>
@@ -1089,31 +1089,6 @@ function focusEditable(el) {
 
 </script>
 
-<style>
-.ce-placeholder:empty::before {
-    content: attr(data-placeholder);
-    color: #cbd5e1;
-    pointer-events: none;
-    font-style: italic;
-    display: block;
-}
-[contenteditable]:focus { outline: none; }
 
-/* FIX #4: Responsive images/video/iframe */
-#blocks-container img {
-    max-width: 100%;
-    width: 100%;
-    height: auto !important;
-    display: block;
-}
-#blocks-container video {
-    max-width: 100%;
-    height: auto;
-}
-#blocks-container figure {
-    width: 100%;
-    margin: 0;
-}
-</style>
 
 </div>

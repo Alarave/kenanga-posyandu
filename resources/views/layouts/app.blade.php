@@ -7,10 +7,10 @@
 
     <title>{{ config('app.name', 'Posyandu') }} - @yield('title', 'Dashboard')</title>
 
-    <!-- Fonts (Public Sans) -->
+    <!-- Fonts (Outfit) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -24,82 +24,13 @@
     <!-- WAJIB: Livewire Styles -->
     @livewireStyles
     
-    <style>
-        :root { --sidebar-width: 260px; }
-
-        #mainContent {
-            width: 100%;
-            transition: all 300ms ease-out;
-        }
-
-        @media (min-width: 1024px) {
-            .app-grid {
-                display: grid;
-                grid-template-columns: var(--sidebar-width, 260px) 1fr;
-                min-height: 100vh;
-            }
-            #sidebar {
-                position: sticky !important;
-                top: 0;
-                height: 100vh;
-                width: var(--sidebar-width) !important;
-                transition: width 300ms ease-out;
-            }
-            #mainContent {
-                width: 100%;
-                min-width: 0;
-                display: flex;
-                flex-direction: column;
-            }
-        }
-
-        /* Prevent table overflow in cards */
-        .section-card, .premium-card, .bento-card, .widget-card {
-            max-width: 100%;
-        }
-
-        .overflow-x-auto {
-            -webkit-overflow-scrolling: touch;
-        }
-
-        [x-cloak] {
-            display: none !important;
-        }
-
-        @media print {
-            /* Sembunyikan elemen navigasi dan filter saat cetak (DASH-36) */
-            header, nav, #sidebar, .sidebar, .navbar, .no-print, footer, #toast-container {
-                display: none !important;
-            }
-            body, main {
-                background: white !important;
-                color: black !important;
-            }
-            #mainContent {
-                margin: 0 !important;
-                padding: 0 !important;
-            }
-            .app-grid {
-                display: block !important;
-            }
-            /* Hilangkan bayangan & pastikan ukuran penuh */
-            .widget-card, .kpi-card, .premium-card {
-                box-shadow: none !important;
-                border: 1px solid #e2e8f0 !important;
-                page-break-inside: avoid;
-            }
-            .hero-gradient, .hero-orb-1, .hero-orb-2 {
-                background: none !important;
-                display: none !important;
-            }
-        }
-    </style>
+    
 
     @stack('styles')
 </head>
-<body class="font-sans antialiased bg-slate-50 text-slate-900">
+<body class="font-sans antialiased bg-surface text-on-surface">
 
-    <div class="min-h-screen app-grid bg-dashboard">
+    <div class="min-h-screen app-grid bg-surface">
         <!-- Sidebar -->
         @include('components.layouts.app.sidebar')
         

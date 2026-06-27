@@ -9,7 +9,7 @@
         {{-- Mobile hamburger --}}
         <button id="mobileSidebarToggle"
             class="lg:hidden w-9 h-9 flex items-center justify-center rounded-xl
-                   text-slate-500 border border-slate-200 hover:bg-slate-50 hover:border-slate-300
+                   text-outline border border-outline-variant hover:bg-surface-container-low hover:border-outline-variant
                    active:scale-95 transition-all duration-150 shrink-0">
             <i class="fas fa-bars" style="font-size:14px;"></i>
         </button>
@@ -30,7 +30,7 @@
         {{-- Mobile search toggle --}}
         <button id="mobileSearchBtn"
             class="lg:hidden w-9 h-9 flex items-center justify-center rounded-xl
-                   text-slate-500 border border-slate-200 hover:bg-slate-50
+                   text-outline border border-outline-variant hover:bg-surface-container-low
                    active:scale-95 transition-all duration-150">
             <i class="fas fa-search" style="font-size:13px;"></i>
         </button>
@@ -41,14 +41,14 @@
         @endif
 
         {{-- Divider --}}
-        <div class="hidden sm:block w-px h-5 bg-slate-200 mx-1"></div>
+        <div class="hidden sm:block w-px h-5 bg-surface-container-high mx-1"></div>
 
         {{-- ── Profile dropdown ── --}}
         <div class="relative">
             <button @click="profileOpen = !profileOpen; if(profileOpen) $dispatch('close-dropdowns', 'profile')"
                 class="flex items-center gap-2.5 pl-1.5 pr-3 py-1.5 rounded-xl
-                       hover:bg-slate-50 active:scale-95 transition-all duration-200 group
-                       border border-transparent hover:border-slate-200">
+                       hover:bg-surface-container-low active:scale-95 transition-all duration-200 group
+                       border border-transparent hover:border-outline-variant">
 
                 {{-- Avatar --}}
                 <x-avatar :name="$name" size="medium" status="online" />
@@ -56,17 +56,17 @@
                 {{-- Name + role --}}
                 <div class="hidden md:flex flex-col items-start leading-tight">
                     <div class="flex items-center gap-1.5">
-                        <span class="text-slate-800 font-bold text-sm">
+                        <span class="text-on-surface font-bold text-sm">
                             {{ explode(' ', $name)[0] }}
                         </span>
                         <span class="px-1.5 py-0.5 rounded-md {{ $badgeClass }} text-[10px] font-bold tracking-wide">
                             {{ $role }}
                         </span>
                     </div>
-                    <span class="text-slate-400 text-xs font-medium">{{ $user?->email }}</span>
+                    <span class="text-outline-variant text-xs font-medium">{{ $user?->email }}</span>
                 </div>
 
-                <i class="fas fa-chevron-down text-slate-400 group-hover:text-slate-600 transition-all duration-200 hidden md:block"
+                <i class="fas fa-chevron-down text-outline-variant group-hover:text-on-surface-variant transition-all duration-200 hidden md:block"
                    :class="profileOpen ? 'rotate-180' : ''"
                    style="font-size:10px;"></i>
             </button>
@@ -85,12 +85,12 @@
                 x-cloak>
 
                 {{-- User card --}}
-                <div class="px-3 py-3 rounded-xl mb-1 bg-slate-50 border border-slate-100">
+                <div class="px-3 py-3 rounded-xl mb-1 bg-surface-container-low border border-slate-100">
                     <div class="flex items-center gap-3">
                         <x-avatar :name="$name" size="medium" />
                         <div class="min-w-0">
-                            <p class="text-slate-900 font-bold text-sm truncate leading-tight">{{ $name }}</p>
-                            <p class="text-slate-500 text-xs font-medium truncate mt-0.5">{{ $user?->email }}</p>
+                            <p class="text-on-surface font-bold text-sm truncate leading-tight">{{ $name }}</p>
+                            <p class="text-outline text-xs font-medium truncate mt-0.5">{{ $user?->email }}</p>
                             <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold {{ $badgeClass }} mt-1">
                                 {{ $role }}
                             </span>
@@ -102,15 +102,15 @@
                 <div class="py-1">
                     @foreach($menuItems as $item)
                     <a href="{{ $item['href'] }}"
-                       class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50
-                              hover:text-slate-900 rounded-xl transition-all group">
+                       class="flex items-center gap-3 px-3 py-2.5 text-on-surface-variant hover:bg-surface-container-low
+                              hover:text-on-surface rounded-xl transition-all group">
                         <div @class([
                             'w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 transition-all',
-                            'bg-emerald-50 text-emerald-600 group-hover:bg-emerald-100' => $item['color'] === 'emerald',
-                            'bg-blue-50 text-blue-600 group-hover:bg-blue-100' => $item['color'] === 'blue',
+                            'bg-emerald-50 text-primary group-hover:bg-emerald-100' => $item['color'] === 'emerald',
+                            'bg-blue-50 text-secondary group-hover:bg-blue-100' => $item['color'] === 'blue',
                             'bg-amber-50 text-amber-600 group-hover:bg-amber-100' => $item['color'] === 'amber',
                             'bg-violet-50 text-violet-600 group-hover:bg-violet-100' => $item['color'] === 'violet',
-                            'bg-indigo-50 text-indigo-600 group-hover:bg-indigo-100' => $item['color'] === 'indigo',
+                            'bg-secondary-container text-secondary group-hover:bg-indigo-100' => $item['color'] === 'indigo',
                         ])>
                             <i class="fas {{ $item['icon'] }} text-[12px]"></i>
                         </div>
@@ -143,12 +143,12 @@
 <div id="mobileSearchBar"
     class="hidden lg:hidden px-4 py-2.5 bg-white border-b border-slate-100 shadow-sm">
     <div class="relative">
-        <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none"
+        <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-outline-variant pointer-events-none"
            style="font-size:12px;"></i>
         <input type="text"
             placeholder="Cari pasien, jadwal, artikel…"
-            class="w-full h-10 pl-9 pr-4 rounded-xl border border-slate-200 bg-slate-50
-                   text-slate-700 placeholder-slate-400 text-sm font-medium
+            class="w-full h-10 pl-9 pr-4 rounded-xl border border-outline-variant bg-surface-container-low
+                   text-on-surface-variant placeholder-slate-400 text-sm font-medium
                    focus:outline-none focus:ring-2 focus:ring-primary/10 focus:border-primary/30
                    focus:bg-white transition-all">
     </div>

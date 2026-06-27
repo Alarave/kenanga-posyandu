@@ -31,7 +31,7 @@
          x-transition:leave="ease-in duration-200" 
          x-transition:leave-start="opacity-100" 
          x-transition:leave-end="opacity-0" 
-         class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity" 
+         class="fixed inset-0 bg-inverse-surface/60 backdrop-blur-sm transition-opacity" 
          @click="show = false"></div>
 
     <!-- Modal Content -->
@@ -48,10 +48,10 @@
             <!-- Header -->
             @if($title)
             <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
-                <h3 class="text-base font-bold text-slate-900" id="modal-title">
+                <h3 class="text-base font-bold text-on-surface" id="modal-title">
                     {{ $title }}
                 </h3>
-                <button @click="show = false" class="text-slate-400 hover:text-slate-600 transition-colors">
+                <button @click="show = false" class="text-outline-variant hover:text-on-surface-variant transition-colors">
                     <span class="material-symbols-outlined">close</span>
                 </button>
             </div>
@@ -64,7 +64,7 @@
             
             <!-- Footer -->
             @if(isset($footer))
-            <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex justify-end gap-3">
+            <div class="px-6 py-4 bg-surface-container-low border-t border-slate-100 flex justify-end gap-3">
                 {{ $footer }}
             </div>
             @endif

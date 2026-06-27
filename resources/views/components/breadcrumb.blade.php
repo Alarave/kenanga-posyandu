@@ -13,7 +13,7 @@
         @if(isset($item['active']) && $item['active'])
           <span class="text-sm font-medium text-gray-500">{{ $item['label'] }}</span>
         @else
-          <a href="{{ $item['url'] ?? '#' }}" class="text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors">
+          <a href="{{ $item['url'] ?? '#' }}" class="text-sm font-medium text-gray-700 hover:text-secondary transition-colors">
             {{ $item['label'] }}
           </a>
         @endif

@@ -23,9 +23,9 @@
             class="peer sr-only"
         >
         <!-- Background -->
-        <div class="block transition duration-150 ease-linear h-6 w-11 rounded-full bg-gray-200 dark:bg-white/10 peer-checked:bg-blue-500 {{ $disabled ? 'bg-gray-100 dark:bg-gray-800' : '' }}"></div>
+        <div class="block transition duration-150 ease-linear h-6 w-11 rounded-lg bg-gray-200 dark:bg-white/10 peer-checked:bg-blue-500 {{ $disabled ? 'bg-gray-100 dark:bg-gray-800' : '' }}"></div>
         <!-- Knob -->
-        <div class="absolute left-0.5 top-0.5 h-5 w-5 rounded-full bg-white shadow-sm transition duration-150 ease-linear transform peer-checked:translate-x-[20px]"></div>
+        <div class="absolute left-0.5 top-0.5 h-5 w-5 rounded-lg bg-white shadow-sm transition duration-150 ease-linear transform peer-checked:translate-x-[20px]"></div>
     </div>
     @if($label)
         <span>{{ $label }}</span>

@@ -6,7 +6,7 @@
 <div class="max-w-7xl mx-auto px-6 md:px-12 pb-32 relative">
 
     {{-- Decor --}}
-    <div class="absolute -top-10 right-0 w-96 h-96 bg-primary/5 rounded-full blur-[100px] pointer-events-none"></div>
+    <div class="absolute -top-10 right-0 w-96 h-96 bg-primary/5 rounded-lg blur-[100px] pointer-events-none"></div>
 
     <!-- Hero Section -->
     <div class="relative rounded-[3.5rem] overflow-hidden min-h-[450px] flex items-center mb-24 bg-on-surface group shadow-[0_40px_100px_-20px_rgba(0,104,95,0.25)]">
@@ -15,13 +15,13 @@
         <div class="absolute inset-0 bg-gradient-to-r from-on-surface via-on-surface/50 to-transparent"></div>
         
         <div class="relative z-10 px-10 md:px-24 py-20 max-w-2xl">
-            <div class="inline-flex items-center gap-3 px-6 py-2 bg-primary/20 backdrop-blur-md rounded-full mb-8 border border-white/10">
+            <div class="inline-flex items-center gap-3 px-6 py-2 bg-primary/20 backdrop-blur-md rounded-lg mb-8 border border-white/10">
                 <span class="text-[10px] font-black text-white uppercase tracking-[0.3em]">Bantuan & Support</span>
             </div>
             <h1 class="text-5xl md:text-8xl font-black text-white mb-8 leading-[1] tracking-tight font-jakarta">
                 Hubungi <span class="text-primary italic">Kami.</span>
             </h1>
-            <p class="text-white/70 text-xl font-medium leading-relaxed italic opacity-80">
+            <p class="text-white/70 text-headline-sm font-medium leading-relaxed italic opacity-80">
                 Kami siap memberikan informasi dan bantuan terbaik untuk kesehatan keluarga Anda di wilayah Bekasi Timur.
             </p>
         </div>
@@ -36,7 +36,7 @@
                     'desc' => 'Respon cepat untuk tanya jawab langsung.',
                     'val' => '+62 812-3456-7890',
                     'icon' => 'fab fa-whatsapp',
-                    'color' => 'bg-emerald-500',
+                    'color' => 'bg-primary',
                     'link' => 'https://wa.me/6281234567890'
                 ],
                 [
@@ -63,7 +63,7 @@
             <div class="w-20 h-20 {{ $c['color'] }} rounded-[2rem] flex items-center justify-center text-white mb-10 shadow-xl group-hover:rotate-6 transition-all duration-500">
                 <i class="{{ $c['icon'] }} text-[32px]"></i>
             </div>
-            <h3 class="text-2xl font-black text-on-surface mb-3 italic font-jakarta">{{ $c['label'] }}</h3>
+            <h3 class="text-headline-md font-black text-on-surface mb-3 italic font-jakarta">{{ $c['label'] }}</h3>
             <p class="text-on-surface-variant text-sm font-medium leading-relaxed mb-10 opacity-70">{{ $c['desc'] }}</p>
             <div class="mt-auto flex items-center justify-between">
                 <span class="text-[11px] font-black uppercase tracking-widest text-primary">{{ $c['val'] }}</span>
@@ -82,16 +82,16 @@
                 <div class="space-y-10 mb-16">
                     <div class="flex items-start gap-6">
                         <span class="material-symbols-outlined text-primary text-[28px] shrink-0">location_on</span>
-                        <p class="text-on-surface-variant font-medium text-lg leading-relaxed max-w-sm italic opacity-80">
+                        <p class="text-on-surface-variant font-medium text-body-lg leading-relaxed max-w-sm italic opacity-80">
                             Jl. Mawar Raya No. 123, Kelurahan Duren Jaya, Kecamatan Bekasi Timur, Kota Bekasi.
                         </p>
                     </div>
                     <div class="flex items-start gap-6">
                         <span class="material-symbols-outlined text-primary text-[28px] shrink-0">schedule</span>
-                        <p class="text-on-surface-variant font-medium text-lg italic opacity-80">Senin - Jumat: 08.00 - 16.00</p>
+                        <p class="text-on-surface-variant font-medium text-body-lg italic opacity-80">Senin - Jumat: 08.00 - 16.00</p>
                     </div>
                 </div>
-                <a href="https://www.google.com/maps/search/Bekasi+Timur" target="_blank" class="btn-premium inline-flex items-center px-12 py-5 bg-on-surface text-white text-[11px] font-black uppercase tracking-widest rounded-full hover:bg-primary transition-all shadow-xl active:scale-95 self-start">
+                <a href="https://www.google.com/maps/search/Bekasi+Timur" target="_blank" class="btn-premium inline-flex items-center px-12 py-5 bg-on-surface text-white text-[11px] font-black uppercase tracking-widest rounded-lg hover:bg-primary transition-all shadow-xl active:scale-95 self-start">
                     Dapatkan Navigasi <span class="material-symbols-outlined text-[18px] ml-4">map</span>
                 </a>
             </div>
@@ -102,8 +102,8 @@
                 <div class="absolute inset-0 bg-primary/20 mix-blend-overlay"></div>
                 {{-- Glowing dot on map --}}
                 <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                    <div class="w-12 h-12 bg-primary/40 rounded-full animate-ping absolute"></div>
-                    <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center relative shadow-[0_0_40px_var(--primary)]">
+                    <div class="w-12 h-12 bg-primary/40 rounded-lg animate-ping absolute"></div>
+                    <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center relative shadow-[0_0_40px_var(--primary)]">
                         <span class="material-symbols-outlined text-white text-[24px]">push_pin</span>
                     </div>
                 </div>

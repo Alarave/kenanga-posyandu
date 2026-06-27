@@ -64,14 +64,14 @@
     @endif
 
     {{-- Track --}}
-    <div class="w-full {{ $trackColor }} {{ $height }} rounded-full overflow-hidden"
+    <div class="w-full {{ $trackColor }} {{ $height }} rounded-lg overflow-hidden"
          role="progressbar"
          aria-valuenow="{{ $pct }}"
          aria-valuemin="0"
          aria-valuemax="100"
          @if($label) aria-label="{{ $label }}" @endif>
         {{-- Fill --}}
-        <div class="{{ $barColor }} {{ $height }} rounded-full transition-all duration-500 ease-out"
+        <div class="{{ $barColor }} {{ $height }} rounded-lg transition-all duration-500 ease-out"
              style="width: {{ $pct }}%">
         </div>
     </div>

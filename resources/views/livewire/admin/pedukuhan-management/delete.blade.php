@@ -8,7 +8,7 @@
 <div class="p-6">
     <div class="text-center">
         <x-icon name="exclamation-triangle" class="mx-auto w-12 h-12 text-red-500" />
-        <h3 class="mt-2 text-lg font-medium text-gray-900">Konfirmasi Penghapusan Pedukuhan</h3>
+        <h3 class="mt-2 text-body-lg font-medium text-gray-900">Konfirmasi Penghapusan Pedukuhan</h3>
         <div class="mt-2 text-sm text-gray-500">
             <p>Apakah Anda yakin ingin menghapus pedukuhan <span class="font-semibold">{{ $pedukuhan->name }}</span>?</p>
             <p class="mt-1">Semua data terkait termasuk posyandu dan pasien akan terpengaruh.</p>

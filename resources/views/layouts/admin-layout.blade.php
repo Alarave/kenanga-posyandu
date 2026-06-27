@@ -5,7 +5,7 @@
     <!-- Admin Header -->
     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-6 w-full">
         <div class="flex-1 min-w-0 w-full">
-            <h1 class="text-lg font-black text-slate-800 truncate">@yield('admin-title')</h1>
+            <h1 class="text-body-lg font-black text-on-surface truncate">@yield('admin-title')</h1>
         </div>
         
         @hasSection('admin-actions')

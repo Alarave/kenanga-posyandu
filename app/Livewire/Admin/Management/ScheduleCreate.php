@@ -7,11 +7,13 @@ use App\Models\Schedule;
 use App\Services\ScheduleService;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 /**
  * Komponen untuk membuat jadwal baru (OOP & Clean Code).
  */
+#[Layout('layouts.admin-layout')]
 class ScheduleCreate extends Component
 {
     public string $title = '';
@@ -33,6 +35,7 @@ class ScheduleCreate extends Component
      */
     public function mount(): void
     {
+        /** @var \App\Models\User $user */
         $user = auth()->user();
         if (! $user->isSuperAdmin()) {
             $this->posyandu_id = $user->posyandu_id;
@@ -63,7 +66,9 @@ class ScheduleCreate extends Component
         Gate::authorize('create', Schedule::class);
         $validated = $this->validate();
 
-        $service->createSchedule($validated, auth()->user());
+        /** @var \App\Models\User $user */
+        $user = auth()->user();
+        $service->createSchedule($validated, $user);
 
         session()->flash('success', 'Jadwal kegiatan berhasil ditambahkan.');
 
@@ -75,6 +80,7 @@ class ScheduleCreate extends Component
      */
     public function render(): View
     {
+        /** @var \App\Models\User $user */
         $user = auth()->user();
         $posyandus = $user->isSuperAdmin()
             ? Posyandu::orderBy('name')->get()
@@ -82,6 +88,6 @@ class ScheduleCreate extends Component
 
         return view('livewire.admin.schedule-management.create', [
             'posyandus' => $posyandus,
-        ])->layout('layouts.admin-layout');
+        ]);
     }
 }

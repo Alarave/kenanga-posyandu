@@ -12,13 +12,13 @@
                 <i class="fas fa-heartbeat text-white" style="font-size:15px;"></i>
             </div>
             <div class="sidebar-text overflow-hidden transition-all duration-300">
-                <span class="block font-extrabold text-slate-900 leading-none" style="font-size:15px; letter-spacing:-0.02em;">Posyandu</span>
-                <span class="block text-slate-400 font-semibold" style="font-size:10px; letter-spacing:.08em; margin-top:2px; text-transform:uppercase;">Admin Dashboard</span>
+                <span class="block font-extrabold text-on-surface leading-none" style="font-size:15px; letter-spacing:-0.02em;">Posyandu</span>
+                <span class="block text-outline-variant font-semibold" style="font-size:10px; letter-spacing:.08em; margin-top:2px; text-transform:uppercase;">Admin Dashboard</span>
             </div>
         </a>
 
         <button id="sidebarToggleBtn"
-            class="hidden lg:flex w-7 h-7 items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-all shrink-0"
+            class="hidden lg:flex w-7 h-7 items-center justify-center rounded-lg text-outline-variant hover:text-on-surface-variant hover:bg-surface-container transition-all shrink-0"
             title="Toggle sidebar">
             <i id="toggleIcon" class="fas fa-chevron-left transition-transform duration-300" style="font-size:9px;"></i>
         </button>
@@ -34,7 +34,7 @@
 
         {{-- Section: Overview --}}
         <div class="sidebar-section-label px-2 mb-1.5 mt-2 transition-all duration-300">
-            <span class="block font-bold text-slate-400" style="font-size:10px; letter-spacing:.1em; text-transform:uppercase;">Ringkasan</span>
+            <span class="block font-bold text-outline-variant" style="font-size:10px; letter-spacing:.1em; text-transform:uppercase;">Ringkasan</span>
         </div>
 
         <a href="{{ route('dashboard') }}"
@@ -51,7 +51,7 @@
 
         {{-- Section: Manajemen --}}
         <div class="sidebar-section-label px-2 mb-1.5 mt-5 transition-all duration-300">
-            <span class="block font-bold text-slate-400" style="font-size:10px; letter-spacing:.1em; text-transform:uppercase;">Manajemen</span>
+            <span class="block font-bold text-outline-variant" style="font-size:10px; letter-spacing:.1em; text-transform:uppercase;">Manajemen</span>
         </div>
 
         @php
@@ -84,7 +84,7 @@
         {{-- Section: Laporan --}}
         @if(auth()->user()->isSuperAdmin() || auth()->user()->isAdmin() || auth()->user()->isKader())
         <div class="sidebar-section-label px-2 mb-1.5 mt-5 transition-all duration-300">
-            <span class="block font-bold text-slate-400" style="font-size:10px; letter-spacing:.1em; text-transform:uppercase;">Laporan & Riwayat</span>
+            <span class="block font-bold text-outline-variant" style="font-size:10px; letter-spacing:.1em; text-transform:uppercase;">Laporan & Riwayat</span>
         </div>
 
         <a href="{{ route('admin.reports.index') }}"
@@ -105,7 +105,7 @@
         {{-- Section: Konten --}}
         @if(auth()->user()->isSuperAdmin() || auth()->user()->isAdmin() || auth()->user()->isKader())
         <div class="sidebar-section-label px-2 mb-1.5 mt-5 transition-all duration-300">
-            <span class="block font-bold text-slate-400" style="font-size:10px; letter-spacing:.1em; text-transform:uppercase;">Konten</span>
+            <span class="block font-bold text-outline-variant" style="font-size:10px; letter-spacing:.1em; text-transform:uppercase;">Konten</span>
         </div>
 
         @php
@@ -134,7 +134,7 @@
         {{-- Section: Sistem --}}
         @if(auth()->user()->isSuperAdmin())
         <div class="sidebar-section-label px-2 mb-1.5 mt-5 transition-all duration-300">
-            <span class="block font-bold text-slate-400" style="font-size:10px; letter-spacing:.1em; text-transform:uppercase;">Sistem</span>
+            <span class="block font-bold text-outline-variant" style="font-size:10px; letter-spacing:.1em; text-transform:uppercase;">Sistem</span>
         </div>
 
         <a href="{{ route('admin.users.index') }}"
@@ -148,14 +148,14 @@
 
     {{-- ── User Footer ── --}}
     <div class="shrink-0 p-3" style="border-top:1px solid rgba(0,0,0,0.06);">
-        <div class="flex items-center gap-3 p-2.5 rounded-xl transition-all duration-200 cursor-pointer hover:bg-slate-50 group">
+        <div class="flex items-center gap-3 p-2.5 rounded-xl transition-all duration-200 cursor-pointer hover:bg-surface-container-low group">
             {{-- Avatar --}}
             <x-avatar :name="Auth::user()->name" size="small" status="online" />
 
             {{-- Info --}}
             <div class="sidebar-text flex-1 min-w-0 transition-all duration-300">
-                <p class="text-slate-800 font-bold truncate leading-tight text-[13px]">{{ Auth::user()->name ?? 'Admin' }}</p>
-                <p class="text-slate-400 truncate text-[11px] font-medium mt-0.5">
+                <p class="text-on-surface font-bold truncate leading-tight text-[13px]">{{ Auth::user()->name ?? 'Admin' }}</p>
+                <p class="text-outline-variant truncate text-[11px] font-medium mt-0.5">
                     {{ auth()->user()->role_label }}
                 </p>
             </div>

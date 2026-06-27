@@ -35,7 +35,7 @@
     ];
 
     $statusColorClasses = [
-        'online'  => 'bg-emerald-500',
+        'online'  => 'bg-primary',
         'offline' => 'bg-slate-400',
         'busy'    => 'bg-rose-500',
     ];
@@ -57,16 +57,16 @@
     }
 @endphp
 
-<div class="relative rounded-full flex-shrink-0 {{ $containerClass }}">
+<div class="relative rounded-lg flex-shrink-0 {{ $containerClass }}">
     @if($src)
         <img
             src="{{ $src }}"
             alt="{{ $alt }}"
-            class="object-cover w-full h-full rounded-full shadow-inner border border-slate-100 dark:border-slate-800"
+            class="object-cover w-full h-full rounded-lg shadow-inner border border-slate-100 dark:border-slate-800"
             loading="lazy"
         />
     @else
-        <div class="w-full h-full rounded-full flex items-center justify-center text-white font-black shadow-sm select-none {{ $fontSizeClass }}"
+        <div class="w-full h-full rounded-lg flex items-center justify-center text-white font-black shadow-sm select-none {{ $fontSizeClass }}"
              style="background: linear-gradient(135deg, #1e293b 0%, #475569 100%);">
             {{ $initials }}
         </div>
@@ -77,10 +77,10 @@
         <span class="absolute bottom-0 right-0 flex {{ $statusSizeClass }}">
             {{-- Pulsating effect for Online status --}}
             @if($status === 'online')
-                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-lg bg-emerald-400 opacity-75"></span>
             @endif
             {{-- Solid indicator dot --}}
-            <span class="relative inline-flex rounded-full border-[1.5px] border-white dark:border-slate-900 w-full h-full {{ $statusColorClass }}"></span>
+            <span class="relative inline-flex rounded-lg border-[1.5px] border-white dark:border-slate-900 w-full h-full {{ $statusColorClass }}"></span>
         </span>
     @endif
 </div>

@@ -16,6 +16,7 @@ trait HasPosyanduScope
      */
     protected function applyPosyanduScope(Builder $query, ?int $selectedPosyanduId = null): Builder
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
 
         // Admin RW / Superadmin
@@ -49,6 +50,7 @@ trait HasPosyanduScope
      */
     protected function getAllowedPosyandus()
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
 
         if ($user->isSuperAdmin()) {

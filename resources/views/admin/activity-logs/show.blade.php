@@ -4,7 +4,7 @@
 @section('admin-title', 'Detail Log Aktivitas')
 
 @section('admin-actions')
-<a href="{{ route('admin.activity-logs.index') }}" class="inline-flex items-center gap-2 text-xs font-black text-slate-500 uppercase tracking-widest hover:text-teal-600 transition-colors group">
+<a href="{{ route('admin.activity-logs.index') }}" class="inline-flex items-center gap-2 text-xs font-black text-outline uppercase tracking-widest hover:text-primary transition-colors group">
     <span class="material-symbols-outlined text-[18px] group-hover:-translate-x-1 transition-transform">arrow_back</span>
     Kembali ke Daftar
 </a>
@@ -36,20 +36,20 @@
         $badgeStyle = match($activityLog->action_type) {
             'create' => 'bg-emerald-50 text-emerald-700 border-emerald-100/85',
             'update' => 'bg-amber-50 text-amber-700 border-amber-100/85',
-            'delete', 'login_failed' => 'bg-rose-50 text-rose-700 border-rose-100/85',
-            'login', 'logout' => 'bg-indigo-50 text-indigo-700 border-indigo-100/85',
-            default => 'bg-slate-50 text-slate-600 border-slate-100',
+            'delete', 'login_failed' => 'bg-error-container text-rose-700 border-rose-100/85',
+            'login', 'logout' => 'bg-secondary-container text-indigo-700 border-indigo-100/85',
+            default => 'bg-surface-container-low text-on-surface-variant border-slate-100',
         };
     @endphp
 
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center p-6 bg-white border border-slate-100 rounded-3xl shadow-sm gap-4">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center p-6 bg-white border border-slate-100 rounded-2xl shadow-sm gap-4">
         <div>
-            <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">ID Audit Log</span>
-            <h3 class="text-xl font-extrabold text-slate-800">#{{ $activityLog->id }}</h3>
+            <span class="text-[10px] font-black text-outline-variant uppercase tracking-widest block mb-1">ID Audit Log</span>
+            <h3 class="text-headline-sm font-extrabold text-on-surface">#{{ $activityLog->id }}</h3>
         </div>
         <div class="flex items-center gap-3">
             <div class="inline-flex items-center px-4 py-2 rounded-xl border {{ $badgeStyle }} shadow-sm">
-                <span class="w-2 h-2 rounded-full bg-current mr-2 animate-pulse"></span>
+                <span class="w-2 h-2 rounded-lg bg-current mr-2 animate-pulse"></span>
                 <span class="text-xs font-black uppercase tracking-wider">{{ $activityLog->action_type }}</span>
             </div>
         </div>
@@ -58,52 +58,52 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {{-- ── Left Side: General Info & Diff Viewer ── --}}
         <div class="lg:col-span-2 space-y-8">
-            <div class="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 md:p-8">
-                <h3 class="text-sm font-black text-slate-800 uppercase tracking-wider mb-6 flex items-center gap-3">
-                    <span class="material-symbols-outlined text-teal-600">info</span>
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 md:p-8">
+                <h3 class="text-sm font-black text-on-surface uppercase tracking-wider mb-6 flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary">info</span>
                     Informasi Umum
                 </h3>
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
                     <div class="space-y-1.5">
-                        <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Waktu Kejadian</p>
-                        <p class="text-base font-black text-slate-800 leading-tight">{{ $activityLog->created_at->format('d M Y, H:i:s') }}</p>
-                        <p class="text-xs font-bold text-slate-400 italic">{{ $activityLog->created_at->diffForHumans() }}</p>
+                        <p class="text-[11px] font-black text-outline-variant uppercase tracking-widest">Waktu Kejadian</p>
+                        <p class="text-base font-black text-on-surface leading-tight">{{ $activityLog->created_at->format('d M Y, H:i:s') }}</p>
+                        <p class="text-xs font-bold text-outline-variant italic">{{ $activityLog->created_at->diffForHumans() }}</p>
                     </div>
 
                     <div class="space-y-1.5">
-                        <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest">IP Address</p>
+                        <p class="text-[11px] font-black text-outline-variant uppercase tracking-widest">IP Address</p>
                         <p class="text-base font-mono font-bold text-slate-850 bg-slate-55 border border-slate-100/50 px-2 py-0.5 rounded-lg inline-block leading-none mt-1">{{ $activityLog->ip_address }}</p>
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mt-1">Akses Jaringan</p>
+                        <p class="text-[10px] font-black text-outline-variant uppercase tracking-widest block mt-1">Akses Jaringan</p>
                     </div>
 
                     <div class="space-y-1.5">
-                        <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Entitas Terdampak</p>
+                        <p class="text-[11px] font-black text-outline-variant uppercase tracking-widest">Entitas Terdampak</p>
                         <div class="flex items-center gap-3 mt-1">
-                            <div class="w-10 h-10 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-500">
+                            <div class="w-10 h-10 rounded-xl bg-surface-container-low border border-slate-100 flex items-center justify-center text-outline">
                                 <span class="material-symbols-outlined">database</span>
                             </div>
                             <div>
-                                <p class="text-sm font-black text-slate-800">{{ $activityLog->entity_type ? class_basename($activityLog->entity_type) : 'Global System' }}</p>
+                                <p class="text-sm font-black text-on-surface">{{ $activityLog->entity_type ? class_basename($activityLog->entity_type) : 'Global System' }}</p>
                                 @if($entityDisplayName)
-                                    <p class="text-sm font-bold text-slate-700 leading-tight">{{ $entityDisplayName }}</p>
-                                    <p class="text-[10px] font-medium text-slate-400 uppercase tracking-wider">ID #{{ $activityLog->entity_id }}</p>
+                                    <p class="text-sm font-bold text-on-surface-variant leading-tight">{{ $entityDisplayName }}</p>
+                                    <p class="text-[10px] font-medium text-outline-variant uppercase tracking-wider">ID #{{ $activityLog->entity_id }}</p>
                                 @elseif($activityLog->entity_id)
-                                    <p class="text-xs font-bold text-teal-600 uppercase tracking-widest">ID #{{ $activityLog->entity_id }}</p>
+                                    <p class="text-xs font-bold text-primary uppercase tracking-widest">ID #{{ $activityLog->entity_id }}</p>
                                     @if($activityLog->action_type === 'delete')
                                         <p class="text-[10px] text-rose-400 italic font-medium">(Data telah dihapus)</p>
                                     @endif
                                 @else
-                                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest">N/A</p>
+                                    <p class="text-xs font-bold text-outline-variant uppercase tracking-widest">N/A</p>
                                 @endif
                             </div>
                         </div>
                     </div>
 
                     <div class="space-y-1.5 md:col-span-2">
-                        <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Deskripsi Perubahan</p>
-                        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 mt-1">
-                            <p class="text-sm font-bold text-slate-700 leading-relaxed">{{ $activityLog->description }}</p>
+                        <p class="text-[11px] font-black text-outline-variant uppercase tracking-widest">Deskripsi Perubahan</p>
+                        <div class="p-4 bg-surface-container-low rounded-2xl border border-slate-100 mt-1">
+                            <p class="text-sm font-bold text-on-surface-variant leading-relaxed">{{ $activityLog->description }}</p>
                         </div>
                     </div>
                 </div>
@@ -161,22 +161,22 @@
                 };
             @endphp
 
-            <div x-data="{ viewMode: 'diff' }" class="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 md:p-8">
+            <div x-data="{ viewMode: 'diff' }" class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 md:p-8">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-5 mb-6">
-                    <h3 class="text-sm font-black text-slate-800 uppercase tracking-wider flex items-center gap-3">
-                        <span class="material-symbols-outlined text-teal-600">compare</span>
+                    <h3 class="text-sm font-black text-on-surface uppercase tracking-wider flex items-center gap-3">
+                        <span class="material-symbols-outlined text-primary">compare</span>
                         Perubahan Data
                     </h3>
                     
-                    <div class="flex gap-2 bg-slate-50 p-1 rounded-xl self-start">
+                    <div class="flex gap-2 bg-surface-container-low p-1 rounded-xl self-start">
                         <button x-on:click="viewMode = 'diff'" 
-                                x-bind:class="viewMode === 'diff' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'"
+                                x-bind:class="viewMode === 'diff' ? 'bg-white text-primary shadow-sm' : 'text-outline hover:text-on-surface'"
                                 class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5">
                             <span class="material-symbols-outlined text-[16px]">difference</span>
                             Visual Diff
                         </button>
                         <button x-on:click="viewMode = 'raw'" 
-                                x-bind:class="viewMode === 'raw' ? 'bg-white text-teal-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'"
+                                x-bind:class="viewMode === 'raw' ? 'bg-white text-primary shadow-sm' : 'text-outline hover:text-on-surface'"
                                 class="px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5">
                             <span class="material-symbols-outlined text-[16px]">code</span>
                             Raw JSON
@@ -190,27 +190,27 @@
                     <div class="border border-slate-100 rounded-2xl overflow-hidden">
                         <table class="w-full text-left border-collapse">
                             <thead>
-                                <tr class="bg-slate-50/50 border-b border-slate-100">
-                                    <th class="px-6 py-4 text-xs font-black text-slate-400 uppercase tracking-wider">Kolom / Field</th>
-                                    <th class="px-6 py-4 text-xs font-black text-slate-400 uppercase tracking-wider">Sebelum</th>
-                                    <th class="px-6 py-4 text-xs font-black text-slate-400 uppercase tracking-wider">Sesudah</th>
+                                <tr class="bg-surface-container-low/50 border-b border-slate-100">
+                                    <th class="px-6 py-4 text-xs font-black text-outline-variant uppercase tracking-wider">Kolom / Field</th>
+                                    <th class="px-6 py-4 text-xs font-black text-outline-variant uppercase tracking-wider">Sebelum</th>
+                                    <th class="px-6 py-4 text-xs font-black text-outline-variant uppercase tracking-wider">Sesudah</th>
                                 </tr>
                             </thead>
                             <tbody class="divide-y divide-slate-50">
                                 @foreach($diff as $field => $data)
-                                <tr class="hover:bg-slate-50/50 transition-colors">
+                                <tr class="hover:bg-surface-container-low/50 transition-colors">
                                     <td class="px-6 py-4">
-                                        <span class="font-mono text-xs font-bold text-slate-700 bg-slate-100 px-2 py-1 rounded-md">
+                                        <span class="font-mono text-xs font-bold text-on-surface-variant bg-surface-container px-2 py-1 rounded-md">
                                             {{ $field }}
                                         </span>
                                     </td>
                                     <td class="px-6 py-4">
                                         @if(!is_null($data['old']))
-                                            <span class="line-through text-xs font-bold text-rose-600 bg-rose-50 border border-rose-100/50 px-2.5 py-1 rounded-lg inline-block whitespace-pre-line">
+                                            <span class="line-through text-xs font-bold text-error bg-error-container border border-rose-100/50 px-2.5 py-1 rounded-lg inline-block whitespace-pre-line">
                                                 {{ $displayVal($data['old']) }}
                                             </span>
                                         @else
-                                            <span class="text-xs text-slate-400 italic">N/A</span>
+                                            <span class="text-xs text-outline-variant italic">N/A</span>
                                         @endif
                                     </td>
                                     <td class="px-6 py-4">
@@ -219,7 +219,7 @@
                                                 {{ $displayVal($data['new']) }}
                                             </span>
                                         @else
-                                            <span class="text-xs text-slate-400 italic">Dihapus</span>
+                                            <span class="text-xs text-outline-variant italic">Dihapus</span>
                                         @endif
                                     </td>
                                 </tr>
@@ -230,7 +230,7 @@
                     @else
                     <div class="py-12 border-2 border-dashed border-slate-100 rounded-2xl text-center">
                         <span class="material-symbols-outlined text-slate-300 text-[36px] mb-2">check_circle</span>
-                        <p class="text-slate-400 text-sm font-bold">Tidak ada perubahan data atribut (Metadata umum).</p>
+                        <p class="text-outline-variant text-sm font-bold">Tidak ada perubahan data atribut (Metadata umum).</p>
                     </div>
                     @endif
                 </div>
@@ -240,30 +240,30 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {{-- Old Values --}}
                         <div class="space-y-2">
-                            <h4 class="text-xs font-black text-rose-600 uppercase tracking-widest flex items-center gap-1.5">
+                            <h4 class="text-xs font-black text-error uppercase tracking-widest flex items-center gap-1.5">
                                 <span class="material-symbols-outlined text-[16px]">history</span>
                                 Payload Data Lama
                             </h4>
-                            <div class="bg-slate-900 rounded-2xl p-5 overflow-hidden border border-slate-800">
+                            <div class="bg-inverse-surface rounded-2xl p-5 overflow-hidden border border-slate-800">
                                 @if($activityLog->old_values)
                                 <pre class="text-[11px] font-mono text-slate-300 overflow-x-auto leading-relaxed max-h-[300px] custom-scrollbar"><code>{{ json_encode($activityLog->old_values, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</code></pre>
                                 @else
-                                <p class="text-slate-500 font-mono text-[11px] italic">Tidak ada payload data lama.</p>
+                                <p class="text-outline font-mono text-[11px] italic">Tidak ada payload data lama.</p>
                                 @endif
                             </div>
                         </div>
 
                         {{-- New Values --}}
                         <div class="space-y-2">
-                            <h4 class="text-xs font-black text-emerald-600 uppercase tracking-widest flex items-center gap-1.5">
+                            <h4 class="text-xs font-black text-primary uppercase tracking-widest flex items-center gap-1.5">
                                 <span class="material-symbols-outlined text-[16px]">update</span>
                                 Payload Data Baru
                             </h4>
-                            <div class="bg-slate-900 rounded-2xl p-5 overflow-hidden border border-slate-800">
+                            <div class="bg-inverse-surface rounded-2xl p-5 overflow-hidden border border-slate-800">
                                 @if($activityLog->new_values)
                                 <pre class="text-[11px] font-mono text-slate-300 overflow-x-auto leading-relaxed max-h-[300px] custom-scrollbar"><code>{{ json_encode($activityLog->new_values, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) }}</code></pre>
                                 @else
-                                <p class="text-slate-500 font-mono text-[11px] italic">Tidak ada payload data baru.</p>
+                                <p class="text-outline font-mono text-[11px] italic">Tidak ada payload data baru.</p>
                                 @endif
                             </div>
                         </div>
@@ -274,35 +274,35 @@
 
         {{-- ── Right Side: User & Agent Info ── --}}
         <div class="space-y-8">
-            <div class="bg-white border border-slate-100 rounded-3xl shadow-sm p-8">
-                <h3 class="text-sm font-black text-slate-800 uppercase tracking-wider mb-6 flex items-center gap-3">
-                    <span class="material-symbols-outlined text-teal-600">person</span>
+            <div class="bg-white border border-slate-100 rounded-2xl shadow-sm p-8">
+                <h3 class="text-sm font-black text-on-surface uppercase tracking-wider mb-6 flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary">person</span>
                     Pelaku Aksi
                 </h3>
                 <div class="flex flex-col items-center text-center space-y-4">
-                    <div class="w-20 h-20 rounded-[1.8rem] bg-gradient-to-br from-slate-800 to-slate-900 text-white flex items-center justify-center text-2xl font-black shadow-lg">
+                    <div class="w-20 h-20 rounded-[1.8rem] bg-gradient-to-br from-slate-800 to-slate-900 text-white flex items-center justify-center text-headline-md font-black shadow-lg">
                         {{ strtoupper(substr($activityLog->user_name ?? 'SY', 0, 2)) }}
                     </div>
                     <div>
-                        <h4 class="text-lg font-black text-slate-900">{{ $activityLog->user_name ?? 'System' }}</h4>
-                        <p class="text-xs font-black text-teal-600 uppercase tracking-widest mt-1">{{ $activityLog->role ?? 'N/A' }}</p>
+                        <h4 class="text-body-lg font-black text-on-surface">{{ $activityLog->user_name ?? 'System' }}</h4>
+                        <p class="text-xs font-black text-primary uppercase tracking-widest mt-1">{{ $activityLog->role ?? 'N/A' }}</p>
                     </div>
                     <div class="w-full pt-4 border-t border-slate-50 space-y-3">
                         <div class="flex justify-between text-xs font-bold">
-                            <span class="text-slate-400 uppercase tracking-wider">Metode Akses</span>
-                            <span class="text-slate-900">Dashboard Web</span>
+                            <span class="text-outline-variant uppercase tracking-wider">Metode Akses</span>
+                            <span class="text-on-surface">Dashboard Web</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white border border-slate-100 rounded-3xl shadow-sm p-6">
-                <h3 class="text-xs font-black text-slate-400 uppercase tracking-wider mb-4 flex items-center gap-2">
+            <div class="bg-white border border-slate-100 rounded-2xl shadow-sm p-6">
+                <h3 class="text-xs font-black text-outline-variant uppercase tracking-wider mb-4 flex items-center gap-2">
                     <span class="material-symbols-outlined text-[18px]">devices</span>
                     Informasi Perangkat
                 </h3>
-                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                    <p class="text-[11px] font-mono text-slate-500 break-all leading-relaxed italic">
+                <div class="p-4 bg-surface-container-low rounded-2xl border border-slate-100">
+                    <p class="text-[11px] font-mono text-outline break-all leading-relaxed italic">
                         {{ $activityLog->user_agent }}
                     </p>
                 </div>

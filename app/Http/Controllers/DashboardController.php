@@ -12,6 +12,7 @@ class DashboardController extends Controller
             return redirect()->route('login');
         }
 
+        /** @var \App\Models\User $user */
         $user = Auth::user();
 
         // Redirect based on user role

@@ -17,10 +17,10 @@
     
     @livewireStyles
 </head>
-<body class="font-sans antialiased text-slate-900">
+<body class="font-sans antialiased text-on-surface">
     <div class="relative">
         <!-- Modal Overlay -->
-        <div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"></div>
+        <div class="fixed inset-0 bg-inverse-surface/40 backdrop-blur-sm transition-opacity"></div>
         
         <!-- Modal Content -->
         <div class="fixed inset-0 z-10 overflow-y-auto">

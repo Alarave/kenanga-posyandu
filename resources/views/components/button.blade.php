@@ -4,18 +4,18 @@
     $baseClasses = 'inline-flex items-center justify-center font-bold transition-all active:scale-95 disabled:opacity-50 disabled:pointer-events-none min-h-[44px] min-w-[44px]';
     
     $variants = [
-        'primary' => 'bg-premium-gradient btn-premium text-white shadow-lg',
-        'secondary' => 'bg-slate-800 text-white hover:bg-slate-900 shadow-sm',
-        'outline' => 'bg-transparent border border-slate-300 text-slate-700 hover:bg-slate-50',
-        'danger' => 'bg-red-600 text-white hover:bg-red-700 shadow-sm',
-        'ghost' => 'bg-transparent text-slate-600 hover:bg-slate-100',
+        'primary' => 'bg-primary text-on-primary hover:opacity-90 shadow-sm',
+        'secondary' => 'bg-transparent border border-secondary text-secondary hover:bg-secondary-container hover:text-on-secondary-container shadow-sm',
+        'outline' => 'bg-transparent border border-outline-variant text-on-surface-variant hover:bg-surface-container-low',
+        'danger' => 'bg-error text-on-error hover:opacity-90 shadow-sm',
+        'ghost' => 'bg-transparent text-on-surface-variant hover:bg-surface-container',
     ];
     
     $sizes = [
-        'xs' => 'px-3 py-2 text-sm rounded-lg',
-        'sm' => 'px-4 py-2.5 text-sm rounded-lg',
-        'md' => 'px-6 py-3 text-base rounded-xl',
-        'lg' => 'px-8 py-4 text-lg rounded-2xl',
+        'xs' => 'px-3 py-2 text-label-sm rounded-md',
+        'sm' => 'px-4 py-2.5 text-label-md rounded-md',
+        'md' => 'px-6 py-3 text-label-md rounded-lg',
+        'lg' => 'px-8 py-4 text-body-lg rounded-lg',
     ];
     
     $classes = "{$baseClasses} {$variants[$variant]} {$sizes[$size]}";

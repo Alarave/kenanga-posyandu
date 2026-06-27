@@ -30,18 +30,18 @@
         <div class="bg-white rounded-[3rem] p-10 shadow-[0_8px_30px_rgb(0,0,0,0.02)] border border-slate-100">
             <div class="flex items-center justify-between mb-8">
                 <div class="flex items-center gap-4">
-                    <div class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400">
+                    <div class="w-12 h-12 rounded-2xl bg-surface-container-low flex items-center justify-center text-outline-variant">
                         <span class="material-symbols-outlined text-[24px]">history</span>
                     </div>
                     <div>
-                        <h3 class="text-base font-black text-slate-800 uppercase tracking-[0.2em]">Riwayat Pemeriksaan
+                        <h3 class="text-base font-black text-on-surface uppercase tracking-[0.2em]">Riwayat Pemeriksaan
                         </h3>
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Data Antropometri
+                        <p class="text-xs font-bold text-outline-variant uppercase tracking-widest mt-1">Data Antropometri
                             Berkala</p>
                     </div>
                 </div>
                 <a href="{{ route('admin.reports.individual', $patient->id) }}"
-                    class="px-6 py-3 bg-slate-50 hover:bg-slate-100 rounded-full text-xs font-black text-slate-500 uppercase tracking-widest transition-all">Lihat
+                    class="px-6 py-3 bg-surface-container-low hover:bg-surface-container rounded-lg text-xs font-black text-outline uppercase tracking-widest transition-all">Lihat
                     Selengkapnya →</a>
             </div>
 
@@ -49,58 +49,58 @@
                 <table class="w-full text-left">
                     <thead>
                         <tr class="border-b-2 border-slate-100">
-                            <th class="pb-5 text-xs font-black text-slate-500 uppercase tracking-widest pl-4 w-[32%]">
+                            <th class="pb-5 text-xs font-black text-outline uppercase tracking-widest pl-4 w-[32%]">
                                 Tanggal Kunjungan</th>
                             <th
-                                class="pb-5 text-center text-xs font-black text-slate-500 uppercase tracking-widest w-[22%]">
+                                class="pb-5 text-center text-xs font-black text-outline uppercase tracking-widest w-[22%]">
                                 Berat Badan</th>
                             <th
-                                class="pb-5 text-center text-xs font-black text-slate-500 uppercase tracking-widest w-[22%]">
+                                class="pb-5 text-center text-xs font-black text-outline uppercase tracking-widest w-[22%]">
                                 Tinggi Badan</th>
                             <th
-                                class="pb-5 text-center text-xs font-black text-slate-500 uppercase tracking-widest w-[24%]">
+                                class="pb-5 text-center text-xs font-black text-outline uppercase tracking-widest w-[24%]">
                                 Status Gizi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-50">
                         @forelse($patient->medicalRecords()->latest()->limit(5)->get() as $record)
-                            <tr class="group hover:bg-slate-50/60 transition-colors">
+                            <tr class="group hover:bg-surface-container-low/60 transition-colors">
                                 <td class="py-5 pl-4">
-                                    <p class="text-base font-black text-slate-800 mb-1.5">
+                                    <p class="text-base font-black text-on-surface mb-1.5">
                                         {{ \Carbon\Carbon::parse($record->visit_date)->translatedFormat('d F Y') }}</p>
-                                    <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Pemeriksaan
+                                    <p class="text-xs font-black text-outline-variant uppercase tracking-widest">Pemeriksaan
                                         Rutin</p>
                                 </td>
                                 <td class="py-5 text-center">
                                     <div class="flex items-baseline justify-center gap-1.5">
                                         <span
-                                            class="text-xl font-black text-slate-900">{{ number_format($record->weight, 2) }}</span>
-                                        <span class="text-xs font-black text-slate-400 uppercase">kg</span>
+                                            class="text-headline-sm font-black text-on-surface">{{ number_format($record->weight, 2) }}</span>
+                                        <span class="text-xs font-black text-outline-variant uppercase">kg</span>
                                     </div>
                                 </td>
                                 <td class="py-5 text-center">
                                     <div class="flex items-baseline justify-center gap-1.5">
                                         <span
-                                            class="text-xl font-black text-slate-900">{{ number_format($record->height, 2) }}</span>
-                                        <span class="text-xs font-black text-slate-400 uppercase">cm</span>
+                                            class="text-headline-sm font-black text-on-surface">{{ number_format($record->height, 2) }}</span>
+                                        <span class="text-xs font-black text-outline-variant uppercase">cm</span>
                                     </div>
                                 </td>
                                 <td class="py-5 text-center">
                                     <span @class([
                                         'inline-flex items-center justify-center px-5 py-2 rounded-xl text-xs font-black uppercase tracking-widest shadow-sm',
-                                        'bg-emerald-50 text-emerald-600 border border-emerald-100' =>
+                                        'bg-emerald-50 text-primary border border-emerald-100' =>
                                             str_contains($record->nutrition_status ?? '', 'Normal') ||
                                             str_contains($record->nutrition_status ?? '', 'Baik'),
                                         'bg-amber-50 text-amber-600 border border-amber-100' => str_contains(
                                             $record->nutrition_status ?? '',
                                             'Kurang'),
-                                        'bg-red-50 text-red-600 border border-red-100' => str_contains(
+                                        'bg-red-50 text-error border border-red-100' => str_contains(
                                             $record->nutrition_status ?? '',
                                             'Buruk'),
                                         'bg-orange-50 text-orange-600 border border-orange-100' =>
                                             str_contains($record->nutrition_status ?? '', 'Lebih') ||
                                             str_contains($record->nutrition_status ?? '', 'Obesitas'),
-                                        'bg-slate-50 text-slate-400 border border-slate-100' => !$record->nutrition_status,
+                                        'bg-surface-container-low text-outline-variant border border-slate-100' => !$record->nutrition_status,
                                     ])>
                                         {{ $record->nutrition_status ?: 'Data N/A' }}
                                     </span>
@@ -109,7 +109,7 @@
                         @empty
                             <tr>
                                 <td colspan="4"
-                                    class="py-14 text-center text-sm text-slate-400 font-bold uppercase tracking-[0.3em]">
+                                    class="py-14 text-center text-sm text-outline-variant font-bold uppercase tracking-[0.3em]">
                                     Belum ada data pemeriksaan</td>
                             </tr>
                         @endforelse
@@ -312,48 +312,48 @@
                 initChart(rawData);
             });">
             <div
-                class="absolute -right-20 -top-20 w-80 h-80 bg-teal-500/5 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000">
+                class="absolute -right-20 -top-20 w-80 h-80 bg-primary/5 rounded-lg blur-3xl group-hover:scale-150 transition-transform duration-1000">
             </div>
 
             <div class="flex flex-col md:flex-row items-center justify-between gap-8 mb-10 relative z-10">
                 <div>
                     <div class="flex items-center gap-3 mb-1">
-                        <div class="w-2 h-8 bg-linear-to-b from-teal-500 to-emerald-600 rounded-full"></div>
-                        <h3 class="text-xl font-black text-slate-800 tracking-tight uppercase">Grafik Analisis Pertumbuhan WHO</h3>
+                        <div class="w-2 h-8 bg-linear-to-b from-teal-500 to-emerald-600 rounded-lg"></div>
+                        <h3 class="text-headline-sm font-black text-on-surface tracking-tight uppercase">Grafik Analisis Pertumbuhan WHO</h3>
                     </div>
-                    <p class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.3em] ml-5">Visualisasi Tren
+                    <p class="text-[11px] font-bold text-outline-variant uppercase tracking-[0.3em] ml-5">Visualisasi Tren
                         Antropometri Anak</p>
                 </div>
 
                 <div
-                    class="flex items-center p-1.5 bg-slate-50/50 backdrop-blur-md rounded-4xl border border-slate-100 shadow-inner">
+                    class="flex items-center p-1.5 bg-surface-container-low/50 backdrop-blur-md rounded-2xl border border-slate-100 shadow-inner">
                     <button wire:click="switchChart('wfa')" @class([
-                        'flex items-center gap-3 px-8 py-3 text-[11px] font-black uppercase tracking-widest rounded-full transition-all duration-500',
-                        'bg-white shadow-[0_4px_15px_rgba(0,0,0,0.05)] text-teal-600 ring-1 ring-slate-100 scale-100' =>
+                        'flex items-center gap-3 px-8 py-3 text-[11px] font-black uppercase tracking-widest rounded-lg transition-all duration-500',
+                        'bg-white shadow-[0_4px_15px_rgba(0,0,0,0.05)] text-primary ring-1 ring-slate-100 scale-100' =>
                             $activeChart === 'wfa',
-                        'text-slate-400 hover:text-slate-600 hover:bg-white/40 scale-95 opacity-70' =>
+                        'text-outline-variant hover:text-on-surface-variant hover:bg-white/40 scale-95 opacity-70' =>
                             $activeChart !== 'wfa',
                     ])>
                         <span @class([
                             'w-8 h-8 rounded-xl flex items-center justify-center transition-colors',
-                            'bg-teal-50 text-teal-600' => $activeChart === 'wfa',
-                            'bg-slate-100 text-slate-400' => $activeChart !== 'wfa',
+                            'bg-primary-container text-primary' => $activeChart === 'wfa',
+                            'bg-surface-container text-outline-variant' => $activeChart !== 'wfa',
                         ])>
                             <span class="material-symbols-outlined text-[20px]">monitor_weight</span>
                         </span>
                         BB/U
                     </button>
                     <button wire:click="switchChart('hfa')" @class([
-                        'flex items-center gap-3 px-8 py-3 text-[11px] font-black uppercase tracking-widest rounded-full transition-all duration-500',
-                        'bg-white shadow-[0_4px_15px_rgba(0,0,0,0.05)] text-teal-600 ring-1 ring-slate-100 scale-100' =>
+                        'flex items-center gap-3 px-8 py-3 text-[11px] font-black uppercase tracking-widest rounded-lg transition-all duration-500',
+                        'bg-white shadow-[0_4px_15px_rgba(0,0,0,0.05)] text-primary ring-1 ring-slate-100 scale-100' =>
                             $activeChart === 'hfa',
-                        'text-slate-400 hover:text-slate-600 hover:bg-white/40 scale-95 opacity-70' =>
+                        'text-outline-variant hover:text-on-surface-variant hover:bg-white/40 scale-95 opacity-70' =>
                             $activeChart !== 'hfa',
                     ])>
                         <span @class([
                             'w-8 h-8 rounded-xl flex items-center justify-center transition-colors',
-                            'bg-teal-50 text-teal-600' => $activeChart === 'hfa',
-                            'bg-slate-100 text-slate-400' => $activeChart !== 'hfa',
+                            'bg-primary-container text-primary' => $activeChart === 'hfa',
+                            'bg-surface-container text-outline-variant' => $activeChart !== 'hfa',
                         ])>
                             <span class="material-symbols-outlined text-[20px]">straighten</span>
                         </span>
@@ -369,20 +369,20 @@
             <div x-show="!hasData"
                 class="absolute inset-0 flex flex-col items-center justify-center p-12 text-center z-20 bg-white/95 rounded-[3rem]">
                 <div
-                    class="w-24 h-24 rounded-[2.5rem] bg-slate-50 flex items-center justify-center text-slate-400 mb-8 border border-slate-100 shadow-sm">
+                    class="w-24 h-24 rounded-[2.5rem] bg-surface-container-low flex items-center justify-center text-outline-variant mb-8 border border-slate-100 shadow-sm">
                     <span class="material-symbols-outlined text-[48px]">query_stats</span>
                 </div>
-                <h4 class="text-xl font-black text-slate-800 tracking-tight">Belum Ada Data Pengukuran</h4>
-                <p class="text-xs text-slate-400 font-bold max-w-75 mt-3 leading-relaxed">Grafik pertumbuhan akan
+                <h4 class="text-headline-sm font-black text-on-surface tracking-tight">Belum Ada Data Pengukuran</h4>
+                <p class="text-xs text-outline-variant font-bold max-w-75 mt-3 leading-relaxed">Grafik pertumbuhan akan
                     tersedia setelah data antropometri ditambahkan.</p>
             </div>
 
             <div wire:loading wire:target="switchChart"
                 class="absolute inset-0 bg-white/60 backdrop-blur-md flex items-center justify-center z-30 rounded-[3rem]">
                 <div class="flex flex-col items-center gap-5">
-                    <div class="w-12 h-12 border-4 border-teal-500 border-t-transparent rounded-full animate-spin">
+                    <div class="w-12 h-12 border-4 border-primary border-t-transparent rounded-lg animate-spin">
                     </div>
-                    <p class="text-[11px] font-black text-teal-600 uppercase tracking-[0.4em]">Sinkronisasi Analisis...
+                    <p class="text-[11px] font-black text-primary uppercase tracking-[0.4em]">Sinkronisasi Analisis...
                     </p>
                 </div>
             </div>
@@ -392,15 +392,15 @@
     <div class="bg-white rounded-[3rem] p-10 shadow-[0_8px_30px_rgb(0,0,0,0.02)] border border-slate-100">
         <div class="flex items-center justify-between mb-8">
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400">
+                <div class="w-12 h-12 rounded-2xl bg-surface-container-low flex items-center justify-center text-outline-variant">
                     <span class="material-symbols-outlined text-[24px]">history</span>
                 </div>
                 <div>
-                    <h3 class="text-base font-black text-slate-800 uppercase tracking-[0.2em]">Riwayat Pemeriksaan</h3>
-                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Data Kesehatan Berkala</p>
+                    <h3 class="text-base font-black text-on-surface uppercase tracking-[0.2em]">Riwayat Pemeriksaan</h3>
+                    <p class="text-xs font-bold text-outline-variant uppercase tracking-widest mt-1">Data Kesehatan Berkala</p>
                 </div>
             </div>
-            <a href="{{ route('admin.reports.individual', $patient->id) }}" class="px-6 py-3 bg-slate-50 hover:bg-slate-100 rounded-full text-xs font-black text-slate-500 uppercase tracking-widest transition-all">Lihat Selengkapnya →</a>
+            <a href="{{ route('admin.reports.individual', $patient->id) }}" class="px-6 py-3 bg-surface-container-low hover:bg-surface-container rounded-lg text-xs font-black text-outline uppercase tracking-widest transition-all">Lihat Selengkapnya →</a>
         </div>
         
         <div class="overflow-x-auto">
@@ -408,100 +408,100 @@
                 <thead>
                     <tr class="border-b-2 border-slate-100">
                         @if($patient->category === 'lansia')
-                            <th class="pb-5 text-xs font-black text-slate-500 uppercase tracking-widest pl-4 w-[20%]">Tanggal</th>
-                            <th class="pb-5 text-center text-xs font-black text-slate-500 uppercase tracking-widest w-[20%]">Tekanan Darah</th>
-                            <th class="pb-5 text-center text-xs font-black text-slate-500 uppercase tracking-widest w-[20%]">Gula Darah</th>
-                            <th class="pb-5 text-center text-xs font-black text-slate-500 uppercase tracking-widest w-[20%]">Kolesterol</th>
-                            <th class="pb-5 text-center text-xs font-black text-slate-500 uppercase tracking-widest w-[20%]">Asam Urat</th>
+                            <th class="pb-5 text-xs font-black text-outline uppercase tracking-widest pl-4 w-[20%]">Tanggal</th>
+                            <th class="pb-5 text-center text-xs font-black text-outline uppercase tracking-widest w-[20%]">Tekanan Darah</th>
+                            <th class="pb-5 text-center text-xs font-black text-outline uppercase tracking-widest w-[20%]">Gula Darah</th>
+                            <th class="pb-5 text-center text-xs font-black text-outline uppercase tracking-widest w-[20%]">Kolesterol</th>
+                            <th class="pb-5 text-center text-xs font-black text-outline uppercase tracking-widest w-[20%]">Asam Urat</th>
                         @elseif($patient->category === 'ibu_hamil')
-                            <th class="pb-5 text-xs font-black text-slate-500 uppercase tracking-widest pl-4 w-[25%]">Tanggal</th>
-                            <th class="pb-5 text-center text-xs font-black text-slate-500 uppercase tracking-widest w-[25%]">Berat Badan</th>
-                            <th class="pb-5 text-center text-xs font-black text-slate-500 uppercase tracking-widest w-[25%]">LILA</th>
-                            <th class="pb-5 text-center text-xs font-black text-slate-500 uppercase tracking-widest w-[25%]">Tekanan Darah</th>
+                            <th class="pb-5 text-xs font-black text-outline uppercase tracking-widest pl-4 w-[25%]">Tanggal</th>
+                            <th class="pb-5 text-center text-xs font-black text-outline uppercase tracking-widest w-[25%]">Berat Badan</th>
+                            <th class="pb-5 text-center text-xs font-black text-outline uppercase tracking-widest w-[25%]">LILA</th>
+                            <th class="pb-5 text-center text-xs font-black text-outline uppercase tracking-widest w-[25%]">Tekanan Darah</th>
                         @else
-                            <th class="pb-5 text-xs font-black text-slate-500 uppercase tracking-widest pl-4 w-[25%]">Tanggal</th>
-                            <th class="pb-5 text-center text-xs font-black text-slate-500 uppercase tracking-widest w-[25%]">Berat Badan</th>
-                            <th class="pb-5 text-center text-xs font-black text-slate-500 uppercase tracking-widest w-[25%]">Tinggi Badan</th>
-                            <th class="pb-5 text-center text-xs font-black text-slate-500 uppercase tracking-widest w-[25%]">Tekanan Darah</th>
+                            <th class="pb-5 text-xs font-black text-outline uppercase tracking-widest pl-4 w-[25%]">Tanggal</th>
+                            <th class="pb-5 text-center text-xs font-black text-outline uppercase tracking-widest w-[25%]">Berat Badan</th>
+                            <th class="pb-5 text-center text-xs font-black text-outline uppercase tracking-widest w-[25%]">Tinggi Badan</th>
+                            <th class="pb-5 text-center text-xs font-black text-outline uppercase tracking-widest w-[25%]">Tekanan Darah</th>
                         @endif
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-50">
                     @forelse($patient->medicalRecords()->latest()->limit(5)->get() as $record)
-                    <tr class="group hover:bg-slate-50/60 transition-colors">
+                    <tr class="group hover:bg-surface-container-low/60 transition-colors">
                         <td class="py-5 pl-4">
-                            <p class="text-base font-black text-slate-800 mb-1.5">{{ \Carbon\Carbon::parse($record->visit_date)->translatedFormat('d F Y') }}</p>
-                            <p class="text-xs font-black text-slate-400 uppercase tracking-widest">Pemeriksaan Rutin</p>
+                            <p class="text-base font-black text-on-surface mb-1.5">{{ \Carbon\Carbon::parse($record->visit_date)->translatedFormat('d F Y') }}</p>
+                            <p class="text-xs font-black text-outline-variant uppercase tracking-widest">Pemeriksaan Rutin</p>
                         </td>
                         
                         @if($patient->category === 'lansia')
                             <td class="py-5 text-center">
                                 <div class="flex items-baseline justify-center gap-1.5">
-                                    <span class="text-xl font-black text-slate-900">{{ $record->blood_pressure ?: '-' }}</span>
-                                    @if($record->blood_pressure)<span class="text-xs font-black text-slate-400 uppercase">mmHg</span>@endif
+                                    <span class="text-headline-sm font-black text-on-surface">{{ $record->blood_pressure ?: '-' }}</span>
+                                    @if($record->blood_pressure)<span class="text-xs font-black text-outline-variant uppercase">mmHg</span>@endif
                                 </div>
                             </td>
                             <td class="py-5 text-center">
                                 <div class="flex items-baseline justify-center gap-1.5">
-                                    <span class="text-xl font-black text-slate-900">{{ $record->blood_sugar ?: '-' }}</span>
-                                    @if($record->blood_sugar)<span class="text-xs font-black text-slate-400 uppercase">mg/dL</span>@endif
+                                    <span class="text-headline-sm font-black text-on-surface">{{ $record->blood_sugar ?: '-' }}</span>
+                                    @if($record->blood_sugar)<span class="text-xs font-black text-outline-variant uppercase">mg/dL</span>@endif
                                 </div>
                             </td>
                             <td class="py-5 text-center">
                                 <div class="flex items-baseline justify-center gap-1.5">
-                                    <span class="text-xl font-black text-slate-900">{{ $record->cholesterol ?: '-' }}</span>
-                                    @if($record->cholesterol)<span class="text-xs font-black text-slate-400 uppercase">mg/dL</span>@endif
+                                    <span class="text-headline-sm font-black text-on-surface">{{ $record->cholesterol ?: '-' }}</span>
+                                    @if($record->cholesterol)<span class="text-xs font-black text-outline-variant uppercase">mg/dL</span>@endif
                                 </div>
                             </td>
                             <td class="py-5 text-center">
                                 <div class="flex items-baseline justify-center gap-1.5">
-                                    <span class="text-xl font-black text-slate-900">{{ $record->uric_acid ?: '-' }}</span>
-                                    @if($record->uric_acid)<span class="text-xs font-black text-slate-400 uppercase">mg/dL</span>@endif
+                                    <span class="text-headline-sm font-black text-on-surface">{{ $record->uric_acid ?: '-' }}</span>
+                                    @if($record->uric_acid)<span class="text-xs font-black text-outline-variant uppercase">mg/dL</span>@endif
                                 </div>
                             </td>
                         @elseif($patient->category === 'ibu_hamil')
                             <td class="py-5 text-center">
                                 <div class="flex items-baseline justify-center gap-1.5">
-                                    <span class="text-xl font-black text-slate-900">{{ $record->weight ? number_format($record->weight, 2) : '-' }}</span>
-                                    @if($record->weight)<span class="text-xs font-black text-slate-400 uppercase">kg</span>@endif
+                                    <span class="text-headline-sm font-black text-on-surface">{{ $record->weight ? number_format($record->weight, 2) : '-' }}</span>
+                                    @if($record->weight)<span class="text-xs font-black text-outline-variant uppercase">kg</span>@endif
                                 </div>
                             </td>
                             <td class="py-5 text-center">
                                 <div class="flex items-baseline justify-center gap-1.5">
-                                    <span class="text-xl font-black text-slate-900">{{ $record->upper_arm_circumference ? number_format($record->upper_arm_circumference, 2) : '-' }}</span>
-                                    @if($record->upper_arm_circumference)<span class="text-xs font-black text-slate-400 uppercase">cm</span>@endif
+                                    <span class="text-headline-sm font-black text-on-surface">{{ $record->upper_arm_circumference ? number_format($record->upper_arm_circumference, 2) : '-' }}</span>
+                                    @if($record->upper_arm_circumference)<span class="text-xs font-black text-outline-variant uppercase">cm</span>@endif
                                 </div>
                             </td>
                             <td class="py-5 text-center">
                                 <div class="flex items-baseline justify-center gap-1.5">
-                                    <span class="text-xl font-black text-slate-900">{{ $record->blood_pressure ?: '-' }}</span>
-                                    @if($record->blood_pressure)<span class="text-xs font-black text-slate-400 uppercase">mmHg</span>@endif
+                                    <span class="text-headline-sm font-black text-on-surface">{{ $record->blood_pressure ?: '-' }}</span>
+                                    @if($record->blood_pressure)<span class="text-xs font-black text-outline-variant uppercase">mmHg</span>@endif
                                 </div>
                             </td>
                         @else
                             <td class="py-5 text-center">
                                 <div class="flex items-baseline justify-center gap-1.5">
-                                    <span class="text-xl font-black text-slate-900">{{ $record->weight ? number_format($record->weight, 2) : '-' }}</span>
-                                    @if($record->weight)<span class="text-xs font-black text-slate-400 uppercase">kg</span>@endif
+                                    <span class="text-headline-sm font-black text-on-surface">{{ $record->weight ? number_format($record->weight, 2) : '-' }}</span>
+                                    @if($record->weight)<span class="text-xs font-black text-outline-variant uppercase">kg</span>@endif
                                 </div>
                             </td>
                             <td class="py-5 text-center">
                                 <div class="flex items-baseline justify-center gap-1.5">
-                                    <span class="text-xl font-black text-slate-900">{{ $record->height ? number_format($record->height, 2) : '-' }}</span>
-                                    @if($record->height)<span class="text-xs font-black text-slate-400 uppercase">cm</span>@endif
+                                    <span class="text-headline-sm font-black text-on-surface">{{ $record->height ? number_format($record->height, 2) : '-' }}</span>
+                                    @if($record->height)<span class="text-xs font-black text-outline-variant uppercase">cm</span>@endif
                                 </div>
                             </td>
                             <td class="py-5 text-center">
                                 <div class="flex items-baseline justify-center gap-1.5">
-                                    <span class="text-xl font-black text-slate-900">{{ $record->blood_pressure ?: '-' }}</span>
-                                    @if($record->blood_pressure)<span class="text-xs font-black text-slate-400 uppercase">mmHg</span>@endif
+                                    <span class="text-headline-sm font-black text-on-surface">{{ $record->blood_pressure ?: '-' }}</span>
+                                    @if($record->blood_pressure)<span class="text-xs font-black text-outline-variant uppercase">mmHg</span>@endif
                                 </div>
                             </td>
                         @endif
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="{{ $patient->category === 'lansia' ? 5 : 4 }}" class="py-14 text-center text-sm text-slate-400 font-bold uppercase tracking-[0.3em]">Belum ada data pemeriksaan</td>
+                        <td colspan="{{ $patient->category === 'lansia' ? 5 : 4 }}" class="py-14 text-center text-sm text-outline-variant font-bold uppercase tracking-[0.3em]">Belum ada data pemeriksaan</td>
                     </tr>
                     @endforelse
                 </tbody>
@@ -615,15 +615,15 @@
             });
          "
     >
-        <div class="absolute -right-20 -top-20 w-80 h-80 bg-teal-500/5 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
+        <div class="absolute -right-20 -top-20 w-80 h-80 bg-primary/5 rounded-lg blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
 
         <div class="flex flex-col md:flex-row items-center justify-between gap-8 mb-10 relative z-10">
             <div>
                 <div class="flex items-center gap-3 mb-1">
-                    <div class="w-2 h-8 bg-linear-to-b from-teal-500 to-emerald-600 rounded-full"></div>
-                    <h3 class="text-xl font-black text-slate-800 tracking-tight uppercase">Grafik Pemantauan Kesehatan Berkala</h3>
+                    <div class="w-2 h-8 bg-linear-to-b from-teal-500 to-emerald-600 rounded-lg"></div>
+                    <h3 class="text-headline-sm font-black text-on-surface tracking-tight uppercase">Grafik Pemantauan Kesehatan Berkala</h3>
                 </div>
-                <p class="text-[11px] font-bold text-slate-400 uppercase tracking-[0.3em] ml-5">Visualisasi Tren Parameter Kesehatan Warga</p>
+                <p class="text-[11px] font-bold text-outline-variant uppercase tracking-[0.3em] ml-5">Visualisasi Tren Parameter Kesehatan Warga</p>
             </div>
         </div>
         
@@ -632,17 +632,17 @@
         </div>
         
         <div x-show="!hasData" class="absolute inset-0 flex flex-col items-center justify-center p-12 text-center z-20 bg-white/95 rounded-[3rem]">
-            <div class="w-24 h-24 rounded-[2.5rem] bg-slate-50 flex items-center justify-center text-slate-300 mb-8 border border-slate-100 shadow-sm">
+            <div class="w-24 h-24 rounded-[2.5rem] bg-surface-container-low flex items-center justify-center text-slate-300 mb-8 border border-slate-100 shadow-sm">
                 <span class="material-symbols-outlined text-[48px]">query_stats</span>
             </div>
-            <h4 class="text-xl font-black text-slate-800 tracking-tight">Belum Ada Data Pengukuran</h4>
-            <p class="text-xs text-slate-400 font-bold max-w-75 mt-3 leading-relaxed">Grafik pemantauan kesehatan akan tersedia setelah data pemeriksaan ditambahkan.</p>
+            <h4 class="text-headline-sm font-black text-on-surface tracking-tight">Belum Ada Data Pengukuran</h4>
+            <p class="text-xs text-outline-variant font-bold max-w-75 mt-3 leading-relaxed">Grafik pemantauan kesehatan akan tersedia setelah data pemeriksaan ditambahkan.</p>
         </div>
 
         <div wire:loading wire:target="switchChart" class="absolute inset-0 bg-white/60 backdrop-blur-md flex items-center justify-center z-30 rounded-[3rem]">
             <div class="flex flex-col items-center gap-5">
-                <div class="w-12 h-12 border-4 border-teal-500 border-t-transparent rounded-full animate-spin"></div>
-                <p class="text-[11px] font-black text-teal-600 uppercase tracking-[0.4em]">Sinkronisasi Analisis...</p>
+                <div class="w-12 h-12 border-4 border-primary border-t-transparent rounded-lg animate-spin"></div>
+                <p class="text-[11px] font-black text-primary uppercase tracking-[0.4em]">Sinkronisasi Analisis...</p>
             </div>
         </div>
     </div>

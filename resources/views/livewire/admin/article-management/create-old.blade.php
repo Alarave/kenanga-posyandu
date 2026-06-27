@@ -4,12 +4,12 @@
         {{-- ── Header Navigation ── --}}
         <div class="flex items-center gap-4">
             <a href="{{ route('admin.articles.index') }}" 
-               class="w-12 h-12 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 transition-all">
+               class="w-12 h-12 flex items-center justify-center rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface-variant transition-all">
                 <span class="material-symbols-outlined text-[20px]">arrow_back</span>
             </a>
             <div>
-                <h1 class="text-2xl font-black text-slate-900">Tulis Artikel Baru</h1>
-                <p class="text-xs text-slate-400 uppercase tracking-wider font-bold">Bagikan pengetahuan kesehatan Anda</p>
+                <h1 class="text-headline-md font-black text-on-surface">Tulis Artikel Baru</h1>
+                <p class="text-xs text-outline-variant uppercase tracking-wider font-bold">Bagikan pengetahuan kesehatan Anda</p>
             </div>
         </div>
 
@@ -17,22 +17,22 @@
         <form wire:submit.prevent="save" class="space-y-0">
 
             {{-- ✨ Section 1: Title (Required) ── --}}
-            <div class="bg-white border border-slate-200 rounded-t-2xl overflow-hidden pt-8 px-8 md:px-12 pb-6">
-                <label class="block text-[11px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2">
+            <div class="bg-white border border-outline-variant rounded-t-2xl overflow-hidden pt-8 px-8 md:px-12 pb-6">
+                <label class="block text-[11px] font-black text-outline uppercase tracking-[0.2em] mb-2">
                     Judul Artikel *
                 </label>
                 <input type="text" wire:model="title" 
                        placeholder="Tuliskan judul artikel yang menarik..."
-                       class="w-full text-4xl font-black text-slate-900 bg-transparent placeholder:text-slate-300 focus:outline-none border-none p-0 mb-6">
+                       class="w-full text-4xl font-black text-on-surface bg-transparent placeholder:text-slate-300 focus:outline-none border-none p-0 mb-6">
                 @error('title') 
                     <p class="text-sm text-red-500 font-bold">{{ $message }}</p> 
                 @enderror
 
                 {{-- Meta Info --}}
-                <div class="flex flex-wrap items-center gap-6 pt-6 border-t border-slate-100 text-sm text-slate-500">
+                <div class="flex flex-wrap items-center gap-6 pt-6 border-t border-slate-100 text-sm text-outline">
                     <div class="flex items-center gap-2">
                         <span class="material-symbols-outlined text-[18px]">schedule</span>
-                        <span>Waktu baca: <span class="font-bold text-slate-900" id="reading-time">—</span></span>
+                        <span>Waktu baca: <span class="font-bold text-on-surface" id="reading-time">—</span></span>
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="material-symbols-outlined text-[18px]">article</span>
@@ -42,32 +42,32 @@
             </div>
 
             {{-- ✨ Section 2: Header Image (Required - wajib!) ── --}}
-            <div class="bg-white border-x border-slate-200 px-8 md:px-12 py-8 space-y-4">
+            <div class="bg-white border-x border-outline-variant px-8 md:px-12 py-8 space-y-4">
                 <div class="flex items-center justify-between">
-                    <label class="block text-[11px] font-black text-slate-500 uppercase tracking-[0.2em]">
+                    <label class="block text-[11px] font-black text-outline uppercase tracking-[0.2em]">
                         <span class="material-symbols-outlined text-[16px] align-middle mr-1">image</span>
                         Gambar Sampul (Header) *
                     </label>
-                    <span class="text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1 rounded-full">Wajib Diisi</span>
+                    <span class="text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1 rounded-lg">Wajib Diisi</span>
                 </div>
 
                 <div class="relative group">
-                    <div class="w-full aspect-video rounded-xl bg-slate-50 border-2 border-dashed border-slate-300 flex flex-col items-center justify-center overflow-hidden cursor-pointer hover:border-indigo-400 hover:bg-indigo-50/30 transition-all">
+                    <div class="w-full aspect-video rounded-xl bg-surface-container-low border-2 border-dashed border-outline-variant flex flex-col items-center justify-center overflow-hidden cursor-pointer hover:border-indigo-400 hover:bg-secondary-container/30 transition-all">
                         @if($thumbnail)
                             <img src="{{ $thumbnail->temporaryUrl() }}" class="w-full h-full object-cover" alt="Header preview">
                         @else
                             <div wire:loading.remove wire:target="thumbnail" class="flex flex-col items-center gap-3">
                                 <span class="material-symbols-outlined text-slate-300 text-[48px]">photo_library</span>
                                 <div class="text-center">
-                                    <p class="text-sm font-bold text-slate-600">Klik untuk unggah gambar header</p>
-                                    <p class="text-xs text-slate-400 mt-1">Rasio: 16:9 (landscape), Max 2MB</p>
+                                    <p class="text-sm font-bold text-on-surface-variant">Klik untuk unggah gambar header</p>
+                                    <p class="text-xs text-outline-variant mt-1">Rasio: 16:9 (landscape), Max 2MB</p>
                                 </div>
                             </div>
                         @endif
                         <div wire:loading wire:target="thumbnail" class="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center">
                             <div class="flex flex-col items-center gap-2">
-                                <div class="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin"></div>
-                                <p class="text-xs text-indigo-600 font-bold">Mengunggah gambar...</p>
+                                <div class="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-lg animate-spin"></div>
+                                <p class="text-xs text-secondary font-bold">Mengunggah gambar...</p>
                             </div>
                         </div>
                         <input type="file" wire:model="thumbnail" class="absolute inset-0 opacity-0 cursor-pointer z-10">
@@ -77,25 +77,25 @@
                 @error('thumbnail') 
                     <p class="text-sm text-red-500 font-bold">{{ $message }}</p> 
                 @enderror
-                <p class="text-xs text-slate-500">💡 Gunakan gambar berkualitas tinggi yang relevan dengan topik artikel Anda</p>
+                <p class="text-xs text-outline">💡 Gunakan gambar berkualitas tinggi yang relevan dengan topik artikel Anda</p>
             </div>
 
             {{-- ✨ Section 3: Description/Keterangan (Required) ── --}}
-            <div class="bg-white border-x border-slate-200 px-8 md:px-12 py-8 space-y-4">
+            <div class="bg-white border-x border-outline-variant px-8 md:px-12 py-8 space-y-4">
                 <div class="flex items-center justify-between">
-                    <label class="block text-[11px] font-black text-slate-500 uppercase tracking-[0.2em]">
+                    <label class="block text-[11px] font-black text-outline uppercase tracking-[0.2em]">
                         <span class="material-symbols-outlined text-[16px] align-middle mr-1">description</span>
                         Ringkasan/Deskripsi *
                     </label>
-                    <span class="text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1 rounded-full">Wajib Diisi</span>
+                    <span class="text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1 rounded-lg">Wajib Diisi</span>
                 </div>
 
                 <textarea wire:model="description" 
                           placeholder="Tuliskan ringkasan singkat artikel Anda (10-500 karakter). Ini akan menjadi preview di halaman daftar artikel."
                           rows="4"
-                          class="w-full px-4 py-3 text-sm text-slate-700 placeholder:text-slate-400 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none">{{ $description }}</textarea>
+                          class="w-full px-4 py-3 text-sm text-on-surface-variant placeholder:text-outline-variant border border-outline-variant rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none">{{ $description }}</textarea>
                 
-                <div class="flex justify-between items-center text-xs text-slate-500">
+                <div class="flex justify-between items-center text-xs text-outline">
                     <p>Min 10 - Max 500 karakter</p>
                     <span class="font-bold">{{ strlen($description) }}/500</span>
                 </div>
@@ -105,8 +105,8 @@
             </div>
 
             {{-- ✨ Section 4: Main Content ── --}}
-            <div class="bg-white border-x border-slate-200 px-8 md:px-12 py-8 space-y-4">
-                <label class="block text-[11px] font-black text-slate-500 uppercase tracking-[0.2em]">
+            <div class="bg-white border-x border-outline-variant px-8 md:px-12 py-8 space-y-4">
+                <label class="block text-[11px] font-black text-outline uppercase tracking-[0.2em]">
                     <span class="material-symbols-outlined text-[16px] align-middle mr-1]">edit_note</span>
                     Isi Artikel *
                 </label>
@@ -120,7 +120,7 @@
                                   let readingTime = Math.ceil(wordCount / 200);
                                   document.getElementById('reading-time').textContent = readingTime + ' mnt';"
                           placeholder="Tuliskan isi artikel Anda di sini. Gunakan kalimat yang jelas dan mudah dipahami. Anda bisa menambahkan gambar, video, atau divider di bawah."
-                          class="w-full px-4 py-3 text-base leading-relaxed text-slate-700 placeholder:text-slate-400 border border-slate-200 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent font-medium resize-none">{{ $content }}</textarea>
+                          class="w-full px-4 py-3 text-base leading-relaxed text-on-surface-variant placeholder:text-outline-variant border border-outline-variant rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent font-medium resize-none">{{ $content }}</textarea>
                 
                 @error('content') 
                     <p class="text-sm text-red-500 font-bold">{{ $message }}</p> 
@@ -128,22 +128,22 @@
 
                 {{-- Content Block Insert Menu --}}
                 <div class="flex items-center gap-2 pt-4 border-t border-slate-100">
-                    <p class="text-xs font-bold text-slate-600">Tambahkan ke artikel:</p>
+                    <p class="text-xs font-bold text-on-surface-variant">Tambahkan ke artikel:</p>
                     <button type="button" 
                             @click="$wire.addContentBlock('image')"
-                            class="h-10 px-4 flex items-center gap-2 bg-white border border-slate-200 hover:border-slate-300 rounded-lg text-sm font-bold text-slate-700 transition-all hover:shadow-sm">
+                            class="h-10 px-4 flex items-center gap-2 bg-white border border-outline-variant hover:border-outline-variant rounded-lg text-sm font-bold text-on-surface-variant transition-all hover:shadow-sm">
                         <span class="material-symbols-outlined text-[18px]">add</span>
                         Gambar
                     </button>
                     <button type="button" 
                             @click="$wire.addContentBlock('video')"
-                            class="h-10 px-4 flex items-center gap-2 bg-white border border-slate-200 hover:border-slate-300 rounded-lg text-sm font-bold text-slate-700 transition-all hover:shadow-sm">
+                            class="h-10 px-4 flex items-center gap-2 bg-white border border-outline-variant hover:border-outline-variant rounded-lg text-sm font-bold text-on-surface-variant transition-all hover:shadow-sm">
                         <span class="material-symbols-outlined text-[18px]">add</span>
                         Video
                     </button>
                     <button type="button" 
                             @click="$wire.addContentBlock('divider')"
-                            class="h-10 px-4 flex items-center gap-2 bg-white border border-slate-200 hover:border-slate-300 rounded-lg text-sm font-bold text-slate-700 transition-all hover:shadow-sm">
+                            class="h-10 px-4 flex items-center gap-2 bg-white border border-outline-variant hover:border-outline-variant rounded-lg text-sm font-bold text-on-surface-variant transition-all hover:shadow-sm">
                         <span class="material-symbols-outlined text-[18px]">add</span>
                         Baris
                     </button>
@@ -152,19 +152,19 @@
                 {{-- Content Blocks List --}}
                 @if(count($content_blocks) > 0)
                     <div class="space-y-3 pt-4 border-t border-slate-100">
-                        <p class="text-xs font-bold text-slate-600">Konten Tambahan:</p>
+                        <p class="text-xs font-bold text-on-surface-variant">Konten Tambahan:</p>
                         @foreach($content_blocks as $index => $block)
-                            <div class="bg-slate-50 border border-slate-200 rounded-lg p-4 flex items-center justify-between">
+                            <div class="bg-surface-container-low border border-outline-variant rounded-lg p-4 flex items-center justify-between">
                                 <div class="flex items-center gap-3">
                                     @if($block['type'] === 'image')
-                                        <span class="material-symbols-outlined text-blue-600">image</span>
-                                        <span class="text-sm font-bold text-slate-700">Gambar</span>
+                                        <span class="material-symbols-outlined text-secondary">image</span>
+                                        <span class="text-sm font-bold text-on-surface-variant">Gambar</span>
                                     @elseif($block['type'] === 'video')
                                         <span class="material-symbols-outlined text-purple-600">play_circle</span>
-                                        <span class="text-sm font-bold text-slate-700">Video</span>
+                                        <span class="text-sm font-bold text-on-surface-variant">Video</span>
                                     @else
-                                        <span class="material-symbols-outlined text-slate-600">horizontal_rule</span>
-                                        <span class="text-sm font-bold text-slate-700">Pemisah</span>
+                                        <span class="material-symbols-outlined text-on-surface-variant">horizontal_rule</span>
+                                        <span class="text-sm font-bold text-on-surface-variant">Pemisah</span>
                                     @endif
                                 </div>
                                 <button type="button" 
@@ -179,11 +179,11 @@
             </div>
 
             {{-- ✨ Section 5: Settings (Category & Status) ── --}}
-            <div class="bg-white border-x border-slate-200 px-8 md:px-12 py-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-white border-x border-outline-variant px-8 md:px-12 py-8 grid grid-cols-1 md:grid-cols-2 gap-6">
                 
                 {{-- Category --}}
                 <div class="space-y-3">
-                    <label class="block text-[11px] font-black text-slate-500 uppercase tracking-[0.2em]">
+                    <label class="block text-[11px] font-black text-outline uppercase tracking-[0.2em]">
                         <span class="material-symbols-outlined text-[16px] align-middle mr-1]">label</span>
                         Kategori *
                     </label>
@@ -204,23 +204,23 @@
                 {{-- Status (Required) --}}
                 <div class="space-y-3">
                     <div class="flex items-center justify-between">
-                        <label class="block text-[11px] font-black text-slate-500 uppercase tracking-[0.2em]">
+                        <label class="block text-[11px] font-black text-outline uppercase tracking-[0.2em]">
                             <span class="material-symbols-outlined text-[16px] align-middle mr-1]">publish</span>
                             Status Publikasi *
                         </label>
-                        <span class="text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1 rounded-full">Wajib</span>
+                        <span class="text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1 rounded-lg">Wajib</span>
                     </div>
                     <div class="grid grid-cols-2 gap-3">
                         <label class="cursor-pointer group">
                             <input type="radio" wire:model="status" name="status" value="draft" class="sr-only peer">
-                            <div class="h-11 rounded-lg border-2 border-slate-200 bg-white flex items-center justify-center text-sm font-bold text-slate-600 peer-checked:border-amber-400 peer-checked:bg-amber-50 transition-all group-hover:border-slate-300">
+                            <div class="h-11 rounded-lg border-2 border-outline-variant bg-white flex items-center justify-center text-sm font-bold text-on-surface-variant peer-checked:border-amber-400 peer-checked:bg-amber-50 transition-all group-hover:border-outline-variant">
                                 <span class="material-symbols-outlined text-[18px] mr-2">draft</span>
                                 Draft
                             </div>
                         </label>
                         <label class="cursor-pointer group">
                             <input type="radio" wire:model="status" name="status" value="published" class="sr-only peer">
-                            <div class="h-11 rounded-lg border-2 border-slate-200 bg-white flex items-center justify-center text-sm font-bold text-slate-600 peer-checked:border-emerald-400 peer-checked:bg-emerald-50 transition-all group-hover:border-slate-300">
+                            <div class="h-11 rounded-lg border-2 border-outline-variant bg-white flex items-center justify-center text-sm font-bold text-on-surface-variant peer-checked:border-emerald-400 peer-checked:bg-emerald-50 transition-all group-hover:border-outline-variant">
                                 <span class="material-symbols-outlined text-[18px] mr-2">publish</span>
                                 Terbit
                             </div>
@@ -233,16 +233,16 @@
             </div>
 
             {{-- ── Footer Actions ── --}}
-            <div class="bg-slate-50 border border-slate-200 rounded-b-2xl px-8 md:px-12 py-6 flex items-center justify-end gap-4">
+            <div class="bg-surface-container-low border border-outline-variant rounded-b-2xl px-8 md:px-12 py-6 flex items-center justify-end gap-4">
                 <a href="{{ route('admin.articles.index') }}" 
-                   class="h-11 px-6 flex items-center justify-center text-sm font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-all">
+                   class="h-11 px-6 flex items-center justify-center text-sm font-bold text-on-surface-variant hover:text-on-surface hover:bg-surface-container rounded-lg transition-all">
                     Batal
                 </a>
                 <button type="submit" 
                         wire:loading.attr="disabled"
-                        class="h-11 px-8 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg text-sm font-black uppercase tracking-wide transition-all">
+                        class="h-11 px-8 flex items-center justify-center gap-2 bg-secondary hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg text-sm font-black uppercase tracking-wide transition-all">
                     <span wire:loading.remove class="material-symbols-outlined text-[18px]">check_circle</span>
-                    <div wire:loading class="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                    <div wire:loading class="w-4 h-4 border-2 border-white/30 border-t-white rounded-lg animate-spin"></div>
                     <span>Simpan Artikel</span>
                 </button>
             </div>

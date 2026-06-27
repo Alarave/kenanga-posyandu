@@ -12,7 +12,7 @@
             Kembali
         </a>
         <a href="{{ route('admin.posyandu.edit', $posyandu->id) }}"
-           class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-white font-bold text-sm shadow-sm transition-all bg-teal-600 hover:bg-teal-700">
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-white font-bold text-sm shadow-sm transition-all bg-primary hover:bg-teal-700">
             <span class="material-symbols-outlined" style="font-size:18px;">edit</span>
             Edit Posyandu
         </a>
@@ -28,10 +28,10 @@
         <div class="lg:col-span-2 bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
             <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between" style="background:#F8FAFC;">
                 <h3 class="font-bold text-gray-900 flex items-center gap-2" style="font-size:16px;">
-                    <span class="material-symbols-outlined text-teal-600">house_medical</span>
+                    <span class="material-symbols-outlined text-primary">house_medical</span>
                     Informasi Unit Posyandu
                 </h3>
-                <span class="px-2.5 py-1 bg-teal-50 text-teal-700 rounded-full text-xs font-bold">
+                <span class="px-2.5 py-1 bg-primary-container text-on-primary-container rounded-lg text-xs font-bold">
                     {{ $posyandu->unique_code ?: 'Tanpa Kode' }}
                 </span>
             </div>
@@ -39,7 +39,7 @@
             <div class="p-6">
                 <div class="flex flex-col md:flex-row gap-8">
                     {{-- Logo/Photo --}}
-                    <div class="w-32 h-32 rounded-3xl bg-gray-50 border border-gray-100 flex-shrink-0 overflow-hidden shadow-sm">
+                    <div class="w-32 h-32 rounded-2xl bg-gray-50 border border-gray-100 flex-shrink-0 overflow-hidden shadow-sm">
                         @if($posyandu->logo_photo)
                             <img src="{{ asset('storage/' . $posyandu->logo_photo) }}" class="w-full h-full object-cover">
                         @else
@@ -51,8 +51,8 @@
 
                     <div class="flex-1 space-y-6">
                         <div>
-                            <h1 class="text-2xl font-black text-gray-900 mb-2">{{ $posyandu->name }}</h1>
-                            <div class="flex items-center gap-2 text-slate-500 mb-4">
+                            <h1 class="text-headline-md font-black text-gray-900 mb-2">{{ $posyandu->name }}</h1>
+                            <div class="flex items-center gap-2 text-outline mb-4">
                                 <span class="material-symbols-outlined" style="font-size:18px;">location_on</span>
                                 <span class="text-sm font-medium">{{ $posyandu->address ?: 'Alamat belum diatur' }}</span>
                             </div>
@@ -101,7 +101,7 @@
                 <span class="material-symbols-outlined absolute -right-6 -bottom-6 text-gray-50" style="font-size:100px;">calendar_today</span>
             </div>
 
-            <div class="bg-slate-900 rounded-2xl p-6 text-white">
+            <div class="bg-inverse-surface rounded-2xl p-6 text-white">
                 <h4 class="font-bold text-xs uppercase tracking-widest opacity-60 mb-4">Aksi Cepat</h4>
                 <div class="grid grid-cols-2 gap-3">
                     <a href="{{ route('admin.patients.create', ['posyandu_id' => $posyandu->id]) }}" 

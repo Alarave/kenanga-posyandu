@@ -11,7 +11,7 @@
         badge       — string teks badge kecil (contoh: 'Bulan Ini')
         iconBg      — string warna background icon (hex/tailwind, default: '#dbeafe')
         iconColor   — string warna icon (hex, default: '#2563eb')
-        badgeClass  — string Tailwind classes untuk badge (default: 'bg-blue-50 text-blue-600')
+        badgeClass  — string Tailwind classes untuk badge (default: 'bg-blue-50 text-secondary')
         trend       — string teks tren opsional (contoh: '+12%')
         trendUp     — boolean arah tren (default: true = hijau, false = merah)
         href        — string URL link opsional (membuat card bisa diklik)
@@ -25,7 +25,7 @@
             badge="Terdata"
             icon-bg="#dbeafe"
             icon-color="#2563eb"
-            badge-class="bg-blue-50 text-blue-600"
+            badge-class="bg-blue-50 text-secondary"
         />
 
         {{-- Dengan tren --}}
@@ -46,7 +46,7 @@
     'badge'      => '',
     'iconBg'     => '#dbeafe',
     'iconColor'  => '#2563eb',
-    'badgeClass' => 'bg-blue-50 text-blue-600',
+    'badgeClass' => 'bg-blue-50 text-secondary',
     'trend'      => '',
     'trendUp'    => true,
     'href'       => null,
@@ -72,7 +72,7 @@
         <div class="animate-pulse space-y-3">
             <div class="flex justify-between">
                 <div class="w-12 h-12 rounded-xl bg-surface-container"></div>
-                <div class="w-16 h-6 rounded-full bg-surface-container"></div>
+                <div class="w-16 h-6 rounded-lg bg-surface-container"></div>
             </div>
             <div class="w-20 h-3 rounded bg-surface-container"></div>
             <div class="w-16 h-9 rounded bg-surface-container"></div>
@@ -88,7 +88,7 @@
                 </span>
             </div>
             @if($badge)
-            <span class="text-[11px] font-semibold px-2.5 py-1 rounded-full {{ $badgeClass }}">
+            <span class="text-[11px] font-semibold px-2.5 py-1 rounded-lg {{ $badgeClass }}">
                 {{ $badge }}
             </span>
             @endif

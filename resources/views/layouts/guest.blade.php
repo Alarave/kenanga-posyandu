@@ -16,34 +16,14 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
 </head>
-<body class="antialiased text-slate-800">
+<body class="antialiased text-on-surface">
     <div class="min-h-screen grid grid-cols-1 lg:grid-cols-2">
         
         {{-- ── LEFT SIDE: Branding & Illustration (Visible on Desktop) ── --}}
         <div class="hidden lg:flex flex-col justify-center items-center bg-teal-900 relative overflow-hidden px-20">
             
             {{-- Image Slider Background (CSS Animated - Black & White) --}}
-            <style>
-                @keyframes sliderAnim {
-                    0% { opacity: 0; transform: scale(1); }
-                    5% { opacity: 1; transform: scale(1.01); }
-                    33% { opacity: 1; transform: scale(1.03); }
-                    38% { opacity: 0; transform: scale(1.04); }
-                    100% { opacity: 0; transform: scale(1); }
-                }
-                .slide-img {
-                    position: absolute;
-                    inset: 0;
-                    background-size: cover;
-                    background-position: center;
-                    opacity: 0;
-                    filter: grayscale(100%); /* Mengubah gambar menjadi hitam putih */
-                    animation: sliderAnim 15s infinite;
-                }
-                .slide-1 { background-image: url('/images/slider/1.jpg'); animation-delay: 0s; }
-                .slide-2 { background-image: url('/images/slider/2.jpg'); animation-delay: 5s; }
-                .slide-3 { background-image: url('/images/slider/3.jpg'); animation-delay: 10s; }
-            </style>
+            
             <div class="absolute inset-0 z-0">
                 <div class="slide-img slide-1"></div>
                 <div class="slide-img slide-2"></div>
@@ -55,33 +35,33 @@
             </div>
 
             {{-- Decorative circles (Keep them above slider, below text) --}}
-            <div class="absolute top-0 right-0 w-96 h-96 bg-teal-500/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl z-0"></div>
-            <div class="absolute bottom-0 left-0 w-96 h-96 bg-teal-400/10 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl z-0"></div>
+            <div class="absolute top-0 right-0 w-96 h-96 bg-primary/10 rounded-lg -translate-y-1/2 translate-x-1/2 blur-3xl z-0"></div>
+            <div class="absolute bottom-0 left-0 w-96 h-96 bg-teal-400/10 rounded-lg translate-y-1/2 -translate-x-1/2 blur-3xl z-0"></div>
 
             <div class="relative z-10 text-center">
-                <div class="inline-flex items-center justify-center w-24 h-24 bg-teal-500/80 backdrop-blur-md rounded-4xl text-white shadow-2xl mb-10 border border-teal-400/30">
+                <div class="inline-flex items-center justify-center w-24 h-24 bg-primary/80 backdrop-blur-md rounded-2xl text-white shadow-2xl mb-10 border border-teal-400/30">
                     <span class="material-symbols-outlined text-[48px]">health_and_safety</span>
                 </div>
                 <h1 class="text-5xl font-black text-white mb-6 font-jakarta tracking-tight leading-tight">
                     Sistem Layanan <br> <span class="text-teal-400 italic">Posyandu Digital.</span>
                 </h1>
-                <p class="text-teal-100 text-xl font-medium max-w-md mx-auto opacity-90 leading-relaxed italic drop-shadow-sm">
+                <p class="text-teal-100 text-headline-sm font-medium max-w-md mx-auto opacity-90 leading-relaxed italic drop-shadow-sm">
                     Memudahkan pencatatan dan pemantauan kesehatan seluruh warga dalam satu genggaman.
                 </p>
             </div>
         </div>
 
         {{-- ── RIGHT SIDE: Auth Form ── --}}
-        <div class="flex flex-col justify-center items-center px-6 py-12 lg:px-20 bg-slate-50/50">
+        <div class="flex flex-col justify-center items-center px-6 py-12 lg:px-20 bg-surface-container-low/50">
             <div class="w-full max-w-125">
                 
                 {{-- Logo for mobile --}}
                 <div class="lg:hidden flex justify-center mb-10">
                     <div class="flex flex-col items-center gap-3">
-                         <div class="w-16 h-16 bg-teal-600 rounded-2xl flex items-center justify-center text-white shadow-xl">
+                         <div class="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center text-white shadow-xl">
                             <span class="material-symbols-outlined text-[32px]">health_and_safety</span>
                         </div>
-                        <h2 class="text-2xl font-black text-teal-900 font-jakarta uppercase tracking-tighter">Posyandu Digital</h2>
+                        <h2 class="text-headline-md font-black text-teal-900 font-jakarta uppercase tracking-tighter">Posyandu Digital</h2>
                     </div>
                 </div>
 
@@ -111,7 +91,7 @@
 
                 {{-- Copyright --}}
                 <div class="mt-12 text-center">
-                    <p class="text-sm font-bold text-slate-400 uppercase tracking-widest leading-loose">
+                    <p class="text-sm font-bold text-outline-variant uppercase tracking-widest leading-loose">
                         &copy; {{ date('Y') }} POSYANDU DIGITAL <br> BEKASI TIMUR
                     </p>
                 </div>
