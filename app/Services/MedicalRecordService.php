@@ -435,7 +435,8 @@ class MedicalRecordService
             return $data;
         }
 
-        $ageInMonths = $patient->birth_date->diffInMonths(now());
+        $visitDate = isset($data['visit_date']) ? \Illuminate\Support\Carbon::parse($data['visit_date']) : now();
+        $ageInMonths = max(0, (int) $patient->birth_date->diffInMonths($visitDate));
 
         $nutritionResult = $this->nutritionService->calculateAll(
             (float) $data['weight'],
@@ -457,7 +458,8 @@ class MedicalRecordService
      */
     private function shouldCalculateNutrition(Patient $patient, array $data): bool
     {
-        return $patient->category === 'balita'
+        $childCategories = ['bayi', 'baduta', 'balita', 'anak_sekolah'];
+        return in_array($patient->category, $childCategories)
             && isset($data['weight'])
             && $patient->birth_date;
     }
