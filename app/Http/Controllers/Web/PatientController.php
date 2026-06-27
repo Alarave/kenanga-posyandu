@@ -61,6 +61,7 @@ class PatientController extends Controller
         $patient->load(['posyandu']);
 
         $medicalRecords = $patient->medicalRecords()
+            ->reorder()
             ->with('user')
             ->when($request->history_search, function ($q) use ($request) {
                 $q->where(function ($sq) use ($request) {

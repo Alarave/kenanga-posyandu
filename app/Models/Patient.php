@@ -61,7 +61,7 @@ class Patient extends Model
     // Relationship with MedicalRecord
     public function medicalRecords()
     {
-        return $this->hasMany(MedicalRecord::class);
+        return $this->hasMany(MedicalRecord::class)->orderBy('visit_date', 'desc');
     }
 
     // Age accessors
