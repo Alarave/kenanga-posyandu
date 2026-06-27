@@ -147,7 +147,7 @@
 
                     {{-- Visit Date --}}
                     <div class="md:col-span-4 space-y-3">
-                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Tanggal Periksa <span class="text-primary">*</span></label>
+                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Tanggal Pengisian <span class="text-primary">*</span></label>
                         <input type="date" name="visit_date" value="{{ old('visit_date', $record->visit_date->format('Y-m-d')) }}" required
                                class="w-full h-16 px-6 border border-slate-200 rounded-[1.25rem] text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-slate-50/30">
                     </div>
@@ -575,7 +575,8 @@
                             <textarea name="complaint" rows="2" placeholder="Catat keluhan balita jika ada..."
                                       class="w-full p-5 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-slate-50/30 resize-none">{{ old('complaint', $record->complaint) }}</textarea>
                         </div>
-                        <div class="space-y-3">
+                        @if(!in_array($record->patient->category, ['bayi', 'baduta', 'balita', 'anak_sekolah']))
+                        <div class="space-y-3" x-show="!['bayi', 'baduta', 'balita', 'anak_sekolah', 'balita'].includes(category)">
                             <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Hasil Pemeriksaan / Diagnosis <span class="text-rose-500">*</span></label>
                             <x-forms.select-input name="diagnosis" placeholder="" required :error="$errors->has('diagnosis')" value="{{ old('diagnosis', $record->diagnosis) }}">
                                 <option value="Sehat" {{ old('diagnosis', $record->diagnosis) == 'Sehat' ? 'selected' : '' }}>🟢 Sehat</option>
@@ -586,11 +587,12 @@
                             </x-forms.select-input>
                             @error('diagnosis') <p class="text-[10px] text-rose-500 font-bold ml-1">{{ $message }}</p> @enderror
                         </div>
-                        <div class="space-y-3">
+                        <div class="space-y-3" x-show="!['bayi', 'baduta', 'balita', 'anak_sekolah', 'balita'].includes(category)">
                             <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Nasihat / Konseling</label>
                             <textarea name="counseling_notes" rows="2" placeholder="Catat poin konseling yang diberikan..."
                                       class="w-full p-5 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-slate-50/30 resize-none">{{ old('counseling_notes', $record->counseling_notes) }}</textarea>
                         </div>
+                        @endif
                     </div>
                 </div>
             </div>

@@ -163,11 +163,15 @@ describe('CRUD pasien - Update', function () {
             'gender' => 'M',
             'address' => 'Updated Address',
             'phone_number' => '081234567890',
+            'weight_at_birth' => 3.25,
+            'height_at_birth' => 50.5,
         ]);
 
         $this->assertDatabaseHas('patients', [
             'id' => $this->patient1->id,
             'full_name' => 'Updated Patient Name',
+            'weight_at_birth' => 3.25,
+            'height_at_birth' => 50.5,
         ]);
     });
 

@@ -1170,6 +1170,13 @@
                                                 data-last-status="{{ $lastRec->weight_status ?? '' }}"
                                                 data-second-last-status="{{ $secondLastRec->weight_status ?? '' }}"
                                                 data-category="{{ $patient->category }}"
+                                                data-last-exclusive-breastfeeding="{{ $lastRec->is_exclusive_breastfeeding ?? '' }}"
+                                                data-last-mp-asi="{{ $lastRec->mp_asi ?? '' }}"
+                                                data-last-vitamin-a="{{ $lastRec->vitamin_a ?? '' }}"
+                                                data-last-vitamin-a-color="{{ $lastRec->vitamin_a_color ?? '' }}"
+                                                data-last-deworming="{{ $lastRec->deworming_medicine ?? '' }}"
+                                                data-last-vaccine-name="{{ $lastRec->vaccine_name ?? '' }}"
+                                                data-last-pmt-given="{{ $lastRec->pmt_given ?? '' }}"
                                                 {{ old('patient_id', request('patient_id')) == $patient->id ? 'selected' : '' }}>
                                             {{ $patient->full_name }} — NIK: {{ $patient->id_number }}
                                         </option>
@@ -1181,7 +1188,7 @@
 
                         {{-- Visit Date --}}
                         <div class="md:col-span-4 space-y-3">
-                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Tanggal Periksa <span class="text-primary">*</span></label>
+                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Tanggal Pengisian <span class="text-primary">*</span></label>
                             <input type="date" name="visit_date" value="{{ old('visit_date', date('Y-m-d')) }}" required
                                    class="w-full h-16 px-6 border border-slate-200 rounded-[1.25rem] text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-slate-50/30">
                         </div>
@@ -1679,43 +1686,7 @@
                             <textarea name="complaint" rows="2" :placeholder="['bayi', 'baduta', 'balita', 'anak_sekolah', 'balita'].includes(category) ? 'Catat keluhan balita jika ada...' : (category === 'ibu_hamil' ? 'Catat keluhan ibu hamil jika ada...' : 'Catat keluhan lansia jika ada...')"
                                       class="w-full p-5 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-slate-50/30 resize-none">{{ old('complaint') }}</textarea>
                         </div>
-                        <div class="space-y-3">
-                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Hasil Pemeriksaan / Diagnosis <span class="text-rose-500">*</span></label>
-                            <template x-if="category === 'ibu_hamil'">
-                                <x-forms.select-input name="diagnosis" placeholder="" required :error="$errors->has('diagnosis')" value="{{ old('diagnosis', 'Sehat') }}">
-                                    <option value="Sehat" {{ old('diagnosis', 'Sehat') == 'Sehat' ? 'selected' : '' }}>🟢 Sehat</option>
-                                    <option value="Beresiko" {{ old('diagnosis') == 'Beresiko' ? 'selected' : '' }}>🟡 Berisiko Tinggi</option>
-                                    <option value="Sakit" {{ old('diagnosis') == 'Sakit' ? 'selected' : '' }}>🤒 Sakit (Demam/Batuk/Pilek)</option>
-                                    <option value="Lainnya" {{ old('diagnosis') == 'Lainnya' ? 'selected' : '' }}>Lainnya...</option>
-                                </x-forms.select-input>
-                            </template>
-                            <template x-if="category === 'lansia'">
-                                <x-forms.select-input name="diagnosis" placeholder="" required :error="$errors->has('diagnosis')" value="{{ old('diagnosis', 'Sehat') }}">
-                                    <option value="Sehat" {{ old('diagnosis', 'Sehat') == 'Sehat' ? 'selected' : '' }}>🟢 Sehat</option>
-                                    <option value="Hipertensi" {{ old('diagnosis') == 'Hipertensi' ? 'selected' : '' }}>🟡 Hipertensi</option>
-                                    <option value="Diabetes" {{ old('diagnosis') == 'Diabetes' ? 'selected' : '' }}>🟡 Diabetes</option>
-                                    <option value="Asam Urat" {{ old('diagnosis') == 'Asam Urat' ? 'selected' : '' }}>🟡 Asam Urat Tinggi</option>
-                                    <option value="Kolesterol" {{ old('diagnosis') == 'Kolesterol' ? 'selected' : '' }}>🟡 Kolesterol Tinggi</option>
-                                    <option value="Sakit" {{ old('diagnosis') == 'Sakit' ? 'selected' : '' }}>🤒 Sakit (Demam/Batuk/Pilek)</option>
-                                    <option value="Lainnya" {{ old('diagnosis') == 'Lainnya' ? 'selected' : '' }}>Lainnya...</option>
-                                </x-forms.select-input>
-                            </template>
-                            <template x-if="['bayi', 'baduta', 'balita', 'anak_sekolah', 'balita'].includes(category)">
-                                <x-forms.select-input name="diagnosis" placeholder="" required :error="$errors->has('diagnosis')" value="{{ old('diagnosis', 'Sehat') }}">
-                                    <option value="Sehat" {{ old('diagnosis', 'Sehat') == 'Sehat' ? 'selected' : '' }}>🟢 Sehat</option>
-                                    <option value="Kurang Gizi" {{ old('diagnosis') == 'Kurang Gizi' ? 'selected' : '' }}>🟡 Perlu Pemantauan Gizi</option>
-                                    <option value="Indikasi Stunting" {{ old('diagnosis') == 'Indikasi Stunting' ? 'selected' : '' }}>🔴 Indikasi Stunting</option>
-                                    <option value="Sakit" {{ old('diagnosis') == 'Sakit' ? 'selected' : '' }}>🤒 Sakit (Demam/Batuk/Pilek)</option>
-                                    <option value="Lainnya" {{ old('diagnosis') == 'Lainnya' ? 'selected' : '' }}>Lainnya...</option>
-                                </x-forms.select-input>
-                            </template>
-                            @error('diagnosis') <p class="text-[10px] text-rose-500 font-bold ml-1">{{ $message }}</p> @enderror
-                        </div>
-                        <div class="space-y-3">
-                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Nasihat / Konseling</label>
-                            <textarea name="counseling_notes" rows="2" placeholder="Catat poin konseling yang diberikan..."
-                                      class="w-full p-5 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-slate-50/30 resize-none">{{ old('counseling_notes') }}</textarea>
-                        </div>
+
                     </div>
                 </div>
             </div>
@@ -1752,6 +1723,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 const el = document.querySelector(`input[name="${name}"]`);
                 if (el) el.value = '';
             });
+            
+            // Clear nutrition/immunization fields
+            document.querySelectorAll('input[name="is_exclusive_breastfeeding"]').forEach(r => r.checked = false);
+            document.querySelectorAll('input[name="mp_asi"]').forEach(r => r.checked = false);
+            
+            const vitAInput = document.querySelector('input[name="vitamin_a"]');
+            if (vitAInput) {
+                vitAInput.checked = false;
+                const ad = Alpine.$data(vitAInput.closest('[x-data]'));
+                if (ad) ad.checked = false;
+            }
+            const vitAColor = document.querySelector('select[name="vitamin_a_color"]');
+            if (vitAColor) vitAColor.value = '';
+            
+            const dewormInput = document.querySelector('input[name="deworming_medicine"]');
+            if (dewormInput) {
+                dewormInput.checked = false;
+                const ad = Alpine.$data(dewormInput.closest('[x-data]'));
+                if (ad) ad.checked = false;
+            }
+            
+            const vaccineInput = document.querySelector('input[name="vaccine_name"]');
+            if (vaccineInput) {
+                vaccineInput.value = '';
+                const ad = Alpine.$data(vaccineInput.closest('[x-data]'));
+                if (ad) ad.selectedVaccines = [];
+            }
+            
+            const pmtInput = document.querySelector('input[name="pmt_given"]');
+            if (pmtInput) pmtInput.value = '';
             return;
         }
         
@@ -1780,6 +1781,63 @@ document.addEventListener('DOMContentLoaded', function() {
                     setTimeout(() => el.classList.remove('ring-4', 'ring-primary/20', 'border-primary', 'bg-primary/5'), 1500);
                 }
             });
+
+            // Fill nutrition/immunization fields from previous record if exists
+            const lastExclusive = data.lastExclusiveBreastfeeding;
+            if (lastExclusive !== undefined && lastExclusive !== '') {
+                const radio = document.querySelector(`input[name="is_exclusive_breastfeeding"][value="${lastExclusive}"]`);
+                if (radio) radio.checked = true;
+            }
+            
+            const lastMpAsi = data.lastMpAsi;
+            if (lastMpAsi !== undefined && lastMpAsi !== '') {
+                const radio = document.querySelector(`input[name="mp_asi"][value="${lastMpAsi}"]`);
+                if (radio) radio.checked = true;
+            }
+            
+            const lastVitA = data.lastVitaminA;
+            if (lastVitA !== undefined && lastVitA !== '') {
+                const isVitA = lastVitA == '1' || lastVitA === 'true';
+                const vitAInput = document.querySelector('input[name="vitamin_a"]');
+                if (vitAInput) {
+                    vitAInput.checked = isVitA;
+                    const ad = Alpine.$data(vitAInput.closest('[x-data]'));
+                    if (ad) ad.checked = isVitA;
+                }
+            }
+            
+            const lastVitAColor = data.lastVitaminAColor;
+            const vitAColor = document.querySelector('select[name="vitamin_a_color"]');
+            if (vitAColor && lastVitAColor) {
+                vitAColor.value = lastVitAColor;
+            }
+            
+            const lastDeworm = data.lastDeworming;
+            if (lastDeworm !== undefined && lastDeworm !== '') {
+                const isDeworm = lastDeworm == '1' || lastDeworm === 'true';
+                const dewormInput = document.querySelector('input[name="deworming_medicine"]');
+                if (dewormInput) {
+                    dewormInput.checked = isDeworm;
+                    const ad = Alpine.$data(dewormInput.closest('[x-data]'));
+                    if (ad) ad.checked = isDeworm;
+                }
+            }
+            
+            const lastVaccines = data.lastVaccineName;
+            const vaccineInput = document.querySelector('input[name="vaccine_name"]');
+            if (vaccineInput && lastVaccines !== undefined) {
+                vaccineInput.value = lastVaccines;
+                const ad = Alpine.$data(vaccineInput.closest('[x-data]'));
+                if (ad) {
+                    ad.selectedVaccines = lastVaccines ? lastVaccines.split(', ') : [];
+                }
+            }
+            
+            const lastPmt = data.lastPmtGiven;
+            const pmtInput = document.querySelector('input[name="pmt_given"]');
+            if (pmtInput && lastPmt !== undefined) {
+                pmtInput.value = lastPmt;
+            }
         }
     }
 

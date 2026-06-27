@@ -58,6 +58,8 @@ class PatientRequest extends FormRequest
             'phone_number' => 'required|string|max:15',
             'posyandu_id' => 'nullable|exists:posyandus,id',
             'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'weight_at_birth' => 'nullable|numeric|min:0',
+            'height_at_birth' => 'nullable|numeric|min:0',
 
             // New Detail Fields
             'husband_name' => 'nullable|string|max:255',

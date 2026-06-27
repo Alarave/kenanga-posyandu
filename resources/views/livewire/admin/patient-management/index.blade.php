@@ -10,9 +10,9 @@
 
                 {{-- Title & Subtitle with Accent --}}
                 <div class="flex items-start gap-4">
-                    <div class="w-1.5 h-12 bg-linear-to-b from-teal-500 to-emerald-400 rounded-full mt-1 hidden sm:block"></div>
+                    <div class="w-1.5 h-12 bg-gradient-to-b from-teal-500 to-emerald-400 rounded-full mt-1 hidden sm:block"></div>
                     <div>
-                        <h1 class="text-3xl font-black tracking-tight leading-none text-transparent bg-clip-text bg-linear-to-r from-teal-600 to-emerald-500">
+                        <h1 class="text-3xl font-black tracking-tight leading-none text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">
                             Data Warga Terdaftar
                         </h1>
                         <p class="text-sm font-bold text-slate-900 mt-2">
@@ -32,7 +32,7 @@
                 </a>
                 
                 <a href="{{ route('admin.patients.create') }}" 
-                   class="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-linear-to-br from-teal-600 to-emerald-500 text-slate-900 text-xs font-black uppercase tracking-widest shadow-xl shadow-teal-200 hover:shadow-teal-300 hover:-translate-y-0.5 transition-all group/add">
+                   class="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-br from-teal-600 to-emerald-500 text-slate-900 text-xs font-black uppercase tracking-widest shadow-xl shadow-teal-200 hover:shadow-teal-300 hover:-translate-y-0.5 transition-all group/add">
                     <span class="material-symbols-outlined text-[20px] text-slate-900">person_add</span>
                     Tambah Warga
                 </a>
@@ -42,7 +42,7 @@
     </div>
 
     @if(session('import_errors') && count(session('import_errors')) > 0)
-        <div class="p-6 bg-amber-50 border border-amber-200 rounded-4xl text-sm flex flex-col gap-3 shadow-sm animate-in slide-in-from-top-4 duration-300">
+        <div class="p-6 bg-amber-50 border border-amber-200 rounded-[2rem] text-sm flex flex-col gap-3 shadow-sm animate-in slide-in-from-top-4 duration-300">
             <div class="flex items-center gap-3 text-amber-800 font-black">
                 <span class="material-symbols-outlined text-amber-600 text-[24px]">warning</span>
                 <span>Detail Catatan/Peringatan Proses Import:</span>
@@ -59,7 +59,7 @@
     <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
         {{-- Bayi --}}
         <div class="stat-card flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background:#eff6ff; color:#2563eb;">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#eff6ff; color:#2563eb;">
                 <span class="material-symbols-outlined text-[20px]">baby_changing_station</span>
             </div>
             <div>
@@ -70,7 +70,7 @@
 
         {{-- Baduta --}}
         <div class="stat-card flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background:#dbeafe; color:#1d4ed8;">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#dbeafe; color:#1d4ed8;">
                 <span class="material-symbols-outlined text-[20px]">child_friendly</span>
             </div>
             <div>
@@ -81,7 +81,7 @@
 
         {{-- Balita --}}
         <div class="stat-card flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background:#f0fdfa; color:#0f766e;">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#f0fdfa; color:#0f766e;">
                 <span class="material-symbols-outlined text-[20px]">child_care</span>
             </div>
             <div>
@@ -92,7 +92,7 @@
 
         {{-- Anak Sekolah --}}
         <div class="stat-card flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background:#eef2ff; color:#4338ca;">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#eef2ff; color:#4338ca;">
                 <span class="material-symbols-outlined text-[20px]">school</span>
             </div>
             <div>
@@ -103,7 +103,7 @@
 
         {{-- Ibu Hamil --}}
         <div class="stat-card flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background:#fdf2f8; color:#be185d;">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#fdf2f8; color:#be185d;">
                 <span class="material-symbols-outlined text-[20px]">pregnant_woman</span>
             </div>
             <div>
@@ -114,7 +114,7 @@
 
         {{-- Remaja --}}
         <div class="stat-card flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background:#f5f3ff; color:#7c3aed;">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#f5f3ff; color:#7c3aed;">
                 <span class="material-symbols-outlined text-[20px]">emoji_people</span>
             </div>
             <div>
@@ -125,7 +125,7 @@
 
         {{-- Lansia --}}
         <div class="stat-card flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background:#fff7ed; color:#c2410c;">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#fff7ed; color:#c2410c;">
                 <span class="material-symbols-outlined text-[20px]">elderly</span>
             </div>
             <div>
@@ -136,7 +136,7 @@
 
         {{-- Umum / Lainnya --}}
         <div class="stat-card flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0" style="background:#f8fafc; color:#475569;">
+            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:#f8fafc; color:#475569;">
                 <span class="material-symbols-outlined text-[20px]">groups</span>
             </div>
             <div>
@@ -150,7 +150,7 @@
     <section class="section-card p-4">
         <div class="flex flex-wrap items-center gap-4">
             {{-- Search Input (Livewire) --}}
-            <div class="flex-1 min-w-70 relative group">
+            <div class="flex-1 min-w-[280px] relative group">
                 <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-teal-600 transition-colors pointer-events-none">search</span>
                 <input type="text" wire:model.live.debounce.300ms="search"
                        placeholder="Cari NIK atau nama..."
@@ -172,7 +172,7 @@
             </div>
 
             {{-- Category Filter --}}
-            <div class="w-full sm:w-auto min-w-50">
+            <div class="w-full sm:w-auto min-w-[200px]">
                 <x-forms.select-input 
                     wire:model.live="category"
                     placeholder=""
@@ -235,9 +235,9 @@
                     <td class="px-5 py-3.5">
                         <div class="flex items-center gap-3">
                             @if($patient->profile_photo)
-                                <img src="{{ asset('storage/' . $patient->profile_photo) }}" class="h-9 w-9 rounded-xl object-cover border border-slate-100 shrink-0">
+                                <img src="{{ asset('storage/' . $patient->profile_photo) }}" class="h-9 w-9 rounded-xl object-cover border border-slate-100 flex-shrink-0">
                             @else
-                                <div class="h-9 w-9 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold text-xs shrink-0">
+                                <div class="h-9 w-9 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold text-xs flex-shrink-0">
                                     {{ $initials }}
                                 </div>
                             @endif

@@ -246,7 +246,29 @@ class MedicalRecordService
         $data['user_id'] = $user->id;
         $data['immunization'] = $data['immunization'] ?? 'Tidak ada';
         $data['complaint'] = $data['complaint'] ?? '—';
-        $data['diagnosis'] = $data['diagnosis'] ?? 'Sehat';
+        $childCategories = ['bayi', 'baduta', 'balita', 'anak_sekolah'];
+        if (in_array($patient->category, $childCategories)) {
+            $nutritionStatus = $data['nutrition_status'] ?? 'Gizi Baik';
+            $stuntingStatus = $data['stunting_status'] ?? 'Normal';
+            
+            if ($stuntingStatus === 'Sangat Pendek' || $stuntingStatus === 'Pendek') {
+                $data['diagnosis'] = 'Indikasi Stunting';
+            } elseif ($nutritionStatus === 'Gizi Kurang' || $nutritionStatus === 'Gizi Buruk') {
+                $data['diagnosis'] = 'Kurang Gizi';
+            } else {
+                $data['diagnosis'] = 'Sehat';
+            }
+
+            $data['counseling_notes'] = match ($data['diagnosis']) {
+                'Sehat' => 'Tumbuh kembang anak normal. Pertahankan pemberian makanan bergizi seimbang, cukupi cairan, dan jaga pola tidur anak.',
+                'Kurang Gizi' => 'Berikan makanan padat gizi yang kaya protein hewani (telur, ikan, daging), tingkatkan frekuensi makan, dan lakukan pemantauan tumbuh kembang secara ketat.',
+                'Indikasi Stunting' => 'Berikan asupan protein hewani secara intensif, pantau tinggi dan berat badan secara berkala, serta konsultasikan dengan petugas kesehatan/puskesmas untuk penanganan lebih lanjut.',
+                default => 'Tumbuh kembang anak normal. Pertahankan pemberian makanan bergizi seimbang.'
+            };
+        } else {
+            $data['diagnosis'] = $data['diagnosis'] ?? 'Sehat';
+        }
+        
         $data['nutrition_status'] = $data['nutrition_status'] ?? 'Belum Dihitung';
         $data['vitamin_a_color'] = $data['vitamin_a_color'] ?? 'none';
         $data['deworming_medicine'] = $data['deworming_medicine'] ?? false;
@@ -302,7 +324,29 @@ class MedicalRecordService
 
         $data['immunization'] = $data['immunization'] ?? $medicalRecord->immunization ?? 'Tidak ada';
         $data['complaint'] = $data['complaint'] ?? $medicalRecord->complaint ?? '—';
-        $data['diagnosis'] = $data['diagnosis'] ?? $medicalRecord->diagnosis ?? 'Sehat';
+        $childCategories = ['bayi', 'baduta', 'balita', 'anak_sekolah'];
+        if (in_array($patient->category, $childCategories)) {
+            $nutritionStatus = $data['nutrition_status'] ?? $medicalRecord->nutrition_status ?? 'Gizi Baik';
+            $stuntingStatus = $data['stunting_status'] ?? $medicalRecord->stunting_status ?? 'Normal';
+            
+            if ($stuntingStatus === 'Sangat Pendek' || $stuntingStatus === 'Pendek') {
+                $data['diagnosis'] = 'Indikasi Stunting';
+            } elseif ($nutritionStatus === 'Gizi Kurang' || $nutritionStatus === 'Gizi Buruk') {
+                $data['diagnosis'] = 'Kurang Gizi';
+            } else {
+                $data['diagnosis'] = 'Sehat';
+            }
+
+            $data['counseling_notes'] = match ($data['diagnosis']) {
+                'Sehat' => 'Tumbuh kembang anak normal. Pertahankan pemberian makanan bergizi seimbang, cukupi cairan, dan jaga pola tidur anak.',
+                'Kurang Gizi' => 'Berikan makanan padat gizi yang kaya protein hewani (telur, ikan, daging), tingkatkan frekuensi makan, dan lakukan pemantauan tumbuh kembang secara ketat.',
+                'Indikasi Stunting' => 'Berikan asupan protein hewani secara intensif, pantau tinggi dan berat badan secara berkala, serta konsultasikan dengan petugas kesehatan/puskesmas untuk penanganan lebih lanjut.',
+                default => 'Tumbuh kembang anak normal. Pertahankan pemberian makanan bergizi seimbang.'
+            };
+        } else {
+            $data['diagnosis'] = $data['diagnosis'] ?? $medicalRecord->diagnosis ?? 'Sehat';
+        }
+        
         $data['nutrition_status'] = $data['nutrition_status'] ?? $medicalRecord->nutrition_status ?? 'Belum Dihitung';
         $data['vitamin_a_color'] = $data['vitamin_a_color'] ?? $medicalRecord->vitamin_a_color ?? 'none';
         

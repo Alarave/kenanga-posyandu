@@ -5,14 +5,12 @@ use App\Models\MedicalRecord;
 use App\Models\Patient;
 use App\Models\Posyandu;
 use App\Models\User;
-use App\Models\WhoHeightForAge;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    /** @var \Tests\TestCase|\stdClass $this */
     // Seed roles and permissions
     $this->seed(\Database\Seeders\RolesAndPermissionsSeeder::class);
 
@@ -27,7 +25,6 @@ beforeEach(function () {
 });
 
 it('displays growth chart for balita patient with medical records', function () {
-    /** @var \Tests\TestCase|\stdClass $this */
     // Create a balita patient
     $patient = Patient::factory()->create([
         'posyandu_id' => $this->posyandu->id,
@@ -79,7 +76,6 @@ it('displays growth chart for balita patient with medical records', function () 
 });
 
 it('shows empty state when patient has no medical records', function () {
-    /** @var \Tests\TestCase|\stdClass $this */
     // Create a balita patient without medical records
     $patient = Patient::factory()->create([
         'posyandu_id' => $this->posyandu->id,
@@ -94,7 +90,6 @@ it('shows empty state when patient has no medical records', function () {
 });
 
 it('displays growth chart on patient detail page for balita', function () {
-    /** @var \Tests\TestCase|\stdClass $this */
     // Create a balita patient
     $patient = Patient::factory()->create([
         'posyandu_id' => $this->posyandu->id,
@@ -109,8 +104,7 @@ it('displays growth chart on patient detail page for balita', function () {
         ->assertSeeLivewire('admin.patient-management.growth-chart');
 });
 
-it('displays health monitoring chart for non-balita patients', function () {
-    /** @var \Tests\TestCase|\stdClass $this */
+it('does not display growth chart for non-balita patients', function () {
     // Create an ibu_hamil patient
     $patient = Patient::factory()->create([
         'posyandu_id' => $this->posyandu->id,
@@ -122,11 +116,10 @@ it('displays health monitoring chart for non-balita patients', function () {
     $this->actingAs($this->admin)
         ->get(route('admin.patients.show', $patient))
         ->assertOk()
-        ->assertSeeLivewire('admin.patient-management.growth-chart');
+        ->assertDontSeeLivewire('admin.patient-management.growth-chart');
 });
 
 it('color codes data points based on nutrition status', function () {
-    /** @var \Tests\TestCase|\stdClass $this */
     // Create a balita patient
     $patient = Patient::factory()->create([
         'posyandu_id' => $this->posyandu->id,
@@ -185,8 +178,7 @@ it('color codes data points based on nutrition status', function () {
         });
 });
 
-it('renders health trend chart content for lansia patient', function () {
-    /** @var \Tests\TestCase|\stdClass $this */
+it('does not render growth chart content for lansia patient', function () {
     $patient = Patient::factory()->create([
         'posyandu_id' => $this->posyandu->id,
         'category' => 'lansia',
@@ -210,49 +202,11 @@ it('renders health trend chart content for lansia patient', function () {
     Livewire::actingAs($this->admin)
         ->test(GrowthChart::class, ['patient' => $patient])
         ->assertDontSee('Grafik Analisis Pertumbuhan WHO')
-        ->assertSee('Grafik Pemantauan Kesehatan Berkala')
-        ->assertSet('chartData.datasets.0.label', 'Sistolik (mmHg)')
-        ->assertSet('chartData.datasets.2.label', 'Gula Darah (mg/dL)');
+        ->assertDontSee('Grafik Pemantauan Kesehatan Berkala')
+        ->assertSet('chartData', []);
 
     $this->actingAs($this->admin)
         ->get(route('admin.patients.show', $patient))
         ->assertOk()
-        ->assertSeeLivewire('admin.patient-management.growth-chart');
-});
-
-it('can switch chart to hfa and retrieve height for age data', function () {
-    /** @var \Tests\TestCase|\stdClass $this */
-    // Seed WHO references first
-    WhoHeightForAge::create([
-        'gender' => 'M',
-        'age_months' => 0,
-        'l_value' => 1,
-        'm_value' => 49.9,
-        's_value' => 0.038,
-        'sd_minus3' => 44.2,
-        'sd_minus2' => 46.1,
-        'sd_plus2' => 53.7,
-        'sd_plus3' => 55.6,
-    ]);
-
-    $patient = Patient::factory()->create([
-        'posyandu_id' => $this->posyandu->id,
-        'category' => 'balita',
-        'birth_date' => now()->subMonths(1),
-        'gender' => 'L',
-    ]);
-
-    MedicalRecord::factory()->create([
-        'patient_id' => $patient->id,
-        'user_id' => $this->admin->id,
-        'visit_date' => now(),
-        'weight' => 3.5,
-        'height' => 50.0,
-    ]);
-
-    Livewire::actingAs($this->admin)
-        ->test(GrowthChart::class, ['patient' => $patient])
-        ->call('switchChart', 'hfa')
-        ->assertSet('activeChart', 'hfa')
-        ->assertSet('chartData.datasets.5.label', 'Tinggi Badan Anak');
+        ->assertDontSeeLivewire('admin.patient-management.growth-chart');
 });

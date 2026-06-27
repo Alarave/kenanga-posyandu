@@ -635,7 +635,7 @@ describe('field opsional', function () {
         $response->assertSessionDoesntHaveErrors();
     });
 
-    it('menolak menyimpan rekam medis tanpa diagnosis', function () {
+    it('dapat menyimpan rekam medis tanpa diagnosis karena terisi otomatis', function () {
         $this->actingAs($this->admin);
 
         $response = $this->post('/admin/medical-records', [
@@ -647,7 +647,9 @@ describe('field opsional', function () {
             // diagnosis missing
         ]);
 
-        $response->assertSessionHasErrors('diagnosis');
+        $response->assertSessionDoesntHaveErrors();
+        $record = \App\Models\MedicalRecord::latest('id')->first();
+        expect($record->diagnosis)->toBe('Sehat');
     });
 });
 

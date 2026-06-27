@@ -32,7 +32,7 @@ class MedicalRecordRequest extends FormRequest
             'pill_fe' => 'nullable|boolean',
             'is_exclusive_breastfeeding' => 'nullable|boolean',
             'mp_asi' => 'nullable|boolean',
-            'diagnosis' => ($isChild ? 'required' : 'nullable') . '|string',
+            'diagnosis' => 'nullable|string',
             'complaint' => 'nullable|string',
             'disease_history' => 'nullable|string',
             'health_note' => 'nullable|string',

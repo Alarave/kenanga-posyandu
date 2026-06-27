@@ -27,7 +27,7 @@
                 <p class="text-base font-black text-slate-800">Unduh Contoh File</p>
             </div>
         </div>
-        <div class="p-6 rounded-3xl border border-amber-200 bg-amber-50/30 flex items-center gap-5 shadow-sm">
+        <div class="bg-white p-6 rounded-3xl border border-amber-200 bg-amber-50/30 flex items-center gap-5 shadow-sm">
             <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl font-black">2</div>
             <div>
                 <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Langkah Kedua</p>
@@ -48,14 +48,14 @@
         
         {{-- Left: Upload Form --}}
         <div class="lg:col-span-7 space-y-8">
-            <div class="bg-white border border-slate-200 rounded-[3rem] shadow-2xl overflow-hidden border-t-12 border-t-teal-600">
+            <div class="bg-white border border-slate-200 rounded-[3rem] shadow-2xl overflow-hidden border-t-[12px] border-t-teal-600">
                 <div class="p-10 md:p-14">
                     <form action="{{ route('admin.patients.import.store') }}" method="POST"
                           enctype="multipart/form-data" class="space-y-10">
                         @csrf
 
                         @if($errors->any())
-                        <div class="p-6 bg-red-50 border border-red-100 text-red-800 rounded-4xl text-sm flex gap-4 animate-in slide-in-from-top-4 duration-300">
+                        <div class="p-6 bg-red-50 border border-red-100 text-red-800 rounded-[2rem] text-sm flex gap-4 animate-in slide-in-from-top-4 duration-300">
                             <span class="material-symbols-outlined text-red-500 text-[24px]">error</span>
                             <ul class="list-disc list-inside space-y-1">
                                 @foreach($errors->all() as $error)
@@ -90,11 +90,9 @@
                             </label>
                             
                             <div id="dropzone"
-                                 @class([
-                                     'relative border-4 border-dashed rounded-[2.5rem] p-12 text-center cursor-pointer hover:border-teal-400 hover:bg-teal-50/50 transition-all group shadow-inner',
-                                     'border-red-200 bg-red-50/50' => $errors->has('file'),
-                                     'border-slate-100' => !$errors->has('file'),
-                                 ])
+                                 class="relative border-4 border-dashed border-slate-100 rounded-[2.5rem] p-12 text-center cursor-pointer
+                                        hover:border-teal-400 hover:bg-teal-50/50 transition-all group shadow-inner
+                                        @error('file') border-red-200 bg-red-50 @enderror"
                                  onclick="document.getElementById('fileInput').click()">
                                 <input type="file" id="fileInput" name="file" accept=".csv,.xlsx,.xls"
                                        class="hidden" onchange="handleFileSelect(this)">
@@ -128,9 +126,9 @@
 
                         <div class="pt-6">
                             <button type="submit" id="submitBtn"
-                                    class="w-full h-20 bg-teal-600 text-white rounded-4xl text-xl font-black hover:bg-teal-700 active:scale-[0.97]
+                                    class="w-full h-20 bg-teal-600 text-white rounded-[2rem] text-xl font-black hover:bg-teal-700 active:scale-[0.97]
                                            transition-all flex items-center justify-center gap-4 shadow-2xl shadow-teal-600/30 disabled:opacity-50 group">
-                                <span class="material-symbols-outlined text-[32px] group-hover:-translate-y-0.5 transition-transform">cloud_done</span>
+                                <span class="material-symbols-outlined text-[32px] group-hover:translate-y-[-2px] transition-transform">cloud_done</span>
                                 Simpan Data Laporan
                             </button>
                         </div>
@@ -175,7 +173,7 @@
                 <div class="space-y-8">
                     {{-- Balita --}}
                     <div class="flex gap-5">
-                        <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                        <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center flex-shrink-0">
                             <span class="material-symbols-outlined text-[24px]">child_care</span>
                         </div>
                         <div>
@@ -188,7 +186,7 @@
 
                     {{-- Ibu Hamil --}}
                     <div class="flex gap-5">
-                        <div class="w-12 h-12 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center shrink-0">
+                        <div class="w-12 h-12 rounded-2xl bg-pink-50 text-pink-600 flex items-center justify-center flex-shrink-0">
                             <span class="material-symbols-outlined text-[24px]">pregnant_woman</span>
                         </div>
                         <div>
@@ -201,7 +199,7 @@
 
                     {{-- Lansia --}}
                     <div class="flex gap-5">
-                        <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center flex-shrink-0">
                             <span class="material-symbols-outlined text-[24px]">elderly</span>
                         </div>
                         <div>
@@ -214,7 +212,7 @@
 
                     {{-- Format Tanggal --}}
                     <div class="flex gap-5 border-t border-slate-100 pt-6">
-                        <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center flex-shrink-0">
                             <span class="material-symbols-outlined text-[24px]">info</span>
                         </div>
                         <div>
