@@ -913,13 +913,58 @@ window.lansiaMetabolicChart = null;
 // ── ANA-30: Download Chart as Image ──
 window.downloadChart = function(chartInstance, fileName) {
     if (!chartInstance) return;
-    const url = chartInstance.toBase64Image();
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = fileName + '.png';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
+    
+    // 1. Download Gambar PNG
+    try {
+        const url = chartInstance.toBase64Image();
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName + '.png';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    } catch (e) {
+        console.error("Gagal mendownload gambar PNG:", e);
+    }
+
+    // 2. Download Data CSV (Excel)
+    try {
+        const labels = chartInstance.data.labels;
+        const datasets = chartInstance.data.datasets;
+        
+        let csvString = "";
+        
+        // Header
+        let header = "Label/Bulan";
+        datasets.forEach(ds => {
+            header += ";" + ds.label;
+        });
+        csvString += header + "\r\n";
+        
+        // Rows
+        labels.forEach((label, index) => {
+            let row = label;
+            datasets.forEach(ds => {
+                let val = ds.data[index] !== undefined && ds.data[index] !== null ? ds.data[index] : 0;
+                row += ";" + val;
+            });
+            csvString += row + "\r\n";
+        });
+        
+        // Gunakan BOM agar Excel membaca karakter UTF-8 dengan benar
+        const BOM = "\uFEFF";
+        const blob = new Blob([BOM + csvString], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", fileName + "_data.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+    } catch (e) {
+        console.error("Gagal mendownload data CSV:", e);
+    }
 }
 
 // ── ANA-50: Fallback Error Helpers ──
