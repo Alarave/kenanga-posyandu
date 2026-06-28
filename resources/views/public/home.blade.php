@@ -1177,11 +1177,7 @@
                 </div>
 
                 <h1 class="hero-heading">
-                    Modernisasi<span class="img-pill"
-                        style="display:inline-block;width:60px;height:44px;border-radius:100px;overflow:hidden;vertical-align:middle;margin:0 10px;border:2px solid #e2e8f0;transform:rotate(-4deg);transition:transform 0.4s ease;"><img
-                            src="{{ asset('assets/img/carousel_1.png') }}"
-                            onerror="this.src='{{ asset('assets/img/tim-kenanga.jpg') }}'" alt=""
-                            style="width:100%;height:100%;object-fit:cover;"></span>Layanan <span class="accent">Posyandu
+                    Modernisasi Layanan <span class="accent">Posyandu
                         Kita.</span>
                 </h1>
 
