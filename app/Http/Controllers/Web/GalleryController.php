@@ -34,14 +34,30 @@ class GalleryController extends Controller
             abort(403, 'Anda tidak memiliki akses ke folder ini.');
         }
 
-        $data = $request->validated();
-        // Bind media ke folder & posyandu folder
-        $data['gallery_folder_id'] = $folder->id;
-        $data['posyandu_id'] = $folder->posyandu_id;
+        $request->validated();
+        $files = $request->file('photos');
+        $count = count($files);
 
-        $galleryService->createGallery($data, $user);
+        foreach ($files as $index => $file) {
+            // Tentukan judul media
+            if ($request->filled('title')) {
+                $title = $count > 1 ? $request->input('title') . ' (' . ($index + 1) . ')' : $request->input('title');
+            } else {
+                $title = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+            }
 
-        return redirect()->route('admin.gallery.show', $folder->id)->with('success', 'Media berhasil ditambahkan ke folder.');
+            $data = [
+                'gallery_folder_id' => $folder->id,
+                'posyandu_id' => $folder->posyandu_id,
+                'title' => $title,
+                'description' => $request->input('description'),
+                'photo' => $file,
+            ];
+
+            $galleryService->createGallery($data, $user);
+        }
+
+        return redirect()->route('admin.gallery.show', $folder->id)->with('success', $count . ' media berhasil ditambahkan ke folder.');
     }
 
     /**

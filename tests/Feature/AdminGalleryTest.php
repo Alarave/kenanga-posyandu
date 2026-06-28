@@ -75,7 +75,7 @@ test('can upload image file to folder and it is saved as type image', function (
     $response = $this->post("/admin/gallery/{$folder->id}/media", [
         'title' => 'Kegiatan Posyandu',
         'description' => 'Edukasi kesehatan anak',
-        'photo' => $file,
+        'photos' => [$file],
     ]);
 
     $response->assertRedirect("/admin/gallery/{$folder->id}");
@@ -111,7 +111,7 @@ test('can upload video file to folder and it is saved as type video', function (
     $response = $this->post("/admin/gallery/{$folder->id}/media", [
         'title' => 'Video Kegiatan Posyandu',
         'description' => 'Rekaman imunisasi rutin',
-        'photo' => $file,
+        'photos' => [$file],
     ]);
 
     $response->assertRedirect("/admin/gallery/{$folder->id}");
