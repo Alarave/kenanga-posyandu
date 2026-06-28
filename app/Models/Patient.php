@@ -42,6 +42,26 @@ class Patient extends Model
                 $model->id_number_hash = static::generateBlindIndex($model->id_number);
             }
         });
+
+        static::saved(function ($patient) {
+            \App\Models\AnalyticsSnapshot::where(function($q) use ($patient) {
+                if ($patient->posyandu_id) {
+                    $q->where('posyandu_id', $patient->posyandu_id)->orWhereNull('posyandu_id');
+                } else {
+                    $q->whereNull('posyandu_id');
+                }
+            })->delete();
+        });
+
+        static::deleted(function ($patient) {
+            \App\Models\AnalyticsSnapshot::where(function($q) use ($patient) {
+                if ($patient->posyandu_id) {
+                    $q->where('posyandu_id', $patient->posyandu_id)->orWhereNull('posyandu_id');
+                } else {
+                    $q->whereNull('posyandu_id');
+                }
+            })->delete();
+        });
     }
 
     /**

@@ -373,7 +373,41 @@
                 </button>
             </div>
         </div>
-        
+
+        {{-- Keterangan Zona Ambang Batas (Z-Score WHO) --}}
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6 relative z-10" x-show="hasData">
+            <div class="flex items-center gap-3 p-4 bg-emerald-50/60 border border-emerald-100 rounded-2xl">
+                <span class="w-3.5 h-3.5 rounded-full bg-emerald-500 inline-block shrink-0 shadow-xs"></span>
+                <div>
+                    <p class="text-[10px] font-black text-emerald-800 uppercase tracking-wider">Zona Hijau (Normal)</p>
+                    <p class="text-[9px] font-bold text-emerald-600/90 mt-0.5">
+                        Bawah (-2 SD s/d 0 SD): baik / Normal<br>
+                        Atas (0 SD s/d +2 SD): Gizi Baik / Normal
+                    </p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 p-4 bg-amber-50/60 border border-amber-100 rounded-2xl">
+                <span class="w-3.5 h-3.5 rounded-full bg-amber-400 inline-block shrink-0 shadow-xs"></span>
+                <div>
+                    <p class="text-[10px] font-black text-amber-800 uppercase tracking-wider">Zona Kuning (Peringatan)</p>
+                    <p class="text-[9px] font-bold text-amber-600/90 mt-0.5">
+                        Bawah (-2 s/d -3 SD): Gizi Kurang / Pendek<br>
+                        Atas (+2 s/d +3 SD): Risiko Gizi Lebih
+                    </p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3 p-4 bg-rose-50/60 border border-rose-100 rounded-2xl">
+                <span class="w-3.5 h-3.5 rounded-full bg-rose-500 inline-block shrink-0 shadow-xs"></span>
+                <div>
+                    <p class="text-[10px] font-black text-rose-800 uppercase tracking-wider">Zona Merah (Bahaya)</p>
+                    <p class="text-[9px] font-bold text-rose-600/90 mt-0.5">
+                        Bawah (&lt; -3 SD): Gizi Buruk / Sangat Pendek<br>
+                        Atas (&gt; +3 SD): Obesitas / Sangat Tinggi
+                    </p>
+                </div>
+            </div>
+        </div>
+
         <div class="relative z-10 min-h-162.5 h-[75vh] w-full" wire:ignore>
             <canvas id="growthChartBottom" class="h-full! w-full!" x-show="hasData"></canvas>
         </div>

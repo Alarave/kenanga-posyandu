@@ -83,7 +83,7 @@
     </div>
 
     {{-- Demographic, IMT & Independence Row --}}
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
         {{-- AL-01: Kategori Umur --}}
         <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between">
             <div>
@@ -182,53 +182,6 @@
                         </div>
                         <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
                             <div class="h-full bg-rose-500 rounded-full" style="width: {{ $obesitasPct }}%"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- AL-07: Kemandirian --}}
-        <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between">
-            <div>
-                <div class="flex items-center gap-3 mb-4">
-                    <span class="material-symbols-outlined text-amber-500 text-[26px]">accessibility_new</span>
-                    <h3 class="text-lg font-bold text-slate-900">Tingkat Kemandirian</h3>
-                </div>
-                <p class="text-xs text-slate-500 font-semibold mb-6">Status kemandirian lansia dalam aktivitas sehari-hari</p>
-                
-                <div class="space-y-4">
-                    @php
-                        $indTotal = array_sum($independenceStats);
-                        $aPct = $indTotal > 0 ? round(($independenceStats['a'] / $indTotal) * 100) : 0;
-                        $bPct = $indTotal > 0 ? round(($independenceStats['b'] / $indTotal) * 100) : 0;
-                        $cPct = $indTotal > 0 ? round(($independenceStats['c'] / $indTotal) * 100) : 0;
-                    @endphp
-                    <div>
-                        <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-1.5">
-                            <span>Kategori A (Mandiri Penuh)</span>
-                            <span class="text-slate-900 font-extrabold">{{ $independenceStats['a'] }} Jiwa ({{ $aPct }}%)</span>
-                        </div>
-                        <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                            <div class="h-full bg-emerald-500 rounded-full" style="width: {{ $aPct }}%"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-1.5">
-                            <span>Kategori B (Ketergantungan Sebagian)</span>
-                            <span class="text-slate-900 font-extrabold">{{ $independenceStats['b'] }} Jiwa ({{ $bPct }}%)</span>
-                        </div>
-                        <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                            <div class="h-full bg-amber-500 rounded-full" style="width: {{ $bPct }}%"></div>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-1.5">
-                            <span>Kategori C (Ketergantungan Total)</span>
-                            <span class="text-slate-900 font-extrabold">{{ $independenceStats['c'] }} Jiwa ({{ $cPct }}%)</span>
-                        </div>
-                        <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                            <div class="h-full bg-rose-500 rounded-full" style="width: {{ $cPct }}%"></div>
                         </div>
                     </div>
                 </div>

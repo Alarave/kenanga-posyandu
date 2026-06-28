@@ -598,6 +598,18 @@ class Analytics extends BaseAdminComponent
             ->pluck('total', 'nutrition_status')
             ->toArray();
 
+        $sortOrder = [
+            'Gizi Baik' => 1,
+            'baik' => 2,
+            'Gizi Kurang' => 3,
+            'Gizi Buruk' => 4,
+        ];
+        uksort($dist, function ($a, $b) use ($sortOrder) {
+            $orderA = $sortOrder[$a] ?? 99;
+            $orderB = $sortOrder[$b] ?? 99;
+            return $orderA <=> $orderB;
+        });
+
         $posyandus = $this->getAllowedPosyandus();
         $posyanduIds = $posyandus->pluck('id');
 

@@ -11,6 +11,36 @@ class MedicalRecord extends Model
 {
     use HasFactory, HasPosyanduAccess, LogsActivity;
 
+    /**
+     * Boot function to handle model events.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::saved(function ($record) {
+            $posyanduId = $record->patient?->posyandu_id;
+            \App\Models\AnalyticsSnapshot::where(function($q) use ($posyanduId) {
+                if ($posyanduId) {
+                    $q->where('posyandu_id', $posyanduId)->orWhereNull('posyandu_id');
+                } else {
+                    $q->whereNull('posyandu_id');
+                }
+            })->delete();
+        });
+
+        static::deleted(function ($record) {
+            $posyanduId = $record->patient?->posyandu_id;
+            \App\Models\AnalyticsSnapshot::where(function($q) use ($posyanduId) {
+                if ($posyanduId) {
+                    $q->where('posyandu_id', $posyanduId)->orWhereNull('posyandu_id');
+                } else {
+                    $q->whereNull('posyandu_id');
+                }
+            })->delete();
+        });
+    }
+
     // BB/U (Weight-for-Age) — Status Berat Badan
     const STATUS_BB_U_SANGAT_KURANG = 'Gizi Buruk';
 

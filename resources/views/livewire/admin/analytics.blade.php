@@ -419,12 +419,25 @@
                                 $val = $nutritionData[$i] ?? 0;
                                 $sum = array_sum($nutritionData);
                                 $pct = $sum > 0 ? round(($val / $sum) * 100, 1) : 0;
-                                $isNormal = str_contains(strtolower($label), 'normal') || str_contains(strtolower($label), 'baik');
-                                $isRisk   = str_contains(strtolower($label), 'risiko') || str_contains(strtolower($label), 'kurang');
+                                
+                                $sLabel = strtolower($label);
+                                if ($sLabel === 'baik' || $sLabel === 'normal') {
+                                    $bulletColor = 'bg-emerald-500';
+                                } elseif ($sLabel === 'gizi baik') {
+                                    $bulletColor = 'bg-teal-500';
+                                } elseif ($sLabel === 'gizi kurang' || $sLabel === 'kurang') {
+                                    $bulletColor = 'bg-amber-500';
+                                } elseif (str_contains($sLabel, 'sangat') || str_contains($sLabel, 'buruk') || str_contains($sLabel, 'pendek')) {
+                                    $bulletColor = 'bg-rose-500';
+                                } elseif (str_contains($sLabel, 'risiko') || str_contains($sLabel, 'berisiko') || str_contains($sLabel, 'lebih') || str_contains($sLabel, 'obesitas')) {
+                                    $bulletColor = 'bg-amber-500';
+                                } else {
+                                    $bulletColor = 'bg-slate-400';
+                                }
                             @endphp
                             <div class="flex items-center justify-between py-2.5 text-sm font-bold text-slate-750">
                                 <span class="flex items-center gap-2">
-                                    <span class="w-3 h-3 rounded-full inline-block {{ $isNormal ? 'bg-emerald-500' : ($isRisk ? 'bg-amber-450' : 'bg-red-500') }}"></span>
+                                    <span class="w-3 h-3 rounded-full inline-block {{ $bulletColor }}"></span>
                                     {{ $label }}
                                 </span>
                                 <span class="font-extrabold text-slate-900">{{ $val }} <span class="text-slate-400 font-semibold">({{ $pct }}%)</span></span>
@@ -1213,13 +1226,13 @@ function initCharts(data = null) {
     if (donutCtx && nutData && nutData.length > 0 && nutData.some(v => v > 0)) {
         try {
             const colors = nutLabels.map(label => {
-                const sLabel = String(label);
-                if (sLabel.includes('Normal') || sLabel.includes('Baik') || sLabel.includes('baik')) return '#059669';
-                if (sLabel.includes('Kurang') && !sLabel.includes('Sangat')) return '#f59e0b';
-                if (sLabel.includes('Risiko') || sLabel.includes('Berisiko')) return '#f59e0b';
-                if (sLabel.includes('Sangat') || sLabel.includes('Buruk') || sLabel.includes('Pendek')) return '#ef4444';
-                if (sLabel.includes('Lebih') || sLabel.includes('Obesitas')) return '#f59e0b';
-                return '#94a3b8';
+                const sLabel = String(label).toLowerCase();
+                if (sLabel === 'baik' || sLabel === 'normal') return '#10b981'; // emerald-500
+                if (sLabel === 'gizi baik') return '#0d9488'; // teal-500
+                if (sLabel === 'gizi kurang' || sLabel === 'kurang') return '#f59e0b'; // amber-500
+                if (sLabel.includes('sangat') || sLabel.includes('buruk') || sLabel.includes('pendek')) return '#f43f5e'; // rose-500
+                if (sLabel.includes('risiko') || sLabel.includes('berisiko') || sLabel.includes('lebih') || sLabel.includes('obesitas')) return '#f59e0b'; // amber-500
+                return '#94a3b8'; // slate-400
             });
             nutritionDonutChart = new Chart(donutCtx, {
                 type: 'doughnut',

@@ -3,22 +3,21 @@
 namespace App\Livewire\Admin\Analytics;
 
 use Livewire\Component;
+use Livewire\Attributes\Reactive;
 use App\Livewire\Traits\HasPosyanduScope;
 
 class LansiaAnalytics extends Component
 {
     use HasPosyanduScope;
 
+    #[Reactive]
     public $selectedYear;
-    public $selectedMonth;
-    public $selectedPosyandu;
 
-    public function mount($selectedYear = null, $selectedMonth = null, $selectedPosyandu = null)
-    {
-        $this->selectedYear = $selectedYear ?? now()->year;
-        $this->selectedMonth = $selectedMonth;
-        $this->selectedPosyandu = $selectedPosyandu;
-    }
+    #[Reactive]
+    public $selectedMonth;
+
+    #[Reactive]
+    public $selectedPosyandu;
 
     // AL-01: Kategori Umur
     #[\Livewire\Attributes\Computed]
@@ -44,11 +43,14 @@ class LansiaAnalytics extends Component
     {
         $records = $this->applyPosyanduScope(\App\Models\MedicalRecord::query(), $this->selectedPosyandu)
             ->whereHas('patient', function($q) {
-            $q->where('category', 'lansia')->where('status_mutasi', 'aktif');
-        })
-        ->whereYear('visit_date', $this->selectedYear)
-        ->when($this->selectedMonth, fn($q) => $q->whereMonth('visit_date', $this->selectedMonth))
-        ->get();
+                $q->where('category', 'lansia')->where('status_mutasi', 'aktif');
+            })
+            ->whereYear('visit_date', $this->selectedYear)
+            ->when($this->selectedMonth, fn($q) => $q->whereMonth('visit_date', $this->selectedMonth))
+            ->orderBy('visit_date', 'desc')
+            ->orderBy('id', 'desc')
+            ->get()
+            ->unique('patient_id');
 
         $kurang = 0; $normal = 0; $lebih = 0; $obesitas = 0;
         foreach ($records as $r) {
@@ -69,11 +71,14 @@ class LansiaAnalytics extends Component
     {
         $records = $this->applyPosyanduScope(\App\Models\MedicalRecord::query(), $this->selectedPosyandu)
             ->whereHas('patient', function($q) {
-            $q->where('category', 'lansia')->where('status_mutasi', 'aktif');
-        })
-        ->whereYear('visit_date', $this->selectedYear)
-        ->when($this->selectedMonth, fn($q) => $q->whereMonth('visit_date', $this->selectedMonth))
-        ->get();
+                $q->where('category', 'lansia')->where('status_mutasi', 'aktif');
+            })
+            ->whereYear('visit_date', $this->selectedYear)
+            ->when($this->selectedMonth, fn($q) => $q->whereMonth('visit_date', $this->selectedMonth))
+            ->orderBy('visit_date', 'desc')
+            ->orderBy('id', 'desc')
+            ->get()
+            ->unique('patient_id');
 
         $hipertensi = 0; $gula = 0; $kolesterol = 0; $asamUrat = 0;
         foreach ($records as $r) {
@@ -85,28 +90,13 @@ class LansiaAnalytics extends Component
         return ['hipertensi' => $hipertensi, 'gula' => $gula, 'kolesterol' => $kolesterol, 'asamUrat' => $asamUrat];
     }
 
-    // AL-07: Kemandirian
-    #[\Livewire\Attributes\Computed]
-    public function independenceStats()
-    {
-        $patients = $this->applyPosyanduScope(\App\Models\Patient::query(), $this->selectedPosyandu)
-            ->where('category', 'lansia')->where('status_mutasi', 'aktif')->get();
-        $a = 0; $b = 0; $c = 0;
-        foreach ($patients as $p) {
-            if ($p->independence_status == 'A') $a++;
-            elseif ($p->independence_status == 'B') $b++;
-            elseif ($p->independence_status == 'C') $c++;
-        }
-        return ['a' => $a, 'b' => $b, 'c' => $c];
-    }
-
     public function render()
     {
         return view('livewire.admin.analytics.lansia-analytics', [
             'ageCategories' => $this->ageCategories(),
             'imtStats' => $this->imtStats(),
-            'metabolicRisks' => $this->metabolicRisks(),
-            'independenceStats' => $this->independenceStats()
+            'metabolicRisks' => $this->metabolicRisks()
         ]);
     }
 }
+

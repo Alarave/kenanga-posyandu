@@ -63,17 +63,14 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
         // ── 1. GLOBAL OVERVIEW STATS ────────────────────────────────
         $totalBalita = (clone $patientQuery)
             ->whereIn('category', ['balita', 'bayi', 'baduta'])
-            ->whereHas('medicalRecords', $basePatientFilter)
             ->count();
 
         $totalIbuHamil = (clone $patientQuery)
             ->where('category', 'ibu_hamil')
-            ->whereHas('medicalRecords', $basePatientFilter)
             ->count();
 
         $totalLansia = (clone $patientQuery)
             ->where('category', 'lansia')
-            ->whereHas('medicalRecords', $basePatientFilter)
             ->count();
 
         $totalKunjungan = (clone $medicalRecordQuery)
@@ -203,6 +200,18 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
             ->groupBy('nutrition_status')
             ->pluck('total', 'nutrition_status')
             ->toArray();
+
+        $sortOrder = [
+            'Gizi Baik' => 1,
+            'baik' => 2,
+            'Gizi Kurang' => 3,
+            'Gizi Buruk' => 4,
+        ];
+        uksort($dist, function ($a, $b) use ($sortOrder) {
+            $orderA = $sortOrder[$a] ?? 99;
+            $orderB = $sortOrder[$b] ?? 99;
+            return $orderA <=> $orderB;
+        });
 
         $stuntingByPosyandu = [];
         $posyandus = Posyandu::all();

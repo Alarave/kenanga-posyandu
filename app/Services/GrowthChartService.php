@@ -19,7 +19,7 @@ class GrowthChartService
     public function getWeightForAgeData(Patient $patient): array
     {
         $gender = $this->normalizeGender($patient->gender);
-        $records = $patient->medicalRecords()->orderBy('visit_date')->get();
+        $records = $patient->medicalRecords()->reorder('visit_date', 'asc')->get();
 
         // Ambil referensi WHO 0-60 bulan
         $references = WhoWeightForAge::where('gender', $gender)
@@ -27,15 +27,32 @@ class GrowthChartService
             ->orderBy('age_months')
             ->get();
 
+        $fields = ['median', 'sd_plus2', 'sd_minus2', 'sd_plus3', 'sd_minus3'];
+        $interpolatedRefs = $this->interpolateReferences($references, $fields);
+
+        $medianData = [];
+        $sd2Plus = [];
+        $sd2Minus = [];
+        $sd3Plus = [];
+        $sd3Minus = [];
+
+        for ($m = 0; $m <= 60; $m++) {
+            $medianData[] = $interpolatedRefs[$m]->median;
+            $sd2Plus[] = $interpolatedRefs[$m]->sd_plus2;
+            $sd2Minus[] = $interpolatedRefs[$m]->sd_minus2;
+            $sd3Plus[] = $interpolatedRefs[$m]->sd_plus3;
+            $sd3Minus[] = $interpolatedRefs[$m]->sd_minus3;
+        }
+
         return [
-            'labels' => $references->pluck('age_months')->toArray(),
+            'labels' => range(0, 60),
             'datasets' => [
-                $this->createReferenceDataset('Median', $references->pluck('median')->toArray(), '#16a34a', 3), // Green
-                $this->createReferenceDataset('+2 SD', $references->pluck('sd_plus2')->toArray(), '#dc2626', 1, 'solid'), // Red
-                $this->createReferenceDataset('-2 SD', $references->pluck('sd_minus2')->toArray(), '#dc2626', 1, 'solid'), // Red
-                $this->createReferenceDataset('+3 SD', $references->pluck('sd_plus3')->toArray(), '#000000', 1, 'solid'), // Black
-                $this->createReferenceDataset('-3 SD', $references->pluck('sd_minus3')->toArray(), '#000000', 1, 'solid'), // Black
-                $this->createChildDataset('Berat Badan Anak', $this->mapRecordsToAge($patient, $records, 'weight'), '#ffffff'), // White for high contrast on themed bg
+                $this->createReferenceDataset('Median', $medianData, '#16a34a', 3), // Green
+                $this->createReferenceDataset('+2 SD', $sd2Plus, '#dc2626', 1, 'solid'), // Red
+                $this->createReferenceDataset('-2 SD', $sd2Minus, '#dc2626', 1, 'solid'), // Red
+                $this->createReferenceDataset('+3 SD', $sd3Plus, '#000000', 1, 'solid'), // Black
+                $this->createReferenceDataset('-3 SD', $sd3Minus, '#000000', 1, 'solid'), // Black
+                $this->createChildDataset('Berat Badan Anak', $this->mapRecordsToAge($patient, $records, 'weight'), '#ffffff'), // White
             ],
             'weight' => $records->pluck('weight')->toArray(),
             'height' => $records->pluck('height')->toArray(),
@@ -49,24 +66,110 @@ class GrowthChartService
     public function getHeightForAgeData(Patient $patient): array
     {
         $gender = $this->normalizeGender($patient->gender);
-        $records = $patient->medicalRecords()->where('height', '>', 0)->orderBy('visit_date')->get();
+        $records = $patient->medicalRecords()->where('height', '>', 0)->reorder('visit_date', 'asc')->get();
 
         $references = WhoHeightForAge::where('gender', $gender)
             ->where('age_months', '<=', 60)
             ->orderBy('age_months')
             ->get();
 
+        $fields = ['m_value', 'sd_plus2', 'sd_minus2', 'sd_plus3', 'sd_minus3'];
+        $interpolatedRefs = $this->interpolateReferences($references, $fields);
+
+        $medianData = [];
+        $sd2Plus = [];
+        $sd2Minus = [];
+        $sd3Plus = [];
+        $sd3Minus = [];
+
+        for ($m = 0; $m <= 60; $m++) {
+            $medianData[] = $interpolatedRefs[$m]->m_value;
+            $sd2Plus[] = $interpolatedRefs[$m]->sd_plus2;
+            $sd2Minus[] = $interpolatedRefs[$m]->sd_minus2;
+            $sd3Plus[] = $interpolatedRefs[$m]->sd_plus3;
+            $sd3Minus[] = $interpolatedRefs[$m]->sd_minus3;
+        }
+
         return [
-            'labels' => $references->pluck('age_months')->toArray(),
+            'labels' => range(0, 60),
             'datasets' => [
-                $this->createReferenceDataset('Median', $references->pluck('m_value')->toArray(), '#16a34a', 3), // Green
-                $this->createReferenceDataset('+2 SD', $references->pluck('sd_plus2')->toArray(), '#dc2626', 1, 'solid'), // Red
-                $this->createReferenceDataset('-2 SD', $references->pluck('sd_minus2')->toArray(), '#dc2626', 1, 'solid'), // Red
-                $this->createReferenceDataset('+3 SD', $references->pluck('sd_plus3')->toArray(), '#000000', 1, 'solid'), // Black
-                $this->createReferenceDataset('-3 SD', $references->pluck('sd_minus3')->toArray(), '#000000', 1, 'solid'), // Black
+                $this->createReferenceDataset('Median', $medianData, '#16a34a', 3), // Green
+                $this->createReferenceDataset('+2 SD', $sd2Plus, '#dc2626', 1, 'solid'), // Red
+                $this->createReferenceDataset('-2 SD', $sd2Minus, '#dc2626', 1, 'solid'), // Red
+                $this->createReferenceDataset('+3 SD', $sd3Plus, '#000000', 1, 'solid'), // Black
+                $this->createReferenceDataset('-3 SD', $sd3Minus, '#000000', 1, 'solid'), // Black
                 $this->createChildDataset('Tinggi Badan Anak', $this->mapRecordsToAge($patient, $records, 'height'), '#ffffff'), // White
             ],
         ];
+    }
+
+    /**
+     * Interpolates missing monthly reference values linearly from sparse WHO reference data.
+     */
+    private function interpolateReferences($references, array $fields): array
+    {
+        $lookup = [];
+        foreach ($references as $ref) {
+            $lookup[(int)$ref->age_months] = $ref;
+        }
+
+        if (empty($lookup)) {
+            $interpolated = [];
+            for ($m = 0; $m <= 60; $m++) {
+                $newRef = new \stdClass();
+                $newRef->age_months = $m;
+                foreach ($fields as $field) {
+                    $newRef->$field = 0;
+                }
+                $interpolated[$m] = $newRef;
+            }
+            return $interpolated;
+        }
+
+        $interpolated = [];
+        for ($m = 0; $m <= 60; $m++) {
+            if (isset($lookup[$m])) {
+                $interpolated[$m] = $lookup[$m];
+            } else {
+                $lowMonth = null;
+                for ($i = $m - 1; $i >= 0; $i--) {
+                    if (isset($lookup[$i])) {
+                        $lowMonth = $i;
+                        break;
+                    }
+                }
+
+                $highMonth = null;
+                for ($i = $m + 1; $i <= 60; $i++) {
+                    if (isset($lookup[$i])) {
+                        $highMonth = $i;
+                        break;
+                    }
+                }
+
+                if ($lowMonth !== null && $highMonth !== null) {
+                    $lowRef = $lookup[$lowMonth];
+                    $highRef = $lookup[$highMonth];
+                    $factor = ($m - $lowMonth) / ($highMonth - $lowMonth);
+
+                    $newRef = new \stdClass();
+                    $newRef->age_months = $m;
+                    foreach ($fields as $field) {
+                        $newRef->$field = round($lowRef->$field + ($highRef->$field - $lowRef->$field) * $factor, 3);
+                    }
+                    $interpolated[$m] = $newRef;
+                } else {
+                    $closest = ($lowMonth !== null) ? $lookup[$lowMonth] : $lookup[$highMonth];
+                    $newRef = new \stdClass();
+                    $newRef->age_months = $m;
+                    foreach ($fields as $field) {
+                        $newRef->$field = round($closest->$field, 3);
+                    }
+                    $interpolated[$m] = $newRef;
+                }
+            }
+        }
+        return $interpolated;
     }
 
     // ─────────────────────────────────────────────
