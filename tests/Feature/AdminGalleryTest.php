@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Gallery;
+use App\Models\GalleryFolder;
 use App\Models\Pedukuhan;
 use App\Models\Posyandu;
 use App\Models\User;
@@ -25,7 +26,7 @@ test('superadmin can access admin gallery index', function () {
     $response->assertStatus(200);
 });
 
-test('can upload image file to gallery and it is saved as type image', function () {
+test('can create a new gallery folder', function () {
     Storage::fake('public');
 
     $pedukuhan = Pedukuhan::factory()->create();
@@ -34,27 +35,59 @@ test('can upload image file to gallery and it is saved as type image', function 
     $admin = User::factory()->create([
         'role' => 'admin',
         'posyandu_id' => $posyandu->id,
+    ]);
+
+    $this->actingAs($admin);
+    $response = $this->post('/admin/gallery', [
+        'name' => 'Folder Imunisasi 2026',
+        'description' => 'Dokumentasi imunisasi balita',
+        'posyandu_id' => $posyandu->id,
+    ]);
+
+    $response->assertRedirect('/admin/gallery');
+    
+    $folder = GalleryFolder::latest()->first();
+    expect($folder->name)->toBe('Folder Imunisasi 2026');
+    expect($folder->description)->toBe('Dokumentasi imunisasi balita');
+});
+
+test('can upload image file to folder and it is saved as type image', function () {
+    Storage::fake('public');
+
+    $pedukuhan = Pedukuhan::factory()->create();
+    $posyandu = Posyandu::factory()->create(['pedukuhan_id' => $pedukuhan->id]);
+
+    $admin = User::factory()->create([
+        'role' => 'admin',
+        'posyandu_id' => $posyandu->id,
+    ]);
+
+    $folder = GalleryFolder::create([
+        'name' => 'Folder Imunisasi',
+        'description' => 'Deskripsi',
+        'posyandu_id' => $posyandu->id,
+        'user_id' => $admin->id,
     ]);
 
     $file = UploadedFile::fake()->image('kegiatan.jpg');
 
     $this->actingAs($admin);
-    $response = $this->post('/admin/gallery', [
+    $response = $this->post("/admin/gallery/{$folder->id}/media", [
         'title' => 'Kegiatan Posyandu',
         'description' => 'Edukasi kesehatan anak',
-        'posyandu_id' => $posyandu->id,
         'photo' => $file,
     ]);
 
-    $response->assertRedirect('/admin/gallery');
+    $response->assertRedirect("/admin/gallery/{$folder->id}");
     
     $gallery = Gallery::latest()->first();
     expect($gallery->type)->toBe('image');
+    expect($gallery->gallery_folder_id)->toBe($folder->id);
     expect($gallery->photo)->not->toBeNull();
     Storage::disk('public')->assertExists($gallery->photo);
 });
 
-test('can upload video file to gallery and it is saved as type video', function () {
+test('can upload video file to folder and it is saved as type video', function () {
     Storage::fake('public');
 
     $pedukuhan = Pedukuhan::factory()->create();
@@ -65,20 +98,27 @@ test('can upload video file to gallery and it is saved as type video', function 
         'posyandu_id' => $posyandu->id,
     ]);
 
+    $folder = GalleryFolder::create([
+        'name' => 'Folder Imunisasi',
+        'description' => 'Deskripsi',
+        'posyandu_id' => $posyandu->id,
+        'user_id' => $admin->id,
+    ]);
+
     $file = UploadedFile::fake()->create('kegiatan.mp4', 500, 'video/mp4');
 
     $this->actingAs($admin);
-    $response = $this->post('/admin/gallery', [
+    $response = $this->post("/admin/gallery/{$folder->id}/media", [
         'title' => 'Video Kegiatan Posyandu',
         'description' => 'Rekaman imunisasi rutin',
-        'posyandu_id' => $posyandu->id,
         'photo' => $file,
     ]);
 
-    $response->assertRedirect('/admin/gallery');
+    $response->assertRedirect("/admin/gallery/{$folder->id}");
     
     $gallery = Gallery::latest()->first();
     expect($gallery->type)->toBe('video');
+    expect($gallery->gallery_folder_id)->toBe($folder->id);
     expect($gallery->photo)->not->toBeNull();
     Storage::disk('public')->assertExists($gallery->photo);
 });

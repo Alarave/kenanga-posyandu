@@ -5,54 +5,62 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\GalleryRequest;
 use App\Models\Gallery;
+use App\Models\GalleryFolder;
 use App\Models\Posyandu;
+use App\Services\GalleryService;
 
 class GalleryController extends Controller
 {
-    public function index()
+    /**
+     * Show form to upload new media into a folder.
+     */
+    public function create(GalleryFolder $folder)
     {
-        $galleries = Gallery::accessibleBy(auth()->user())->paginate(10);
+        $user = auth()->user();
+        if (!$user->isSuperAdmin() && $folder->posyandu_id !== $user->posyandu_id) {
+            abort(403, 'Anda tidak memiliki akses ke folder ini.');
+        }
 
-        return view('livewire.admin.gallery-management.index', compact('galleries'));
+        return view('livewire.admin.gallery-management.create', compact('folder'));
     }
 
-    public function create()
+    /**
+     * Store uploaded media into a folder.
+     */
+    public function store(GalleryRequest $request, GalleryFolder $folder, GalleryService $galleryService)
     {
-        $posyandus = Posyandu::all();
+        $user = auth()->user();
+        if (!$user->isSuperAdmin() && $folder->posyandu_id !== $user->posyandu_id) {
+            abort(403, 'Anda tidak memiliki akses ke folder ini.');
+        }
 
-        return view('livewire.admin.gallery-management.create', compact('posyandus'));
+        $data = $request->validated();
+        // Bind media ke folder & posyandu folder
+        $data['gallery_folder_id'] = $folder->id;
+        $data['posyandu_id'] = $folder->posyandu_id;
+
+        $galleryService->createGallery($data, $user);
+
+        return redirect()->route('admin.gallery.show', $folder->id)->with('success', 'Media berhasil ditambahkan ke folder.');
     }
 
-    public function store(GalleryRequest $request, \App\Services\GalleryService $galleryService)
+    /**
+     * Delete media inside a folder.
+     */
+    public function destroy(GalleryFolder $folder, Gallery $gallery, GalleryService $galleryService)
     {
-        $galleryService->createGallery($request->validated(), auth()->user());
+        $user = auth()->user();
+        if (!$user->isSuperAdmin() && $folder->posyandu_id !== $user->posyandu_id) {
+            abort(403, 'Anda tidak memiliki akses ke folder ini.');
+        }
 
-        return redirect()->route('admin.gallery.index')->with('success', 'Foto galeri berhasil diunggah.');
-    }
+        // Pastikan media memang berada di dalam folder tersebut
+        if ($gallery->gallery_folder_id !== $folder->id) {
+            abort(404, 'Media tidak ditemukan di folder ini.');
+        }
 
-    public function show(Gallery $gallery)
-    {
-        return view('livewire.admin.gallery-management.details', compact('gallery'));
-    }
-
-    public function edit(Gallery $gallery)
-    {
-        $posyandus = Posyandu::all();
-
-        return view('livewire.admin.gallery-management.update', compact('gallery', 'posyandus'));
-    }
-
-    public function update(GalleryRequest $request, Gallery $gallery, \App\Services\GalleryService $galleryService)
-    {
-        $galleryService->updateGallery($gallery, $request->validated());
-
-        return redirect()->route('admin.gallery.index')->with('success', 'Foto galeri berhasil diperbarui.');
-    }
-
-    public function destroy(Gallery $gallery, \App\Services\GalleryService $galleryService)
-    {
         $galleryService->deleteGallery($gallery);
 
-        return redirect()->route('admin.gallery.index')->with('success', 'Foto galeri berhasil dihapus.');
+        return redirect()->route('admin.gallery.show', $folder->id)->with('success', 'Media berhasil dihapus.');
     }
 }

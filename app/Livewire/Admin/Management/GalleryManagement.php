@@ -2,7 +2,7 @@
 
 namespace App\Livewire\Admin\Management;
 
-use App\Models\Gallery;
+use App\Models\GalleryFolder;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -25,14 +25,16 @@ class GalleryManagement extends Component
 
     public function render()
     {
-        $query = Gallery::query()
+        $query = GalleryFolder::query()
+            ->accessibleBy(auth()->user())
+            ->withCount('galleries')
             ->when($this->search, function ($q) {
-                $q->where('title', 'like', '%'.$this->search.'%');
+                $q->where('name', 'like', '%'.$this->search.'%');
             })
             ->latest();
 
         return view('livewire.admin.gallery-management.index', [
-            'galleries' => $query->paginate(12),
+            'folders' => $query->paginate(12),
         ]);
     }
 }

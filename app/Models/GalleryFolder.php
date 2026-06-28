@@ -6,19 +6,13 @@ use App\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Gallery extends Model
+class GalleryFolder extends Model
 {
     use HasFactory, LogsActivity;
 
     protected $fillable = [
-        'posyandu_id', 'user_id', 'gallery_folder_id', 'title', 'description', 'photo', 'type',
+        'posyandu_id', 'user_id', 'name', 'description', 'cover_photo',
     ];
-
-    // Relationship with Folder
-    public function folder()
-    {
-        return $this->belongsTo(GalleryFolder::class, 'gallery_folder_id');
-    }
 
     // Relationship with Posyandu
     public function posyandu()
@@ -26,14 +20,20 @@ class Gallery extends Model
         return $this->belongsTo(Posyandu::class);
     }
 
-    // Relationship with User
+    // Relationship with User (Creator)
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
+    // Relationship with Galleries (Media inside)
+    public function galleries()
+    {
+        return $this->hasMany(Gallery::class, 'gallery_folder_id');
+    }
+
     /**
-     * Scope to filter galleries based on User role access
+     * Scope to filter folders based on User role access
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  \App\Models\User  $user
@@ -44,7 +44,6 @@ class Gallery extends Model
         if ($user->isSuperAdmin()) {
             return $query;
         }
-
 
         return $query->where('posyandu_id', $user->posyandu_id);
     }
