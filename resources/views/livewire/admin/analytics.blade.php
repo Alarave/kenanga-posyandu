@@ -902,13 +902,13 @@ Chart.defaults.font.family = "'Public Sans', sans-serif";
 Chart.defaults.font.weight = '700';
 Chart.defaults.color = '#475569';
 
-let visitsTrendChart = null;
-let nutritionTrendChart = null;
-let nutritionDonutChart = null;
-let vaccineChart = null;
-let growthChart = null;
-let pregnancyRiskChart = null;
-let lansiaMetabolicChart = null;
+window.visitsTrendChart = null;
+window.nutritionTrendChart = null;
+window.nutritionDonutChart = null;
+window.vaccineChart = null;
+window.growthChart = null;
+window.pregnancyRiskChart = null;
+window.lansiaMetabolicChart = null;
 
 // ── ANA-30: Download Chart as Image ──
 window.downloadChart = function(chartInstance, fileName) {
