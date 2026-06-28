@@ -8,13 +8,12 @@
             </div>
 
             <div class="flex flex-col gap-4">
-
                 <div>
                     <h1
                         class="text-4xl font-black tracking-tight leading-none text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">
                         Jadwal & Kegiatan
                     </h1>
-                    <p class="text-sm font-bold text-slate-900 mt-3">Atur jadwal kegiatan posyandu dan imunisasi secara
+                    <p class="text-sm font-bold text-slate-500 dark:text-slate-400 mt-3">Atur jadwal kegiatan posyandu dan imunisasi secara
                         efisien.</p>
                 </div>
             </div>
@@ -35,33 +34,33 @@
     {{-- ── Header & Summary Bento ── --}}
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div class="lg:col-span-4 space-y-6">
-            <div class="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-sm">
+            <div class="bg-white dark:bg-slate-900 rounded-[2rem] border border-slate-100 dark:border-slate-800/80 p-8 shadow-sm">
                 <div class="flex items-center gap-3 mb-6">
-                    <div class="w-10 h-10 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center">
+                    <div class="w-10 h-10 rounded-2xl bg-teal-50 dark:bg-teal-950/40 text-teal-600 dark:text-teal-400 flex items-center justify-center">
                         <span class="material-symbols-outlined text-[20px]">analytics</span>
                     </div>
-                    <h3 class="text-[11px] font-black text-slate-400 uppercase tracking-widest">Ikhtisar Bulan Ini</h3>
+                    <h3 class="text-[11px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">Ikhtisar Bulan Ini</h3>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
-                    <div class="p-4 rounded-3xl bg-slate-50/50">
+                    <div class="p-4 rounded-3xl bg-slate-50/50 dark:bg-slate-950/40 border border-transparent dark:border-slate-800/40">
                         <span
-                            class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Total</span>
-                        <p class="text-2xl font-black text-slate-900">{{ $stats['total_month'] }}</p>
+                            class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest block mb-1">Total</span>
+                        <p class="text-2xl font-black text-slate-900 dark:text-slate-100">{{ $stats['total_month'] }}</p>
                     </div>
-                    <div class="p-4 rounded-3xl bg-blue-50/50">
+                    <div class="p-4 rounded-3xl bg-blue-50/50 dark:bg-blue-950/20 border border-transparent dark:border-blue-900/20">
                         <span
-                            class="text-[10px] font-black text-blue-600 uppercase tracking-widest block mb-1">Mendatang</span>
-                        <p class="text-2xl font-black text-slate-900">{{ $stats['upcoming'] }}</p>
+                            class="text-[10px] font-black text-blue-600 dark:text-blue-400 uppercase tracking-widest block mb-1">Mendatang</span>
+                        <p class="text-2xl font-black text-slate-900 dark:text-slate-100">{{ $stats['upcoming'] }}</p>
                     </div>
-                    <div class="p-4 rounded-3xl bg-green-50/50">
+                    <div class="p-4 rounded-3xl bg-green-50/50 dark:bg-green-950/20 border border-transparent dark:border-green-900/20">
                         <span
-                            class="text-[10px] font-black text-green-600 uppercase tracking-widest block mb-1">Selesai</span>
-                        <p class="text-2xl font-black text-slate-900">{{ $stats['completed'] }}</p>
+                            class="text-[10px] font-black text-green-600 dark:text-green-400 uppercase tracking-widest block mb-1">Selesai</span>
+                        <p class="text-2xl font-black text-slate-900 dark:text-slate-100">{{ $stats['completed'] }}</p>
                     </div>
-                    <div class="p-4 rounded-3xl bg-amber-50/50">
+                    <div class="p-4 rounded-3xl bg-amber-50/50 dark:bg-amber-950/20 border border-transparent dark:border-amber-900/20">
                         <span
-                            class="text-[10px] font-black text-amber-600 uppercase tracking-widest block mb-1">Berlangsung</span>
-                        <p class="text-2xl font-black text-slate-900">{{ $stats['ongoing'] }}</p>
+                            class="text-[10px] font-black text-amber-600 dark:text-amber-400 uppercase tracking-widest block mb-1">Berlangsung</span>
+                        <p class="text-2xl font-black text-slate-900 dark:text-slate-100">{{ $stats['ongoing'] }}</p>
                     </div>
                 </div>
             </div>
@@ -69,7 +68,7 @@
 
         {{-- Next Agenda Highlight --}}
         <div class="lg:col-span-8">
-            <div class="h-full rounded-[2.5rem] p-10 md:p-12 relative overflow-hidden text-white group shadow-2xl shadow-emerald-100"
+            <div class="h-full rounded-[2.5rem] p-10 md:p-12 relative overflow-hidden text-white group shadow-2xl shadow-emerald-100 dark:shadow-none"
                 style="background-color: #064e3b; background-image: radial-gradient(at 0% 0%, hsla(161, 84%, 39%, 0.5) 0px, transparent 50%), radial-gradient(at 50% 0%, hsla(168, 76%, 36%, 0.5) 0px, transparent 50%), radial-gradient(at 100% 0%, hsla(172, 66%, 50%, 0.3) 0px, transparent 50%);">
                 <div
                     class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-5">
@@ -138,7 +137,7 @@
 
     {{-- ── Filters ── --}}
     <div
-        class="bg-white rounded-3xl border border-slate-100 p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
+        class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800/80 p-4 shadow-sm flex flex-wrap items-center justify-between gap-4">
         <div class="flex flex-wrap items-center gap-3 flex-1">
             <div class="relative min-w-[300px] group">
                 <span
@@ -174,27 +173,27 @@
     </div>
 
     {{-- ── Data Table ── --}}
-    <div class="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm overflow-hidden">
-        <table class="w-full">
-            <thead class="bg-slate-50/50 border-b border-slate-100">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-[2.5rem] overflow-hidden shadow-xs">
+        <table class="w-full text-left border-collapse">
+            <thead class="bg-slate-50/75 dark:bg-slate-950/20 border-b border-slate-100 dark:border-slate-800/80">
                 <tr>
-                    <th class="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    <th class="px-8 py-4.5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-left">
                         Informasi Kegiatan</th>
-                    <th class="px-8 py-5 text-left text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    <th class="px-8 py-4.5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-left">
                         Waktu & Lokasi</th>
-                    <th class="px-8 py-5 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                    <th class="px-8 py-4.5 text-center text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
                         Status</th>
-                    <th class="px-8 py-5 text-right text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                        Aksi</th>
+                    <th class="px-8 py-4.5 text-right text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                        Tindakan</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-slate-50">
+            <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60">
                 @forelse($schedules as $schedule)
-                    <tr class="group hover:bg-slate-50/30 transition-all duration-300">
-                        <td class="px-8 py-6">
-                            <div class="flex items-center gap-5">
+                    <tr class="group hover:bg-slate-50/50 dark:hover:bg-slate-800/10 transition-all duration-200" wire:key="schedule-{{ $schedule->id }}">
+                        <td class="px-8 py-5">
+                            <div class="flex items-center gap-4">
                                 <div
-                                    class="h-14 w-14 rounded-3xl bg-slate-50 text-slate-400 flex items-center justify-center group-hover:bg-white group-hover:shadow-md transition-all border border-slate-100">
+                                    class="h-12 w-12 rounded-[1rem] bg-slate-50 dark:bg-slate-950 text-slate-400 dark:text-slate-500 flex items-center justify-center border border-slate-200/60 dark:border-slate-800/50 shadow-xs">
                                     @php
                                         $icon = 'event';
                                         $title_lower = strtolower($schedule->title);
@@ -206,64 +205,66 @@
                                             $icon = 'elderly';
                                         }
                                     @endphp
-                                    <span class="material-symbols-outlined text-[24px]">{{ $icon }}</span>
+                                    <span class="material-symbols-outlined text-[22px]">{{ $icon }}</span>
                                 </div>
                                 <div>
-                                    <div class="font-black text-slate-900 text-base mb-1">{{ $schedule->title }}</div>
+                                    <div class="font-bold text-slate-900 dark:text-slate-100 text-[15px] leading-tight mb-1">{{ $schedule->title }}</div>
                                     <div class="flex items-center gap-2">
                                         <span
-                                            class="text-[10px] font-black text-teal-600 uppercase tracking-widest bg-teal-50 px-2.5 py-1 rounded-lg">{{ $schedule->posyandu->name ?? 'Semua Unit' }}</span>
+                                            class="text-[10px] font-black text-teal-600 dark:text-teal-400 uppercase tracking-widest bg-teal-50 dark:bg-teal-950/40 px-2.5 py-1 rounded-lg border border-transparent dark:border-teal-900/30">{{ $schedule->posyandu->name ?? 'Semua Unit' }}</span>
                                     </div>
                                 </div>
                             </div>
                         </td>
-                        <td class="px-8 py-6">
-                            <div class="flex flex-col gap-1.5">
-                                <div class="flex items-center gap-2 text-slate-800 font-bold text-sm">
+                        <td class="px-8 py-5">
+                            <div class="flex flex-col gap-1">
+                                <div class="flex items-center gap-2 text-slate-700 dark:text-slate-200 font-bold text-sm">
                                     <span
-                                        class="material-symbols-outlined text-[18px] text-slate-300">calendar_today</span>
+                                        class="material-symbols-outlined text-[18px] text-slate-300 dark:text-slate-500">calendar_today</span>
                                     {{ \Carbon\Carbon::parse($schedule->start_time)->translatedFormat('d M Y') }} —
                                     {{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }}
                                 </div>
-                                <div class="flex items-center gap-2 text-slate-400 text-xs font-semibold">
+                                <div class="flex items-center gap-2 text-slate-400 dark:text-slate-500 text-xs font-semibold">
                                     <span
-                                        class="material-symbols-outlined text-[18px] text-slate-300">location_on</span>
+                                        class="material-symbols-outlined text-[18px] text-slate-300 dark:text-slate-500">location_on</span>
                                     {{ $schedule->location ?: '—' }}
                                 </div>
                             </div>
                         </td>
-                        <td class="px-8 py-6 text-center">
+                        <td class="px-8 py-5 text-center">
                             @php
                                 $colors = [
-                                    'upcoming' => 'bg-blue-50 text-blue-600 border-blue-100',
-                                    'ongoing' => 'bg-teal-50 text-teal-600 border-teal-100',
-                                    'completed' => 'bg-green-50 text-green-600 border-green-100',
-                                    'cancelled' => 'bg-red-50 text-red-600 border-red-100',
+                                    'upcoming' => 'bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-900/30',
+                                    'ongoing' => 'bg-teal-50 text-teal-600 border-teal-100 dark:bg-teal-950/30 dark:text-teal-400 dark:border-teal-900/30',
+                                    'completed' => 'bg-green-50 text-green-600 border-green-100 dark:bg-green-950/30 dark:text-green-400 dark:border-green-900/30',
+                                    'cancelled' => 'bg-red-50 text-red-600 border-red-100 dark:bg-red-950/30 dark:text-red-400 dark:border-red-900/30',
                                 ];
                             @endphp
                             <span
-                                class="px-4 py-2 rounded-2xl text-[10px] font-black uppercase tracking-widest border {{ $colors[$schedule->status] ?? 'bg-slate-50' }}">
+                                class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border {{ $colors[$schedule->status] ?? 'bg-slate-50' }}">
                                 {{ $schedule->status }}
                             </span>
                         </td>
-                        <td class="px-8 py-6 text-right">
-                            <div
-                                class="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-all duration-300 -translate-x-2 group-hover:translate-x-0">
+                        <td class="px-8 py-5 text-right">
+                            <div class="flex items-center justify-end gap-2">
                                 <a href="{{ route('admin.schedules.show', $schedule->id) }}"
-                                    class="w-10 h-10 flex items-center justify-center rounded-2xl bg-white border border-slate-100 text-slate-400 hover:text-teal-600 hover:border-teal-200 hover:shadow-lg transition-all">
-                                    <span class="material-symbols-outlined text-[20px]">visibility</span>
+                                    class="w-9 h-9 flex items-center justify-center rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200/30 dark:border-slate-700/50 text-slate-500 hover:bg-teal-600 hover:text-white hover:border-teal-600 hover:shadow-md hover:shadow-teal-600/10 transition-all duration-200"
+                                    title="Lihat Detail">
+                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
                                 </a>
                                 @can('update', $schedule)
                                     <a href="{{ route('admin.schedules.edit', $schedule->id) }}"
-                                        class="w-10 h-10 flex items-center justify-center rounded-2xl bg-white border border-slate-100 text-slate-400 hover:text-indigo-600 hover:border-indigo-200 hover:shadow-lg transition-all">
-                                        <span class="material-symbols-outlined text-[20px]">edit</span>
+                                        class="w-9 h-9 flex items-center justify-center rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200/30 dark:border-slate-700/50 text-slate-500 hover:bg-amber-600 hover:text-white hover:border-amber-600 hover:shadow-md hover:shadow-amber-600/10 transition-all duration-200"
+                                        title="Edit Jadwal">
+                                        <span class="material-symbols-outlined text-[18px]">edit</span>
                                     </a>
                                 @endcan
                                 @can('delete', $schedule)
                                     <button wire:click="deleteSchedule({{ $schedule->id }})"
                                         wire:confirm="Hapus jadwal ini secara permanen?"
-                                        class="w-10 h-10 flex items-center justify-center rounded-2xl bg-white border border-slate-100 text-slate-400 hover:text-red-600 hover:border-red-200 hover:shadow-lg transition-all">
-                                        <span class="material-symbols-outlined text-[20px]">delete</span>
+                                        class="w-9 h-9 min-w-0 min-h-0 flex items-center justify-center rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200/30 dark:border-slate-700/50 text-slate-500 dark:text-slate-400 hover:bg-rose-600 hover:text-white hover:border-rose-600 hover:shadow-md hover:shadow-rose-600/10 transition-all duration-200 cursor-pointer"
+                                        title="Hapus Jadwal">
+                                        <span class="material-symbols-outlined text-[18px]">delete</span>
                                     </button>
                                 @endcan
                             </div>
@@ -272,10 +273,10 @@
                 @empty
                     <tr>
                         <td colspan="4" class="px-8 py-32 text-center">
-                            <div class="max-w-xs mx-auto flex flex-col items-center text-slate-400">
+                            <div class="max-w-xs mx-auto flex flex-col items-center text-slate-400 dark:text-slate-500">
                                 <span
-                                    class="material-symbols-outlined text-[64px] text-slate-200 mb-4">calendar_today</span>
-                                <p class="text-lg font-black text-slate-600">Belum ada agenda</p>
+                                    class="material-symbols-outlined text-[64px] text-slate-200 dark:text-slate-800 mb-4">calendar_today</span>
+                                <p class="text-lg font-black text-slate-600 dark:text-slate-350">Belum ada agenda</p>
                                 <p class="text-sm mb-6">Mulai dengan menambahkan jadwal baru.</p>
                             </div>
                         </td>
@@ -285,7 +286,7 @@
         </table>
 
         @if ($schedules->hasPages())
-            <div class="px-8 py-6 border-t border-slate-50 bg-slate-50/30">
+            <div class="px-8 py-5 border-t border-slate-100 dark:border-slate-800/80 bg-white dark:bg-slate-900">
                 {{ $schedules->links() }}
             </div>
         @endif

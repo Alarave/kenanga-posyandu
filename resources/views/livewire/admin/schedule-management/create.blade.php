@@ -1,91 +1,94 @@
 <div>
-    @section('admin-title', 'Tambah Jadwal Kegiatan')
+    @section('admin-title', '')
 
-    <div class="max-w-4xl mx-auto py-8 px-4 sm:px-6">
-        <div class="bg-white border border-slate-200 rounded-[2.5rem] shadow-sm overflow-hidden">
+    <div class="w-full py-8">
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800/80 rounded-[2.5rem] shadow-sm overflow-hidden">
             {{-- Header --}}
-            <div class="px-10 py-8 border-b border-slate-50 bg-slate-50/30 flex items-center justify-between">
+            <div class="px-10 py-8 border-b border-slate-100 dark:border-slate-800 bg-slate-50/30 dark:bg-slate-950/20 flex items-center justify-between">
                 <div class="flex items-center gap-5">
                     <div
-                        class="w-14 h-14 bg-teal-50 rounded-3xl flex items-center justify-center text-teal-600 shadow-sm border border-teal-100">
-                        <span class="material-symbols-outlined text-[28px]">calendar_add_on</span>
+                        class="w-16 h-16 bg-teal-50 dark:bg-teal-950/40 rounded-3xl flex items-center justify-center text-teal-600 dark:text-teal-400 shadow-sm border border-teal-100 dark:border-teal-900/30">
+                        <span class="material-symbols-outlined text-[32px]">calendar_add_on</span>
                     </div>
                     <div>
-                        <h2 class="text-xl font-black text-slate-900 tracking-tight leading-tight">Buat Agenda Baru</h2>
-                        <p class="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em] mt-1">Sistem
-                            Perencanaan Posyandu</p>
+                        <h2 class="text-2xl font-black text-slate-900 dark:text-slate-100 tracking-tight leading-tight">Buat Agenda Baru</h2>
+                        <p class="text-xs text-slate-500 dark:text-slate-450 font-bold mt-1">Lengkapi formulir di bawah untuk menjadwalkan kegiatan posyandu</p>
                     </div>
                 </div>
                 <a href="{{ route('admin.schedules.index') }}"
-                    class="w-10 h-10 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-teal-600 hover:border-teal-200 transition-all shadow-sm">
-                    <span class="material-symbols-outlined text-[20px]">close</span>
+                    class="w-12 h-12 rounded-2xl bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center text-slate-400 dark:text-slate-500 hover:text-teal-600 dark:hover:text-teal-400 hover:border-teal-200 dark:hover:border-teal-600 transition-all shadow-sm">
+                    <span class="material-symbols-outlined text-[24px]">close</span>
                 </a>
             </div>
 
-            <form wire:submit.prevent="save" class="p-10 space-y-10">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                    {{-- Left Column --}}
+            <form wire:submit.prevent="save" class="p-10 md:p-12 space-y-12">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                    {{-- Left Column: Informasi Kegiatan --}}
                     <div class="space-y-8">
+                        <div class="flex items-center gap-3 pb-3 border-b border-slate-100 dark:border-slate-800/80">
+                            <span class="material-symbols-outlined text-teal-600 dark:text-teal-400 text-[24px]">info</span>
+                            <h3 class="text-lg font-black text-slate-900 dark:text-slate-100">Informasi Kegiatan</h3>
+                        </div>
+
                         <div class="space-y-3">
                             <label
-                                class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Judul
-                                Agenda <span class="text-red-500">*</span></label>
-                            <input type="text" wire:model="title" placeholder="Contoh: Posyandu Balita RW 01"
-                                class="w-full h-14 px-6 rounded-2xl border border-slate-100 bg-slate-50/50 text-sm font-bold text-slate-800 placeholder:text-slate-300 focus:outline-none focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/5 transition-all">
+                                class="block text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Nama / Judul Kegiatan <span class="text-red-500 font-black">*</span></label>
+                            <input type="text" wire:model="title" placeholder="Contoh: Posyandu Balita RW 01 / Imunisasi"
+                                class="w-full h-16 px-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950 text-base font-semibold text-slate-800 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-650 focus:outline-none focus:border-teal-500 dark:focus:border-teal-600 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-teal-500/5 transition-all">
                             @error('title')
-                                <p class="text-[10px] text-red-500 font-bold ml-1 uppercase tracking-wider">
+                                <p class="text-xs font-bold text-red-500 ml-1 mt-1">
                                     {{ $message }}</p>
                             @enderror
                         </div>
 
                         <div class="space-y-3">
                             <label
-                                class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Deskripsi
-                                & Catatan</label>
-                            <textarea wire:model="description" rows="5" placeholder="Detail kegiatan atau instruksi khusus..."
-                                class="w-full px-6 py-5 rounded-2xl border border-slate-100 bg-slate-50/50 text-sm font-bold text-slate-800 placeholder:text-slate-300 focus:outline-none focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/5 transition-all resize-none"></textarea>
+                                class="block text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Deskripsi & Catatan Tambahan</label>
+                            <textarea wire:model="description" rows="5" placeholder="Tuliskan catatan khusus atau instruksi untuk kader dan warga di sini..."
+                                class="w-full px-6 py-5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950 text-base font-semibold text-slate-800 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-650 focus:outline-none focus:border-teal-500 dark:focus:border-teal-600 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-teal-500/5 transition-all resize-none"></textarea>
                         </div>
 
                         <div class="space-y-3">
                             <label
-                                class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Unit
-                                Pelaksana <span class="text-red-500">*</span></label>
-                            <x-forms.select-input wire:model="posyandu_id" placeholder="Pilih Posyandu"
-                                :placeholderDisabled="true" value="{{ $posyandu_id }}" :error="$errors->has('posyandu_id')">
+                                class="block text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Unit Posyandu Pelaksana <span class="text-red-500 font-black">*</span></label>
+                            <x-forms.select-input wire:model="posyandu_id" placeholder="Pilih Unit Posyandu"
+                                :placeholderDisabled="true" :error="$errors->has('posyandu_id')">
                                 @foreach ($posyandus as $p)
-                                    <option value="{{ $p->id }}" {{ $posyandu_id == $p->id ? 'selected' : '' }}>
-                                        {{ $p->name }}</option>
+                                    <option value="{{ $p->id }}">{{ $p->name }}</option>
                                 @endforeach
                             </x-forms.select-input>
                             @error('posyandu_id')
-                                <p class="text-[10px] text-red-500 font-bold ml-1 uppercase tracking-wider">
+                                <p class="text-xs font-bold text-red-500 ml-1 mt-1">
                                     {{ $message }}</p>
                             @enderror
                         </div>
                     </div>
 
-                    {{-- Right Column --}}
+                    {{-- Right Column: Waktu & Lokasi --}}
                     <div class="space-y-8">
-                        <div class="grid grid-cols-1 gap-8">
+                        <div class="flex items-center gap-3 pb-3 border-b border-slate-100 dark:border-slate-800/80">
+                            <span class="material-symbols-outlined text-teal-600 dark:text-teal-400 text-[24px]">schedule</span>
+                            <h3 class="text-lg font-black text-slate-900 dark:text-slate-100">Waktu & Lokasi</h3>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div class="space-y-3">
                                 <label
-                                    class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Waktu
-                                    Mulai <span class="text-red-500">*</span></label>
+                                    class="block text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Waktu Mulai <span class="text-red-500 font-black">*</span></label>
                                 <input type="datetime-local" wire:model="start_time"
-                                    class="w-full h-14 px-6 rounded-2xl border border-slate-100 bg-slate-50/50 text-sm font-bold text-slate-800 focus:outline-none focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/5 transition-all">
+                                    class="w-full h-16 px-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950 text-base font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-teal-500 dark:focus:border-teal-600 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-teal-500/5 transition-all">
                                 @error('start_time')
-                                    <p class="text-[10px] text-red-500 font-bold ml-1 uppercase tracking-wider">
+                                    <p class="text-xs font-bold text-red-500 ml-1 mt-1">
                                         {{ $message }}</p>
                                 @enderror
                             </div>
                             <div class="space-y-3">
                                 <label
-                                    class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Waktu
-                                    Selesai <span class="text-red-500">*</span></label>
+                                    class="block text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Waktu Selesai <span class="text-red-500 font-black">*</span></label>
                                 <input type="datetime-local" wire:model="end_time"
-                                    class="w-full h-14 px-6 rounded-2xl border border-slate-100 bg-slate-50/50 text-sm font-bold text-slate-800 focus:outline-none focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/5 transition-all">
+                                    class="w-full h-16 px-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950 text-base font-semibold text-slate-800 dark:text-slate-200 focus:outline-none focus:border-teal-500 dark:focus:border-teal-600 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-teal-500/5 transition-all">
                                 @error('end_time')
-                                    <p class="text-[10px] text-red-500 font-bold ml-1 uppercase tracking-wider">
+                                    <p class="text-xs font-bold text-red-500 ml-1 mt-1">
                                         {{ $message }}</p>
                                 @enderror
                             </div>
@@ -93,54 +96,48 @@
 
                         <div class="space-y-3">
                             <label
-                                class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Lokasi
-                                Kegiatan <span class="text-red-500">*</span></label>
+                                class="block text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Lokasi Kegiatan <span class="text-red-500 font-black">*</span></label>
                             <div class="relative">
                                 <span
-                                    class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-slate-300">location_on</span>
-                                <input type="text" wire:model="location" placeholder="Gedung Posyandu / Balai Desa"
-                                    class="w-full h-14 pl-14 pr-6 rounded-2xl border border-slate-100 bg-slate-50/50 text-sm font-bold text-slate-800 placeholder:text-slate-300 focus:outline-none focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/5 transition-all">
+                                    class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 text-[24px]">location_on</span>
+                                <input type="text" wire:model="location" placeholder="Gedung Posyandu / Balai Warga"
+                                    class="w-full h-16 pl-14 pr-6 rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950 text-base font-semibold text-slate-800 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-650 focus:outline-none focus:border-teal-500 dark:focus:border-teal-600 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-teal-500/5 transition-all">
                             </div>
                             @error('location')
-                                <p class="text-[10px] text-red-500 font-bold ml-1 uppercase tracking-wider">
+                                <p class="text-xs font-bold text-red-500 ml-1 mt-1">
                                     {{ $message }}</p>
                             @enderror
                         </div>
 
                         <div class="space-y-3">
                             <label
-                                class="block text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Status
-                                Awal</label>
-                            <x-forms.select-input wire:model="status" placeholder="" value="{{ $status }}">
-                                <option value="upcoming" {{ $status === 'upcoming' ? 'selected' : '' }}>Mendatang
-                                    (Upcoming)</option>
-                                <option value="ongoing" {{ $status === 'ongoing' ? 'selected' : '' }}>Sedang
-                                    Berlangsung (Ongoing)</option>
-                                <option value="completed" {{ $status === 'completed' ? 'selected' : '' }}>Telah Selesai
-                                    (Completed)</option>
+                                class="block text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Status Awal Kegiatan</label>
+                            <x-forms.select-input wire:model="status" placeholder="">
+                                <option value="upcoming">Mendatang (Upcoming)</option>
+                                <option value="ongoing">Sedang Berlangsung (Ongoing)</option>
+                                <option value="completed">Telah Selesai (Completed)</option>
                             </x-forms.select-input>
                         </div>
                     </div>
                 </div>
 
                 <div
-                    class="pt-10 border-t border-slate-50 flex flex-col sm:flex-row items-center justify-between gap-6">
+                    class="pt-10 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-6">
                     <div
-                        class="flex items-center gap-4 p-4 bg-teal-50/50 rounded-2xl border border-teal-100/50 max-w-sm">
-                        <span class="material-symbols-outlined text-teal-600">info</span>
-                        <p class="text-[10px] font-bold text-teal-800 uppercase tracking-widest leading-relaxed">Pesan
-                            WhatsApp pengingat akan dikirimkan otomatis kepada warga H-1 sebelum kegiatan.</p>
+                        class="flex items-start gap-4 p-5 bg-teal-50/50 dark:bg-teal-950/20 rounded-2xl border border-teal-100/50 dark:border-teal-900/30 max-w-md">
+                        <span class="material-symbols-outlined text-teal-600 dark:text-teal-400 text-[24px] mt-0.5">info</span>
+                        <p class="text-xs font-bold text-teal-800 dark:text-teal-400 leading-relaxed uppercase tracking-wider">Jadwal kegiatan ini akan otomatis ditampilkan di halaman publik website Posyandu.</p>
                     </div>
                     <div class="flex items-center gap-4 w-full sm:w-auto">
                         <a href="{{ route('admin.schedules.index') }}"
-                            class="flex-1 sm:flex-none h-14 px-10 flex items-center justify-center text-sm font-black text-slate-400 uppercase tracking-widest hover:text-slate-600 transition-colors">
+                            class="flex-1 sm:flex-none h-16 px-10 flex items-center justify-center text-sm font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest hover:text-slate-700 dark:hover:text-slate-200 transition-colors">
                             Batal
                         </a>
                         <button type="submit" wire:loading.attr="disabled"
-                            class="flex-1 sm:flex-none h-14 px-12 bg-slate-900 text-white rounded-2xl text-sm font-black uppercase tracking-widest hover:bg-slate-800 transition-all shadow-xl shadow-slate-200 flex items-center justify-center gap-3 active:scale-[0.98]">
-                            <span wire:loading.remove class="material-symbols-outlined text-[20px]">save</span>
+                            class="flex-1 sm:flex-none h-16 px-12 bg-slate-900 dark:bg-slate-800 text-white rounded-2xl text-base font-black uppercase tracking-widest hover:bg-slate-850 dark:hover:bg-slate-700 transition-all shadow-xl shadow-slate-200/50 dark:shadow-none flex items-center justify-center gap-3 active:scale-[0.98] cursor-pointer">
+                            <span wire:loading.remove class="material-symbols-outlined text-[24px]">save</span>
                             <div wire:loading
-                                class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                                class="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                             <span>Simpan Jadwal</span>
                         </button>
                     </div>

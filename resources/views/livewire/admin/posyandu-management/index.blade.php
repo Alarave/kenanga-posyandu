@@ -190,9 +190,9 @@
                                         <span class="material-symbols-outlined text-[18px]">edit</span>
                                     </a>
  
-                                    {{-- Delete (EXACTLY like patients) --}}
+                                    {{-- Delete --}}
                                     <button wire:click="confirmDelete({{ $posyandu->id }})"
-                                        class="w-9 h-9 flex items-center justify-center rounded-2xl bg-rose-50 border border-rose-100/50 text-rose-500 hover:bg-rose-600 hover:text-white hover:border-rose-600 hover:shadow-md hover:shadow-rose-600/10 transition-all duration-200"
+                                        class="w-9 h-9 min-w-0 min-h-0 flex items-center justify-center rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200/30 dark:border-slate-700/50 text-slate-500 dark:text-slate-400 hover:bg-rose-600 hover:text-white hover:border-rose-600 hover:shadow-md hover:shadow-rose-600/10 transition-all duration-200 cursor-pointer"
                                         title="Hapus Unit">
                                         <span class="material-symbols-outlined text-[18px]">delete</span>
                                     </button>
