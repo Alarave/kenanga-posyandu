@@ -51,12 +51,22 @@
                         <div class="space-y-3">
                             <label
                                 class="block text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Unit Posyandu Pelaksana <span class="text-red-500 font-black">*</span></label>
-                            <x-forms.select-input wire:model="posyandu_id" placeholder="Pilih Posyandu"
-                                :placeholderDisabled="true" :error="$errors->has('posyandu_id')">
-                                @foreach ($posyandus as $p)
-                                    <option value="{{ $p->id }}">{{ $p->name }}</option>
-                                @endforeach
-                            </x-forms.select-input>
+                            <div class="relative w-full">
+                                <select wire:model="posyandu_id"
+                                    class="w-full h-16 pl-6 pr-12 appearance-none rounded-2xl border @error('posyandu_id') bg-red-50/10 text-red-900 border-red-400 focus:border-red-500 focus:ring-red-500/10 dark:bg-red-950/10 dark:text-red-400 dark:border-red-500/50 @else border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 focus:border-indigo-500 dark:focus:border-indigo-600 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-indigo-500/5 @enderror text-base font-semibold transition-all cursor-pointer">
+                                    @if(Auth::user()->isSuperAdmin())
+                                        <option value="" disabled selected>Pilih Posyandu</option>
+                                    @endif
+                                    @foreach ($posyandus as $p)
+                                        <option value="{{ $p->id }}" {{ $posyandu_id == $p->id ? 'selected' : '' }}>{{ $p->name }}</option>
+                                    @endforeach
+                                </select>
+                                <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 dark:text-slate-500">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396"></path>
+                                    </svg>
+                                </div>
+                            </div>
                             @error('posyandu_id')
                                 <p class="text-xs font-bold text-red-500 ml-1 mt-1">
                                     {{ $message }}</p>
@@ -112,12 +122,20 @@
                         <div class="space-y-3">
                             <label
                                 class="block text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Status Kegiatan</label>
-                            <x-forms.select-input wire:model="status" placeholder="">
-                                <option value="upcoming">Mendatang (Upcoming)</option>
-                                <option value="ongoing">Sedang Berlangsung (Ongoing)</option>
-                                <option value="completed">Telah Selesai (Completed)</option>
-                                <option value="cancelled">Dibatalkan (Cancelled)</option>
-                            </x-forms.select-input>
+                            <div class="relative w-full">
+                                <select wire:model="status"
+                                    class="w-full h-16 pl-6 pr-12 appearance-none rounded-2xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 focus:border-indigo-500 dark:focus:border-indigo-600 focus:bg-white dark:focus:bg-slate-900 focus:ring-4 focus:ring-indigo-500/5 text-base font-semibold transition-all cursor-pointer">
+                                    <option value="upcoming">Mendatang (Upcoming)</option>
+                                    <option value="ongoing">Sedang Berlangsung (Ongoing)</option>
+                                    <option value="completed">Telah Selesai (Completed)</option>
+                                    <option value="cancelled">Dibatalkan (Cancelled)</option>
+                                </select>
+                                <div class="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400 dark:text-slate-500">
+                                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4.79175 7.396L10.0001 12.6043L15.2084 7.396"></path>
+                                    </svg>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

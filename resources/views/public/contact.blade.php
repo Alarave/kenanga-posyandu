@@ -5,33 +5,31 @@
 @push('head')
 <meta name="description" content="Hubungi Posyandu Kenanga Bekasi Timur melalui email. Kami siap memberikan informasi layanan kesehatan, jadwal, dan bantuan untuk keluarga Anda.">
 <style>
-    /* â”€â”€ Page Background â”€â”€ */
+    /* ── Page Background ── */
     #contact-page-bg {
-        background: #f0f7f4;
-        background-image:
-            radial-gradient(circle at 15% 20%, rgba(0,108,73,.07) 0%, transparent 45%),
-            radial-gradient(circle at 85% 70%, rgba(0,108,73,.05) 0%, transparent 40%);
+        background: #f8faf9;
     }
 
-    /* â”€â”€ Hero â”€â”€ */
+    /* ── Hero Grid ── */
     .contact-hero {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        min-height: 540px;
-        background: #fff;
-        border-radius: 2.5rem;
+        min-height: 520px;
+        background: #ffffff;
+        border-radius: 32px;
         overflow: hidden;
-        border: 1px solid rgba(0,108,73,.1);
-        box-shadow: 0 24px 80px -12px rgba(13,59,41,.12), 0 0 0 1px rgba(0,108,73,.05);
+        border: 1px solid rgba(15, 23, 42, 0.04);
+        box-shadow: 
+            0 24px 80px -12px rgba(15, 23, 42, 0.05),
+            0 0 0 1px rgba(15, 23, 42, 0.01);
         position: relative;
     }
     .contact-hero::before {
         content: '';
         position: absolute;
         inset: 0;
-        background-image: radial-gradient(#d1fae5 1px, transparent 1px);
+        background-image: radial-gradient(rgba(13, 148, 136, 0.06) 1px, transparent 1px);
         background-size: 24px 24px;
-        opacity: 0.35;
         pointer-events: none;
         z-index: 0;
     }
@@ -40,22 +38,110 @@
         .contact-hero-img { display: none; }
     }
 
+    /* ── Badges ── */
+    .badge-status-light {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 16px;
+        background: rgba(13, 148, 136, 0.06);
+        border: 1px solid rgba(13, 148, 136, 0.15);
+        border-radius: 9999px;
+        margin-bottom: 24px;
+        align-self: flex-start;
+    }
+    .badge-status-light .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #0d9488;
+        animation: pulse-dot 2s infinite;
+    }
+    .badge-status-light .text {
+        font-size: 11px;
+        font-weight: 800;
+        color: #0f766e;
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+    }
+
+    @keyframes pulse-dot {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.5; transform: scale(0.85); }
+    }
+
+    .badge-glass-dark {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 16px;
+        background: rgba(4, 47, 46, 0.85);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 16px;
+        box-shadow: 0 10px 25px -5px rgba(4, 47, 46, 0.3);
+    }
+    .badge-glass-dark .dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #10b981;
+    }
+    .badge-glass-dark .text {
+        font-size: 11px;
+        font-weight: 700;
+        color: #ffffff;
+        letter-spacing: 0.02em;
+    }
+
+    /* ── Gradient Text ── */
+    .gradient-text {
+        background: linear-gradient(135deg, #0d9488 0%, #006c49 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* ── Stat Chips ── */
+    .stat-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 18px;
+        background: #ffffff;
+        border-radius: 16px;
+        border: 1px solid rgba(15, 23, 42, 0.04);
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.02);
+    }
+    .stat-chip .material-symbols-outlined {
+        font-size: 18px;
+        color: #0d9488;
+    }
+    .stat-chip .text {
+        font-size: 13px;
+        font-weight: 700;
+        color: #475569;
+    }
+
     /* ── Email Feature Card ── */
     .email-feature {
         display: grid;
         grid-template-columns: 1fr 1.1fr;
-        border-radius: 2.5rem;
+        border-radius: 32px;
         overflow: hidden;
-        border: 1px solid rgba(0,108,73,.1);
-        box-shadow: 0 20px 60px -12px rgba(13,59,41,.14);
-        min-height: 340px;
+        border: 1px solid rgba(15, 23, 42, 0.04);
+        box-shadow: 
+            0 24px 80px -12px rgba(15, 23, 42, 0.05),
+            0 0 0 1px rgba(15, 23, 42, 0.01);
+        min-height: 360px;
     }
     @media (max-width: 900px) { .email-feature { grid-template-columns: 1fr; } }
 
     .email-dark-panel {
-        background: linear-gradient(155deg, #0d3b29 0%, #0a4f38 50%, #062e1f 100%);
-        padding: 3rem 3rem 3rem 3.5rem;
-        color: #fff;
+        background: linear-gradient(135deg, #042f2e 0%, #0d9488 100%);
+        padding: 3.5rem;
+        color: #ffffff;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -68,185 +154,107 @@
         top: -80px; right: -80px;
         width: 280px; height: 280px;
         border-radius: 50%;
-        background: radial-gradient(circle, rgba(52,211,153,.12) 0%, transparent 70%);
-        pointer-events: none;
-    }
-    .email-dark-panel::after {
-        content: '';
-        position: absolute;
-        bottom: -50px; left: -50px;
-        width: 200px; height: 200px;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(0,168,107,.18) 0%, transparent 70%);
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.06) 0%, transparent 70%);
         pointer-events: none;
     }
 
     .email-address-link {
         display: inline-flex;
         align-items: center;
-        gap: 0.75rem;
-        padding: 1rem 1.5rem;
-        border-radius: 1.25rem;
-        background: rgba(255,255,255,.08);
-        border: 1px solid rgba(255,255,255,.12);
-        color: #fff;
+        gap: 12px;
+        padding: 14px 20px;
+        border-radius: 16px;
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        color: #ffffff;
         text-decoration: none;
         font-weight: 700;
-        font-size: 0.875rem;
-        transition: background 220ms ease, transform 220ms cubic-bezier(.34,1.56,.64,1), border-color 220ms ease;
+        font-size: 14px;
+        transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1);
         word-break: break-all;
         backdrop-filter: blur(8px);
     }
     .email-address-link:hover {
-        background: rgba(255,255,255,.15);
-        border-color: rgba(255,255,255,.25);
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.25);
         transform: translateY(-3px);
+        box-shadow: 0 10px 25px -10px rgba(0, 0, 0, 0.15);
     }
 
-    /* ── Contact Split ── */
-    .contact-split {
-        display: grid;
-        grid-template-columns: 1fr 1.25fr;
-        border-radius: 2.5rem;
-        overflow: hidden;
-        box-shadow: 0 24px 80px -12px rgba(13,59,41,.14);
-    }
-    @media (max-width: 900px) { .contact-split { grid-template-columns: 1fr; } }
-
-    .contact-info-panel {
-        background: linear-gradient(160deg, #0d3b29 0%, #0a4f36 55%, #063020 100%);
-        padding: 3.5rem;
-        color: #fff;
+    /* ── Steps ── */
+    .step-card {
         display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        position: relative;
-        overflow: hidden;
+        align-items: start;
+        gap: 16px;
     }
-    /* Decorative circles on info panel */
-    .contact-info-panel::before {
-        content: '';
-        position: absolute;
-        top: -80px; right: -80px;
-        width: 300px; height: 300px;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(107,216,203,.12) 0%, transparent 70%);
-        pointer-events: none;
-    }
-    .contact-info-panel::after {
-        content: '';
-        position: absolute;
-        bottom: -60px; left: -60px;
-        width: 240px; height: 240px;
-        border-radius: 50%;
-        background: radial-gradient(circle, rgba(0,108,73,.25) 0%, transparent 70%);
-        pointer-events: none;
-    }
-
-    .contact-form-panel {
-        background: #fff;
-        padding: 3.5rem;
-    }
-
-    /* ── Form Styles ── */
-    .cf-group { margin-bottom: 1.5rem; }
-    .cf-label {
-        display: block;
-        font-size: 0.68rem;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 0.14em;
-        color: #3d4947;
-        margin-bottom: 0.55rem;
-    }
-    .cf-input, .cf-textarea, .cf-select {
-        width: 100%;
-        padding: 0.9rem 1.1rem;
-        border-radius: 0.875rem;
-        border: 1.5px solid #dce3e0;
-        background: #f7fbf9;
-        font-family: inherit;
-        font-size: 0.925rem;
-        color: #171d1c;
-        transition: border-color 200ms ease, box-shadow 200ms ease, background 200ms ease;
-        outline: none;
-        appearance: none;
-    }
-    .cf-input:focus, .cf-textarea:focus, .cf-select:focus {
-        border-color: #006c49;
-        background: #fff;
-        box-shadow: 0 0 0 4px rgba(0,108,73,.1);
-    }
-    .cf-input.error, .cf-textarea.error, .cf-select.error {
-        border-color: #ba1a1a;
-        background: #fff5f5;
-        box-shadow: 0 0 0 3px rgba(186,26,26,.08);
-    }
-    .cf-error {
-        font-size: 0.72rem;
-        font-weight: 600;
-        color: #ba1a1a;
-        margin-top: 0.35rem;
-        display: none;
-    }
-    .cf-error.visible { display: block; }
-    .cf-textarea { resize: vertical; min-height: 130px; }
-
-    .cf-submit {
-        width: 100%;
-        padding: 1.1rem;
-        background: linear-gradient(135deg, #006c49 0%, #008358 100%);
-        color: #fff;
-        font-size: 0.7rem;
-        font-weight: 900;
-        text-transform: uppercase;
-        letter-spacing: 0.16em;
-        border-radius: 0.875rem;
-        border: none;
-        cursor: pointer;
-        transition: opacity 200ms ease, transform 220ms ease, box-shadow 220ms ease;
-        box-shadow: 0 8px 28px -4px rgba(0,108,73,.4);
-        position: relative;
-        overflow: hidden;
-    }
-    .cf-submit::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(135deg, rgba(255,255,255,.1) 0%, transparent 60%);
-        opacity: 0;
-        transition: opacity 200ms ease;
-    }
-    .cf-submit:hover { transform: translateY(-2px); box-shadow: 0 14px 36px -4px rgba(0,108,73,.48); }
-    .cf-submit:hover::before { opacity: 1; }
-    .cf-submit:active { transform: translateY(0) scale(.99); }
-    .cf-submit:disabled { background: #9eaaa7; cursor: not-allowed; transform: none; box-shadow: none; }
-    .cf-submit:focus-visible { outline: 2px solid #006c49; outline-offset: 3px; }
-
-    .cf-success {
-        display: none;
+    .step-number {
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        display: flex;
         align-items: center;
-        gap: 0.75rem;
-        padding: 1rem 1.25rem;
-        background: linear-gradient(135deg, #f0fdf4, #dcfce7);
-        border: 1px solid #86efac;
-        border-radius: 0.875rem;
-        color: #15803d;
-        font-size: 0.825rem;
-        font-weight: 700;
-        margin-top: 1rem;
-        box-shadow: 0 4px 12px -4px rgba(21,128,61,.15);
+        justify-content: center;
+        font-weight: 800;
+        font-size: 16px;
+        color: #ffffff;
+        background: linear-gradient(135deg, #0d9488 0%, #006c49 100%);
+        box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
+        flex-shrink: 0;
     }
-    .cf-success.visible { display: flex; }
+    .step-title {
+        font-weight: 800;
+        color: #0f172a;
+        font-size: 16px;
+        margin-bottom: 4px;
+    }
+    .step-desc {
+        color: #64748b;
+        font-size: 13px;
+        line-height: 1.6;
+    }
+
+    .btn-gradient {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 28px;
+        border-radius: 16px;
+        color: #ffffff;
+        font-size: 13px;
+        font-weight: 750;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        text-decoration: none;
+        background: linear-gradient(135deg, #0d9488 0%, #006c49 100%);
+        box-shadow: 0 4px 14px rgba(13, 148, 136, 0.25);
+        transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1);
+        border: 1px solid rgba(13, 148, 136, 0.1);
+    }
+    .btn-gradient:hover {
+        background: linear-gradient(135deg, #0f766e 0%, #005a3c 100%);
+        box-shadow: 0 8px 24px rgba(13, 148, 136, 0.35);
+        transform: translateY(-2px);
+    }
+    .btn-gradient:hover span.material-symbols-outlined {
+        transform: translateX(3px);
+    }
+    .btn-gradient span.material-symbols-outlined {
+        transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-gradient:active {
+        transform: translateY(0) scale(0.98);
+    }
 
     /* ── Map Strip ── */
     .map-strip {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        border-radius: 2.5rem;
+        border-radius: 32px;
         overflow: hidden;
-        border: 1px solid rgba(0,108,73,.1);
-        box-shadow: 0 12px 40px -8px rgba(0,0,0,.1);
+        border: 1px solid rgba(15, 23, 42, 0.04);
+        box-shadow: 
+            0 24px 80px -12px rgba(15, 23, 42, 0.05),
+            0 0 0 1px rgba(15, 23, 42, 0.01);
         min-height: 420px;
     }
     @media (max-width: 768px) {
@@ -254,26 +262,64 @@
         .map-photo { min-height: 280px; order: -1; }
     }
 
+    .address-card {
+        display: flex;
+        align-items: start;
+        gap: 16px;
+        padding: 20px;
+        background: #f8faf9;
+        border-radius: 20px;
+        border: 1px solid rgba(15, 23, 42, 0.03);
+    }
+    .address-icon {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: rgba(13, 148, 136, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #0d9488;
+        flex-shrink: 0;
+    }
+
+    .btn-navigation {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 14px 28px;
+        border-radius: 16px;
+        color: #ffffff;
+        font-size: 12px;
+        font-weight: 750;
+        letter-spacing: 0.04em;
+        text-transform: uppercase;
+        text-decoration: none;
+        background: linear-gradient(135deg, #042f2e 0%, #0d9488 100%);
+        box-shadow: 0 4px 14px rgba(4, 47, 46, 0.2);
+        transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-navigation:hover {
+        background: linear-gradient(135deg, #053a39 0%, #0f766e 100%);
+        box-shadow: 0 8px 24px rgba(4, 47, 46, 0.3);
+        transform: translateY(-2px);
+    }
+    .btn-navigation:hover span.material-symbols-outlined:first-child {
+        transform: translate(2px, -2px);
+    }
+    .btn-navigation span.material-symbols-outlined {
+        transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .btn-navigation:active {
+        transform: translateY(0) scale(0.98);
+    }
+
     /* ── Staggered entry ── */
-    .reveal { opacity: 0; transform: translateY(32px); transition: opacity 600ms ease, transform 600ms cubic-bezier(.22,1,.36,1); }
+    .reveal { opacity: 0; transform: translateY(32px); transition: opacity 600ms ease, transform 600ms cubic-bezier(.16,1,.3,1); }
     .reveal.visible { opacity: 1; transform: translateY(0); }
     .reveal-d1 { transition-delay: 80ms; }
     .reveal-d2 { transition-delay: 180ms; }
     .reveal-d3 { transition-delay: 280ms; }
-
-    /* ── Info panel contact rows ── */
-    .info-row {
-        display: flex;
-        align-items: flex-start;
-        gap: 1rem;
-        padding: 1rem 1.1rem;
-        border-radius: 1rem;
-        background: rgba(255,255,255,.06);
-        border: 1px solid rgba(255,255,255,.08);
-        backdrop-filter: blur(4px);
-        transition: background 200ms ease;
-    }
-    .info-row:hover { background: rgba(255,255,255,.1); }
 </style>
 @endpush
 
@@ -293,15 +339,14 @@
         {{-- Left: Editorial copy --}}
         <div class="flex flex-col justify-center px-10 md:px-16 py-16 relative z-10">
             {{-- Badge --}}
-            <div class="inline-flex items-center gap-3 px-5 py-2.5 rounded-full mb-8 self-start"
-                 style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);border:1px solid rgba(0,108,73,.2)">
-                <span class="w-2.5 h-2.5 rounded-full bg-teal-500 animate-pulse"></span>
-                <span class="text-xs font-black text-teal-800 uppercase tracking-[0.22em]">Bantuan &amp; Layanan</span>
+            <div class="badge-status-light">
+                <span class="dot"></span>
+                <span class="text">Bantuan &amp; Layanan</span>
             </div>
 
             <h1 class="text-6xl md:text-8xl font-black text-slate-900 leading-[1] tracking-tight font-jakarta mb-8" style="text-wrap:balance">
                 Hubungi<br>
-                <span style="background:linear-gradient(135deg,#006c49,#00a86b);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Kami.</span>
+                <span class="gradient-text">Kami.</span>
             </h1>
 
             <p class="text-slate-500 text-xl font-medium leading-relaxed max-w-lg mb-10" style="text-wrap:pretty">
@@ -310,13 +355,13 @@
 
             {{-- Quick stat chips --}}
             <div class="flex gap-4 flex-wrap">
-                <div class="inline-flex items-center gap-3 px-5 py-3 bg-white rounded-2xl border border-slate-100 shadow-sm">
-                    <span class="material-symbols-outlined text-teal-600 text-[20px]">schedule</span>
-                    <span class="text-sm font-bold text-slate-600">Senin – Jumat</span>
+                <div class="stat-chip">
+                    <span class="material-symbols-outlined">schedule</span>
+                    <span class="text">Senin – Jumat</span>
                 </div>
-                <div class="inline-flex items-center gap-3 px-5 py-3 bg-white rounded-2xl border border-slate-100 shadow-sm">
-                    <span class="material-symbols-outlined text-teal-600 text-[20px]">bolt</span>
-                    <span class="text-sm font-bold text-slate-600">Respons < 1 hari</span>
+                <div class="stat-chip">
+                    <span class="material-symbols-outlined">bolt</span>
+                    <span class="text">Respons &lt; 1 hari</span>
                 </div>
             </div>
         </div>
@@ -330,10 +375,9 @@
             <div class="absolute inset-0" style="background:linear-gradient(to right, rgba(255,255,255,0.55) 0%, transparent 35%)"></div>
             {{-- Badge overlay --}}
             <div class="absolute bottom-6 left-6 right-6">
-                <div class="inline-flex items-center gap-3 px-4 py-2.5 rounded-2xl shadow-lg"
-                     style="background:rgba(13,59,41,.85);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.15)">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span class="text-[11px] font-bold text-white">Tim Kader SPS Kenanga</span>
+                <div class="badge-glass-dark">
+                    <span class="dot animate-pulse"></span>
+                    <span class="text font-bold">Tim Kader SPS Kenanga</span>
                 </div>
             </div>
         </div>
@@ -343,8 +387,8 @@
     <section class="email-feature mb-8 reveal reveal-d1" aria-label="Kontak email utama">
         <div class="email-dark-panel">
             <div class="relative z-10">
-                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6"
-                     style="background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.2)">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full mb-6"
+                     style="background:rgba(255, 255, 255, 0.08); border:1px solid rgba(255, 255, 255, 0.15)">
                     <span class="w-1.5 h-1.5 rounded-full bg-teal-300"></span>
                     <p class="text-[9px] font-black uppercase tracking-[0.22em] text-teal-300">Kontak Resmi</p>
                 </div>
@@ -389,21 +433,18 @@
                         ['num'=>'2','title'=>'Kirim ke email','desc'=>'Kirim ke posyanduilp_kenanga1@gmail.com kapan saja.'],
                         ['num'=>'3','title'=>'Tunggu balasan','desc'=>'Tim kami merespons dalam 1 hari kerja, Senin-Jumat.'],
                     ] as $step)
-                    <div class="flex items-start gap-5">
-                        <div class="w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 font-black text-lg text-white"
-                             style="background:linear-gradient(135deg,#006c49,#008358);box-shadow:0 6px 16px rgba(0,108,73,.25)">
+                    <div class="step-card">
+                        <div class="step-number">
                             {{ $step['num'] }}
                         </div>
                         <div>
-                            <p class="font-black text-slate-900 text-lg mb-1 font-jakarta">{{ $step['title'] }}</p>
-                            <p class="text-slate-500 text-sm font-medium leading-relaxed">{{ $step['desc'] }}</p>
+                            <p class="step-title font-jakarta">{{ $step['title'] }}</p>
+                            <p class="step-desc">{{ $step['desc'] }}</p>
                         </div>
                     </div>
                     @endforeach
                 </div>
-                <a href="mailto:posyanduilp_kenanga1@gmail.com"
-                   class="inline-flex items-center gap-3 px-8 py-4.5 rounded-2xl text-[13px] font-black uppercase tracking-widest text-white transition-all active:scale-95"
-                   style="background:linear-gradient(135deg,#006c49,#008358);box-shadow:0 8px 28px -4px rgba(0,108,73,.45)">
+                <a href="mailto:posyanduilp_kenanga1@gmail.com" class="btn-gradient">
                     <span class="material-symbols-outlined text-[18px]">mail</span>
                     Kirim Email Sekarang
                 </a>
@@ -422,24 +463,23 @@
 
             <div class="relative z-10">
                 <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6"
-                     style="background:linear-gradient(135deg,#e6f4ea,#d1fae5);border:1px solid rgba(0,108,73,.15)">
+                     style="background:rgba(13, 148, 136, 0.06); border:1px solid rgba(13, 148, 136, 0.15)">
                     <span class="material-symbols-outlined text-teal-800 text-[14px]">location_on</span>
                     <p class="text-[9px] font-black uppercase tracking-[0.22em] text-teal-800">Temukan Kami</p>
                 </div>
 
-                <h2 class="text-4xl md:text-5xl font-black leading-tight font-jakarta mb-6 tracking-tight"
-                    style="color:#0a3024">
+                <h2 class="text-4xl md:text-5xl font-black leading-tight font-jakarta mb-6 tracking-tight text-slate-900">
                     Kunjungi<br>
-                    <span style="background:linear-gradient(135deg,#006c49,#059669);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">Lokasi Kami.</span>
+                    <span class="gradient-text">Lokasi Kami.</span>
                 </h2>
 
                 <div class="mb-8">
-                    <div class="flex items-start gap-4 p-4 bg-[#f4fbf7] rounded-2xl border border-teal-50/80 shadow-sm">
-                        <div class="w-10 h-10 rounded-xl bg-teal-100 flex items-center justify-center text-teal-700 shrink-0">
+                    <div class="address-card">
+                        <div class="address-icon">
                             <span class="material-symbols-outlined text-[20px]">location_on</span>
                         </div>
                         <div>
-                            <p class="text-[10px] font-black uppercase tracking-wider text-teal-800/60 mb-0.5">Alamat Lengkap</p>
+                            <p class="text-[10px] font-black uppercase tracking-wider text-teal-800/60 mb-0.5 font-jakarta">Alamat Lengkap</p>
                             <p class="text-slate-700 text-sm font-semibold leading-relaxed">
                                 Jl. Pulau Lombok I, RT.005/RW.011, Aren Jaya, Kec. Bekasi Timur, Kota Bekasi, Jawa Barat 17111
                             </p>
@@ -449,8 +489,7 @@
 
                 <a href="https://www.google.com/maps/place/Jl.+Pulau+Lombok+I,+RT.005%2FRW.011,+Aren+Jaya,+Kec.+Bekasi+Tim.,+Kota+Bks,+Jawa+Barat+17111/@-6.2440988,107.0340301,17z/data=!3m1!4b1!4m6!3m5!1s0x2e698ef3b1f96e2d:0x6b6411d4927c81b2!8m2!3d-6.2440988!4d107.0340301!16s%2Fg%2F11lf4vqv43!18m1!1e1?entry=ttu&g_ep=EgoyMDI2MDYyNC4wIKXMDSoASAFQAw%3D%3D" 
                    target="_blank" rel="noopener noreferrer"
-                   class="inline-flex items-center gap-3 px-8 py-4 rounded-2xl self-start text-white text-[11px] font-black uppercase tracking-widest transition-all active:scale-95 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
-                   style="background:linear-gradient(135deg,#0d3b29,#059669);box-shadow:0 8px 24px -4px rgba(13,59,41,.35)">
+                   class="btn-navigation focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2">
                     <span class="material-symbols-outlined text-[16px]">navigation</span>
                     Rute Google Maps
                     <span class="material-symbols-outlined text-[14px]" style="color:rgba(255,255,255,.6)">open_in_new</span>
@@ -468,8 +507,7 @@
             <div class="absolute inset-0" style="background:linear-gradient(145deg,rgba(13,59,41,.4) 0%,rgba(0,108,73,.1) 50%,transparent 80%)"></div>
 
             {{-- Floating Unit Count --}}
-            <div class="absolute top-8 right-8 px-4 py-3 rounded-2xl shadow-xl"
-                 style="background:rgba(255,255,255,.92);backdrop-filter:blur(12px)">
+            <div class="absolute top-8 right-8 px-4 py-3 rounded-2xl shadow-xl bg-white/95 backdrop-filter backdrop-blur-[12px] border border-white/10">
                 <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-0.5">Unit Posyandu</p>
                 <p class="text-2xl font-black text-slate-900 font-jakarta">2</p>
             </div>
@@ -491,10 +529,9 @@
 
             {{-- Bottom label --}}
             <div class="absolute bottom-6 left-6 right-6">
-                <div class="inline-flex items-center gap-2.5 px-4 py-2.5 rounded-2xl"
-                     style="background:rgba(13,59,41,.85);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.15)">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                    <span class="text-[11px] font-bold text-white">Bekasi Timur, Jawa Barat</span>
+                <div class="badge-glass-dark">
+                    <span class="dot animate-pulse"></span>
+                    <span class="text">Bekasi Timur, Jawa Barat</span>
                 </div>
             </div>
         </div>

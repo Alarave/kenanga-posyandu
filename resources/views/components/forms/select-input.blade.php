@@ -22,6 +22,14 @@
     } else {
         $stateClasses = 'bg-white text-slate-800 border-slate-200 focus:border-primary focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-900 dark:text-white/90';
     }
+
+    $hasWireModel = false;
+    foreach ($attributes as $key => $val) {
+        if (str_starts_with($key, 'wire:model')) {
+            $hasWireModel = true;
+            break;
+        }
+    }
 @endphp
 
 <div class="relative w-full">
