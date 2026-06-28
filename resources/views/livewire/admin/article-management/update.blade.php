@@ -131,7 +131,7 @@
                          @focus="focusedIndex = index; activeBlockId = block.id"
                          @blur="handleBlur(index)"
                          @mouseup="checkSelection()" @keyup="checkSelection()"
-                         :data-placeholder="index === 0 ? 'Mulai menulis, atau klik + untuk tambah konten' : 'Tulis paragrafâ€¦'"
+                         :data-placeholder="index === 0 ? 'Mulai menulis, atau klik + untuk tambah konten' : 'Tulis paragraf'"
                          class="flex-1 min-h-[1.8em] py-2 text-[1.15rem] leading-[1.9] text-on-surface-variant ce-placeholder"
                          style="font-family:'Georgia',serif; outline: none; border: none; box-shadow: none;"></div>
                 </div>
