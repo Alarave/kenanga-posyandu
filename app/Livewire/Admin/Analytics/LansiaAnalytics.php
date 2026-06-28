@@ -9,9 +9,9 @@ class LansiaAnalytics extends Component
 {
     use HasPosyanduScope;
 
-    public $selectedYear;
-    public $selectedMonth;
-    public $selectedPosyandu;
+    public ?int $selectedYear = null;
+    public ?int $selectedMonth = null;
+    public ?int $selectedPosyandu = null;
 
     public function mount($selectedYear = null, $selectedMonth = null, $selectedPosyandu = null)
     {

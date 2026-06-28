@@ -19,7 +19,7 @@ class GrowthChartService
     public function getWeightForAgeData(Patient $patient): array
     {
         $gender = $this->normalizeGender($patient->gender);
-        $records = $patient->medicalRecords()->orderBy('visit_date')->get();
+        $records = $patient->medicalRecords()->reorder('visit_date', 'asc')->get();
 
         // Ambil referensi WHO 0-60 bulan
         $references = WhoWeightForAge::where('gender', $gender)
@@ -49,7 +49,7 @@ class GrowthChartService
     public function getHeightForAgeData(Patient $patient): array
     {
         $gender = $this->normalizeGender($patient->gender);
-        $records = $patient->medicalRecords()->where('height', '>', 0)->orderBy('visit_date')->get();
+        $records = $patient->medicalRecords()->where('height', '>', 0)->reorder('visit_date', 'asc')->get();
 
         $references = WhoHeightForAge::where('gender', $gender)
             ->where('age_months', '<=', 60)
@@ -73,7 +73,7 @@ class GrowthChartService
     // Helper Methods
     // ─────────────────────────────────────────────
 
-    private function createReferenceDataset(string $label, $data, string $color, int $width = 1, string $style = 'solid'): array
+    private function createReferenceDataset(string $label, array $data, string $color, int $width = 1, string $style = 'solid'): array
     {
         return [
             'label' => $label,
@@ -126,7 +126,7 @@ class GrowthChartService
     public function getLansiaHealthData(Patient $patient): array
     {
         $records = $patient->medicalRecords()
-            ->orderBy('visit_date')
+            ->reorder('visit_date', 'asc')
             ->get();
 
         $labels = [];
