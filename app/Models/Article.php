@@ -37,8 +37,9 @@ class Article extends Model
      */
     public function getReadingTimeAttribute(): string
     {
-        $wordCount = str_word_count(strip_tags($this->content));
-        $readingTime = ceil($wordCount / 200);
+        $text = \App\Services\ArticleService::getExcerpt($this->content ?? '', 99999);
+        $wordCount = str_word_count($text);
+        $readingTime = max(1, (int) ceil($wordCount / 200));
         return $readingTime . ' menit';
     }
 
@@ -47,7 +48,8 @@ class Article extends Model
      */
     public function getExcerptAttribute(): string
     {
-        return substr(strip_tags($this->content), 0, 150) . '...';
+        $text = \App\Services\ArticleService::getExcerpt($this->content ?? '', 160);
+        return $text ?: 'Tidak ada ringkasan tersedia.';
     }
 
     /**

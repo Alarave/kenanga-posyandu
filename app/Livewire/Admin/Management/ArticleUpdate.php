@@ -52,6 +52,34 @@ class ArticleUpdate extends BaseAdminComponent
         ];
     }
 
+    public function saveFromAlpine(string $title, string $content, string $status, int $categoryId, ArticleService $service)
+    {
+        $this->title       = $title;
+        $this->content     = $content;
+        $this->status      = $status;
+        $this->category_id = $categoryId;
+
+        $this->authorize('update', $this->article);
+        $validated = $this->validate([
+            'title'       => 'required|string|max:255',
+            'content'     => 'required|string|min:2',
+            'status'      => 'required|in:published,draft',
+            'category_id' => 'required|exists:categories,id',
+            'cover'       => 'nullable|image|max:4096',
+        ]);
+
+        if (isset($validated['cover']) && $validated['cover']) {
+            $validated['thumbnail'] = $validated['cover'];
+        }
+        unset($validated['cover']);
+
+        $service->updateArticle($this->article, $validated);
+
+        $this->notify('Artikel berhasil diperbarui.', 'success', true);
+
+        return redirect()->route('admin.articles.index');
+    }
+
     public function save(ArticleService $service)
     {
         $this->authorize('update', $this->article);

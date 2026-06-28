@@ -51,7 +51,9 @@ class ArticleCreate extends BaseAdminComponent
         $this->category_id = $categoryId;
 
         $this->authorize('create', Article::class);
-        
+
+        // Validasi cover terpisah — cover diupload via Livewire wire:model
+        // jadi kita validasi $this->cover langsung
         $validated = $this->validate([
             'title'       => 'required|string|max:255',
             'content'     => 'required|string|min:2',
@@ -63,9 +65,8 @@ class ArticleCreate extends BaseAdminComponent
         $validated['thumbnail'] = $validated['cover'];
         unset($validated['cover']);
 
-        // Inject service via app() karena Livewire v3 tidak support DI di method Alpine
-        app(ArticleService::class)->createArticle($validated, Auth::user());
-        
+        app(ArticleService::class)->createArticle($validated, auth()->user());
+
         $this->notify('Artikel berhasil disimpan.', 'success', true);
         return redirect()->route('admin.articles.index');
     }

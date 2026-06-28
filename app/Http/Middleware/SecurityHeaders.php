@@ -46,6 +46,10 @@ class SecurityHeaders
             "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:",
             "img-src 'self' data: blob: https:",
             "connect-src 'self'",
+            // Izinkan YouTube dan Google Drive untuk embed iframe artikel
+            "frame-src 'self' https://www.youtube.com https://youtube.com https://youtu.be https://drive.google.com",
+            "child-src 'self' https://www.youtube.com https://youtube.com https://drive.google.com blob:",
+            "media-src 'self' blob:",
             "frame-ancestors 'self'",
             "base-uri 'self'",
             "form-action 'self'",

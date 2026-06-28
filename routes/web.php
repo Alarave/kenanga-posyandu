@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Web\ArticleController;
 // --- CONTROLLERS ADMIN (LOKASI DI FOLDER 'Web') ---
 use App\Http\Controllers\Web\GalleryController;
+use App\Http\Controllers\Web\GalleryFolderController;
 use App\Http\Controllers\Web\MedicalRecordController;
 use App\Http\Controllers\Web\PatientController;
 use App\Http\Controllers\Web\PedukuhanController;
@@ -94,12 +95,17 @@ Route::middleware(['auth'])->group(function () {
 
     // 4. GALLERY
     Route::get('admin/gallery', GalleryManagement::class)->name('admin.gallery.index');
-    Route::get('admin/gallery/create', [GalleryController::class, 'create'])->name('admin.gallery.create');
-    Route::post('admin/gallery', [GalleryController::class, 'store'])->name('admin.gallery.store');
-    Route::get('admin/gallery/{gallery}', [GalleryController::class, 'show'])->name('admin.gallery.show');
-    Route::get('admin/gallery/{gallery}/edit', [GalleryController::class, 'edit'])->name('admin.gallery.edit');
-    Route::put('admin/gallery/{gallery}', [GalleryController::class, 'update'])->name('admin.gallery.update');
-    Route::delete('admin/gallery/{gallery}', [GalleryController::class, 'destroy'])->name('admin.gallery.destroy');
+    // Folder
+    Route::get('admin/gallery/create', [GalleryFolderController::class, 'create'])->name('admin.gallery.create');
+    Route::post('admin/gallery', [GalleryFolderController::class, 'store'])->name('admin.gallery.store');
+    Route::get('admin/gallery/{folder}', [GalleryFolderController::class, 'show'])->name('admin.gallery.show');
+    Route::get('admin/gallery/{folder}/edit', [GalleryFolderController::class, 'edit'])->name('admin.gallery.edit');
+    Route::put('admin/gallery/{folder}', [GalleryFolderController::class, 'update'])->name('admin.gallery.update');
+    Route::delete('admin/gallery/{folder}', [GalleryFolderController::class, 'destroy'])->name('admin.gallery.destroy');
+    // Media di dalam folder
+    Route::get('admin/gallery/{folder}/media/create', [GalleryController::class, 'create'])->name('admin.gallery.media.create');
+    Route::post('admin/gallery/{folder}/media', [GalleryController::class, 'store'])->name('admin.gallery.media.store');
+    Route::delete('admin/gallery/{folder}/media/{gallery}', [GalleryController::class, 'destroy'])->name('admin.gallery.media.destroy');
 
     // 5. ARTICLES
     Route::get('admin/articles', ArticleManagement::class)->name('admin.articles.index');
