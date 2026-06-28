@@ -69,13 +69,18 @@ class SchedulePolicy
         return false;
     }
 
-    /**
-     * Determine if the user can delete the schedule.
-     */
     public function delete(User $user, Schedule $schedule): bool
     {
-        // ONLY Superadmin can delete (per user request)
-        return $user->isSuperAdmin();
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        // Admin can delete for their posyandu
+        if ($user->isAdmin()) {
+            return $user->posyandu_id === $schedule->posyandu_id;
+        }
+
+        return false;
     }
 
     /**

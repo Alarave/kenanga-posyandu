@@ -10,7 +10,8 @@ class PatientPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('patient.view') && $user->posyandu_id !== null;
+        if ($user->isSuperAdmin()) return true;
+        return ($user->isAdmin() || $user->isKader()) && $user->posyandu_id !== null;
     }
 
     /**
@@ -18,7 +19,8 @@ class PatientPolicy
      */
     public function view(User $user, Patient $patient): bool
     {
-        return $user->hasPermissionTo('patient.view') && $user->posyandu_id === $patient->posyandu_id;
+        if ($user->isSuperAdmin()) return true;
+        return ($user->isAdmin() || $user->isKader()) && $user->posyandu_id === $patient->posyandu_id;
     }
 
     /**
@@ -26,7 +28,8 @@ class PatientPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('patient.create') && $user->posyandu_id !== null;
+        if ($user->isSuperAdmin()) return true;
+        return ($user->isAdmin() || $user->isKader()) && $user->posyandu_id !== null;
     }
 
     /**
@@ -34,7 +37,8 @@ class PatientPolicy
      */
     public function update(User $user, Patient $patient): bool
     {
-        return $user->hasPermissionTo('patient.update') && $user->posyandu_id === $patient->posyandu_id;
+        if ($user->isSuperAdmin()) return true;
+        return ($user->isAdmin() || $user->isKader()) && $user->posyandu_id === $patient->posyandu_id;
     }
 
     /**
@@ -42,7 +46,8 @@ class PatientPolicy
      */
     public function delete(User $user, Patient $patient): bool
     {
-        return $user->hasPermissionTo('patient.delete') && $user->posyandu_id === $patient->posyandu_id;
+        if ($user->isSuperAdmin()) return true;
+        return ($user->isAdmin() || $user->isKader()) && $user->posyandu_id === $patient->posyandu_id;
     }
 
     /**

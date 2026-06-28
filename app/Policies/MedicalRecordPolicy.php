@@ -10,7 +10,8 @@ class MedicalRecordPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('medical_record.view') && $user->posyandu_id !== null;
+        if ($user->isSuperAdmin()) return true;
+        return ($user->isAdmin() || $user->isKader()) && $user->posyandu_id !== null;
     }
 
     /**
@@ -18,7 +19,8 @@ class MedicalRecordPolicy
      */
     public function view(User $user, MedicalRecord $medicalRecord): bool
     {
-        return $user->hasPermissionTo('medical_record.view') && $user->posyandu_id === $medicalRecord->patient->posyandu_id;
+        if ($user->isSuperAdmin()) return true;
+        return ($user->isAdmin() || $user->isKader()) && $user->posyandu_id === $medicalRecord->patient->posyandu_id;
     }
 
     /**
@@ -26,7 +28,8 @@ class MedicalRecordPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('medical_record.create') && $user->posyandu_id !== null;
+        if ($user->isSuperAdmin()) return true;
+        return ($user->isAdmin() || $user->isKader()) && $user->posyandu_id !== null;
     }
 
     /**
@@ -34,7 +37,8 @@ class MedicalRecordPolicy
      */
     public function update(User $user, MedicalRecord $medicalRecord): bool
     {
-        return $user->hasPermissionTo('medical_record.update') && $user->posyandu_id === $medicalRecord->patient->posyandu_id;
+        if ($user->isSuperAdmin()) return true;
+        return ($user->isAdmin() || $user->isKader()) && $user->posyandu_id === $medicalRecord->patient->posyandu_id;
     }
 
     /**
@@ -42,7 +46,8 @@ class MedicalRecordPolicy
      */
     public function delete(User $user, MedicalRecord $medicalRecord): bool
     {
-        return $user->hasPermissionTo('medical_record.delete') && $user->posyandu_id === $medicalRecord->patient->posyandu_id;
+        if ($user->isSuperAdmin()) return true;
+        return ($user->isAdmin() || $user->isKader()) && $user->posyandu_id === $medicalRecord->patient->posyandu_id;
     }
 
     /**
