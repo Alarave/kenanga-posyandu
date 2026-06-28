@@ -44,7 +44,7 @@
             {{-- Hero Image / Illustration --}}
             <div class="flex-1 relative hidden md:block">
                 <div class="relative rounded-2xl overflow-hidden shadow-2xl border-4 border-white rotate-2 group-hover:rotate-0 transition-transform duration-700">
-                    <img src="https://images.unsplash.com/photo-1584362946444-1e6a47940e21?q=80&w=800&auto=format&fit=crop" 
+                    <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?q=80&w=800&auto=format&fit=crop" 
                          alt="Posyandu" class="w-full h-[350px] object-cover">
                 </div>
                 <div class="absolute -bottom-6 -left-6 bg-white p-4 rounded-2xl shadow-xl border border-slate-100 flex items-center gap-4 animate-bounce">

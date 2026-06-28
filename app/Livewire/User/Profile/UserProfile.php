@@ -2,37 +2,39 @@
 
 namespace App\Livewire\User\Profile;
 
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 
 class UserProfile extends Component
 {
     public string $name = '';
-
     public string $email = '';
 
-    protected function rules()
+    protected function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,'.Auth::id(),
+            'name'  => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . Auth::id(),
         ];
     }
 
-    public function mount()
+    public function mount(): void
     {
-        $this->name = Auth::user()->name;
-        $this->email = Auth::user()->email;
+        /** @var User $user */
+        $user        = Auth::user();
+        $this->name  = $user->name;
+        $this->email = $user->email;
     }
 
-    public function updateProfile()
+    public function updateProfile(): void
     {
         $this->validate();
 
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
         $user->update([
-            'name' => $this->name,
+            'name'  => $this->name,
             'email' => $this->email,
         ]);
 

@@ -163,8 +163,32 @@
 
     {{-- KOP SURAT --}}
     <div class="kop">
-        <h1 class="kop-title">Posyandu {{ $reportData['patient']['posyandu_name'] }}</h1>
-        <p class="kop-subtitle">Alamat: Jl P Lombok 1 RW 011 Aren Jaya Bekasi Timur</p>
+        <table style="width: 100%; border: none; border-collapse: collapse; margin-bottom: 0;">
+            <tr>
+                @php
+                    $hasLogo = false;
+                    if(!empty($reportData['patient']['posyandu_logo'])) {
+                        $logoPath = public_path('storage/' . $reportData['patient']['posyandu_logo']);
+                        if (!file_exists($logoPath)) {
+                            $logoPath = storage_path('app/public/' . $reportData['patient']['posyandu_logo']);
+                        }
+                        $hasLogo = file_exists($logoPath);
+                    }
+                @endphp
+                @if($hasLogo)
+                    <td style="width: 60px; border: none; padding: 0; vertical-align: middle; text-align: left;">
+                        <img src="{{ $logoPath }}" style="height: 45px; width: auto; display: block;" />
+                    </td>
+                @endif
+                <td style="border: none; padding: 0; vertical-align: middle; text-align: center;">
+                    <h1 class="kop-title" style="margin: 0; line-height: 1.2;">Posyandu {{ $reportData['patient']['posyandu_name'] }}</h1>
+                    <p class="kop-subtitle" style="margin: 3px 0 0 0; line-height: 1.2;">Alamat: Jl P Lombok 1 RW 011 Aren Jaya Bekasi Timur</p>
+                </td>
+                @if($hasLogo)
+                    <td style="width: 60px; border: none; padding: 0;"></td>
+                @endif
+            </tr>
+        </table>
     </div>
 
     {{-- JUDUL LAPORAN --}}
@@ -172,37 +196,69 @@
 
     {{-- BIODATA --}}
     <div class="section-title">Biodata Warga</div>
-    <table class="biodata-table">
+    <table style="width: 100%; border: none; border-collapse: collapse; margin-bottom: 10px;">
         <tr>
-            <td class="biodata-label">Nama Lengkap</td>
-            <td class="biodata-value">: {{ $reportData['patient']['full_name'] }}</td>
-            <td class="biodata-label">NIK / No. Kartu</td>
-            <td class="biodata-value">: {{ $reportData['patient']['id_number'] }}</td>
-        </tr>
-        <tr>
-            <td class="biodata-label">Kategori Warga</td>
-            <td class="biodata-value">: {{ str_replace('_', ' ', strtoupper($reportData['patient']['category'])) }}</td>
-            <td class="biodata-label">Jenis Kelamin</td>
-            <td class="biodata-value">: {{ $reportData['patient']['gender'] === 'L' || $reportData['patient']['gender'] === 'M' ? 'Laki-laki' : 'Perempuan' }}</td>
-        </tr>
-        <tr>
-            <td class="biodata-label">Tanggal Lahir</td>
-            <td class="biodata-value">: {{ $reportData['patient']['birth_date'] }}</td>
-            @if($reportData['patient']['category'] !== 'lansia')
-                <td class="biodata-label">Nama Orang Tua (Ibu/Ayah)</td>
-                <td class="biodata-value">: {{ $reportData['patient']['mother_name'] }} / {{ $reportData['patient']['father_name'] }}</td>
-            @else
-                <td class="biodata-label">No. Telepon</td>
-                <td class="biodata-value">: {{ $reportData['patient']['phone_number'] }}</td>
-            @endif
-        </tr>
-        <tr>
-            <td class="biodata-label">Domisili / Alamat</td>
-            <td class="biodata-value" colspan="3">: {{ $reportData['patient']['address'] }}</td>
-        </tr>
-        <tr>
-            <td class="biodata-label">Periode Laporan</td>
-            <td class="biodata-value" colspan="3">: <strong>{{ $reportData['period_label'] }}</strong></td>
+            <td style="width: 82%; border: none; padding: 0; vertical-align: top;">
+                <table class="biodata-table" style="margin-bottom: 0; width: 100%;">
+                    <tr>
+                        <td class="biodata-label" style="width: 25%;">Nama Lengkap</td>
+                        <td class="biodata-value" style="width: 75%;">: {{ $reportData['patient']['full_name'] }}</td>
+                    </tr>
+                    <tr>
+                        <td class="biodata-label">NIK / No. Kartu</td>
+                        <td class="biodata-value">: {{ $reportData['patient']['id_number'] }}</td>
+                    </tr>
+                    <tr>
+                        <td class="biodata-label">Kategori Warga</td>
+                        <td class="biodata-value">: {{ str_replace('_', ' ', strtoupper($reportData['patient']['category'])) }}</td>
+                    </tr>
+                    <tr>
+                        <td class="biodata-label">Jenis Kelamin</td>
+                        <td class="biodata-value">: {{ $reportData['patient']['gender'] === 'L' || $reportData['patient']['gender'] === 'M' ? 'Laki-laki' : 'Perempuan' }}</td>
+                    </tr>
+                    <tr>
+                        <td class="biodata-label">Tanggal Lahir</td>
+                        <td class="biodata-value">: {{ $reportData['patient']['birth_date'] }}</td>
+                    </tr>
+                    @if($reportData['patient']['category'] !== 'lansia')
+                    <tr>
+                        <td class="biodata-label">Orang Tua (Ibu/Ayah)</td>
+                        <td class="biodata-value">: {{ $reportData['patient']['mother_name'] }} / {{ $reportData['patient']['father_name'] }}</td>
+                    </tr>
+                    @else
+                    <tr>
+                        <td class="biodata-label">No. Telepon</td>
+                        <td class="biodata-value">: {{ $reportData['patient']['phone_number'] }}</td>
+                    </tr>
+                    @endif
+                    <tr>
+                        <td class="biodata-label">Domisili / Alamat</td>
+                        <td class="biodata-value">: {{ $reportData['patient']['address'] }}</td>
+                    </tr>
+                    <tr>
+                        <td class="biodata-label">Periode Laporan</td>
+                        <td class="biodata-value">: <strong>{{ $reportData['period_label'] }}</strong></td>
+                    </tr>
+                </table>
+            </td>
+            <td style="width: 18%; border: none; padding: 0 0 0 15px; vertical-align: top; text-align: right;">
+                @php
+                    $photoPath = null;
+                    if(!empty($reportData['patient']['profile_photo'])) {
+                        $photoPath = public_path('storage/' . $reportData['patient']['profile_photo']);
+                        if (!file_exists($photoPath)) {
+                            $photoPath = storage_path('app/public/' . $reportData['patient']['profile_photo']);
+                        }
+                    }
+                @endphp
+                <div style="border: 1px solid #cbd5e1; border-radius: 8px; padding: 3px; background: #ffffff; display: inline-block; text-align: center;">
+                    @if($photoPath && file_exists($photoPath))
+                        <img src="{{ $photoPath }}" style="width: 85px; height: 100px; object-fit: cover; border-radius: 6px; display: block;" />
+                    @else
+                        <div style="width: 85px; height: 100px; border-radius: 6px; background: #f8fafc; border: 1px dashed #cbd5e1; text-align: center; line-height: 100px; color: #94a3b8; font-size: 8px; font-weight: bold;">FOTO</div>
+                    @endif
+                </div>
+            </td>
         </tr>
     </table>
 

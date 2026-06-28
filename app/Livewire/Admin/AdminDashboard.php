@@ -193,9 +193,10 @@ class AdminDashboard extends BaseAdminComponent
             ->whereHas("medicalRecords", function ($query) use ($latestRecordSubquery) {
                 $query->whereIn("id", $latestRecordSubquery)
                       ->where(function ($sq) {
-                        $sq->where("upper_arm_circumference", "<", 23.5)
-                        ->orWhere("systolic_bp", ">=", 140);
-                      });
+        $sq->where("upper_arm_circumference", "<", 23.5)
+            ->orWhere("systolic_bp", ">=", 140)
+            ->orWhere("diastolic_bp", ">=", 90);
+             });
             })
             ->orWhere(function ($query) {
                 $query->where("category", "ibu_hamil")

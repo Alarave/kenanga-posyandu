@@ -18,12 +18,14 @@ class GalleryRequest extends FormRequest
             'description' => 'nullable|string',
             'posyandu_id' => 'nullable|exists:posyandus,id',
             'is_featured' => 'boolean',
+            'folder_id' => 'nullable|exists:gallery_folders,id',
         ];
 
         if ($this->isMethod('POST')) {
-            $rules['photo'] = 'required|file|mimes:jpg,jpeg,png,webp,gif,mp4,mov,avi,webm,mkv|max:20480';
+            $rules['photos'] = 'required|array|min:1';
+            $rules['photos.*'] = 'file|mimes:jpg,jpeg,png,webp,gif,mp4,mov,avi,webm,mkv|max:20480';
         } else {
-            $rules['photo'] = 'nullable|file|mimes:jpg,jpeg,png,webp,gif,mp4,mov,avi,webm,mkv|max:20480';
+            $rules['photos'] = 'nullable|file|mimes:jpg,jpeg,png,webp,gif,mp4,mov,avi,webm,mkv|max:20480';
         }
 
         return $rules;
@@ -33,10 +35,10 @@ class GalleryRequest extends FormRequest
     {
         return [
             'title.required' => 'Judul galeri wajib diisi.',
-            'photo.required' => 'File galeri wajib diunggah.',
-            'photo.file' => 'File yang diunggah tidak valid.',
-            'photo.mimes' => 'Format file harus berupa gambar (jpg, jpeg, png, webp, gif) atau video (mp4, mov, avi, webm, mkv).',
-            'photo.max' => 'Ukuran file tidak boleh melebihi 20MB.',
+            'photos.required' => 'File galeri wajib diunggah.',
+            'photos.*.file' => 'File yang diunggah tidak valid.',
+            'photos.*.mimes' => 'Format file harus berupa gambar (jpg, jpeg, png, webp, gif) atau video (mp4, mov, avi, webm, mkv).',
+            'photos.*.max' => 'Ukuran file tidak boleh melebihi 20MB.',
         ];
     }
 }

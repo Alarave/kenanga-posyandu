@@ -17,9 +17,12 @@
 </div>
 
 <div class="bg-white rounded-[32px] border border-slate-100 p-8 shadow-[0_8px_30px_rgb(0,0,0,0.02)]">
-    <form action="{{ route('admin.gallery.store') }}" method="POST" enctype="multipart/form-data">
-        @csrf
-        <div class="space-y-8">
+        <form action="{{ route('admin.gallery.store') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            @if(request('folder_id'))
+                <input type="hidden" name="folder_id" value="{{ request('folder_id') }}">
+            @endif
+            <div class="space-y-8">
             <!-- Upload Area -->
             <div>
                 <label class="block text-xs font-black text-outline-variant uppercase tracking-widest mb-3">Pilih File Media</label>
@@ -42,7 +45,7 @@
                         <p class="text-xs text-outline-variant mt-2 font-bold uppercase tracking-wider">Format: JPG, PNG, WEBP, MP4, MOV (Maks. 20MB)</p>
                     </div>
 
-                    <input type="file" name="photo" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id="imageUpload" accept="image/*,video/*" required onchange="previewFile(event)">
+                    <input type="file" name="photos[]" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id="imageUpload" accept="image/*,video/*" multiple required onchange="previewFiles(event)">
                 </div>
                 @error('photo') 
                     <p class="mt-3 text-xs text-red-500 font-bold flex items-center gap-1">
@@ -94,32 +97,35 @@
 </div>
 
 <script>
-    function previewFile(event) {
-        const input = event.target;
-        const reader = new FileReader();
+    function previewFiles(event) {
+        const files = event.target.files;
         const imagePreview = document.getElementById('imagePreview');
         const videoPreview = document.getElementById('videoPreview');
         const placeholder = document.getElementById('placeholder');
 
-        if(input.files[0]) {
-            const file = input.files[0];
-            const isVideo = file.type.startsWith('video/');
+        if (files.length === 0) return;
 
-            reader.onload = function(){
-                if (isVideo) {
-                    const video = videoPreview.querySelector('video');
-                    video.src = reader.result;
-                    videoPreview.classList.remove('hidden');
-                    imagePreview.classList.add('hidden');
-                } else {
-                    const img = imagePreview.querySelector('img');
-                    img.src = reader.result;
-                    imagePreview.classList.remove('hidden');
-                    videoPreview.classList.add('hidden');
-                }
-                placeholder.classList.add('hidden');
+        const file = files[0];
+        const isVideo = file.type.startsWith('video/');
+
+        placeholder.classList.remove('hidden');
+        placeholder.querySelector('p').textContent = `${files.length} file dipilih`;
+
+        if (isVideo) {
+            // Pakai blob URL langsung untuk video — lebih cepat dari FileReader
+            const url = URL.createObjectURL(file);
+            const video = videoPreview.querySelector('video');
+            video.src = url;
+            videoPreview.classList.remove('hidden');
+            imagePreview.classList.add('hidden');
+        } else {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const img = imagePreview.querySelector('img');
+                img.src = reader.result;
+                imagePreview.classList.remove('hidden');
+                videoPreview.classList.add('hidden');
             };
-
             reader.readAsDataURL(file);
         }
     }

@@ -12,7 +12,7 @@
     </div>
     <x-breadcrumb :items="[
         ['label' => 'Galeri', 'url' => route('admin.gallery.index')],
-        ['label' => $gallery->title, 'url' => route('admin.gallery.show', $gallery->id)],
+        ['label' => $gallery->title, 'url' => route('admin.gallery.index')onchange="previewFiles(event)">],
         ['label' => 'Edit', 'active' => true]
     ]" />
 </div>

@@ -136,7 +136,11 @@
                 {{-- Profile icon/photo --}}
                 <div class="w-32 h-32 rounded-2xl bg-linear-to-br {{ $theme['gradient'] }} p-1 mb-6 {{ $theme['shadow'] }} relative z-10 group-hover:scale-105 transition-transform duration-500">
                     <div class="w-full h-full bg-white rounded-[1.8rem] flex items-center justify-center overflow-hidden">
-                        <span class="material-symbols-outlined text-[72px] {{ $theme['text'] }} opacity-90">face</span>
+                        @if(!empty($patient['profile_photo']))
+                            <img src="{{ asset('storage/' . $patient['profile_photo']) }}" class="w-full h-full object-cover">
+                        @else
+                            <span class="material-symbols-outlined text-[72px] {{ $theme['text'] }} opacity-90">face</span>
+                        @endif
                     </div>
                 </div>
 

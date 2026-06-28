@@ -12,23 +12,29 @@ class GalleryService
     /**
      * Create a new gallery entry.
      */
-    public function createGallery(array $data, User $user): Gallery
+    public function createGallery(array $data, User $user): array
     {
         if (! $user->isSuperAdmin()) {
             $data['posyandu_id'] = $user->posyandu_id;
         }
 
         $data['user_id'] = $user->id;
+        $galleries = [];
 
-        if (isset($data['photo']) && $data['photo'] instanceof UploadedFile) {
-            $mimeType = $data['photo']->getMimeType();
-            $data['type'] = str_starts_with($mimeType, 'video/') ? 'video' : 'image';
-            $data['photo'] = $data['photo']->store('galleries', 'public');
-        } else {
-            $data['type'] = 'image';
+        $photos = $data['photos'] ?? [];
+        unset($data['photos']);
+
+        foreach ($photos as $photo) {
+            if ($photo instanceof UploadedFile) {
+                $mimeType = $photo->getMimeType();
+                $fileData = $data;
+                $fileData['type'] = str_starts_with($mimeType, 'video/') ? 'video' : 'image';
+                $fileData['photo'] = $photo->store('galleries', 'public');
+                $galleries[] = Gallery::create($fileData);
+            }
         }
 
-        return Gallery::create($data);
+        return $galleries;
     }
 
     /**

@@ -4,35 +4,24 @@ namespace App\Livewire\Admin\Management;
 
 use App\Models\Posyandu;
 use App\Models\Schedule;
+use App\Models\User;
 use App\Services\ScheduleService;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
-/**
- * Komponen untuk membuat jadwal baru (OOP & Clean Code).
- */
 #[Layout('layouts.admin-layout')]
 class ScheduleCreate extends Component
 {
     public string $title = '';
-
     public string $description = '';
-
     public string $start_time = '';
-
     public string $end_time = '';
-
     public string $location = '';
-
     public string $status = 'upcoming';
-
     public ?int $posyandu_id = null;
 
-    /**
-     * Inisialisasi komponen.
-     */
     public function mount(): void
     {
         /** @var \App\Models\User $user */
@@ -42,25 +31,19 @@ class ScheduleCreate extends Component
         }
     }
 
-    /**
-     * Aturan validasi.
-     */
     protected function rules(): array
     {
         return [
-            'title' => 'required|string|max:255',
+            'title'       => 'required|string|max:255',
             'description' => 'nullable|string',
-            'start_time' => 'required|date',
-            'end_time' => 'required|date|after:start_time',
-            'location' => 'required|string|max:255',
-            'status' => 'required|in:upcoming,ongoing,completed,cancelled',
+            'start_time'  => 'required|date',
+            'end_time'    => 'required|date|after:start_time',
+            'location'    => 'required|string|max:255',
+            'status'      => 'required|in:upcoming,ongoing,completed,cancelled',
             'posyandu_id' => 'required|exists:posyandus,id',
         ];
     }
 
-    /**
-     * Simpan jadwal baru menggunakan Service.
-     */
     public function save(ScheduleService $service)
     {
         Gate::authorize('create', Schedule::class);
@@ -75,9 +58,6 @@ class ScheduleCreate extends Component
         return redirect()->route('admin.schedules.index');
     }
 
-    /**
-     * Render view.
-     */
     public function render(): View
     {
         /** @var \App\Models\User $user */

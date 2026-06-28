@@ -250,6 +250,7 @@ class ReportService
                 'id' => $posyandu->id,
                 'name' => $posyandu->name,
                 'address' => $posyandu->address,
+                'logo_photo' => $posyandu->logo_photo,
             ],
             'period' => [
                 'month' => $month,
@@ -497,6 +498,8 @@ class ReportService
                 'address' => $patient->address ?? '-',
                 'phone_number' => $patient->phone_number ?? '-',
                 'posyandu_name' => $patient->posyandu->name ?? '-',
+                'profile_photo' => $patient->profile_photo,
+                'posyandu_logo' => $patient->posyandu->logo_photo ?? null,
             ],
             'period' => [
                 'start_month' => $startMonth,

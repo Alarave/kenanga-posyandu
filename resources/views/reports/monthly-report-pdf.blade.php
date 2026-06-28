@@ -102,17 +102,38 @@
     </style>
 </head>
 <body>
-    <div class="title">LAPORAN POSYANDU UNTUK POKJA IV</div>
-
-    <div class="header-meta">
-        <table>
-            <tr><td width="90">Nama Posyandu</td><td>: {{ $reportData['posyandu']['name'] }}</td></tr>
-            <tr><td>Tgl Penimbangan</td><td>: {{ date('d F Y') }}</td></tr>
-            <tr><td>Petugas (Binwil)</td><td>: -</td></tr>
-            <tr><td>Tahun</td><td>: {{ $reportData['period']['year'] }}</td></tr>
-        </table>
-    </div>
-    <div class="clear"></div>
+    <table style="width: 100%; border: none; border-collapse: collapse; margin-bottom: 5px;">
+        <tr>
+            <td style="border: none; padding: 0; vertical-align: top; text-align: left;">
+                @php
+                    $hasLogo = false;
+                    if(!empty($reportData['posyandu']['logo_photo'])) {
+                        $logoPath = public_path('storage/' . $reportData['posyandu']['logo_photo']);
+                        if (!file_exists($logoPath)) {
+                            $logoPath = storage_path('app/public/' . $reportData['posyandu']['logo_photo']);
+                        }
+                        $hasLogo = file_exists($logoPath);
+                    }
+                @endphp
+                @if($hasLogo)
+                    <img src="{{ $logoPath }}" style="height: 45px; width: auto; float: left; margin-right: 10px; margin-bottom: 5px;" />
+                @endif
+                <div class="title" style="text-align: left; margin-bottom: 0; padding-top: 5px;">LAPORAN POSYANDU UNTUK POKJA IV</div>
+                <div style="font-size: 8pt; font-weight: bold; color: #475569; text-align: left; margin-top: 2px;">Posyandu {{ $reportData['posyandu']['name'] }}</div>
+            </td>
+            <td style="border: none; padding: 0; vertical-align: top; width: 220px; text-align: right;">
+                <div class="header-meta" style="float: right; margin-bottom: 0; width: 220px;">
+                    <table style="margin-bottom: 0; table-layout: auto;">
+                        <tr><td width="80" style="text-align: left;">Nama Posyandu</td><td style="text-align: left;">: {{ $reportData['posyandu']['name'] }}</td></tr>
+                        <tr><td style="text-align: left;">Penimbangan</td><td style="text-align: left;">: {{ date('d F Y') }}</td></tr>
+                        <tr><td style="text-align: left;">Petugas</td><td style="text-align: left;">: -</td></tr>
+                        <tr><td style="text-align: left;">Tahun</td><td style="text-align: left;">: {{ $reportData['period']['year'] }}</td></tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <div class="clear" style="margin-top: 5px;"></div>
 
     <!-- MAIN GRID SECTION -->
     <div style="width: 100%; display: table; border-bottom: 1px solid #000;">

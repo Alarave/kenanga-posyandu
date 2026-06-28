@@ -15,14 +15,16 @@
 
     <!-- Scripts & Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @stack('head')
 </head>
-<body class="antialiased overflow-x-hidden" style="font-family:'Public Sans',sans-serif;">
+
+<body class="antialiased overflow-x-hidden min-h-screen flex flex-col" style="font-family:'Public Sans',sans-serif;">
 
     {{-- Komponen Navbar Modular --}}
     <x-layouts.public.navbar />
 
     {{-- Main Content Section --}}
-    <main class="pt-17">
+    <main class="pt-17 flex-grow">
         @yield('content')
     </main>
 

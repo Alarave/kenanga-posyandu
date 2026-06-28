@@ -3,6 +3,7 @@
 namespace App\Livewire\Traits;
 
 use App\Models\Posyandu;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
@@ -19,7 +20,6 @@ trait HasPosyanduScope
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        // Admin RW / Superadmin
         if ($user->isSuperAdmin()) {
             if ($selectedPosyanduId) {
                 if ($query->getModel() instanceof \App\Models\MedicalRecord) {
@@ -30,10 +30,8 @@ trait HasPosyanduScope
             return $query;
         }
 
-        // Admin/Kader unit specific
         $posyanduId = $selectedPosyanduId ?? $user->posyandu_id;
         
-        // Ensure they can only filter to their own unit
         if ($selectedPosyanduId && $selectedPosyanduId != $user->posyandu_id) {
             $posyanduId = $user->posyandu_id;
         }
@@ -46,7 +44,7 @@ trait HasPosyanduScope
     }
 
     /**
-     * Dapatkan daftar Posyandu yang diizinkan untuk dilihat user (untuk dropdown filter).
+     * Dapatkan daftar Posyandu yang diizinkan untuk dilihat user.
      */
     protected function getAllowedPosyandus()
     {

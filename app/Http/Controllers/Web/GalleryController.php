@@ -27,7 +27,11 @@ class GalleryController extends Controller
     {
         $galleryService->createGallery($request->validated(), auth()->user());
 
-        return redirect()->route('admin.gallery.index')->with('success', 'Foto galeri berhasil diunggah.');
+        $redirectTo = $request->folder_id 
+            ? route('admin.gallery.folder', $request->folder_id)
+            : route('admin.gallery.index');
+
+        return redirect($redirectTo)->with('success', 'Media berhasil diunggah.');
     }
 
     public function show(Gallery $gallery)
