@@ -38,7 +38,7 @@ class PatientPolicy
             return true;
         }
 
-        return ($user->isAdmin() || $user->isKader()) && $user->posyandu_id !== null;
+        return $user->isAdmin() && $user->posyandu_id !== null;
     }
 
     /**
@@ -62,7 +62,7 @@ class PatientPolicy
             return true;
         }
 
-        return ($user->isAdmin() || $user->isKader()) && $user->posyandu_id === $patient->posyandu_id;
+        return $user->isAdmin() && $user->posyandu_id === $patient->posyandu_id;
     }
 
     /**
