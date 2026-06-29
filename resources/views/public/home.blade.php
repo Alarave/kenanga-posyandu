@@ -157,6 +157,7 @@
             <article class="group bg-white rounded-[2rem] border border-slate-100 overflow-hidden hover:shadow-xl transition-all">
                 <a href="{{ route('public.articles.show', $article->slug) }}" class="block aspect-video overflow-hidden">
                     <img src="{{ $article->thumbnail ? asset('storage/' . $article->thumbnail) : 'https://images.unsplash.com/photo-1576091160550-217359f4ecf8?q=80&w=600&auto=format&fit=crop' }}" 
+                         onerror="this.onerror=null; this.src='{{ asset('assets/img/tim-kenanga.jpg') }}'"
                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                 </a>
                 
