@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Admin\Settings;
 
-use App\Models\Role;
 use App\Models\Permission;
+use App\Models\Role;
 use Livewire\Component;
 
 class RolePermissionManagement extends Component
@@ -14,7 +14,7 @@ class RolePermissionManagement extends Component
         if ($role) {
             $role->permissions()->toggle($permissionId);
             $this->dispatch('notify', [
-                'message' => 'Pengaturan hak akses untuk role ' . $role->display_name . ' berhasil diperbarui.',
+                'message' => 'Pengaturan hak akses untuk role '.$role->display_name.' berhasil diperbarui.',
                 'type' => 'success',
             ]);
         }

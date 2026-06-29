@@ -40,7 +40,8 @@ class Article extends Model
         $text = \App\Services\ArticleService::getExcerpt($this->content ?? '', 99999);
         $wordCount = str_word_count($text);
         $readingTime = max(1, (int) ceil($wordCount / 200));
-        return $readingTime . ' menit';
+
+        return $readingTime.' menit';
     }
 
     /**
@@ -49,6 +50,7 @@ class Article extends Model
     public function getExcerptAttribute(): string
     {
         $text = \App\Services\ArticleService::getExcerpt($this->content ?? '', 160);
+
         return $text ?: 'Tidak ada ringkasan tersedia.';
     }
 
@@ -96,12 +98,12 @@ class Article extends Model
 
         $pattern = '/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/ ]{11})/i';
         if (preg_match($pattern, $url, $matches)) {
-            return "https://www.youtube.com/embed/" . $matches[1];
+            return 'https://www.youtube.com/embed/'.$matches[1];
         }
 
         $shortsPattern = '/youtube\.com\/shorts\/([^"&?\/ ]{11})/i';
         if (preg_match($shortsPattern, $url, $matches)) {
-            return "https://www.youtube.com/embed/" . $matches[1];
+            return 'https://www.youtube.com/embed/'.$matches[1];
         }
 
         return null;
@@ -118,7 +120,7 @@ class Article extends Model
 
         $pattern = '/\/file\/d\/([a-zA-Z0-9_-]+)/';
         if (preg_match($pattern, $url, $matches)) {
-            return "https://drive.google.com/file/d/" . $matches[1] . "/preview";
+            return 'https://drive.google.com/file/d/'.$matches[1].'/preview';
         }
 
         return null;

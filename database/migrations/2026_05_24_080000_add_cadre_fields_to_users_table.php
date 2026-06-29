@@ -2,9 +2,9 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -147,9 +147,9 @@ return new class extends Migration
         ];
 
         foreach ($kaders as $k) {
-            $username = strtolower(explode(' ', $k['name'])[0]) . '_' . rand(100, 999);
+            $username = strtolower(explode(' ', $k['name'])[0]).'_'.rand(100, 999);
             // Check if email or username already exists
-            if (!DB::table('users')->where('email', $k['email'])->exists()) {
+            if (! DB::table('users')->where('email', $k['email'])->exists()) {
                 DB::table('users')->insert([
                     'name' => $k['name'],
                     'email' => $k['email'],

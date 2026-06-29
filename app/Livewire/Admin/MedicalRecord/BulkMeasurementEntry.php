@@ -20,6 +20,7 @@ class BulkMeasurementEntry extends Component
     public $search = '';
 
     public $searchResults = [];
+
     public $isLoadingAll = false;
 
     protected $rules = [
@@ -33,7 +34,7 @@ class BulkMeasurementEntry extends Component
     public function mount()
     {
         $this->authorize('create', MedicalRecord::class);
-        
+
         $this->visit_date = now()->format('Y-m-d');
 
         // If user is a Kader, set their posyandu_id
@@ -97,8 +98,9 @@ class BulkMeasurementEntry extends Component
 
     public function loadAllPatients()
     {
-        if (!$this->posyandu_id) {
+        if (! $this->posyandu_id) {
             $this->dispatch('notify', ['type' => 'error', 'message' => 'Pilih Posyandu terlebih dahulu.']);
+
             return;
         }
 
@@ -106,7 +108,7 @@ class BulkMeasurementEntry extends Component
 
         // Batch-load patient IDs that already have a record for this date (avoids N+1)
         $existingPatientIds = MedicalRecord::whereDate('visit_date', $this->visit_date)
-            ->whereHas('patient', fn($q) => $q->where('posyandu_id', $this->posyandu_id))
+            ->whereHas('patient', fn ($q) => $q->where('posyandu_id', $this->posyandu_id))
             ->pluck('patient_id')
             ->toArray();
 
@@ -117,7 +119,7 @@ class BulkMeasurementEntry extends Component
         $patients = Patient::where('posyandu_id', $this->posyandu_id)
             ->where('category', 'balita')
             ->whereNotIn('id', $skipIds)
-            ->with(['medicalRecords' => function($query) {
+            ->with(['medicalRecords' => function ($query) {
                 $query->latest()->limit(1);
             }])
             ->orderBy('full_name')
@@ -128,15 +130,15 @@ class BulkMeasurementEntry extends Component
             $lastRecord = $patient->medicalRecords->first();
 
             $this->measurements[] = [
-                'patient_id'         => $patient->id,
-                'full_name'          => $patient->full_name,
-                'parent_name'        => $patient->parent_name,
-                'age_months'         => $patient->age_in_months,
-                'gender'             => $patient->gender,
-                'last_weight'        => $lastRecord?->weight ?? '-',
-                'last_height'        => $lastRecord?->height ?? '-',
-                'weight'             => '',
-                'height'             => '',
+                'patient_id' => $patient->id,
+                'full_name' => $patient->full_name,
+                'parent_name' => $patient->parent_name,
+                'age_months' => $patient->age_in_months,
+                'gender' => $patient->gender,
+                'last_weight' => $lastRecord?->weight ?? '-',
+                'last_height' => $lastRecord?->height ?? '-',
+                'weight' => '',
+                'height' => '',
                 'measurement_method' => $patient->age_in_months >= 24 ? 'standing' : 'recumbent',
             ];
             $addedCount++;
@@ -144,7 +146,7 @@ class BulkMeasurementEntry extends Component
 
         $this->isLoadingAll = false;
         $this->dispatch('notify', [
-            'type'    => 'success',
+            'type' => 'success',
             'message' => $addedCount > 0
                 ? "{$addedCount} balita dimuat ke daftar."
                 : 'Semua balita sudah memiliki data untuk tanggal ini.',
@@ -181,9 +183,9 @@ class BulkMeasurementEntry extends Component
                     $m['gender']
                 );
 
-                $this->measurements[$index]['status_bbu'] = !empty($m['weight']) ? $results->nutrition_status : null;
-                $this->measurements[$index]['status_bbtb'] = (!empty($m['weight']) && !empty($m['height'])) ? $results->wasting_status : null;
-                $this->measurements[$index]['status_tbu'] = !empty($m['height']) ? $results->stunting_status : null;
+                $this->measurements[$index]['status_bbu'] = ! empty($m['weight']) ? $results->nutrition_status : null;
+                $this->measurements[$index]['status_bbtb'] = (! empty($m['weight']) && ! empty($m['height'])) ? $results->wasting_status : null;
+                $this->measurements[$index]['status_tbu'] = ! empty($m['height']) ? $results->stunting_status : null;
                 $this->measurements[$index]['z_score_hfa'] = $results->z_score_hfa;
             } else {
                 $this->measurements[$index]['status_bbu'] = null;
@@ -210,7 +212,7 @@ class BulkMeasurementEntry extends Component
                 ->where('posyandu_id', $this->posyandu_id)
                 ->first();
 
-            if (!$patient) {
+            if (! $patient) {
                 continue;
             }
 
@@ -231,12 +233,12 @@ class BulkMeasurementEntry extends Component
                     'weight' => $m['weight'] ?: null,
                     'height' => $m['height'] ?: null,
                     'measurement_method' => $m['measurement_method'],
-                    'nutrition_status' => !empty($m['weight']) ? $results['nutrition_status'] : null,
-                    'z_score' => !empty($m['weight']) ? $results['z_score'] : null,
-                    'stunting_status' => !empty($m['height']) ? $results['stunting_status'] : null,
-                    'z_score_hfa' => !empty($m['height']) ? $results['z_score_hfa'] : null,
-                    'wasting_status' => (!empty($m['weight']) && !empty($m['height'])) ? $results['wasting_status'] : null,
-                    'z_score_wfh' => (!empty($m['weight']) && !empty($m['height'])) ? $results['z_score_wfh'] : null,
+                    'nutrition_status' => ! empty($m['weight']) ? $results['nutrition_status'] : null,
+                    'z_score' => ! empty($m['weight']) ? $results['z_score'] : null,
+                    'stunting_status' => ! empty($m['height']) ? $results['stunting_status'] : null,
+                    'z_score_hfa' => ! empty($m['height']) ? $results['z_score_hfa'] : null,
+                    'wasting_status' => (! empty($m['weight']) && ! empty($m['height'])) ? $results['wasting_status'] : null,
+                    'z_score_wfh' => (! empty($m['weight']) && ! empty($m['height'])) ? $results['z_score_wfh'] : null,
                     'complaint' => '—',
                     'diagnosis' => 'Sehat',
                     'immunization' => 'Tidak ada',

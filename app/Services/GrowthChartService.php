@@ -110,19 +110,20 @@ class GrowthChartService
     {
         $lookup = [];
         foreach ($references as $ref) {
-            $lookup[(int)$ref->age_months] = $ref;
+            $lookup[(int) $ref->age_months] = $ref;
         }
 
         if (empty($lookup)) {
             $interpolated = [];
             for ($m = 0; $m <= 60; $m++) {
-                $newRef = new \stdClass();
+                $newRef = new \stdClass;
                 $newRef->age_months = $m;
                 foreach ($fields as $field) {
                     $newRef->$field = 0;
                 }
                 $interpolated[$m] = $newRef;
             }
+
             return $interpolated;
         }
 
@@ -152,7 +153,7 @@ class GrowthChartService
                     $highRef = $lookup[$highMonth];
                     $factor = ($m - $lowMonth) / ($highMonth - $lowMonth);
 
-                    $newRef = new \stdClass();
+                    $newRef = new \stdClass;
                     $newRef->age_months = $m;
                     foreach ($fields as $field) {
                         $newRef->$field = round($lowRef->$field + ($highRef->$field - $lowRef->$field) * $factor, 3);
@@ -160,7 +161,7 @@ class GrowthChartService
                     $interpolated[$m] = $newRef;
                 } else {
                     $closest = ($lowMonth !== null) ? $lookup[$lowMonth] : $lookup[$highMonth];
-                    $newRef = new \stdClass();
+                    $newRef = new \stdClass;
                     $newRef->age_months = $m;
                     foreach ($fields as $field) {
                         $newRef->$field = round($closest->$field, 3);
@@ -169,6 +170,7 @@ class GrowthChartService
                 }
             }
         }
+
         return $interpolated;
     }
 

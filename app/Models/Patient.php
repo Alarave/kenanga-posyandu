@@ -44,7 +44,7 @@ class Patient extends Model
         });
 
         static::saved(function ($patient) {
-            \App\Models\AnalyticsSnapshot::where(function($q) use ($patient) {
+            \App\Models\AnalyticsSnapshot::where(function ($q) use ($patient) {
                 if ($patient->posyandu_id) {
                     $q->where('posyandu_id', $patient->posyandu_id)->orWhereNull('posyandu_id');
                 } else {
@@ -54,7 +54,7 @@ class Patient extends Model
         });
 
         static::deleted(function ($patient) {
-            \App\Models\AnalyticsSnapshot::where(function($q) use ($patient) {
+            \App\Models\AnalyticsSnapshot::where(function ($q) use ($patient) {
                 if ($patient->posyandu_id) {
                     $q->where('posyandu_id', $patient->posyandu_id)->orWhereNull('posyandu_id');
                 } else {
@@ -90,8 +90,6 @@ class Patient extends Model
         return $this->birth_date ? $this->birth_date->diff(now())->format('%y thn, %m bln') : '-';
     }
 
-
-
     public function getAgeInMonthsAttribute(): int
     {
         return $this->birth_date ? (int) $this->birth_date->diffInMonths(now()) : 0;
@@ -103,13 +101,13 @@ class Patient extends Model
     public function getImmunizationStatus(): array
     {
         $ageMonths = $this->age_in_months;
-        
+
         $records = $this->relationLoaded('medicalRecords')
             ? $this->medicalRecords
             : $this->medicalRecords()->get();
 
         $receivedFromVaccineName = $records
-            ->filter(fn($record) => !is_null($record->vaccine_name))
+            ->filter(fn ($record) => ! is_null($record->vaccine_name))
             ->flatMap(function ($record) {
                 return explode(', ', $record->vaccine_name);
             })
@@ -117,7 +115,7 @@ class Patient extends Model
             ->toArray();
 
         $receivedFromImmunization = $records
-            ->filter(fn($record) => !is_null($record->immunization) && $record->immunization !== '' && $record->immunization !== 'Tidak ada')
+            ->filter(fn ($record) => ! is_null($record->immunization) && $record->immunization !== '' && $record->immunization !== 'Tidak ada')
             ->flatMap(function ($record) {
                 $parts = preg_split('/[,;]+/', $record->immunization);
                 $mapped = [];
@@ -126,9 +124,9 @@ class Patient extends Model
                     if ($trimmed === '' || strtolower($trimmed) === 'tidak ada') {
                         continue;
                     }
-                    
+
                     // Normalize standard immunization name
-                    $normalized = match(strtolower($trimmed)) {
+                    $normalized = match (strtolower($trimmed)) {
                         'campak', 'campak mr', 'mr' => 'MR',
                         'hepatitis b', 'hb0', 'hb 0', 'hb-0' => 'HB-0',
                         'bcg' => 'BCG',
@@ -154,6 +152,7 @@ class Patient extends Model
                     };
                     $mapped[] = $normalized;
                 }
+
                 return $mapped;
             })
             ->unique()

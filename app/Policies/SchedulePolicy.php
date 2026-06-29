@@ -31,7 +31,6 @@ class SchedulePolicy
             return true;
         }
 
-
         return $user->posyandu_id === $schedule->posyandu_id;
     }
 

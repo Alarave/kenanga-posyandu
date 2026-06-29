@@ -30,9 +30,9 @@ class GlobalSearch extends Component
             $results['articles'] = \App\Models\Article::where('title', 'like', '%'.$this->search.'%')
                 ->limit(3)->get();
 
-            $results['records'] = \App\Models\MedicalRecord::whereHas('patient', function($q) {
-                    $q->where('full_name', 'like', '%'.$this->search.'%');
-                })
+            $results['records'] = \App\Models\MedicalRecord::whereHas('patient', function ($q) {
+                $q->where('full_name', 'like', '%'.$this->search.'%');
+            })
                 ->with('patient')
                 ->latest()
                 ->limit(3)->get();

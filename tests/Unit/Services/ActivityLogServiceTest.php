@@ -2,6 +2,7 @@
 
 /**
  * @var Tests\TestCase $this
+ *
  * @property \App\Models\User $user
  * @property \App\Services\ActivityLogService $service
  */

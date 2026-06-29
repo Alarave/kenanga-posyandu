@@ -2,12 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use Illuminate\Database\Seeder;
-use App\Models\Patient;
 use App\Models\MedicalRecord;
+use App\Models\Patient;
 use Carbon\Carbon;
 use Faker\Factory as Faker;
+use Illuminate\Database\Seeder;
 
 class DummyPatientSeeder extends Seeder
 {
@@ -26,7 +25,7 @@ class DummyPatientSeeder extends Seeder
         for ($i = 0; $i < 20; $i++) {
             $hpht = Carbon::now()->subMonths(rand(1, 8))->subDays(rand(1, 20));
             $age = rand(18, 40);
-            
+
             $patient = Patient::create([
                 'id_number' => $faker->unique()->numerify('################'),
                 'full_name' => $faker->name('female'),
@@ -63,7 +62,7 @@ class DummyPatientSeeder extends Seeder
         // --- 20 Lansia ---
         for ($i = 0; $i < 20; $i++) {
             $age = rand(60, 85);
-            
+
             $patient = Patient::create([
                 'id_number' => $faker->unique()->numerify('################'),
                 'full_name' => $faker->name,

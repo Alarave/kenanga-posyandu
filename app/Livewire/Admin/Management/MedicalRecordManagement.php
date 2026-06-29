@@ -37,7 +37,7 @@ class MedicalRecordManagement extends BaseAdminComponent
             });
 
         // Apply sorting
-        $query = match($this->sortBy) {
+        $query = match ($this->sortBy) {
             'patient_name_asc' => $query->join('patients', 'medical_records.patient_id', '=', 'patients.id')
                 ->orderBy('patients.full_name', 'asc')
                 ->select('medical_records.*'),

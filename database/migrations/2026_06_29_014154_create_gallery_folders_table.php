@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasTable('gallery_folders')) {
+        if (! Schema::hasTable('gallery_folders')) {
             Schema::create('gallery_folders', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('posyandu_id')->nullable()->constrained()->onDelete('cascade');

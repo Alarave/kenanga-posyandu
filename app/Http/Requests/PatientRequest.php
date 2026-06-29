@@ -16,9 +16,9 @@ class PatientRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
-        if ($this->has('id_number') && !empty($this->id_number)) {
+        if ($this->has('id_number') && ! empty($this->id_number)) {
             $this->merge([
-                'id_number_hash' => \App\Models\Patient::generateBlindIndex($this->id_number)
+                'id_number_hash' => \App\Models\Patient::generateBlindIndex($this->id_number),
             ]);
         }
     }

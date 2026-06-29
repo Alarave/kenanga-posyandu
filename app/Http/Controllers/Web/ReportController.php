@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-use App\Models\Posyandu;
 use App\Models\Patient;
+use App\Models\Posyandu;
 use App\Services\ActivityLogService;
 use App\Services\ReportService;
 use Illuminate\Http\Request;
@@ -73,7 +73,7 @@ class ReportController extends Controller
 
         $endMonth = (int) ($request->end_month ?? now()->month);
         $endYear = (int) ($request->end_year ?? now()->year);
-        
+
         $startDateDefault = now()->setDate($endYear, $endMonth, 1)->subMonths(5);
         $startMonth = (int) ($request->start_month ?? $startDateDefault->month);
         $startYear = (int) ($request->start_year ?? $startDateDefault->year);
@@ -99,10 +99,10 @@ class ReportController extends Controller
 
         try {
             $reportData = $reportService->generateIndividualReportData(
-                $patient, 
-                (int) $request->start_month, 
-                (int) $request->start_year, 
-                (int) $request->end_month, 
+                $patient,
+                (int) $request->start_month,
+                (int) $request->start_year,
+                (int) $request->end_month,
                 (int) $request->end_year
             );
 
@@ -118,6 +118,7 @@ class ReportController extends Controller
             return response()->download($filePath)->deleteFileAfterSend(false);
         } catch (\Exception $e) {
             \Log::error('Export individual PDF failed: '.$e->getMessage());
+
             return back()->with('error', 'Ekspor PDF gagal. Silakan coba lagi.');
         }
     }
@@ -138,10 +139,10 @@ class ReportController extends Controller
 
         try {
             $reportData = $reportService->generateIndividualReportData(
-                $patient, 
-                (int) $request->start_month, 
-                (int) $request->start_year, 
-                (int) $request->end_month, 
+                $patient,
+                (int) $request->start_month,
+                (int) $request->start_year,
+                (int) $request->end_month,
                 (int) $request->end_year
             );
 
@@ -157,6 +158,7 @@ class ReportController extends Controller
             return response()->download($filePath)->deleteFileAfterSend(false);
         } catch (\Exception $e) {
             \Log::error('Export individual Excel failed: '.$e->getMessage());
+
             return back()->with('error', 'Ekspor Excel gagal. Silakan coba lagi.');
         }
     }

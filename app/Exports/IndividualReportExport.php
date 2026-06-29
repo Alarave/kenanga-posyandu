@@ -1,11 +1,12 @@
 <?php
+
 namespace App\Exports;
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class IndividualReportExport
 {
@@ -21,7 +22,7 @@ class IndividualReportExport
      */
     public function generate(): Spreadsheet
     {
-        $spreadsheet = new Spreadsheet();
+        $spreadsheet = new Spreadsheet;
 
         // Remove default sheet
         $spreadsheet->removeSheetByIndex(0);
@@ -59,7 +60,7 @@ class IndividualReportExport
     protected function renderSummarySheet($sheet): void
     {
         $patient = $this->reportData['patient'];
-        
+
         // Disable gridlines setting
         $sheet->setShowGridLines(true);
 
@@ -67,12 +68,12 @@ class IndividualReportExport
         $headerStyle = [
             'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF'], 'size' => 11],
             'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '0D9488']],
-            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
         ];
 
         $titleStyle = [
             'font' => ['bold' => true, 'size' => 16, 'color' => ['rgb' => '0F172A']],
-            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
         ];
 
         // Title Block
@@ -80,11 +81,11 @@ class IndividualReportExport
         $sheet->mergeCells('A2:F2');
         $sheet->getStyle('A2')->applyFromArray($titleStyle);
 
-        $sheet->setCellValue('A3', 'Posyandu: ' . $patient['posyandu_name'] . ' | Periode: ' . $this->reportData['period_label']);
+        $sheet->setCellValue('A3', 'Posyandu: '.$patient['posyandu_name'].' | Periode: '.$this->reportData['period_label']);
         $sheet->mergeCells('A3:F3');
         $sheet->getStyle('A3')->applyFromArray([
             'font' => ['italic' => true, 'size' => 10, 'color' => ['rgb' => '475569']],
-            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
         ]);
 
         // Section A: BIODATA WARGA
@@ -92,7 +93,7 @@ class IndividualReportExport
         $sheet->mergeCells('A5:F5');
         $sheet->getStyle('A5')->applyFromArray([
             'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
-            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '334155']]
+            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '334155']],
         ]);
 
         if ($patient['category'] === 'lansia') {
@@ -114,86 +115,86 @@ class IndividualReportExport
 
         $row = 6;
         foreach ($biodataFields as $field) {
-            $sheet->setCellValue('A' . $row, $field[0]);
-            $sheet->setCellValue('B' . $row, ': ' . $field[1]);
-            
+            $sheet->setCellValue('A'.$row, $field[0]);
+            $sheet->setCellValue('B'.$row, ': '.$field[1]);
+
             if (isset($field[2])) {
-                $sheet->setCellValue('D' . $row, $field[2]);
-                $sheet->setCellValue('E' . $row, ': ' . $field[3]);
-                $sheet->getStyle('D' . $row)->getFont()->setBold(true);
+                $sheet->setCellValue('D'.$row, $field[2]);
+                $sheet->setCellValue('E'.$row, ': '.$field[3]);
+                $sheet->getStyle('D'.$row)->getFont()->setBold(true);
             }
-            
+
             // Format labels bold
-            $sheet->getStyle('A' . $row)->getFont()->setBold(true);
+            $sheet->getStyle('A'.$row)->getFont()->setBold(true);
             $row++;
         }
 
         // Section B: RINGKASAN DATA
         $row++;
-        $sheet->setCellValue('A' . $row, 'RINGKASAN PERKEMBANGAN PERIODE INI');
-        $sheet->mergeCells('A' . $row . ':F' . $row);
-        $sheet->getStyle('A' . $row)->applyFromArray([
+        $sheet->setCellValue('A'.$row, 'RINGKASAN PERKEMBANGAN PERIODE INI');
+        $sheet->mergeCells('A'.$row.':F'.$row);
+        $sheet->getStyle('A'.$row)->applyFromArray([
             'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF']],
-            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '0F766E']]
+            'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '0F766E']],
         ]);
 
         $row++;
-        $sheet->setCellValue('A' . $row, 'Total Kunjungan');
-        $sheet->setCellValue('B' . $row, ': ' . count($this->reportData['raw_records']) . ' Kali');
-        
+        $sheet->setCellValue('A'.$row, 'Total Kunjungan');
+        $sheet->setCellValue('B'.$row, ': '.count($this->reportData['raw_records']).' Kali');
+
         if ($patient['category'] === 'lansia') {
             $lastBP = '-';
             $lastSugar = '-';
             $lastChol = '-';
             $lastUric = '-';
-            if (!empty($this->reportData['raw_records'])) {
+            if (! empty($this->reportData['raw_records'])) {
                 $lastRec = end($this->reportData['raw_records']);
                 $lastBP = isset($lastRec['systolic_bp']) && isset($lastRec['diastolic_bp']) && $lastRec['systolic_bp'] > 0
-                    ? $lastRec['systolic_bp'] . '/' . $lastRec['diastolic_bp'] . ' mmHg'
+                    ? $lastRec['systolic_bp'].'/'.$lastRec['diastolic_bp'].' mmHg'
                     : ($lastRec['blood_pressure'] ?? '-');
-                $lastSugar = $lastRec['blood_sugar'] ? $lastRec['blood_sugar'] . ' mg/dL' : '-';
-                $lastChol = $lastRec['cholesterol'] ? $lastRec['cholesterol'] . ' mg/dL' : '-';
-                $lastUric = $lastRec['uric_acid'] ? $lastRec['uric_acid'] . ' mg/dL' : '-';
+                $lastSugar = $lastRec['blood_sugar'] ? $lastRec['blood_sugar'].' mg/dL' : '-';
+                $lastChol = $lastRec['cholesterol'] ? $lastRec['cholesterol'].' mg/dL' : '-';
+                $lastUric = $lastRec['uric_acid'] ? $lastRec['uric_acid'].' mg/dL' : '-';
             }
 
             $row++;
-            $sheet->setCellValue('A' . $row, 'Tekanan Darah Terakhir');
-            $sheet->setCellValue('B' . $row, ': ' . $lastBP);
-            $sheet->setCellValue('D' . $row, 'Gula Darah Terakhir');
-            $sheet->setCellValue('E' . $row, ': ' . $lastSugar);
-            $sheet->getStyle('A' . $row)->getFont()->setBold(true);
-            $sheet->getStyle('D' . $row)->getFont()->setBold(true);
+            $sheet->setCellValue('A'.$row, 'Tekanan Darah Terakhir');
+            $sheet->setCellValue('B'.$row, ': '.$lastBP);
+            $sheet->setCellValue('D'.$row, 'Gula Darah Terakhir');
+            $sheet->setCellValue('E'.$row, ': '.$lastSugar);
+            $sheet->getStyle('A'.$row)->getFont()->setBold(true);
+            $sheet->getStyle('D'.$row)->getFont()->setBold(true);
 
             $row++;
-            $sheet->setCellValue('A' . $row, 'Kolesterol Terakhir');
-            $sheet->setCellValue('B' . $row, ': ' . $lastChol);
-            $sheet->setCellValue('D' . $row, 'Asam Urat Terakhir');
-            $sheet->setCellValue('E' . $row, ': ' . $lastUric);
-            $sheet->getStyle('A' . $row)->getFont()->setBold(true);
-            $sheet->getStyle('D' . $row)->getFont()->setBold(true);
+            $sheet->setCellValue('A'.$row, 'Kolesterol Terakhir');
+            $sheet->setCellValue('B'.$row, ': '.$lastChol);
+            $sheet->setCellValue('D'.$row, 'Asam Urat Terakhir');
+            $sheet->setCellValue('E'.$row, ': '.$lastUric);
+            $sheet->getStyle('A'.$row)->getFont()->setBold(true);
+            $sheet->getStyle('D'.$row)->getFont()->setBold(true);
         } else {
             $lastWeight = '-';
             $lastHeight = '-';
             $lastStatus = '-';
-            if (!empty($this->reportData['raw_records'])) {
+            if (! empty($this->reportData['raw_records'])) {
                 $lastRec = end($this->reportData['raw_records']);
-                $lastWeight = $lastRec['weight'] . ' kg';
-                $lastHeight = $lastRec['height'] . ' cm';
+                $lastWeight = $lastRec['weight'].' kg';
+                $lastHeight = $lastRec['height'].' cm';
                 $lastStatus = $lastRec['nutrition_status'] ?? '-';
             }
 
             $row++;
-            $sheet->setCellValue('A' . $row, 'Berat Badan Terakhir');
-            $sheet->setCellValue('B' . $row, ': ' . $lastWeight);
-            $sheet->setCellValue('D' . $row, 'Tinggi Badan Terakhir');
-            $sheet->setCellValue('E' . $row, ': ' . $lastHeight);
-            $sheet->getStyle('A' . $row)->getFont()->setBold(true);
-            $sheet->getStyle('D' . $row)->getFont()->setBold(true);
+            $sheet->setCellValue('A'.$row, 'Berat Badan Terakhir');
+            $sheet->setCellValue('B'.$row, ': '.$lastWeight);
+            $sheet->setCellValue('D'.$row, 'Tinggi Badan Terakhir');
+            $sheet->setCellValue('E'.$row, ': '.$lastHeight);
+            $sheet->getStyle('A'.$row)->getFont()->setBold(true);
+            $sheet->getStyle('D'.$row)->getFont()->setBold(true);
 
             $row++;
-            $sheet->setCellValue('A' . $row, 'Status Gizi Terakhir');
-            $sheet->setCellValue('B' . $row, ': ' . $lastStatus);
-            $sheet->getStyle('A' . $row)->getFont()->setBold(true);
+            $sheet->setCellValue('A'.$row, 'Status Gizi Terakhir');
+            $sheet->setCellValue('B'.$row, ': '.$lastStatus);
+            $sheet->getStyle('A'.$row)->getFont()->setBold(true);
         }
 
         // Auto column widths
@@ -212,7 +213,7 @@ class IndividualReportExport
         $headerStyle = [
             'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF'], 'size' => 10],
             'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '0D9488']],
-            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER, 'wrapText' => true]
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER, 'vertical' => Alignment::VERTICAL_CENTER, 'wrapText' => true],
         ];
 
         // Headers
@@ -229,7 +230,7 @@ class IndividualReportExport
                 'I3' => 'IMT',
                 'J3' => 'Lingkar Perut (cm)',
                 'K3' => 'Obat Diberikan',
-                'L3' => 'Catatan / Keluhan'
+                'L3' => 'Catatan / Keluhan',
             ];
         } else {
             $headers = [
@@ -244,7 +245,7 @@ class IndividualReportExport
                 'I3' => 'Tren Gizi',
                 'J3' => 'Pemberian PMT',
                 'K3' => 'Vaksin Diberikan',
-                'L3' => 'Catatan / Keluhan'
+                'L3' => 'Catatan / Keluhan',
             ];
         }
 
@@ -252,7 +253,7 @@ class IndividualReportExport
         $sheet->mergeCells('A1:L1');
         $sheet->getStyle('A1')->applyFromArray([
             'font' => ['bold' => true, 'size' => 14],
-            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
         ]);
 
         foreach ($headers as $cell => $text) {
@@ -275,53 +276,53 @@ class IndividualReportExport
             $period = $slot['period'];
             $record = $slot['record'];
 
-            $sheet->setCellValue('A' . $row, $period['label']);
-            
+            $sheet->setCellValue('A'.$row, $period['label']);
+
             if ($record) {
-                $sheet->setCellValue('B' . $row, $record['visit_date']);
-                $sheet->setCellValue('C' . $row, $record['weight'] > 0 ? (float) $record['weight'] : '-');
-                $sheet->setCellValue('D' . $row, $record['height'] > 0 ? (float) $record['height'] : '-');
+                $sheet->setCellValue('B'.$row, $record['visit_date']);
+                $sheet->setCellValue('C'.$row, $record['weight'] > 0 ? (float) $record['weight'] : '-');
+                $sheet->setCellValue('D'.$row, $record['height'] > 0 ? (float) $record['height'] : '-');
                 if ($this->reportData['patient']['category'] === 'lansia') {
                     $bp = '-';
                     if (isset($record['systolic_bp']) && isset($record['diastolic_bp']) && $record['systolic_bp'] > 0) {
-                        $bp = $record['systolic_bp'] . '/' . $record['diastolic_bp'];
+                        $bp = $record['systolic_bp'].'/'.$record['diastolic_bp'];
                     } elseif (isset($record['blood_pressure'])) {
                         $bp = $record['blood_pressure'];
                     }
-                    $sheet->setCellValue('E' . $row, $bp);
-                    $sheet->setCellValue('F' . $row, $record['blood_sugar'] ?? '-');
-                    $sheet->setCellValue('G' . $row, $record['uric_acid'] ?? '-');
-                    $sheet->setCellValue('H' . $row, $record['cholesterol'] ?? '-');
-                    $sheet->setCellValue('I' . $row, $record['imt'] ?? '-');
-                    $sheet->setCellValue('J' . $row, $record['waist_circumference'] ?? '-');
-                    $sheet->setCellValue('K' . $row, $record['current_medication'] ?? '-');
+                    $sheet->setCellValue('E'.$row, $bp);
+                    $sheet->setCellValue('F'.$row, $record['blood_sugar'] ?? '-');
+                    $sheet->setCellValue('G'.$row, $record['uric_acid'] ?? '-');
+                    $sheet->setCellValue('H'.$row, $record['cholesterol'] ?? '-');
+                    $sheet->setCellValue('I'.$row, $record['imt'] ?? '-');
+                    $sheet->setCellValue('J'.$row, $record['waist_circumference'] ?? '-');
+                    $sheet->setCellValue('K'.$row, $record['current_medication'] ?? '-');
                 } else {
-                    $sheet->setCellValue('E' . $row, $record['upper_arm_circumference'] > 0 ? (float) $record['upper_arm_circumference'] : '-');
-                    $sheet->setCellValue('F' . $row, $record['head_circumference'] > 0 ? (float) $record['head_circumference'] : '-');
-                    $sheet->setCellValue('G' . $row, $record['nutrition_status'] ?? '-');
-                    $sheet->setCellValue('H' . $row, $record['stunting_status'] ?? '-');
-                    $sheet->setCellValue('I' . $row, ucfirst($record['nutrition_trend'] ?? '-'));
+                    $sheet->setCellValue('E'.$row, $record['upper_arm_circumference'] > 0 ? (float) $record['upper_arm_circumference'] : '-');
+                    $sheet->setCellValue('F'.$row, $record['head_circumference'] > 0 ? (float) $record['head_circumference'] : '-');
+                    $sheet->setCellValue('G'.$row, $record['nutrition_status'] ?? '-');
+                    $sheet->setCellValue('H'.$row, $record['stunting_status'] ?? '-');
+                    $sheet->setCellValue('I'.$row, ucfirst($record['nutrition_trend'] ?? '-'));
                 }
-                
+
                 // PMT / exclusive BF
-                $sheet->setCellValue('J' . $row, isset($record['pmt_given']) ? $record['pmt_given'] : '-');
-                $sheet->setCellValue('K' . $row, $record['vaccine_name'] ?? '-');
-                
+                $sheet->setCellValue('J'.$row, isset($record['pmt_given']) ? $record['pmt_given'] : '-');
+                $sheet->setCellValue('K'.$row, $record['vaccine_name'] ?? '-');
+
                 $note = $record['complaint'] ?? '';
                 if ($record['health_note']) {
-                    $note .= ($note ? '; ' : '') . $record['health_note'];
+                    $note .= ($note ? '; ' : '').$record['health_note'];
                 }
-                $sheet->setCellValue('L' . $row, $note ?: '-');
+                $sheet->setCellValue('L'.$row, $note ?: '-');
             } else {
-                $sheet->setCellValue('B' . $row, 'Tidak Hadir');
-                $sheet->mergeCells('B' . $row . ':L' . $row);
-                $sheet->getStyle('B' . $row)->applyFromArray([
+                $sheet->setCellValue('B'.$row, 'Tidak Hadir');
+                $sheet->mergeCells('B'.$row.':L'.$row);
+                $sheet->getStyle('B'.$row)->applyFromArray([
                     'font' => ['italic' => true, 'color' => ['rgb' => '94A3B8']],
-                    'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]
+                    'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
                 ]);
             }
-            
-            $sheet->getStyle('A' . $row . ':L' . $row)->applyFromArray($borderStyle);
+
+            $sheet->getStyle('A'.$row.':L'.$row)->applyFromArray($borderStyle);
             $row++;
         }
 
@@ -341,7 +342,7 @@ class IndividualReportExport
         $headerStyle = [
             'font' => ['bold' => true, 'color' => ['rgb' => 'FFFFFF'], 'size' => 10],
             'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '475569']],
-            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
         ];
 
         // Section 1: Imunisasi
@@ -350,13 +351,13 @@ class IndividualReportExport
         $sheet->getStyle('A2')->applyFromArray([
             'font' => ['bold' => true, 'size' => 12],
             'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '334155']],
-            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
         ]);
 
         $sheet->setCellValue('A3', 'Kelompok Usia');
         $sheet->setCellValue('B3', 'Vaksin');
         $sheet->setCellValue('C3', 'Status');
-        
+
         $sheet->getStyle('A3:C3')->applyFromArray($headerStyle);
 
         $row = 4;
@@ -371,58 +372,58 @@ class IndividualReportExport
 
         foreach ($this->reportData['immunization_status'] as $group) {
             foreach ($group['vaccines'] as $i => $vax) {
-                $sheet->setCellValue('A' . $row, $i === 0 ? $group['label'] : '');
-                $sheet->setCellValue('B' . $row, $vax['name'] . ' (' . $vax['prevent'] . ')');
-                $sheet->setCellValue('C' . $row, $vax['received'] ? 'Sudah Diberikan' : ($vax['is_due'] ? 'Belum (Jatuh Tempo)' : 'Belum Waktunya'));
-                
+                $sheet->setCellValue('A'.$row, $i === 0 ? $group['label'] : '');
+                $sheet->setCellValue('B'.$row, $vax['name'].' ('.$vax['prevent'].')');
+                $sheet->setCellValue('C'.$row, $vax['received'] ? 'Sudah Diberikan' : ($vax['is_due'] ? 'Belum (Jatuh Tempo)' : 'Belum Waktunya'));
+
                 // Color status column
                 if ($vax['received']) {
-                    $sheet->getStyle('C' . $row)->getFont()->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('047857')); // Green
-                    $sheet->getStyle('C' . $row)->getFont()->setBold(true);
+                    $sheet->getStyle('C'.$row)->getFont()->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('047857')); // Green
+                    $sheet->getStyle('C'.$row)->getFont()->setBold(true);
                 } elseif ($vax['is_due']) {
-                    $sheet->getStyle('C' . $row)->getFont()->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('B45309')); // Amber
-                    $sheet->getStyle('C' . $row)->getFont()->setBold(true);
+                    $sheet->getStyle('C'.$row)->getFont()->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('B45309')); // Amber
+                    $sheet->getStyle('C'.$row)->getFont()->setBold(true);
                 }
 
-                $sheet->getStyle('A' . $row . ':C' . $row)->applyFromArray($borderStyle);
+                $sheet->getStyle('A'.$row.':C'.$row)->applyFromArray($borderStyle);
                 $row++;
             }
         }
 
         // Section 2: Vitamin A
         $vRow = 2;
-        $sheet->setCellValue('E' . $vRow, 'RIWAYAT PEMBERIAN VITAMIN A & OBAT CACING PERIODE INI');
-        $sheet->mergeCells('E' . $vRow . ':G' . $vRow);
-        $sheet->getStyle('E' . $vRow)->applyFromArray([
+        $sheet->setCellValue('E'.$vRow, 'RIWAYAT PEMBERIAN VITAMIN A & OBAT CACING PERIODE INI');
+        $sheet->mergeCells('E'.$vRow.':G'.$vRow);
+        $sheet->getStyle('E'.$vRow)->applyFromArray([
             'font' => ['bold' => true, 'size' => 12],
             'fill' => ['fillType' => Fill::FILL_SOLID, 'startColor' => ['rgb' => '0D9488']],
-            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]
+            'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
         ]);
 
         $vRow++;
-        $sheet->setCellValue('E' . $vRow, 'Tanggal');
-        $sheet->setCellValue('F' . $vRow, 'Jenis Vitamin / Dosis');
-        $sheet->setCellValue('G' . $vRow, 'Warna Kapsul');
-        $sheet->getStyle('E' . $vRow . ':G' . $vRow)->applyFromArray($headerStyle);
+        $sheet->setCellValue('E'.$vRow, 'Tanggal');
+        $sheet->setCellValue('F'.$vRow, 'Jenis Vitamin / Dosis');
+        $sheet->setCellValue('G'.$vRow, 'Warna Kapsul');
+        $sheet->getStyle('E'.$vRow.':G'.$vRow)->applyFromArray($headerStyle);
 
         $vRow++;
-        if (!empty($this->reportData['vitamins_in_period'])) {
+        if (! empty($this->reportData['vitamins_in_period'])) {
             foreach ($this->reportData['vitamins_in_period'] as $vit) {
-                $sheet->setCellValue('E' . $vRow, $vit['date']);
-                $sheet->setCellValue('F' . $vRow, $vit['note']);
-                $sheet->setCellValue('G' . $vRow, ucfirst($vit['color']));
-                
-                $sheet->getStyle('E' . $vRow . ':G' . $vRow)->applyFromArray($borderStyle);
+                $sheet->setCellValue('E'.$vRow, $vit['date']);
+                $sheet->setCellValue('F'.$vRow, $vit['note']);
+                $sheet->setCellValue('G'.$vRow, ucfirst($vit['color']));
+
+                $sheet->getStyle('E'.$vRow.':G'.$vRow)->applyFromArray($borderStyle);
                 $vRow++;
             }
         } else {
-            $sheet->setCellValue('E' . $vRow, 'Tidak ada pemberian vitamin A di periode ini');
-            $sheet->mergeCells('E' . $vRow . ':G' . $vRow);
-            $sheet->getStyle('E' . $vRow)->applyFromArray([
+            $sheet->setCellValue('E'.$vRow, 'Tidak ada pemberian vitamin A di periode ini');
+            $sheet->mergeCells('E'.$vRow.':G'.$vRow);
+            $sheet->getStyle('E'.$vRow)->applyFromArray([
                 'font' => ['italic' => true],
-                'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER]
+                'alignment' => ['horizontal' => Alignment::HORIZONTAL_CENTER],
             ]);
-            $sheet->getStyle('E' . $vRow . ':G' . $vRow)->applyFromArray($borderStyle);
+            $sheet->getStyle('E'.$vRow.':G'.$vRow)->applyFromArray($borderStyle);
         }
 
         // Auto widths

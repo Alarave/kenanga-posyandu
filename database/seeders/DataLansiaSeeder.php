@@ -2,28 +2,28 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\Patient;
 use App\Models\MedicalRecord;
+use App\Models\Patient;
 use App\Models\Posyandu;
 use App\Models\User;
 use Carbon\Carbon;
 use Faker\Factory as Faker;
+use Illuminate\Database\Seeder;
 
 class DataLansiaSeeder extends Seeder
 {
     public function run(): void
     {
         $faker = Faker::create('id_ID');
-        
+
         $kenanga1 = Posyandu::where('unique_code', 'PSY003')->first();
         $kader = User::where('role', 'kader')->first();
-        
-        if (!$kenanga1) {
+
+        if (! $kenanga1) {
             $kenanga1 = Posyandu::first();
         }
 
-        if (!$kader) {
+        if (! $kader) {
             $kader = User::first();
         }
 
@@ -31,7 +31,7 @@ class DataLansiaSeeder extends Seeder
         for ($i = 0; $i < 20; $i++) {
             $age = rand(60, 85);
             $birthDate = Carbon::now()->subYears($age)->subDays(rand(1, 365));
-            
+
             $patient = Patient::create([
                 'id_number' => $faker->unique()->numerify('327501################'),
                 'full_name' => $faker->name,
@@ -57,11 +57,11 @@ class DataLansiaSeeder extends Seeder
                 $bloodSugar = $hasHiperglikemia ? rand(140, 300) : rand(90, 139);
                 $cholesterol = $hasHiperkolesterolemia ? rand(190, 300) : rand(140, 189);
                 $uricAcid = $hasHiperurisemia ? (rand(60, 100) / 10) : (rand(30, 59) / 10);
-                
+
                 // Height and Weight to calculate IMT
                 $height = rand(150, 170);
                 // Mix of Kurang, Normal, Lebih, Obesitas
-                $weight = $faker->randomElement([45, 55, 65, 75, 85]); 
+                $weight = $faker->randomElement([45, 55, 65, 75, 85]);
 
                 MedicalRecord::create([
                     'patient_id' => $patient->id,

@@ -23,7 +23,7 @@ class PatientController extends Controller
     {
         $this->authorize('create', Patient::class);
 
-        if (!$request->has('category')) {
+        if (! $request->has('category')) {
             return view('livewire.admin.patient-management.select-category');
         }
 
@@ -181,7 +181,7 @@ class PatientController extends Controller
 
         $headers = [
             'Content-Type' => 'text/csv; charset=UTF-8',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Content-Disposition' => 'attachment; filename="'.$filename.'"',
         ];
 
         $rows = $this->getTemplateRowsForCategory($category);
@@ -272,7 +272,7 @@ class PatientController extends Controller
                     '3275014102920005', 'HANIFAH', '1995-05-20', 'P', 'AGUS WIDODO',
                     'Jakarta', '082345678902', '3', '11', 'JL. MERPATI NO. 5',
                     'Ya', '2026-03-15', '60.0', '158.0', '23.8',
-                ]
+                ],
             ];
         }
 
@@ -292,7 +292,7 @@ class PatientController extends Controller
                     '3275014101550004', 'SUHARTINI', '1955-08-12', 'P', 'Yogyakarta',
                     '085678901235', '4', '11', 'JL. DUKUH NO. 8', 'Diabetes',
                     '2026-03-15', '55.5', '150.0',
-                ]
+                ],
             ];
         }
 
@@ -315,7 +315,7 @@ class PatientController extends Controller
                 'Bekasi', '081234567891', '3', '11', 'JL. P. MADURA',
                 '2026-03-15', '11.0', '82.0', '13.8', '47.5',
                 'Berdiri', '', 'Campak MR',
-            ]
+            ],
         ];
     }
 }

@@ -5,7 +5,6 @@ namespace App\Livewire\Admin\PatientManagement;
 use App\Livewire\Shared\BaseAdminComponent;
 use App\Models\Patient;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Title;
 
 #[Layout('components.layouts.app')]
 class Index extends BaseAdminComponent

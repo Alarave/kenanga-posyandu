@@ -55,7 +55,6 @@ class Schedule extends Model
             return $query;
         }
 
-
         // Default or other roles just see their own posyandu
         return $query->where('posyandu_id', $user->posyandu_id);
     }

@@ -23,7 +23,6 @@ class ArticleManagement extends BaseAdminComponent
 
     protected $queryString = [];
 
-
     public function render(ArticleService $service): View
     {
         $filters = [
@@ -36,7 +35,6 @@ class ArticleManagement extends BaseAdminComponent
             'articles' => $service->getFilteredArticles($filters)->paginate(10),
         ]);
     }
-
 
     public function deleteArticle(int $id, ArticleService $service): void
     {

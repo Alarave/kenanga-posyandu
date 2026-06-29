@@ -55,7 +55,9 @@ class Analytics extends BaseAdminComponent
 
     // Additional Trend Arrays for Compare/Yearly Modes
     public array $trendCompareCurrent = [];
+
     public array $trendComparePrevious = [];
+
     public array $trendLabelsPrevious = [];
 
     public array $trendNormal = [];
@@ -138,7 +140,9 @@ class Analytics extends BaseAdminComponent
 
     // ── ANA-22: Drill-down from chart click ──
     public bool $showDrillDown = false;
+
     public string $drillDownTitle = '';
+
     public array $drillDownData = [];
 
     public function mount(): void
@@ -220,12 +224,12 @@ class Analytics extends BaseAdminComponent
 
         match ($type) {
             'stunting' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
-                               ->where(fn ($q) => $q->where('nutrition_status', 'like', '%Stunting%')
-                                                    ->orWhere('nutrition_status', 'like', '%Pendek%')
-                                                    ->orWhere('stunting_status', '!=', 'Normal')),
+                ->where(fn ($q) => $q->where('nutrition_status', 'like', '%Stunting%')
+                    ->orWhere('nutrition_status', 'like', '%Pendek%')
+                    ->orWhere('stunting_status', '!=', 'Normal')),
             'gizi_buruk' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
-                                 ->where(fn ($q) => $q->where('nutrition_status', 'like', '%Buruk%')
-                                                      ->orWhere('wasting_status', 'Gizi Buruk')),
+                ->where(fn ($q) => $q->where('nutrition_status', 'like', '%Buruk%')
+                    ->orWhere('wasting_status', 'Gizi Buruk')),
             'balita' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta'])),
             'ibu_hamil' => $query->whereHas('patient', fn ($q) => $q->where('category', 'ibu_hamil')),
             'lansia' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')),
@@ -233,12 +237,12 @@ class Analytics extends BaseAdminComponent
         };
 
         $this->drillDownData = $query->latest('visit_date')->limit(50)->get()->map(fn ($r) => [
-            'name'            => $r->patient?->full_name ?? '-',
-            'nik'             => $r->patient?->id_number ?? '-',
-            'posyandu'        => $r->patient?->posyandu?->name ?? '-',
-            'nutrition_status'=> $r->nutrition_status ?? '-',
-            'visit_date'      => $r->visit_date?->format('d M Y') ?? '-',
-            'patient_id'      => $r->patient_id,
+            'name' => $r->patient?->full_name ?? '-',
+            'nik' => $r->patient?->id_number ?? '-',
+            'posyandu' => $r->patient?->posyandu?->name ?? '-',
+            'nutrition_status' => $r->nutrition_status ?? '-',
+            'visit_date' => $r->visit_date?->format('d M Y') ?? '-',
+            'patient_id' => $r->patient_id,
         ])->toArray();
     }
 
@@ -257,10 +261,10 @@ class Analytics extends BaseAdminComponent
         /** @var \App\Models\User $user */
         $user = Auth::user();
         $posyanduId = $user->isSuperAdmin() ? null : $user->posyandu_id;
-        
+
         // Dispatch job for all relevant keys (current year, and optionally current month)
         ComputeAnalyticsSnapshot::dispatch($posyanduId, $this->selectedYear, $this->selectedMonth);
-        
+
         $this->loadData();
     }
 
@@ -282,7 +286,7 @@ class Analytics extends BaseAdminComponent
             if ($snapshot) {
                 $data = $snapshot->data['analytics_data'];
                 $this->lastUpdated = $snapshot->last_computed_at->format('d M Y H:i');
-                
+
                 // Auto-refresh in background if data is older than 1 hour
                 if ($snapshot->last_computed_at->diffInHours(now()) >= 1) {
                     ComputeAnalyticsSnapshot::dispatch($posyanduId, $this->selectedYear, $this->selectedMonth);
@@ -310,12 +314,12 @@ class Analytics extends BaseAdminComponent
         // Dispatch event to update charts in frontend
         $this->dispatch('charts-updated',
             trendLabels: $this->trendLabels,
-            
+
             // Overview Trend
             trendVisitsBalita: $this->trendVisitsBalita,
             trendVisitsIbuHamil: $this->trendVisitsIbuHamil,
             trendVisitsLansia: $this->trendVisitsLansia,
-            
+
             // Balita Charts
             trendNormal: $this->trendNormal,
             trendStunting: $this->trendStunting,
@@ -362,10 +366,10 @@ class Analytics extends BaseAdminComponent
 
         // ANA-15: apply search when set
         if ($this->tableSearch) {
-            $searchTerm = '%' . $this->tableSearch . '%';
+            $searchTerm = '%'.$this->tableSearch.'%';
             $medicalRecordQuery->whereHas('patient', function ($q) use ($searchTerm) {
                 $q->where('full_name', 'like', $searchTerm)
-                  ->orWhere('id_number', 'like', $searchTerm);
+                    ->orWhere('id_number', 'like', $searchTerm);
             });
         }
 
@@ -462,10 +466,10 @@ class Analytics extends BaseAdminComponent
 
         for ($m = 1; $m <= 12; $m++) {
             $trendLabels[] = Carbon::create($selectedYear, $m)->translatedFormat('M');
-            $monthRecords = $recordsYear->filter(fn($r) => Carbon::parse($r->visit_date)->month === $m);
-            $trendVisitsBalita[] = $monthRecords->filter(fn($r) => $r->patient && in_array($r->patient->category, ['balita', 'bayi', 'baduta']))->count();
-            $trendVisitsIbuHamil[] = $monthRecords->filter(fn($r) => $r->patient && $r->patient->category === 'ibu_hamil')->count();
-            $trendVisitsLansia[] = $monthRecords->filter(fn($r) => $r->patient && $r->patient->category === 'lansia')->count();
+            $monthRecords = $recordsYear->filter(fn ($r) => Carbon::parse($r->visit_date)->month === $m);
+            $trendVisitsBalita[] = $monthRecords->filter(fn ($r) => $r->patient && in_array($r->patient->category, ['balita', 'bayi', 'baduta']))->count();
+            $trendVisitsIbuHamil[] = $monthRecords->filter(fn ($r) => $r->patient && $r->patient->category === 'ibu_hamil')->count();
+            $trendVisitsLansia[] = $monthRecords->filter(fn ($r) => $r->patient && $r->patient->category === 'lansia')->count();
         }
 
         // Compare Mode & Yearly Mode Logic
@@ -478,10 +482,10 @@ class Analytics extends BaseAdminComponent
             $recordsPrevYear = (clone $medicalRecordQuery)
                 ->whereYear('visit_date', $selectedYear - 1)
                 ->get();
-            
+
             for ($m = 1; $m <= 12; $m++) {
-                $this->trendCompareCurrent[] = $recordsYear->filter(fn($r) => Carbon::parse($r->visit_date)->month === $m)->count();
-                $this->trendComparePrevious[] = $recordsPrevYear->filter(fn($r) => Carbon::parse($r->visit_date)->month === $m)->count();
+                $this->trendCompareCurrent[] = $recordsYear->filter(fn ($r) => Carbon::parse($r->visit_date)->month === $m)->count();
+                $this->trendComparePrevious[] = $recordsPrevYear->filter(fn ($r) => Carbon::parse($r->visit_date)->month === $m)->count();
             }
         } elseif ($this->compareMode && $selectedMonth) {
             // Compare mode (Bulan Ini vs Bulan Lalu)
@@ -489,12 +493,12 @@ class Analytics extends BaseAdminComponent
                 ->whereYear('visit_date', clone Carbon::create($selectedYear, $selectedMonth)->subMonth()->year)
                 ->whereMonth('visit_date', clone Carbon::create($selectedYear, $selectedMonth)->subMonth()->month)
                 ->get();
-            
+
             // Group by category for bar chart
             $categories = ['balita', 'ibu_hamil', 'lansia'];
             foreach ($categories as $cat) {
-                $this->trendCompareCurrent[] = $recordsYear->filter(fn($r) => Carbon::parse($r->visit_date)->month === $selectedMonth && $r->patient && in_array($r->patient->category, $cat === 'balita' ? ['balita', 'bayi', 'baduta'] : [$cat]))->count();
-                $this->trendComparePrevious[] = $recordsPrevMonth->filter(fn($r) => $r->patient && in_array($r->patient->category, $cat === 'balita' ? ['balita', 'bayi', 'baduta'] : [$cat]))->count();
+                $this->trendCompareCurrent[] = $recordsYear->filter(fn ($r) => Carbon::parse($r->visit_date)->month === $selectedMonth && $r->patient && in_array($r->patient->category, $cat === 'balita' ? ['balita', 'bayi', 'baduta'] : [$cat]))->count();
+                $this->trendComparePrevious[] = $recordsPrevMonth->filter(fn ($r) => $r->patient && in_array($r->patient->category, $cat === 'balita' ? ['balita', 'bayi', 'baduta'] : [$cat]))->count();
             }
             $this->trendLabelsPrevious = ['Balita', 'Ibu Hamil', 'Lansia'];
         }
@@ -532,7 +536,7 @@ class Analytics extends BaseAdminComponent
         $stuntingRate = $totalWithRecord > 0 ? round(($stuntingCount / $totalWithRecord) * 100, 1) : 0;
 
         $balitaWithImunisasi = (clone $medicalRecordQuery)
-            ->whereHas('patient', fn($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+            ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
             ->whereNotNull('immunization')
             ->where('immunization', '!=', '')
             ->whereYear('visit_date', $selectedYear)
@@ -543,7 +547,7 @@ class Analytics extends BaseAdminComponent
         $cakupanImunisasi = $totalBalita > 0 ? round(($balitaWithImunisasi / $totalBalita) * 100, 1) : 0;
 
         $balitaRecords = (clone $medicalRecordQuery)
-            ->whereHas('patient', fn($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+            ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
             ->whereYear('visit_date', $selectedYear)
             ->select('id', 'visit_date', 'nutrition_status', 'stunting_status', 'wasting_status', 'weight', 'height')
             ->get();
@@ -552,7 +556,9 @@ class Analytics extends BaseAdminComponent
             return Carbon::parse($record->visit_date)->month;
         })->map(function ($group) {
             $total = $group->count();
-            if ($total === 0) return (object) ['normal_rate' => 0, 'stunting_rate' => 0, 'risk_rate' => 0];
+            if ($total === 0) {
+                return (object) ['normal_rate' => 0, 'stunting_rate' => 0, 'risk_rate' => 0];
+            }
 
             $normal = $group->whereIn('nutrition_status', [MedicalRecord::STATUS_BB_U_NORMAL, MedicalRecord::STATUS_GIZI_BAIK])->count();
             $stunting = $group->where(function ($r) {
@@ -581,15 +587,15 @@ class Analytics extends BaseAdminComponent
             $trendRisk[] = $monthData ? $monthData->risk_rate : 0;
 
             // Rata-rata BB & TB per bulan
-            $monthRecs = $balitaRecords->filter(fn($r) => Carbon::parse($r->visit_date)->month === $m);
-            $weightVals = $monthRecs->map(fn($r) => (float)($r->weight ?? 0))->filter(fn($v) => $v > 0);
-            $heightVals = $monthRecs->map(fn($r) => (float)($r->height ?? 0))->filter(fn($v) => $v > 0);
+            $monthRecs = $balitaRecords->filter(fn ($r) => Carbon::parse($r->visit_date)->month === $m);
+            $weightVals = $monthRecs->map(fn ($r) => (float) ($r->weight ?? 0))->filter(fn ($v) => $v > 0);
+            $heightVals = $monthRecs->map(fn ($r) => (float) ($r->height ?? 0))->filter(fn ($v) => $v > 0);
             $trendAvgWeight[] = $weightVals->count() > 0 ? round($weightVals->average(), 2) : 0;
             $trendAvgHeight[] = $heightVals->count() > 0 ? round($heightVals->average(), 2) : 0;
         }
 
         $dist = (clone $medicalRecordQuery)
-            ->whereHas('patient', fn($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+            ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
             ->whereYear('visit_date', $selectedYear)
             ->when($selectedMonth, fn ($q) => $q->whereMonth('visit_date', $selectedMonth))
             ->whereNotNull('nutrition_status')
@@ -607,6 +613,7 @@ class Analytics extends BaseAdminComponent
         uksort($dist, function ($a, $b) use ($sortOrder) {
             $orderA = $sortOrder[$a] ?? 99;
             $orderB = $sortOrder[$b] ?? 99;
+
             return $orderA <=> $orderB;
         });
 
@@ -622,7 +629,7 @@ class Analytics extends BaseAdminComponent
 
         $stuntingPerPosyandu = Patient::whereIn('posyandu_id', $posyanduIds)
             ->whereIn('category', ['balita', 'bayi', 'baduta'])
-            ->whereHas('medicalRecords', fn($q) => $q->where(function ($sq) {
+            ->whereHas('medicalRecords', fn ($q) => $q->where(function ($sq) {
                 $sq->whereIn('nutrition_status', [MedicalRecord::STATUS_BB_U_SANGAT_KURANG, MedicalRecord::STATUS_BB_U_KURANG])
                     ->orWhereIn('stunting_status', [MedicalRecord::STATUS_TB_U_SANGAT_PENDEK, MedicalRecord::STATUS_TB_U_PENDEK])
                     ->orWhereIn('wasting_status', [MedicalRecord::STATUS_GIZI_BURUK, MedicalRecord::STATUS_GIZI_KURANG]);
@@ -698,9 +705,9 @@ class Analytics extends BaseAdminComponent
         $totalPregWithRecordsCount = $pregWithRecords->count();
 
         $pregHypertensionCount = (clone $pregWithRecords)
-            ->whereHas('medicalRecords', fn ($q) => $q->where(function($sq) {
+            ->whereHas('medicalRecords', fn ($q) => $q->where(function ($sq) {
                 $sq->where('systolic_bp', '>=', 140)
-                   ->orWhere('diastolic_bp', '>=', 90);
+                    ->orWhere('diastolic_bp', '>=', 90);
             })->whereIn('id', $latestRecordSubqueryPreg))
             ->count();
 
@@ -721,14 +728,14 @@ class Analytics extends BaseAdminComponent
                 ->groupBy('patient_id');
             $pregWithRecordsM = (clone $patientQuery)
                 ->where('category', 'ibu_hamil')
-                ->whereHas('medicalRecords', fn($q) => $q->whereYear('visit_date', $selectedYear)->whereMonth('visit_date', $m));
+                ->whereHas('medicalRecords', fn ($q) => $q->whereYear('visit_date', $selectedYear)->whereMonth('visit_date', $m));
             $totalM = $pregWithRecordsM->count();
             if ($totalM > 0) {
                 $hyperM = (clone $pregWithRecordsM)
-                    ->whereHas('medicalRecords', fn($q) => $q->where(fn($sq) => $sq->where('systolic_bp', '>=', 140)->orWhere('diastolic_bp', '>=', 90))->whereIn('id', $latestRecordSubqueryPM))
+                    ->whereHas('medicalRecords', fn ($q) => $q->where(fn ($sq) => $sq->where('systolic_bp', '>=', 140)->orWhere('diastolic_bp', '>=', 90))->whereIn('id', $latestRecordSubqueryPM))
                     ->count();
                 $feM = (clone $pregWithRecordsM)
-                    ->whereHas('medicalRecords', fn($q) => $q->where('pill_fe', 1)->whereIn('id', $latestRecordSubqueryPM))
+                    ->whereHas('medicalRecords', fn ($q) => $q->where('pill_fe', 1)->whereIn('id', $latestRecordSubqueryPM))
                     ->count();
                 $trendPregnancyHypertension[] = round(($hyperM / $totalM) * 100, 1);
                 $trendPregnancyFe[] = round(($feM / $totalM) * 100, 1);
@@ -751,9 +758,9 @@ class Analytics extends BaseAdminComponent
         $totalLansiaWithRecordsCount = $lansiaWithRecords->count();
 
         $lansiaHypertensionCount = (clone $lansiaWithRecords)
-            ->whereHas('medicalRecords', fn ($q) => $q->where(function($sq) {
+            ->whereHas('medicalRecords', fn ($q) => $q->where(function ($sq) {
                 $sq->where('systolic_bp', '>=', 140)
-                   ->orWhere('diastolic_bp', '>=', 90);
+                    ->orWhere('diastolic_bp', '>=', 90);
             })->whereIn('id', $latestRecordSubqueryLansia))
             ->count();
 
@@ -789,8 +796,8 @@ class Analytics extends BaseAdminComponent
         $trendPregnancyAvgWeightGain = [];
         $trendPregnancyAvgLila = [];
 
-        $lansiaRecordsYear = $recordsYear->filter(fn($r) => $r->patient && $r->patient->category === 'lansia');
-        $pregRecordsYear = $recordsYear->filter(fn($r) => $r->patient && $r->patient->category === 'ibu_hamil');
+        $lansiaRecordsYear = $recordsYear->filter(fn ($r) => $r->patient && $r->patient->category === 'lansia');
+        $pregRecordsYear = $recordsYear->filter(fn ($r) => $r->patient && $r->patient->category === 'ibu_hamil');
 
         for ($m = 1; $m <= 12; $m++) {
             $latestRecordSubqueryLM = MedicalRecord::selectRaw('MAX(id) as id')
@@ -799,20 +806,20 @@ class Analytics extends BaseAdminComponent
                 ->groupBy('patient_id');
             $lansiaWithRecordsM = (clone $patientQuery)
                 ->where('category', 'lansia')
-                ->whereHas('medicalRecords', fn($q) => $q->whereYear('visit_date', $selectedYear)->whereMonth('visit_date', $m));
+                ->whereHas('medicalRecords', fn ($q) => $q->whereYear('visit_date', $selectedYear)->whereMonth('visit_date', $m));
             $totalLM = $lansiaWithRecordsM->count();
             if ($totalLM > 0) {
                 $hyperLM = (clone $lansiaWithRecordsM)
-                    ->whereHas('medicalRecords', fn($q) => $q->where(fn($sq) => $sq->where('systolic_bp', '>=', 140)->orWhere('diastolic_bp', '>=', 90))->whereIn('id', $latestRecordSubqueryLM))
+                    ->whereHas('medicalRecords', fn ($q) => $q->where(fn ($sq) => $sq->where('systolic_bp', '>=', 140)->orWhere('diastolic_bp', '>=', 90))->whereIn('id', $latestRecordSubqueryLM))
                     ->count();
                 $sugarLM = (clone $lansiaWithRecordsM)
-                    ->whereHas('medicalRecords', fn($q) => $q->where('blood_sugar', '>=', 200)->whereIn('id', $latestRecordSubqueryLM))
+                    ->whereHas('medicalRecords', fn ($q) => $q->where('blood_sugar', '>=', 200)->whereIn('id', $latestRecordSubqueryLM))
                     ->count();
                 $cholLM = (clone $lansiaWithRecordsM)
-                    ->whereHas('medicalRecords', fn($q) => $q->where('cholesterol', '>=', 200)->whereIn('id', $latestRecordSubqueryLM))
+                    ->whereHas('medicalRecords', fn ($q) => $q->where('cholesterol', '>=', 200)->whereIn('id', $latestRecordSubqueryLM))
                     ->count();
                 $uricLM = (clone $lansiaWithRecordsM)
-                    ->whereHas('medicalRecords', fn($q) => $q->where('uric_acid', '>=', 7.0)->whereIn('id', $latestRecordSubqueryLM))
+                    ->whereHas('medicalRecords', fn ($q) => $q->where('uric_acid', '>=', 7.0)->whereIn('id', $latestRecordSubqueryLM))
                     ->count();
                 $trendLansiaHypertension[] = round(($hyperLM / $totalLM) * 100, 1);
                 $trendLansiaHyperglycemia[] = round(($sugarLM / $totalLM) * 100, 1);
@@ -826,41 +833,41 @@ class Analytics extends BaseAdminComponent
             }
 
             // Averages calculations from cached records
-            $monthLansiaRecs = $lansiaRecordsYear->filter(fn($r) => Carbon::parse($r->visit_date)->month === $m);
-            $monthPregRecs = $pregRecordsYear->filter(fn($r) => Carbon::parse($r->visit_date)->month === $m);
+            $monthLansiaRecs = $lansiaRecordsYear->filter(fn ($r) => Carbon::parse($r->visit_date)->month === $m);
+            $monthPregRecs = $pregRecordsYear->filter(fn ($r) => Carbon::parse($r->visit_date)->month === $m);
 
             // Lansia averages
-            $sysVals = $monthLansiaRecs->pluck('systolic_bp')->filter(fn($v) => (float)$v > 0);
+            $sysVals = $monthLansiaRecs->pluck('systolic_bp')->filter(fn ($v) => (float) $v > 0);
             $trendLansiaAvgSystolic[] = $sysVals->count() > 0 ? round($sysVals->average(), 1) : 0;
 
-            $diaVals = $monthLansiaRecs->pluck('diastolic_bp')->filter(fn($v) => (float)$v > 0);
+            $diaVals = $monthLansiaRecs->pluck('diastolic_bp')->filter(fn ($v) => (float) $v > 0);
             $trendLansiaAvgDiastolic[] = $diaVals->count() > 0 ? round($diaVals->average(), 1) : 0;
 
-            $sugarVals = $monthLansiaRecs->pluck('blood_sugar')->filter(fn($v) => (float)$v > 0);
+            $sugarVals = $monthLansiaRecs->pluck('blood_sugar')->filter(fn ($v) => (float) $v > 0);
             $trendLansiaAvgBloodSugar[] = $sugarVals->count() > 0 ? round($sugarVals->average(), 1) : 0;
 
-            $uricVals = $monthLansiaRecs->pluck('uric_acid')->filter(fn($v) => (float)$v > 0);
+            $uricVals = $monthLansiaRecs->pluck('uric_acid')->filter(fn ($v) => (float) $v > 0);
             $trendLansiaAvgUricAcid[] = $uricVals->count() > 0 ? round($uricVals->average(), 2) : 0;
 
-            $cholVals = $monthLansiaRecs->pluck('cholesterol')->filter(fn($v) => (float)$v > 0);
+            $cholVals = $monthLansiaRecs->pluck('cholesterol')->filter(fn ($v) => (float) $v > 0);
             $trendLansiaAvgCholesterol[] = $cholVals->count() > 0 ? round($cholVals->average(), 1) : 0;
 
             // Ibu Hamil averages
             $gains = [];
             foreach ($monthPregRecs as $rec) {
-                if ((float)$rec->weight > 0) {
-                    $startW = (float)$rec->starting_weight;
+                if ((float) $rec->weight > 0) {
+                    $startW = (float) $rec->starting_weight;
                     if ($startW <= 0) {
-                        $patientRecs = $pregRecordsYear->filter(fn($r) => $r->patient_id === $rec->patient_id)->sortBy('visit_date');
+                        $patientRecs = $pregRecordsYear->filter(fn ($r) => $r->patient_id === $rec->patient_id)->sortBy('visit_date');
                         $firstWeight = $patientRecs->first()?->weight ?? $rec->weight;
                         $startW = $patientRecs->where('starting_weight', '>', 0)->first()?->starting_weight ?? $firstWeight;
                     }
-                    $gains[] = max(0.0, (float)$rec->weight - (float)$startW);
+                    $gains[] = max(0.0, (float) $rec->weight - (float) $startW);
                 }
             }
             $trendPregnancyAvgWeightGain[] = count($gains) > 0 ? round(array_sum($gains) / count($gains), 1) : 0;
 
-            $lilaVals = $monthPregRecs->pluck('upper_arm_circumference')->filter(fn($v) => (float)$v > 0);
+            $lilaVals = $monthPregRecs->pluck('upper_arm_circumference')->filter(fn ($v) => (float) $v > 0);
             $trendPregnancyAvgLila[] = $lilaVals->count() > 0 ? round($lilaVals->average(), 1) : 0;
         }
 

@@ -49,7 +49,7 @@ class MonthlyReport extends BaseAdminComponent
         $now = now();
         $this->endMonth = (int) $now->month;
         $this->endYear = (int) $now->year;
-        
+
         // Default ke 6 bulan sebelumnya
         $sixMonthsAgo = $now->subMonths(6);
         $this->startMonth = (int) $sixMonthsAgo->month;
@@ -61,7 +61,7 @@ class MonthlyReport extends BaseAdminComponent
         } else {
             $this->selectedPosyanduId = $user->posyandu_id;
         }
-        
+
         $this->startPeriod = sprintf('%04d-%02d', $this->startYear, $this->startMonth);
         $this->endPeriod = sprintf('%04d-%02d', $this->endYear, $this->endMonth);
 
@@ -203,7 +203,7 @@ class MonthlyReport extends BaseAdminComponent
         return $user->posyandu_id;
     }
 
-    public function getMonthNameProperty(int $month = null): string
+    public function getMonthNameProperty(?int $month = null): string
     {
         $month = $month ?? $this->endMonth;
         $months = [
@@ -231,21 +231,20 @@ class MonthlyReport extends BaseAdminComponent
         if ($this->reportGenerated && $posyanduId) {
             $startDate = sprintf('%04d-%02d-01', $this->startYear, $this->startMonth);
             $endDate = date('Y-m-t', strtotime(sprintf('%04d-%02d-01', $this->endYear, $this->endMonth)));
-            
+
             $query = MedicalRecord::with(['patient', 'user'])
                 ->whereHas('patient', fn ($q) => $q->where('posyandu_id', $posyanduId))
                 ->whereBetween('visit_date', [$startDate, $endDate]);
 
             // Apply search filter
             if ($this->search) {
-                $query->whereHas('patient', fn ($q) => 
-                    $q->where('full_name', 'like', '%' . $this->search . '%')
-                        ->orWhere('id_number', 'like', '%' . $this->search . '%')
+                $query->whereHas('patient', fn ($q) => $q->where('full_name', 'like', '%'.$this->search.'%')
+                    ->orWhere('id_number', 'like', '%'.$this->search.'%')
                 );
             }
 
             // Apply sorting
-            $query = match($this->sortBy) {
+            $query = match ($this->sortBy) {
                 'patient_name_asc' => $query->join('patients', 'medical_records.patient_id', '=', 'patients.id')->orderBy('patients.full_name', 'asc')->select('medical_records.*'),
                 'patient_name_desc' => $query->join('patients', 'medical_records.patient_id', '=', 'patients.id')->orderBy('patients.full_name', 'desc')->select('medical_records.*'),
                 'visit_date_asc' => $query->orderBy('visit_date', 'asc'),
@@ -259,9 +258,9 @@ class MonthlyReport extends BaseAdminComponent
             $records = $query->paginate(10);
         }
 
-        $periodLabel = $this->getMonthNameProperty($this->startMonth) . ' ' . $this->startYear;
+        $periodLabel = $this->getMonthNameProperty($this->startMonth).' '.$this->startYear;
         if ($this->startMonth !== $this->endMonth || $this->startYear !== $this->endYear) {
-            $periodLabel .= ' - ' . $this->getMonthNameProperty($this->endMonth) . ' ' . $this->endYear;
+            $periodLabel .= ' - '.$this->getMonthNameProperty($this->endMonth).' '.$this->endYear;
         }
 
         return view('livewire.admin.reports.monthly-report', [

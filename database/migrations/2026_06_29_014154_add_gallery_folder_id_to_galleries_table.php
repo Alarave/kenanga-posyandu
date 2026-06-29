@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        if (!Schema::hasColumn('galleries', 'gallery_folder_id')) {
+        if (! Schema::hasColumn('galleries', 'gallery_folder_id')) {
             Schema::table('galleries', function (Blueprint $table) {
                 $table->foreignId('gallery_folder_id')
-                      ->nullable()
-                      ->after('user_id')
-                      ->constrained('gallery_folders')
-                      ->onDelete('cascade');
+                    ->nullable()
+                    ->after('user_id')
+                    ->constrained('gallery_folders')
+                    ->onDelete('cascade');
             });
         }
     }

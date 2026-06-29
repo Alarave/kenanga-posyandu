@@ -53,26 +53,28 @@ class UserManagement extends BaseAdminComponent
     public function toggleRole(int $id)
     {
         $user = User::findOrFail($id);
-        
+
         // Prevent toggling superadmin
         if ($user->isSuperAdmin()) {
             $this->notify('Role Superadmin tidak dapat diubah.', 'error');
+
             return;
         }
 
         $user->role = $user->role === User::ROLE_ADMIN ? User::ROLE_KADER : User::ROLE_ADMIN;
         $user->save();
-        
-        $this->notify('Role user ' . $user->name . ' berhasil diubah menjadi ' . strtoupper($user->role) . '.');
+
+        $this->notify('Role user '.$user->name.' berhasil diubah menjadi '.strtoupper($user->role).'.');
     }
 
     public function delete(int $id)
     {
         $user = User::findOrFail($id);
-        
+
         // Prevent deleting self
         if ($user->id === Auth::id()) {
             $this->notify('Anda tidak dapat menghapus akun Anda sendiri.', 'error');
+
             return;
         }
 

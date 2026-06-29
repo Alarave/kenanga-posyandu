@@ -185,14 +185,30 @@ class PatientRowProcessor
                 'is_pregnant' => $isPregnant ?: $existing->is_pregnant,
             ];
 
-            if ($husbandName !== '') $updateData['husband_name'] = $husbandName;
-            if ($fatherName !== '') $updateData['father_name'] = $fatherName;
-            if ($motherName !== '') $updateData['mother_name'] = $motherName;
-            if ($placeOfBirth !== '') $updateData['place_of_birth'] = $placeOfBirth;
-            if ($phoneNumber !== '') $updateData['phone_number'] = $phoneNumber;
-            if ($historicalDiseases !== '') $updateData['historical_diseases'] = $historicalDiseases;
-            if ($rt !== '') $updateData['rt_domisili'] = $rt;
-            if ($rw !== '') $updateData['dusun_rt_rw'] = $rw;
+            if ($husbandName !== '') {
+                $updateData['husband_name'] = $husbandName;
+            }
+            if ($fatherName !== '') {
+                $updateData['father_name'] = $fatherName;
+            }
+            if ($motherName !== '') {
+                $updateData['mother_name'] = $motherName;
+            }
+            if ($placeOfBirth !== '') {
+                $updateData['place_of_birth'] = $placeOfBirth;
+            }
+            if ($phoneNumber !== '') {
+                $updateData['phone_number'] = $phoneNumber;
+            }
+            if ($historicalDiseases !== '') {
+                $updateData['historical_diseases'] = $historicalDiseases;
+            }
+            if ($rt !== '') {
+                $updateData['rt_domisili'] = $rt;
+            }
+            if ($rw !== '') {
+                $updateData['dusun_rt_rw'] = $rw;
+            }
 
             // If existing has a placeholder NIK (9999...) and we now have a valid one, update it
             if (str_starts_with($existing->id_number, '9999') && $hasValidNik) {

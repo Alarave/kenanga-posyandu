@@ -25,6 +25,7 @@ class GrowthChart extends BaseAdminComponent
 
         if (! $this->supportsGrowthChart()) {
             $this->chartData = [];
+
             return;
         }
 

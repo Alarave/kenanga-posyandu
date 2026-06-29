@@ -118,6 +118,6 @@ class WhoHeightForAgeSeeder extends Seeder
         }
 
         DB::table('who_height_for_age')->insert($data);
-        $this->command->info('Berhasil mengisi data lengkap WHO TB/U (0-60 bulan) sebanyak ' . count($data) . ' baris.');
+        $this->command->info('Berhasil mengisi data lengkap WHO TB/U (0-60 bulan) sebanyak '.count($data).' baris.');
     }
 }

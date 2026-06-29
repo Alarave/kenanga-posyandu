@@ -52,7 +52,7 @@ class MedicalRecordController extends Controller
     {
         $this->authorize('create', MedicalRecord::class);
 
-        if (!request()->has('category')) {
+        if (! request()->has('category')) {
             return view('livewire.admin.medical-record-management.select-category');
         }
 
@@ -68,7 +68,7 @@ class MedicalRecordController extends Controller
         }
 
         $selectedPatient = request()->has('patient_id') ? Patient::find(request('patient_id')) : null;
-        
+
         $duplicateWarnings = $this->checkDuplicateWarnings(
             request()->get('patient_id'),
             null,
@@ -92,16 +92,16 @@ class MedicalRecordController extends Controller
                 ->route('admin.medical-records.index')
                 ->with('success', 'Rekam medis berhasil ditambahkan.');
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Gagal menyimpan rekam medis: ' . $e->getMessage(), [
+            \Illuminate\Support\Facades\Log::error('Gagal menyimpan rekam medis: '.$e->getMessage(), [
                 'user_id' => auth()->id(),
                 'patient_id' => $request->patient_id,
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
 
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', 'Gagal menyimpan rekam medis: ' . $e->getMessage());
+                ->with('error', 'Gagal menyimpan rekam medis: '.$e->getMessage());
         }
     }
 
@@ -136,7 +136,7 @@ class MedicalRecordController extends Controller
         return view('livewire.admin.medical-record-management.update', [
             'record' => $medicalRecord,
             'patients' => $patients,
-            'duplicateWarnings' => $duplicateWarnings
+            'duplicateWarnings' => $duplicateWarnings,
         ]);
     }
 
@@ -184,7 +184,7 @@ class MedicalRecordController extends Controller
         // Admin, Kader, dan Staff hanya bisa akses pasien di posyandu mereka
         return Patient::where('posyandu_id', $user->posyandu_id)
             ->orderBy('full_name', 'asc')
-            ->with(['medicalRecords' => function($q) {
+            ->with(['medicalRecords' => function ($q) {
                 $q->orderBy('visit_date', 'desc')->limit(2);
             }])
             ->get();

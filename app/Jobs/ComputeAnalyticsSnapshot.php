@@ -96,10 +96,10 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
 
         for ($m = 1; $m <= 12; $m++) {
             $trendLabels[] = Carbon::create($year, $m)->translatedFormat('M');
-            $monthRecords = $recordsYear->filter(fn($r) => Carbon::parse($r->visit_date)->month === $m);
-            $trendVisitsBalita[] = $monthRecords->filter(fn($r) => $r->patient && in_array($r->patient->category, ['balita', 'bayi', 'baduta']))->count();
-            $trendVisitsIbuHamil[] = $monthRecords->filter(fn($r) => $r->patient && $r->patient->category === 'ibu_hamil')->count();
-            $trendVisitsLansia[] = $monthRecords->filter(fn($r) => $r->patient && $r->patient->category === 'lansia')->count();
+            $monthRecords = $recordsYear->filter(fn ($r) => Carbon::parse($r->visit_date)->month === $m);
+            $trendVisitsBalita[] = $monthRecords->filter(fn ($r) => $r->patient && in_array($r->patient->category, ['balita', 'bayi', 'baduta']))->count();
+            $trendVisitsIbuHamil[] = $monthRecords->filter(fn ($r) => $r->patient && $r->patient->category === 'ibu_hamil')->count();
+            $trendVisitsLansia[] = $monthRecords->filter(fn ($r) => $r->patient && $r->patient->category === 'lansia')->count();
         }
 
         // ── 2. BALITA ANALYTICS ─────────────────────────────────────
@@ -135,16 +135,16 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
         $stuntingRate = $totalWithRecord > 0 ? round(($stuntingCount / $totalWithRecord) * 100, 1) : 0;
 
         $balitaWithImunisasi = (clone $medicalRecordQuery)
-            ->whereHas('patient', fn($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+            ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
             ->where(function ($query) {
                 $query->where(function ($q) {
                     $q->whereNotNull('immunization')
-                      ->where('immunization', '!=', '')
-                      ->where('immunization', '!=', 'Tidak ada');
+                        ->where('immunization', '!=', '')
+                        ->where('immunization', '!=', 'Tidak ada');
                 })->orWhere(function ($q) {
                     $q->whereNotNull('vaccine_name')
-                      ->where('vaccine_name', '!=', '')
-                      ->where('vaccine_name', '!=', 'Tidak ada');
+                        ->where('vaccine_name', '!=', '')
+                        ->where('vaccine_name', '!=', 'Tidak ada');
                 });
             })
             ->whereYear('visit_date', $year)
@@ -155,7 +155,7 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
         $cakupanImunisasi = $totalBalita > 0 ? round(($balitaWithImunisasi / $totalBalita) * 100, 1) : 0;
 
         $balitaRecords = (clone $medicalRecordQuery)
-            ->whereHas('patient', fn($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+            ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
             ->whereYear('visit_date', $year)
             ->select('id', 'visit_date', 'nutrition_status', 'stunting_status', 'wasting_status', 'weight', 'height')
             ->get();
@@ -164,7 +164,9 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
             return Carbon::parse($record->visit_date)->month;
         })->map(function ($group) {
             $total = $group->count();
-            if ($total === 0) return (object) ['normal_rate' => 0, 'stunting_rate' => 0, 'risk_rate' => 0];
+            if ($total === 0) {
+                return (object) ['normal_rate' => 0, 'stunting_rate' => 0, 'risk_rate' => 0];
+            }
 
             $normal = $group->whereIn('nutrition_status', [MedicalRecord::STATUS_BB_U_NORMAL, MedicalRecord::STATUS_GIZI_BAIK])->count();
             $stunting = $group->where(function ($r) {
@@ -193,15 +195,15 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
             $trendRisk[] = $monthData ? $monthData->risk_rate : 0;
 
             // Rata-rata BB & TB per bulan
-            $monthRecs = $balitaRecords->filter(fn($r) => Carbon::parse($r->visit_date)->month === $m);
-            $weightVals = $monthRecs->map(fn($r) => (float)($r->weight ?? 0))->filter(fn($v) => $v > 0);
-            $heightVals = $monthRecs->map(fn($r) => (float)($r->height ?? 0))->filter(fn($v) => $v > 0);
+            $monthRecs = $balitaRecords->filter(fn ($r) => Carbon::parse($r->visit_date)->month === $m);
+            $weightVals = $monthRecs->map(fn ($r) => (float) ($r->weight ?? 0))->filter(fn ($v) => $v > 0);
+            $heightVals = $monthRecs->map(fn ($r) => (float) ($r->height ?? 0))->filter(fn ($v) => $v > 0);
             $trendAvgWeight[] = $weightVals->count() > 0 ? round($weightVals->average(), 2) : 0;
             $trendAvgHeight[] = $heightVals->count() > 0 ? round($heightVals->average(), 2) : 0;
         }
 
         $dist = (clone $medicalRecordQuery)
-            ->whereHas('patient', fn($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+            ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
             ->whereYear('visit_date', $year)
             ->when($month, fn ($q) => $q->whereMonth('visit_date', $month))
             ->whereNotNull('nutrition_status')
@@ -219,6 +221,7 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
         uksort($dist, function ($a, $b) use ($sortOrder) {
             $orderA = $sortOrder[$a] ?? 99;
             $orderB = $sortOrder[$b] ?? 99;
+
             return $orderA <=> $orderB;
         });
 
@@ -235,7 +238,7 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
 
         $stuntingPerPosyandu = Patient::whereIn('posyandu_id', $posyanduIds)
             ->whereIn('category', ['balita', 'bayi', 'baduta'])
-            ->whereHas('medicalRecords', fn($q) => $q->where(function ($sq) {
+            ->whereHas('medicalRecords', fn ($q) => $q->where(function ($sq) {
                 $sq->whereIn('nutrition_status', [MedicalRecord::STATUS_BB_U_SANGAT_KURANG, MedicalRecord::STATUS_BB_U_KURANG])
                     ->orWhereIn('stunting_status', [MedicalRecord::STATUS_TB_U_SANGAT_PENDEK, MedicalRecord::STATUS_TB_U_PENDEK])
                     ->orWhereIn('wasting_status', [MedicalRecord::STATUS_GIZI_BURUK, MedicalRecord::STATUS_GIZI_KURANG]);
@@ -310,9 +313,9 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
         $totalPregWithRecordsCount = $pregWithRecords->count();
 
         $pregHypertensionCount = (clone $pregWithRecords)
-            ->whereHas('medicalRecords', fn ($q) => $q->where(function($sq) {
+            ->whereHas('medicalRecords', fn ($q) => $q->where(function ($sq) {
                 $sq->where('systolic_bp', '>=', 140)
-                   ->orWhere('diastolic_bp', '>=', 90);
+                    ->orWhere('diastolic_bp', '>=', 90);
             })->whereIn('id', $latestRecordSubqueryPreg))
             ->count();
 
@@ -333,14 +336,14 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
                 ->groupBy('patient_id');
             $pregWithRecordsM = (clone $patientQuery)
                 ->where('category', 'ibu_hamil')
-                ->whereHas('medicalRecords', fn($q) => $q->whereYear('visit_date', $year)->whereMonth('visit_date', $m));
+                ->whereHas('medicalRecords', fn ($q) => $q->whereYear('visit_date', $year)->whereMonth('visit_date', $m));
             $totalM = $pregWithRecordsM->count();
             if ($totalM > 0) {
                 $hyperM = (clone $pregWithRecordsM)
-                    ->whereHas('medicalRecords', fn($q) => $q->where(fn($sq) => $sq->where('systolic_bp', '>=', 140)->orWhere('diastolic_bp', '>=', 90))->whereIn('id', $latestRecordSubqueryPM))
+                    ->whereHas('medicalRecords', fn ($q) => $q->where(fn ($sq) => $sq->where('systolic_bp', '>=', 140)->orWhere('diastolic_bp', '>=', 90))->whereIn('id', $latestRecordSubqueryPM))
                     ->count();
                 $feM = (clone $pregWithRecordsM)
-                    ->whereHas('medicalRecords', fn($q) => $q->where('pill_fe', 1)->whereIn('id', $latestRecordSubqueryPM))
+                    ->whereHas('medicalRecords', fn ($q) => $q->where('pill_fe', 1)->whereIn('id', $latestRecordSubqueryPM))
                     ->count();
                 $trendPregnancyHypertension[] = round(($hyperM / $totalM) * 100, 1);
                 $trendPregnancyFe[] = round(($feM / $totalM) * 100, 1);
@@ -363,9 +366,9 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
         $totalLansiaWithRecordsCount = $lansiaWithRecords->count();
 
         $lansiaHypertensionCount = (clone $lansiaWithRecords)
-            ->whereHas('medicalRecords', fn ($q) => $q->where(function($sq) {
+            ->whereHas('medicalRecords', fn ($q) => $q->where(function ($sq) {
                 $sq->where('systolic_bp', '>=', 140)
-                   ->orWhere('diastolic_bp', '>=', 90);
+                    ->orWhere('diastolic_bp', '>=', 90);
             })->whereIn('id', $latestRecordSubqueryLansia))
             ->count();
 
@@ -401,8 +404,8 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
         $trendPregnancyAvgWeightGain = [];
         $trendPregnancyAvgLila = [];
 
-        $lansiaRecordsYear = $recordsYear->filter(fn($r) => $r->patient && $r->patient->category === 'lansia');
-        $pregRecordsYear = $recordsYear->filter(fn($r) => $r->patient && $r->patient->category === 'ibu_hamil');
+        $lansiaRecordsYear = $recordsYear->filter(fn ($r) => $r->patient && $r->patient->category === 'lansia');
+        $pregRecordsYear = $recordsYear->filter(fn ($r) => $r->patient && $r->patient->category === 'ibu_hamil');
 
         for ($m = 1; $m <= 12; $m++) {
             $latestRecordSubqueryLM = MedicalRecord::selectRaw('MAX(id) as id')
@@ -411,20 +414,20 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
                 ->groupBy('patient_id');
             $lansiaWithRecordsM = (clone $patientQuery)
                 ->where('category', 'lansia')
-                ->whereHas('medicalRecords', fn($q) => $q->whereYear('visit_date', $year)->whereMonth('visit_date', $m));
+                ->whereHas('medicalRecords', fn ($q) => $q->whereYear('visit_date', $year)->whereMonth('visit_date', $m));
             $totalLM = $lansiaWithRecordsM->count();
             if ($totalLM > 0) {
                 $hyperLM = (clone $lansiaWithRecordsM)
-                    ->whereHas('medicalRecords', fn($q) => $q->where(fn($sq) => $sq->where('systolic_bp', '>=', 140)->orWhere('diastolic_bp', '>=', 90))->whereIn('id', $latestRecordSubqueryLM))
+                    ->whereHas('medicalRecords', fn ($q) => $q->where(fn ($sq) => $sq->where('systolic_bp', '>=', 140)->orWhere('diastolic_bp', '>=', 90))->whereIn('id', $latestRecordSubqueryLM))
                     ->count();
                 $sugarLM = (clone $lansiaWithRecordsM)
-                    ->whereHas('medicalRecords', fn($q) => $q->where('blood_sugar', '>=', 200)->whereIn('id', $latestRecordSubqueryLM))
+                    ->whereHas('medicalRecords', fn ($q) => $q->where('blood_sugar', '>=', 200)->whereIn('id', $latestRecordSubqueryLM))
                     ->count();
                 $cholLM = (clone $lansiaWithRecordsM)
-                    ->whereHas('medicalRecords', fn($q) => $q->where('cholesterol', '>=', 200)->whereIn('id', $latestRecordSubqueryLM))
+                    ->whereHas('medicalRecords', fn ($q) => $q->where('cholesterol', '>=', 200)->whereIn('id', $latestRecordSubqueryLM))
                     ->count();
                 $uricLM = (clone $lansiaWithRecordsM)
-                    ->whereHas('medicalRecords', fn($q) => $q->where('uric_acid', '>=', 7.0)->whereIn('id', $latestRecordSubqueryLM))
+                    ->whereHas('medicalRecords', fn ($q) => $q->where('uric_acid', '>=', 7.0)->whereIn('id', $latestRecordSubqueryLM))
                     ->count();
                 $trendLansiaHypertension[] = round(($hyperLM / $totalLM) * 100, 1);
                 $trendLansiaHyperglycemia[] = round(($sugarLM / $totalLM) * 100, 1);
@@ -438,41 +441,41 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
             }
 
             // Averages calculations from cached records
-            $monthLansiaRecs = $lansiaRecordsYear->filter(fn($r) => Carbon::parse($r->visit_date)->month === $m);
-            $monthPregRecs = $pregRecordsYear->filter(fn($r) => Carbon::parse($r->visit_date)->month === $m);
+            $monthLansiaRecs = $lansiaRecordsYear->filter(fn ($r) => Carbon::parse($r->visit_date)->month === $m);
+            $monthPregRecs = $pregRecordsYear->filter(fn ($r) => Carbon::parse($r->visit_date)->month === $m);
 
             // Lansia averages
-            $sysVals = $monthLansiaRecs->pluck('systolic_bp')->filter(fn($v) => (float)$v > 0);
+            $sysVals = $monthLansiaRecs->pluck('systolic_bp')->filter(fn ($v) => (float) $v > 0);
             $trendLansiaAvgSystolic[] = $sysVals->count() > 0 ? round($sysVals->average(), 1) : 0;
 
-            $diaVals = $monthLansiaRecs->pluck('diastolic_bp')->filter(fn($v) => (float)$v > 0);
+            $diaVals = $monthLansiaRecs->pluck('diastolic_bp')->filter(fn ($v) => (float) $v > 0);
             $trendLansiaAvgDiastolic[] = $diaVals->count() > 0 ? round($diaVals->average(), 1) : 0;
 
-            $sugarVals = $monthLansiaRecs->pluck('blood_sugar')->filter(fn($v) => (float)$v > 0);
+            $sugarVals = $monthLansiaRecs->pluck('blood_sugar')->filter(fn ($v) => (float) $v > 0);
             $trendLansiaAvgBloodSugar[] = $sugarVals->count() > 0 ? round($sugarVals->average(), 1) : 0;
 
-            $uricVals = $monthLansiaRecs->pluck('uric_acid')->filter(fn($v) => (float)$v > 0);
+            $uricVals = $monthLansiaRecs->pluck('uric_acid')->filter(fn ($v) => (float) $v > 0);
             $trendLansiaAvgUricAcid[] = $uricVals->count() > 0 ? round($uricVals->average(), 2) : 0;
 
-            $cholVals = $monthLansiaRecs->pluck('cholesterol')->filter(fn($v) => (float)$v > 0);
+            $cholVals = $monthLansiaRecs->pluck('cholesterol')->filter(fn ($v) => (float) $v > 0);
             $trendLansiaAvgCholesterol[] = $cholVals->count() > 0 ? round($cholVals->average(), 1) : 0;
 
             // Ibu Hamil averages
             $gains = [];
             foreach ($monthPregRecs as $rec) {
-                if ((float)$rec->weight > 0) {
-                    $startW = (float)$rec->starting_weight;
+                if ((float) $rec->weight > 0) {
+                    $startW = (float) $rec->starting_weight;
                     if ($startW <= 0) {
-                        $patientRecs = $pregRecordsYear->filter(fn($r) => $r->patient_id === $rec->patient_id)->sortBy('visit_date');
+                        $patientRecs = $pregRecordsYear->filter(fn ($r) => $r->patient_id === $rec->patient_id)->sortBy('visit_date');
                         $firstWeight = $patientRecs->first()?->weight ?? $rec->weight;
                         $startW = $patientRecs->where('starting_weight', '>', 0)->first()?->starting_weight ?? $firstWeight;
                     }
-                    $gains[] = max(0.0, (float)$rec->weight - (float)$startW);
+                    $gains[] = max(0.0, (float) $rec->weight - (float) $startW);
                 }
             }
             $trendPregnancyAvgWeightGain[] = count($gains) > 0 ? round(array_sum($gains) / count($gains), 1) : 0;
 
-            $lilaVals = $monthPregRecs->pluck('upper_arm_circumference')->filter(fn($v) => (float)$v > 0);
+            $lilaVals = $monthPregRecs->pluck('upper_arm_circumference')->filter(fn ($v) => (float) $v > 0);
             $trendPregnancyAvgLila[] = $lilaVals->count() > 0 ? round($lilaVals->average(), 1) : 0;
         }
 
@@ -558,12 +561,12 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
             ->where(function ($query) {
                 $query->where(function ($q) {
                     $q->whereNotNull('immunization')
-                      ->where('immunization', '!=', '')
-                      ->where('immunization', '!=', 'Tidak ada');
+                        ->where('immunization', '!=', '')
+                        ->where('immunization', '!=', 'Tidak ada');
                 })->orWhere(function ($q) {
                     $q->whereNotNull('vaccine_name')
-                      ->where('vaccine_name', '!=', '')
-                      ->where('vaccine_name', '!=', 'Tidak ada');
+                        ->where('vaccine_name', '!=', '')
+                        ->where('vaccine_name', '!=', 'Tidak ada');
                 });
             })
             ->count();
@@ -572,7 +575,7 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
 
         $distribution = (clone $medicalRecordQuery)
             ->whereIn('id', $latestRecordSubquery)
-            ->whereHas('patient', fn($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+            ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
             ->whereNotNull('nutrition_status')
             ->select('nutrition_status', DB::raw('COUNT(*) as total'))
             ->groupBy('nutrition_status')
@@ -617,22 +620,26 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
         // ── DASH-02: Bumil Trimester ──
         $bumilRecords = (clone $medicalRecordQuery)
             ->whereIn('id', $latestRecordSubquery)
-            ->whereHas('patient', fn($q) => $q->where('category', 'ibu_hamil'))
+            ->whereHas('patient', fn ($q) => $q->where('category', 'ibu_hamil'))
             ->get(['gestational_age']);
         $bumilTrimester = ['T1' => 0, 'T2' => 0, 'T3' => 0];
         foreach ($bumilRecords as $record) {
             $weeks = (int) filter_var($record->gestational_age, FILTER_SANITIZE_NUMBER_INT);
             if ($weeks > 0) {
-                if ($weeks <= 13) $bumilTrimester['T1']++;
-                elseif ($weeks <= 27) $bumilTrimester['T2']++;
-                else $bumilTrimester['T3']++;
+                if ($weeks <= 13) {
+                    $bumilTrimester['T1']++;
+                } elseif ($weeks <= 27) {
+                    $bumilTrimester['T2']++;
+                } else {
+                    $bumilTrimester['T3']++;
+                }
             }
         }
 
         // ── DASH-06: Kehadiran Balita ──
         $totalBalitaForHadir = (clone $patientQuery)->whereIn('category', ['balita', 'bayi', 'baduta'])->count();
         $hadir = (clone $medicalRecordQuery)
-            ->whereHas('patient', fn($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+            ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
             ->whereMonth('visit_date', $currentMonth)
             ->whereYear('visit_date', $currentYear)
             ->distinct('patient_id')

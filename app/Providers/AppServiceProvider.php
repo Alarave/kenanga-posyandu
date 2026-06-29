@@ -45,7 +45,7 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(\Illuminate\Foundation\Vite::class, function () {
-            return new \App\Support\CustomVite();
+            return new \App\Support\CustomVite;
         });
     }
 

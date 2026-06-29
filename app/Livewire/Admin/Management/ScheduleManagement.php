@@ -3,7 +3,6 @@
 namespace App\Livewire\Admin\Management;
 
 use App\Livewire\Shared\BaseAdminComponent;
-use App\Models\Posyandu;
 use App\Models\Schedule;
 use App\Services\ScheduleService;
 use Illuminate\Database\Eloquent\Builder;

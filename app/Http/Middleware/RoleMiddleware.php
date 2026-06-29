@@ -57,7 +57,7 @@ class RoleMiddleware
                 'required_roles' => $roles,
                 'user_role' => $request->user()->role,
                 'url' => $request->fullUrl(),
-                'ip' => $request->ip()
+                'ip' => $request->ip(),
             ]
         );
     }

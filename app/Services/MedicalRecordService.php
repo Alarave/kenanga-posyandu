@@ -61,14 +61,14 @@ class MedicalRecordService
     {
         return \Illuminate\Support\Facades\DB::transaction(function () use ($data, $user) {
             $patient = null;
-            if (!empty($data['patient_id'])) {
+            if (! empty($data['patient_id'])) {
                 $patient = $this->getPatientOrFail($data['patient_id']);
-            } elseif (!empty($data['id_number'])) {
+            } elseif (! empty($data['id_number'])) {
                 $hash = Patient::generateBlindIndex($data['id_number']);
                 $patient = Patient::where('id_number_hash', $hash)->first();
             }
 
-            if (!$patient) {
+            if (! $patient) {
                 $patientCategory = $data['category'] ?? 'ibu_hamil';
                 $patient = Patient::create([
                     'posyandu_id' => $user->posyandu_id ?? \App\Models\Posyandu::first()?->id ?? 1,
@@ -116,16 +116,16 @@ class MedicalRecordService
     ): MedicalRecord {
         return \Illuminate\Support\Facades\DB::transaction(function () use ($medicalRecord, $data, $user) {
             $oldValues = $medicalRecord->toArray();
-            
+
             $patient = null;
-            if (!empty($data['patient_id'])) {
+            if (! empty($data['patient_id'])) {
                 $patient = $this->getPatientOrFail($data['patient_id']);
-            } elseif (!empty($data['id_number'])) {
+            } elseif (! empty($data['id_number'])) {
                 $hash = Patient::generateBlindIndex($data['id_number']);
                 $patient = Patient::where('id_number_hash', $hash)->first();
             }
 
-            if (!$patient) {
+            if (! $patient) {
                 $patientCategory = $data['category'] ?? 'ibu_hamil';
                 $patient = Patient::create([
                     'posyandu_id' => $user->posyandu_id ?? \App\Models\Posyandu::first()?->id ?? 1,
@@ -270,7 +270,7 @@ class MedicalRecordService
         if (in_array($patient->category, $childCategories)) {
             $nutritionStatus = $data['nutrition_status'] ?? 'Gizi Baik';
             $stuntingStatus = $data['stunting_status'] ?? 'Normal';
-            
+
             if ($stuntingStatus === 'Sangat Pendek' || $stuntingStatus === 'Pendek') {
                 $data['diagnosis'] = 'Indikasi Stunting';
             } elseif ($nutritionStatus === 'Gizi Kurang' || $nutritionStatus === 'Gizi Buruk') {
@@ -288,11 +288,11 @@ class MedicalRecordService
         } else {
             $data['diagnosis'] = $data['diagnosis'] ?? 'Sehat';
         }
-        
+
         $data['nutrition_status'] = $data['nutrition_status'] ?? 'Belum Dihitung';
         $data['vitamin_a_color'] = $data['vitamin_a_color'] ?? 'none';
         $data['deworming_medicine'] = $data['deworming_medicine'] ?? false;
-        
+
         // Defaults for TBC screening
         $data['tbc_screening_cough'] = $data['tbc_screening_cough'] ?? false;
         $data['tbc_screening_fever'] = $data['tbc_screening_fever'] ?? false;
@@ -303,7 +303,7 @@ class MedicalRecordService
 
         $data['measurement_method'] = $data['measurement_method'] ?? 'recumbent';
 
-        if (!empty($data['blood_pressure'])) {
+        if (! empty($data['blood_pressure'])) {
             $bpVal = str_replace(' mmHg', '', $data['blood_pressure']);
             $bpParts = explode('/', $bpVal);
             if (count($bpParts) === 2) {
@@ -344,7 +344,7 @@ class MedicalRecordService
 
         $childCategories = ['bayi', 'baduta', 'balita', 'anak_sekolah'];
         if (in_array($patient->category, $childCategories)) {
-            if ($weightChanged || !isset($data['weight_status']) || empty($data['weight_status'])) {
+            if ($weightChanged || ! isset($data['weight_status']) || empty($data['weight_status'])) {
                 $data['weight_status'] = $this->calculateWeightStatus($patient, $data);
             }
         } else {
@@ -357,7 +357,7 @@ class MedicalRecordService
         if (in_array($patient->category, $childCategories)) {
             $nutritionStatus = $data['nutrition_status'] ?? $medicalRecord->nutrition_status ?? 'Gizi Baik';
             $stuntingStatus = $data['stunting_status'] ?? $medicalRecord->stunting_status ?? 'Normal';
-            
+
             if ($stuntingStatus === 'Sangat Pendek' || $stuntingStatus === 'Pendek') {
                 $data['diagnosis'] = 'Indikasi Stunting';
             } elseif ($nutritionStatus === 'Gizi Kurang' || $nutritionStatus === 'Gizi Buruk') {
@@ -375,10 +375,10 @@ class MedicalRecordService
         } else {
             $data['diagnosis'] = $data['diagnosis'] ?? $medicalRecord->diagnosis ?? 'Sehat';
         }
-        
+
         $data['nutrition_status'] = $data['nutrition_status'] ?? $medicalRecord->nutrition_status ?? 'Belum Dihitung';
         $data['vitamin_a_color'] = $data['vitamin_a_color'] ?? $medicalRecord->vitamin_a_color ?? 'none';
-        
+
         // Ensure booleans are always set
         $data['vitamin_a'] = $data['vitamin_a'] ?? false;
         $data['pill_fe'] = $data['pill_fe'] ?? false;
@@ -397,7 +397,7 @@ class MedicalRecordService
 
         $data['measurement_method'] = $data['measurement_method'] ?? $medicalRecord->measurement_method ?? 'recumbent';
 
-        if (!empty($data['blood_pressure'])) {
+        if (! empty($data['blood_pressure'])) {
             $bpVal = str_replace(' mmHg', '', $data['blood_pressure']);
             $bpParts = explode('/', $bpVal);
             if (count($bpParts) === 2) {
@@ -424,7 +424,7 @@ class MedicalRecordService
         $patientFields = [
             'father_name', 'mother_name', 'weight_at_birth', 'height_at_birth',
             'full_name', 'birth_date', 'phone_number', 'husband_name', 'address',
-            'dusun_rt_rw', 'desa_kelurahan', 'kecamatan', 'gender', 'category'
+            'dusun_rt_rw', 'desa_kelurahan', 'kecamatan', 'gender', 'category',
         ];
         $updateData = [];
 
@@ -488,6 +488,7 @@ class MedicalRecordService
     private function shouldCalculateNutrition(Patient $patient, array $data): bool
     {
         $childCategories = ['bayi', 'baduta', 'balita', 'anak_sekolah'];
+
         return in_array($patient->category, $childCategories)
             && isset($data['weight'])
             && $patient->birth_date;
@@ -717,7 +718,7 @@ class MedicalRecordService
 
             $childCategories = ['bayi', 'baduta', 'balita', 'anak_sekolah'];
             if (in_array($patient->category, $childCategories)) {
-                if (!$prevRecord) {
+                if (! $prevRecord) {
                     if ($birthWeight > 0 && $currentWeight > 0) {
                         $newWeightStatus = $currentWeight > $birthWeight ? 'N' : 'T';
                     }
@@ -742,7 +743,7 @@ class MedicalRecordService
             // 2. Recalculate nutrition trend
             $newTrend = 'tetap';
             $prevNutritionRecord = $prevRecord;
-            while ($prevNutritionRecord && !$prevNutritionRecord->nutrition_status) {
+            while ($prevNutritionRecord && ! $prevNutritionRecord->nutrition_status) {
                 $prevNutritionRecord = MedicalRecord::where('patient_id', $patient->id)
                     ->where('visit_date', '<', $prevNutritionRecord->visit_date)
                     ->orderBy('visit_date', 'desc')
@@ -765,7 +766,7 @@ class MedicalRecordService
                 $updates['nutrition_trend'] = $newTrend;
             }
 
-            if (!empty($updates)) {
+            if (! empty($updates)) {
                 $record->update($updates);
             }
         }
@@ -789,6 +790,7 @@ class MedicalRecordService
             if ($birthWeight > 0 && $currentWeight > 0) {
                 return $currentWeight > $birthWeight ? 'N' : 'T';
             }
+
             return 'N'; // First record ever, default to Naik
         }
 

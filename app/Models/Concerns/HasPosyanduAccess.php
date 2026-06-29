@@ -22,7 +22,6 @@ trait HasPosyanduAccess
         return $this->scopeByPosyandu($query, $user);
     }
 
-
     /**
      * Scope untuk user dengan akses posyandu tunggal
      */

@@ -46,13 +46,13 @@ test('compute analytics snapshot job calculates and stores metrics in snapshot t
     ComputeAnalyticsSnapshot::dispatchSync($posyandu->id, now()->year, now()->month);
 
     // Assert a snapshot record was created
-    $key = "year_" . now()->year . "_month_" . now()->month;
+    $key = 'year_'.now()->year.'_month_'.now()->month;
     $snapshot = AnalyticsSnapshot::where('posyandu_id', $posyandu->id)
         ->where('key', $key)
         ->first();
 
     expect($snapshot)->not->toBeNull();
-    
+
     $analyticsData = $snapshot->data['analytics_data'];
 
     // Assert overview stats

@@ -1,4 +1,5 @@
 <?php
+
 require 'vendor/autoload.php';
 $app = require_once __DIR__.'/bootstrap/app.php';
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
@@ -16,12 +17,12 @@ $latestRecordSubqueryLM = \App\Models\MedicalRecord::selectRaw('MAX(id) as id')
 
 $lansiaWithRecordsM = (clone $patientQuery)
     ->where('category', 'lansia')
-    ->whereHas('medicalRecords', fn($q) => $q->whereYear('visit_date', $selectedYear)->whereMonth('visit_date', $m));
+    ->whereHas('medicalRecords', fn ($q) => $q->whereYear('visit_date', $selectedYear)->whereMonth('visit_date', $m));
 
 $totalLM = $lansiaWithRecordsM->count();
 
 $hyperLM = (clone $lansiaWithRecordsM)
-    ->whereHas('medicalRecords', fn($q) => $q->where(fn($sq) => $sq->where('systolic_bp', '>=', 130)->orWhere('diastolic_bp', '>=', 80))->whereIn('id', $latestRecordSubqueryLM))
+    ->whereHas('medicalRecords', fn ($q) => $q->where(fn ($sq) => $sq->where('systolic_bp', '>=', 130)->orWhere('diastolic_bp', '>=', 80))->whereIn('id', $latestRecordSubqueryLM))
     ->count();
 
 echo "totalLM: $totalLM\n";

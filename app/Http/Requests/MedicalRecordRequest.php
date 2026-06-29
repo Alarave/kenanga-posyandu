@@ -22,8 +22,8 @@ class MedicalRecordRequest extends FormRequest
         return [
             'patient_id' => 'required_without:full_name|exists:patients,id',
             'visit_date' => 'required|date|before_or_equal:today',
-            'weight' => ($isChild ? 'required' : 'nullable') . '|numeric|min:0.5|max:200',
-            'height' => ($isChild ? 'required' : 'nullable') . '|numeric|min:20|max:300',
+            'weight' => ($isChild ? 'required' : 'nullable').'|numeric|min:0.5|max:200',
+            'height' => ($isChild ? 'required' : 'nullable').'|numeric|min:20|max:300',
             'head_circumference' => 'nullable|numeric|min:20|max:70',
             'upper_arm_circumference' => 'nullable|numeric|min:5|max:40',
             'measurement_method' => $isChild ? 'required|in:recumbent,standing' : 'nullable|in:recumbent,standing',
@@ -42,7 +42,7 @@ class MedicalRecordRequest extends FormRequest
             'is_basic_immunization_complete' => 'nullable|boolean',
             'vitamin_a_color' => 'nullable|in:biru,merah,none',
             'deworming_medicine' => 'nullable|boolean',
-            
+
             // New UI Integration Fields
             'weight_status' => 'nullable|in:N,T,2T',
             'kpsp_status' => 'nullable|in:Lengkap,Tidak Lengkap',
@@ -78,7 +78,7 @@ class MedicalRecordRequest extends FormRequest
             'starting_height' => 'nullable|numeric|min:100|max:250',
             'delivery_date' => 'nullable|date',
             'delivery_method' => 'nullable|string|max:255',
-            
+
             // KPSP (Child Development) fields
             'kpsp_age_group' => 'nullable|integer',
             'kpsp_motor_gross' => 'nullable|boolean',
@@ -189,7 +189,7 @@ class MedicalRecordRequest extends FormRequest
                 if ($idNumber && $category) {
                     $hash = \App\Models\Patient::generateBlindIndex($idNumber);
                     $existing = \App\Models\Patient::where('id_number_hash', $hash)
-                        ->when($patientId, function($q) use ($patientId) {
+                        ->when($patientId, function ($q) use ($patientId) {
                             $q->where('id', '!=', $patientId);
                         })
                         ->first();
@@ -197,18 +197,18 @@ class MedicalRecordRequest extends FormRequest
                     if ($existing) {
                         $existingCat = $existing->category;
                         $childCategories = ['bayi', 'baduta', 'balita', 'anak_sekolah'];
-                        
+
                         $isExistingChild = in_array($existingCat, $childCategories);
                         $isCurrentChild = in_array($category, $childCategories);
 
-                        if (($isExistingChild && !$isCurrentChild) || (!$isExistingChild && $isCurrentChild) || (!$isExistingChild && !$isCurrentChild && $existingCat !== $category)) {
+                        if (($isExistingChild && ! $isCurrentChild) || (! $isExistingChild && $isCurrentChild) || (! $isExistingChild && ! $isCurrentChild && $existingCat !== $category)) {
                             $catLabels = [
                                 'ibu_hamil' => 'Ibu Hamil',
                                 'lansia' => 'Lansia',
                                 'balita' => 'Balita',
                                 'bayi' => 'Bayi',
                                 'baduta' => 'Baduta',
-                                'anak_sekolah' => 'Anak Sekolah'
+                                'anak_sekolah' => 'Anak Sekolah',
                             ];
                             $existingLabel = $catLabels[$existingCat] ?? $existingCat;
                             $currentLabel = $catLabels[$category] ?? $category;
@@ -220,7 +220,7 @@ class MedicalRecordRequest extends FormRequest
                         }
                     }
                 }
-            }
+            },
         ];
     }
 }

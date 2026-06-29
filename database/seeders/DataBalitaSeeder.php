@@ -2,12 +2,12 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\Patient;
 use App\Models\MedicalRecord;
+use App\Models\Patient;
 use App\Models\Posyandu;
 use App\Services\NutritionCalculatorService;
 use Carbon\Carbon;
+use Illuminate\Database\Seeder;
 
 class DataBalitaSeeder extends Seeder
 {
@@ -123,7 +123,7 @@ class DataBalitaSeeder extends Seeder
         'Tsabina A.L' => 'TSABINA. A. L',
         'Vallera Carmen R' => 'VALLERA DARREN. R',
         'Vallera Darren' => 'VALLERA DARREN. R',
-        'Vallera Darren R' => 'VALLERA DARREN. R'
+        'Vallera Darren R' => 'VALLERA DARREN. R',
     ];
 
     public function run()
@@ -398,7 +398,7 @@ class DataBalitaSeeder extends Seeder
 
             $mappedName = self::$nameMap[$name] ?? $name;
             $patient = Patient::where('full_name', 'like', $mappedName)->first();
-            if (!$patient) {
+            if (! $patient) {
                 continue;
             }
 
@@ -426,13 +426,13 @@ class DataBalitaSeeder extends Seeder
 
             $mappedName = self::$nameMap[$name] ?? $name;
             $patient = Patient::where('full_name', 'like', $mappedName)->first();
-            if (!$patient) {
+            if (! $patient) {
                 continue;
             } else {
                 if ($birthDate) {
                     $patient->update(['birth_date' => $birthDate]);
                 }
-                if ($ortu && !$patient->mother_name) {
+                if ($ortu && ! $patient->mother_name) {
                     $patient->update(['mother_name' => $ortu]);
                 }
             }
@@ -461,7 +461,7 @@ class DataBalitaSeeder extends Seeder
 
             $mappedName = self::$nameMap[$name] ?? $name;
             $patient = Patient::where('full_name', 'like', $mappedName)->first();
-            if (!$patient) {
+            if (! $patient) {
                 continue;
             } else {
                 $patient->update(['status_mutasi' => $statusMutasi]);
@@ -492,7 +492,7 @@ class DataBalitaSeeder extends Seeder
         if ($weight > 0) {
             $calcHeight = $height > 0 ? $height : 0;
             $result = $calculator->calculateAll($weight, $calcHeight, $ageMonths, $gender);
-            
+
             $nutritionData = [
                 'nutrition_status' => $result->nutrition_status,
                 'z_score' => $result->z_score,
@@ -542,14 +542,14 @@ class DataBalitaSeeder extends Seeder
                 ],
                 array_merge([
                     'weight' => $weight,
-                    'height' => (float)($height ?? 0),
+                    'height' => (float) ($height ?? 0),
                     'weight_status' => $weightStatus,
                     'vaccine_name' => $vaxString,
                     'immunization' => $vaxString,
                     'complaint' => '-',
                     'health_note' => '-',
                     'diagnosis' => '-',
-                    'user_id' => 1
+                    'user_id' => 1,
                 ], $nutritionData)
             );
         }
