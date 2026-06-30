@@ -37,15 +37,18 @@ test('can create a new gallery folder', function () {
         'posyandu_id' => $posyandu->id,
     ]);
 
+    $coverPhoto = UploadedFile::fake()->image('cover.jpg');
+
     $this->actingAs($admin);
     $response = $this->post('/admin/gallery', [
         'name' => 'Folder Imunisasi 2026',
         'description' => 'Dokumentasi imunisasi balita',
         'posyandu_id' => $posyandu->id,
+        'cover_photo' => $coverPhoto,
     ]);
 
     $response->assertRedirect('/admin/gallery');
-    
+
     $folder = GalleryFolder::latest()->first();
     expect($folder->name)->toBe('Folder Imunisasi 2026');
     expect($folder->description)->toBe('Dokumentasi imunisasi balita');
@@ -79,7 +82,7 @@ test('can upload image file to folder and it is saved as type image', function (
     ]);
 
     $response->assertRedirect("/admin/gallery/{$folder->id}");
-    
+
     $gallery = Gallery::latest()->first();
     expect($gallery->type)->toBe('image');
     expect($gallery->gallery_folder_id)->toBe($folder->id);
@@ -115,7 +118,7 @@ test('can upload video file to folder and it is saved as type video', function (
     ]);
 
     $response->assertRedirect("/admin/gallery/{$folder->id}");
-    
+
     $gallery = Gallery::latest()->first();
     expect($gallery->type)->toBe('video');
     expect($gallery->gallery_folder_id)->toBe($folder->id);

@@ -95,7 +95,7 @@ return new class extends Migration
                 'is_breastfeeding',
                 'postpartum_kb',
                 'postpartum_counseling_topic',
-                'postpartum_referral'
+                'postpartum_referral',
             ]);
         });
     }

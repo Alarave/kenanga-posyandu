@@ -351,9 +351,9 @@ class NutritionCalculatorService
         $gender = strtolower(trim($gender));
 
         return match ($gender) {
-            'l', 'm', 'male'   => 'M', // Laki-laki / Male
+            'l', 'm', 'male' => 'M', // Laki-laki / Male
             'p', 'f', 'female' => 'F', // Perempuan / Female
-            default            => null,
+            default => null,
         };
     }
 }

@@ -747,4 +747,3 @@ describe('fitur pemilihan kategori dan validasi dinamis', function () {
         $response->assertSessionHasErrors('measurement_method');
     });
 });
-

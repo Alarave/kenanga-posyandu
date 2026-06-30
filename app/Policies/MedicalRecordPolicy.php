@@ -10,7 +10,10 @@ class MedicalRecordPolicy
 {
     public function viewAny(User $user): bool
     {
-        if ($user->isSuperAdmin()) return true;
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return ($user->isAdmin() || $user->isKader()) && $user->posyandu_id !== null;
     }
 
@@ -19,7 +22,10 @@ class MedicalRecordPolicy
      */
     public function view(User $user, MedicalRecord $medicalRecord): bool
     {
-        if ($user->isSuperAdmin()) return true;
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return ($user->isAdmin() || $user->isKader()) && $user->posyandu_id === $medicalRecord->patient->posyandu_id;
     }
 
@@ -28,7 +34,10 @@ class MedicalRecordPolicy
      */
     public function create(User $user): bool
     {
-        if ($user->isSuperAdmin()) return true;
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return ($user->isAdmin() || $user->isKader()) && $user->posyandu_id !== null;
     }
 
@@ -37,7 +46,10 @@ class MedicalRecordPolicy
      */
     public function update(User $user, MedicalRecord $medicalRecord): bool
     {
-        if ($user->isSuperAdmin()) return true;
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return ($user->isAdmin() || $user->isKader()) && $user->posyandu_id === $medicalRecord->patient->posyandu_id;
     }
 
@@ -46,7 +58,10 @@ class MedicalRecordPolicy
      */
     public function delete(User $user, MedicalRecord $medicalRecord): bool
     {
-        if ($user->isSuperAdmin()) return true;
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return ($user->isAdmin() || $user->isKader()) && $user->posyandu_id === $medicalRecord->patient->posyandu_id;
     }
 

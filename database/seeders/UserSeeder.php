@@ -43,7 +43,6 @@ class UserSeeder extends Seeder
             );
         }
 
-
         // ── Per-posyandu users ────────────────────────────────────────────────
         $posyanduUsers = [
             // KENANGA 1

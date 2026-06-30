@@ -26,13 +26,13 @@ class CustomVite extends FoundationVite
 
         $hotPath = $this->hotFile();
 
-        if (!file_exists($hotPath)) {
+        if (! file_exists($hotPath)) {
             return static::$isRunningHotCache = false;
         }
 
         // Read URL from the hot file
         $url = trim(file_get_contents($hotPath));
-        
+
         // Parse the URL to extract host and port
         $parts = parse_url($url);
         $host = isset($parts['host']) ? $parts['host'] : '127.0.0.1';
@@ -48,6 +48,7 @@ class CustomVite extends FoundationVite
 
         if (is_resource($connection)) {
             fclose($connection);
+
             return static::$isRunningHotCache = true;
         }
 

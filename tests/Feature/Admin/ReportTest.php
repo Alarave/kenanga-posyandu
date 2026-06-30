@@ -25,8 +25,6 @@ beforeEach(function () {
         'posyandu_id' => $this->posyandu1->id,
     ]);
 
-
-
     $this->patient = Patient::factory()->create([
         'posyandu_id' => $this->posyandu1->id,
         'category' => 'balita',
@@ -53,7 +51,6 @@ describe('akses laporan per role', function () {
         $response = $this->get('/admin/reports');
         $response->assertOk();
     });
-
 
 });
 
@@ -109,7 +106,6 @@ describe('ekspor Excel', function () {
 
         $response->assertOk();
     });
-
 
     it('membuat log aktivitas saat ekspor Excel', function () {
         $this->actingAs($this->admin);

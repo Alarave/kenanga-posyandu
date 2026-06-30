@@ -100,7 +100,6 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->role === self::ROLE_ADMIN;
     }
 
-
     /**
      * Get pedukuhan_id dari posyandu user
      */
@@ -186,7 +185,8 @@ class User extends Authenticatable implements MustVerifyEmail
         if (Str::contains($roleName, ['admin', 'kader'])) {
             $label = ucfirst(substr($roleName, 0, -1));
             $suffix = substr($roleName, -1);
-            return $label . ' ' . $suffix;
+
+            return $label.' '.$suffix;
         }
 
         return 'Pengguna';

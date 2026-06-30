@@ -692,7 +692,7 @@ describe('validasi tanggal lahir', function () {
 describe('Tampilan detail kustom sesuai kategori', function () {
     it('menampilkan tema warna sesuai kategori pasien', function () {
         $this->actingAs($this->admin1);
-        
+
         // Test Balita
         $this->patient1->update(['category' => 'balita']);
         $response = $this->get("/admin/patients/{$this->patient1->id}");
@@ -715,9 +715,9 @@ describe('Tampilan detail kustom sesuai kategori', function () {
             'category' => 'balita',
             'father_name' => 'Ayah Antigravity',
             'mother_name' => 'Ibu Antigravity',
-            'kia_book_ownership' => true
+            'kia_book_ownership' => true,
         ]);
-        
+
         $response = $this->get("/admin/patients/{$this->patient1->id}");
         $response->assertSee('Ayah Antigravity');
         $response->assertSee('Ibu Antigravity');
@@ -763,7 +763,7 @@ describe('Tampilan detail kustom sesuai kategori', function () {
         $this->patient1->update([
             'category' => 'ibu_hamil',
             'parent_name' => 'Suami Antigravity',
-            'is_pregnant' => true
+            'is_pregnant' => true,
         ]);
         $this->patient1->medicalRecords()->create([
             'user_id' => $this->admin1->id,

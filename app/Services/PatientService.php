@@ -5,7 +5,6 @@ namespace App\Services;
 use App\Models\Patient;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class PatientService
@@ -128,7 +127,7 @@ class PatientService
         $patientData = collect($patient->toArray())
             ->except(['id_number', 'id_number_hash', 'phone_number'])
             ->toArray();
-            
+
         $patientName = $patient->full_name;
         $patientId = $patient->id;
 

@@ -76,8 +76,8 @@ class NotificationBell extends Component
             };
 
             $targetUrl = match (true) {
-                str_contains($log->entity_type, 'Patient') && $log->action_type !== 'delete' && !empty($log->entity_id) => route('admin.patients.show', $log->entity_id),
-                str_contains($log->entity_type, 'MedicalRecord') && $log->action_type !== 'delete' && !empty($log->entity_id) => route('admin.medical-records.show', $log->entity_id),
+                str_contains($log->entity_type, 'Patient') && $log->action_type !== 'delete' && ! empty($log->entity_id) => route('admin.patients.show', $log->entity_id),
+                str_contains($log->entity_type, 'MedicalRecord') && $log->action_type !== 'delete' && ! empty($log->entity_id) => route('admin.medical-records.show', $log->entity_id),
                 str_contains($log->entity_type, 'Schedule') => route('admin.schedules.index'),
                 str_contains($log->entity_type, 'Article') => route('admin.articles.index'),
                 default => route('admin.activity-logs.index'),

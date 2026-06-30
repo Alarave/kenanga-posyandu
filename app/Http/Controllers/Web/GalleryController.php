@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\GalleryRequest;
 use App\Models\Gallery;
 use App\Models\GalleryFolder;
-use App\Models\Posyandu;
 use App\Services\GalleryService;
 
 class GalleryController extends Controller
@@ -17,7 +16,7 @@ class GalleryController extends Controller
     public function create(GalleryFolder $folder)
     {
         $user = auth()->user();
-        if (!$user->isSuperAdmin() && $folder->posyandu_id !== $user->posyandu_id) {
+        if (! $user->isSuperAdmin() && $folder->posyandu_id !== $user->posyandu_id) {
             abort(403, 'Anda tidak memiliki akses ke folder ini.');
         }
 
@@ -30,7 +29,7 @@ class GalleryController extends Controller
     public function store(GalleryRequest $request, GalleryFolder $folder, GalleryService $galleryService)
     {
         $user = auth()->user();
-        if (!$user->isSuperAdmin() && $folder->posyandu_id !== $user->posyandu_id) {
+        if (! $user->isSuperAdmin() && $folder->posyandu_id !== $user->posyandu_id) {
             abort(403, 'Anda tidak memiliki akses ke folder ini.');
         }
 
@@ -41,7 +40,7 @@ class GalleryController extends Controller
         foreach ($files as $index => $file) {
             // Tentukan judul media
             if ($request->filled('title')) {
-                $title = $count > 1 ? $request->input('title') . ' (' . ($index + 1) . ')' : $request->input('title');
+                $title = $count > 1 ? $request->input('title').' ('.($index + 1).')' : $request->input('title');
             } else {
                 $title = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
             }
@@ -57,7 +56,7 @@ class GalleryController extends Controller
             $galleryService->createGallery($data, $user);
         }
 
-        return redirect()->route('admin.gallery.show', $folder->id)->with('success', $count . ' media berhasil ditambahkan ke folder.');
+        return redirect()->route('admin.gallery.show', $folder->id)->with('success', $count.' media berhasil ditambahkan ke folder.');
     }
 
     /**
@@ -66,7 +65,7 @@ class GalleryController extends Controller
     public function destroy(GalleryFolder $folder, Gallery $gallery, GalleryService $galleryService)
     {
         $user = auth()->user();
-        if (!$user->isSuperAdmin() && $folder->posyandu_id !== $user->posyandu_id) {
+        if (! $user->isSuperAdmin() && $folder->posyandu_id !== $user->posyandu_id) {
             abort(403, 'Anda tidak memiliki akses ke folder ini.');
         }
 

@@ -15,16 +15,16 @@ class UserProfile extends Component
     protected function rules(): array
     {
         return [
-            'name'  => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . Auth::id(),
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,'.Auth::id(),
         ];
     }
 
     public function mount(): void
     {
         /** @var User $user */
-        $user        = Auth::user();
-        $this->name  = $user->name;
+        $user = Auth::user();
+        $this->name = $user->name;
         $this->email = $user->email;
     }
 
@@ -35,7 +35,7 @@ class UserProfile extends Component
         /** @var User $user */
         $user = Auth::user();
         $user->update([
-            'name'  => $this->name,
+            'name' => $this->name,
             'email' => $this->email,
         ]);
 

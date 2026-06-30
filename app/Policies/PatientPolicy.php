@@ -10,7 +10,10 @@ class PatientPolicy
 {
     public function viewAny(User $user): bool
     {
-        if ($user->isSuperAdmin()) return true;
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return ($user->isAdmin() || $user->isKader()) && $user->posyandu_id !== null;
     }
 
@@ -19,7 +22,10 @@ class PatientPolicy
      */
     public function view(User $user, Patient $patient): bool
     {
-        if ($user->isSuperAdmin()) return true;
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return ($user->isAdmin() || $user->isKader()) && $user->posyandu_id === $patient->posyandu_id;
     }
 
@@ -28,8 +34,11 @@ class PatientPolicy
      */
     public function create(User $user): bool
     {
-        if ($user->isSuperAdmin()) return true;
-        return ($user->isAdmin() || $user->isKader()) && $user->posyandu_id !== null;
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        return $user->isAdmin() && $user->posyandu_id !== null;
     }
 
     /**
@@ -37,7 +46,10 @@ class PatientPolicy
      */
     public function update(User $user, Patient $patient): bool
     {
-        if ($user->isSuperAdmin()) return true;
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
         return ($user->isAdmin() || $user->isKader()) && $user->posyandu_id === $patient->posyandu_id;
     }
 
@@ -46,8 +58,11 @@ class PatientPolicy
      */
     public function delete(User $user, Patient $patient): bool
     {
-        if ($user->isSuperAdmin()) return true;
-        return ($user->isAdmin() || $user->isKader()) && $user->posyandu_id === $patient->posyandu_id;
+        if ($user->isSuperAdmin()) {
+            return true;
+        }
+
+        return $user->isAdmin() && $user->posyandu_id === $patient->posyandu_id;
     }
 
     /**

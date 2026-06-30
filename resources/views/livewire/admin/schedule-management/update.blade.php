@@ -153,7 +153,7 @@
                             Batalkan
                         </a>
                         <button type="submit" wire:loading.attr="disabled"
-                            class="flex-1 sm:flex-none h-16 px-12 bg-indigo-650 dark:bg-indigo-700 text-white rounded-2xl text-base font-black uppercase tracking-widest hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-all shadow-xl shadow-indigo-500/20 dark:shadow-none flex items-center justify-center gap-3 active:scale-[0.98] cursor-pointer border-0">
+                            class="flex-1 sm:flex-none h-16 px-12 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white rounded-2xl text-base font-black uppercase tracking-widest transition-all shadow-xl shadow-teal-600/20 flex items-center justify-center gap-3 active:scale-[0.98] cursor-pointer border-0">
                             <span wire:loading.remove class="material-symbols-outlined text-[24px]">sync</span>
                             <div wire:loading
                                 class="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

@@ -83,7 +83,7 @@ class ScheduleCreate extends Component
     public function render(): View
     {
         /** @var User $user */
-        $user     = Auth::user();
+        $user = Auth::user();
         $posyandus = $user->isSuperAdmin()
             ? Posyandu::orderBy('name')->get()
             : Posyandu::where('id', $user->posyandu_id)->get();

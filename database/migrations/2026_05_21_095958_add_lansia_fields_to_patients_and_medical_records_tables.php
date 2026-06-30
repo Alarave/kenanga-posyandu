@@ -42,7 +42,7 @@ return new class extends Migration
                 'blood_sugar',
                 'uric_acid',
                 'cholesterol',
-                'current_medication'
+                'current_medication',
             ]);
         });
     }

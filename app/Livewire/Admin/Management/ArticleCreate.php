@@ -16,38 +16,42 @@ class ArticleCreate extends BaseAdminComponent
 {
     use WithFileUploads;
 
-    public string $title      = '';
-    public string $content    = '';   // JSON string dari Alpine editor
-    public string $status     = 'draft';
-    public ?int   $category_id = null;
-    public mixed  $cover = null;
+    public string $title = '';
+
+    public string $content = '';   // JSON string dari Alpine editor
+
+    public string $status = 'draft';
+
+    public ?int $category_id = null;
+
+    public mixed $cover = null;
 
     protected function rules(): array
     {
         return [
-            'title'       => 'required|string|max:255',
-            'content'     => 'required|string|min:2',
-            'status'      => 'required|in:draft,published',
+            'title' => 'required|string|max:255',
+            'content' => 'required|string|min:2',
+            'status' => 'required|in:draft,published',
             'category_id' => 'required|exists:categories,id',
-            'cover'       => 'required|image|max:4096',
+            'cover' => 'required|image|max:4096',
         ];
     }
 
     protected function messages(): array
     {
         return [
-            'title.required'       => 'Judul artikel wajib diisi.',
-            'content.required'     => 'Isi artikel tidak boleh kosong.',
+            'title.required' => 'Judul artikel wajib diisi.',
+            'content.required' => 'Isi artikel tidak boleh kosong.',
             'category_id.required' => 'Kategori artikel wajib dipilih.',
-            'cover.required'       => 'Foto sampul wajib diunggah.',
+            'cover.required' => 'Foto sampul wajib diunggah.',
         ];
     }
 
     public function saveFromAlpine(string $title, string $content, string $status, int $categoryId)
     {
-        $this->title       = $title;
-        $this->content     = $content;
-        $this->status      = $status;
+        $this->title = $title;
+        $this->content = $content;
+        $this->status = $status;
         $this->category_id = $categoryId;
 
         $this->authorize('create', Article::class);
@@ -55,11 +59,11 @@ class ArticleCreate extends BaseAdminComponent
         // Validasi cover terpisah — cover diupload via Livewire wire:model
         // jadi kita validasi $this->cover langsung
         $validated = $this->validate([
-            'title'       => 'required|string|max:255',
-            'content'     => 'required|string|min:2',
-            'status'      => 'required|in:draft,published',
+            'title' => 'required|string|max:255',
+            'content' => 'required|string|min:2',
+            'status' => 'required|in:draft,published',
             'category_id' => 'required|exists:categories,id',
-            'cover'       => 'required|image|max:4096',
+            'cover' => 'required|image|max:4096',
         ]);
 
         $validated['thumbnail'] = $validated['cover'];
@@ -68,6 +72,7 @@ class ArticleCreate extends BaseAdminComponent
         app(ArticleService::class)->createArticle($validated, auth()->user());
 
         $this->notify('Artikel berhasil disimpan.', 'success', true);
+
         return redirect()->route('admin.articles.index');
     }
 

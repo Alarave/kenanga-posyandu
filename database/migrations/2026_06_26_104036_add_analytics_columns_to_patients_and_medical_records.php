@@ -12,16 +12,16 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('patients', function (Blueprint $table) {
-            if (!Schema::hasColumn('patients', 'hpht')) {
+            if (! Schema::hasColumn('patients', 'hpht')) {
                 $table->date('hpht')->nullable()->after('birth_date');
             }
-            if (!Schema::hasColumn('patients', 'status_mutasi')) {
+            if (! Schema::hasColumn('patients', 'status_mutasi')) {
                 $table->string('status_mutasi')->default('aktif')->after('category');
             }
         });
 
         Schema::table('medical_records', function (Blueprint $table) {
-            if (!Schema::hasColumn('medical_records', 'hemoglobin')) {
+            if (! Schema::hasColumn('medical_records', 'hemoglobin')) {
                 $table->decimal('hemoglobin', 5, 2)->nullable()->after('blood_sugar');
             }
         });

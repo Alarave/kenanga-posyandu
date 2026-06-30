@@ -43,7 +43,7 @@ return new class extends Migration
                 'family_disease_history',
                 'risk_behaviors',
                 'imt',
-                'education'
+                'education',
             ]);
         });
     }

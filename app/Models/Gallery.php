@@ -45,7 +45,6 @@ class Gallery extends Model
             return $query;
         }
 
-
         return $query->where('posyandu_id', $user->posyandu_id);
     }
 }

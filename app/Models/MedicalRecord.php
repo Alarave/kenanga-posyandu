@@ -20,7 +20,7 @@ class MedicalRecord extends Model
 
         static::saved(function ($record) {
             $posyanduId = $record->patient?->posyandu_id;
-            \App\Models\AnalyticsSnapshot::where(function($q) use ($posyanduId) {
+            \App\Models\AnalyticsSnapshot::where(function ($q) use ($posyanduId) {
                 if ($posyanduId) {
                     $q->where('posyandu_id', $posyanduId)->orWhereNull('posyandu_id');
                 } else {
@@ -31,7 +31,7 @@ class MedicalRecord extends Model
 
         static::deleted(function ($record) {
             $posyanduId = $record->patient?->posyandu_id;
-            \App\Models\AnalyticsSnapshot::where(function($q) use ($posyanduId) {
+            \App\Models\AnalyticsSnapshot::where(function ($q) use ($posyanduId) {
                 if ($posyanduId) {
                     $q->where('posyandu_id', $posyanduId)->orWhereNull('posyandu_id');
                 } else {
@@ -75,7 +75,7 @@ class MedicalRecord extends Model
     protected $fillable = [
         'patient_id', 'user_id', 'visit_date', 'weight', 'height',
         'weight_status', 'kpsp_status', 'tbc_screening_cough', 'tbc_screening_fever',
-        'tbc_screening_contact', 'tbc_screening_lethargy', 'tbc_screening_lumps', 
+        'tbc_screening_contact', 'tbc_screening_lethargy', 'tbc_screening_lumps',
         'other_symptoms', 'pmt_given', 'counseling_notes',
         'referral_type',
         'blood_pressure', 'measurement_method', 'head_circumference', 'upper_arm_circumference', 'immunization',
@@ -142,8 +142,9 @@ class MedicalRecord extends Model
     public function getBloodPressureAttribute()
     {
         if ($this->systolic_bp && $this->diastolic_bp) {
-            return $this->systolic_bp . '/' . $this->diastolic_bp;
+            return $this->systolic_bp.'/'.$this->diastolic_bp;
         }
+
         return $this->attributes['blood_pressure'] ?? null;
     }
 
@@ -184,5 +185,4 @@ class MedicalRecord extends Model
             $q->where('posyandu_id', $user->posyandu_id);
         });
     }
-
 }

@@ -16,6 +16,7 @@ class GalleryFolderController extends Controller
     public function create()
     {
         $posyandus = Posyandu::all();
+
         return view('livewire.admin.gallery-management.create_folder', compact('posyandus'));
     }
 
@@ -27,17 +28,17 @@ class GalleryFolderController extends Controller
         $isSuperAdmin = auth()->user()->isSuperAdmin();
 
         $validated = $request->validate([
-            'name'         => 'required|string|max:255',
-            'description'  => 'nullable|string|max:1000',
-            'posyandu_id'  => $isSuperAdmin ? 'required|exists:posyandus,id' : 'nullable|exists:posyandus,id',
-            'cover_photo'  => 'required|image|max:10240', // Maks 10MB, wajib diisi
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'posyandu_id' => $isSuperAdmin ? 'required|exists:posyandus,id' : 'nullable|exists:posyandus,id',
+            'cover_photo' => 'required|image|max:10240', // Maks 10MB, wajib diisi
         ], [
             'cover_photo.required' => 'Foto sampul folder wajib diunggah.',
             'posyandu_id.required' => 'Unit Posyandu wajib dipilih.',
         ]);
 
         $user = auth()->user();
-        if (!$user->isSuperAdmin()) {
+        if (! $user->isSuperAdmin()) {
             $validated['posyandu_id'] = $user->posyandu_id;
         }
         $validated['user_id'] = $user->id;
@@ -58,7 +59,7 @@ class GalleryFolderController extends Controller
     {
         // Membatasi akses folder berdasarkan hak akses kader posyandu
         $user = auth()->user();
-        if (!$user->isSuperAdmin() && $folder->posyandu_id !== $user->posyandu_id) {
+        if (! $user->isSuperAdmin() && $folder->posyandu_id !== $user->posyandu_id) {
             abort(403, 'Anda tidak memiliki akses ke folder ini.');
         }
 
@@ -73,11 +74,12 @@ class GalleryFolderController extends Controller
     public function edit(GalleryFolder $folder)
     {
         $user = auth()->user();
-        if (!$user->isSuperAdmin() && $folder->posyandu_id !== $user->posyandu_id) {
+        if (! $user->isSuperAdmin() && $folder->posyandu_id !== $user->posyandu_id) {
             abort(403, 'Anda tidak memiliki akses ke folder ini.');
         }
 
         $posyandus = Posyandu::all();
+
         return view('livewire.admin.gallery-management.edit_folder', compact('folder', 'posyandus'));
     }
 
@@ -87,7 +89,7 @@ class GalleryFolderController extends Controller
     public function update(Request $request, GalleryFolder $folder)
     {
         $user = auth()->user();
-        if (!$user->isSuperAdmin() && $folder->posyandu_id !== $user->posyandu_id) {
+        if (! $user->isSuperAdmin() && $folder->posyandu_id !== $user->posyandu_id) {
             abort(403, 'Anda tidak memiliki akses ke folder ini.');
         }
 
@@ -98,7 +100,7 @@ class GalleryFolderController extends Controller
             'cover_photo' => 'nullable|image|max:10240',
         ]);
 
-        if (!$user->isSuperAdmin()) {
+        if (! $user->isSuperAdmin()) {
             $validated['posyandu_id'] = $user->posyandu_id;
         }
 
@@ -120,7 +122,7 @@ class GalleryFolderController extends Controller
     public function destroy(GalleryFolder $folder)
     {
         $user = auth()->user();
-        if (!$user->isSuperAdmin() && $folder->posyandu_id !== $user->posyandu_id) {
+        if (! $user->isSuperAdmin() && $folder->posyandu_id !== $user->posyandu_id) {
             abort(403, 'Anda tidak memiliki akses ke folder ini.');
         }
 

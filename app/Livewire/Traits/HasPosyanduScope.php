@@ -7,7 +7,6 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
 
-
 /**
  * Trait untuk menangani pembatasan data (scoping) berdasarkan Role dan Posyandu pengguna.
  */
@@ -27,14 +26,16 @@ trait HasPosyanduScope
                 if ($query->getModel() instanceof \App\Models\MedicalRecord) {
                     return $query->whereHas('patient', fn ($q) => $q->where('posyandu_id', $selectedPosyanduId));
                 }
+
                 return $query->where('posyandu_id', $selectedPosyanduId);
             }
+
             return $query;
         }
 
         // Admin/Kader unit specific
         $posyanduId = $selectedPosyanduId ?? $user->posyandu_id;
-        
+
         // Ensure they can only filter to their own unit
         if ($selectedPosyanduId && $selectedPosyanduId != $user->posyandu_id) {
             $posyanduId = $user->posyandu_id;

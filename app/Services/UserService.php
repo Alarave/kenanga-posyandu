@@ -59,8 +59,8 @@ class UserService
         }
 
         if (isset($data['image']) && $data['image'] instanceof \Illuminate\Http\UploadedFile) {
-            if ($user->image && !str_starts_with($user->image, 'assets/')) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete('kaders/' . $user->image);
+            if ($user->image && ! str_starts_with($user->image, 'assets/')) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete('kaders/'.$user->image);
             }
             $path = $data['image']->store('kaders', 'public');
             $data['image'] = basename($path);
@@ -155,8 +155,8 @@ class UserService
      */
     public function deleteUser(User $user): void
     {
-        if ($user->image && !str_starts_with($user->image, 'assets/')) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete('kaders/' . $user->image);
+        if ($user->image && ! str_starts_with($user->image, 'assets/')) {
+            \Illuminate\Support\Facades\Storage::disk('public')->delete('kaders/'.$user->image);
         }
 
         $userName = $user->name;

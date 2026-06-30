@@ -2,13 +2,13 @@
 
 namespace Database\Seeders;
 
-use App\Models\MedicalRecord;
+use Illuminate\Database\Seeder;
 use App\Models\Patient;
+use App\Models\MedicalRecord;
 use Carbon\Carbon;
 use Faker\Factory as Faker;
-use Illuminate\Database\Seeder;
 
-class DummyPatientSeeder extends Seeder
+class IbuHamil5Seeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -21,11 +21,11 @@ class DummyPatientSeeder extends Seeder
             $posyanduIds = [1];
         }
 
-        // --- 20 Ibu Hamil ---
-        for ($i = 0; $i < 20; $i++) {
+        // --- 5 Ibu Hamil ---
+        for ($i = 0; $i < 5; $i++) {
             $hpht = Carbon::now()->subMonths(rand(1, 8))->subDays(rand(1, 20));
             $age = rand(18, 40);
-
+            
             $patient = Patient::create([
                 'id_number' => $faker->unique()->numerify('################'),
                 'full_name' => $faker->name('female'),
@@ -52,43 +52,6 @@ class DummyPatientSeeder extends Seeder
                     'hemoglobin' => rand(9, 13) + (rand(0, 9) / 10),
                     'gestational_age' => rand(4, 38),
                     'nakes_gives_fe_mms' => rand(0, 1),
-                    'complaint' => '-',
-                    'health_note' => '-',
-                    'diagnosis' => '-',
-                ]);
-            }
-        }
-
-        // --- 20 Lansia ---
-        for ($i = 0; $i < 20; $i++) {
-            $age = rand(60, 85);
-
-            $patient = Patient::create([
-                'id_number' => $faker->unique()->numerify('################'),
-                'full_name' => $faker->name,
-                'birth_date' => Carbon::now()->subYears($age)->subDays(rand(1, 365)),
-                'gender' => $faker->randomElement(['L', 'P']),
-                'category' => 'lansia',
-                'posyandu_id' => $faker->randomElement($posyanduIds),
-                'status_mutasi' => 'aktif',
-                'address' => $faker->address,
-                'independence_status' => $faker->randomElement(['A', 'B', 'C']),
-            ]);
-
-            // Add records
-            $visitCount = rand(1, 6);
-            for ($v = 0; $v < $visitCount; $v++) {
-                MedicalRecord::create([
-                    'patient_id' => $patient->id,
-                    'user_id' => \App\Models\User::first()->id ?? 1,
-                    'visit_date' => Carbon::now()->subMonths($v)->subDays(rand(1, 5)),
-                    'weight' => rand(45, 75) + (rand(0, 9) / 10),
-                    'height' => rand(150, 170),
-                    'systolic_bp' => rand(110, 160),
-                    'diastolic_bp' => rand(70, 100),
-                    'blood_sugar' => rand(80, 250),
-                    'cholesterol' => rand(150, 300),
-                    'uric_acid' => rand(4, 9) + (rand(0, 9) / 10),
                     'complaint' => '-',
                     'health_note' => '-',
                     'diagnosis' => '-',

@@ -27,7 +27,7 @@ return new class extends Migration
             $table->dropColumn([
                 'upper_arm_circumference',
                 'mp_asi',
-                'is_basic_immunization_complete'
+                'is_basic_immunization_complete',
             ]);
         });
     }

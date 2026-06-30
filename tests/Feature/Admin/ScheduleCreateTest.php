@@ -1,10 +1,10 @@
 <?php
 
+use App\Livewire\Admin\Management\ScheduleCreate;
 use App\Models\Posyandu;
 use App\Models\User;
-use App\Livewire\Admin\Management\ScheduleCreate;
-use Livewire\Livewire;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
 
@@ -13,14 +13,14 @@ test('superadmin can create schedule', function () {
     $posyandu = Posyandu::factory()->create([
         'name' => 'KENANGA 1',
     ]);
-    
+
     $superadmin = User::factory()->create([
         'role' => 'superadmin',
         'posyandu_id' => null,
     ]);
-    
+
     $this->actingAs($superadmin);
-    
+
     Livewire::test(ScheduleCreate::class)
         ->set('title', 'Jadwal Baru')
         ->set('description', 'Deskripsi Jadwal')
@@ -39,14 +39,14 @@ test('admin can create schedule without explicitly setting posyandu_id', functio
     $posyandu = Posyandu::factory()->create([
         'name' => 'KENANGA 1',
     ]);
-    
+
     $admin = User::factory()->create([
         'role' => 'admin',
         'posyandu_id' => $posyandu->id,
     ]);
-    
+
     $this->actingAs($admin);
-    
+
     Livewire::test(ScheduleCreate::class)
         ->set('title', 'Jadwal Baru')
         ->set('description', 'Deskripsi Jadwal')

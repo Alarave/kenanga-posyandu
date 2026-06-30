@@ -21,7 +21,7 @@ class ArticleService
     {
         return DB::transaction(function () use ($data, $author) {
             $data['user_id'] = $author->id;
-            $data['slug']    = $this->generateUniqueSlug($data['title']);
+            $data['slug'] = $this->generateUniqueSlug($data['title']);
 
             if (isset($data['status']) && $data['status'] === 'published') {
                 $data['published_at'] = now();
@@ -72,6 +72,7 @@ class ArticleService
             if ($article->thumbnail) {
                 Storage::disk('public')->delete($article->thumbnail);
             }
+
             return $article->delete();
         });
     }
@@ -122,14 +123,14 @@ class ArticleService
                 throw new \Exception('Not a valid block array');
             }
         } catch (\Throwable $e) {
-            return '<p class="article-paragraph">' . nl2br(e($content)) . '</p>';
+            return '<p class="article-paragraph">'.nl2br(e($content)).'</p>';
         }
 
-        $html        = '';
+        $html = '';
         $numberedSeq = 0;
 
         foreach ($blocks as $block) {
-            $type       = $block['type']    ?? 'paragraph';
+            $type = $block['type'] ?? 'paragraph';
             $blockContent = $block['content'] ?? '';
 
             if ($type !== 'numbered') {
@@ -138,65 +139,85 @@ class ArticleService
 
             switch ($type) {
                 case 'paragraph':
-                    if (trim(strip_tags($blockContent)) === '' || $blockContent === '<br>') break;
-                    $html .= '<p class="article-paragraph">' . $blockContent . '</p>';
+                    if (trim(strip_tags($blockContent)) === '' || $blockContent === '<br>') {
+                        break;
+                    }
+                    $html .= '<p class="article-paragraph">'.$blockContent.'</p>';
                     break;
 
                 case 'h1':
-                    if (trim(strip_tags($blockContent)) === '') break;
-                    $html .= '<h2 class="article-h1">' . $blockContent . '</h2>';
+                    if (trim(strip_tags($blockContent)) === '') {
+                        break;
+                    }
+                    $html .= '<h2 class="article-h1">'.$blockContent.'</h2>';
                     break;
 
                 case 'h2':
-                    if (trim(strip_tags($blockContent)) === '') break;
-                    $html .= '<h3 class="article-h2">' . $blockContent . '</h3>';
+                    if (trim(strip_tags($blockContent)) === '') {
+                        break;
+                    }
+                    $html .= '<h3 class="article-h2">'.$blockContent.'</h3>';
                     break;
 
                 case 'h3':
-                    if (trim(strip_tags($blockContent)) === '') break;
-                    $html .= '<h4 class="article-h3">' . $blockContent . '</h4>';
+                    if (trim(strip_tags($blockContent)) === '') {
+                        break;
+                    }
+                    $html .= '<h4 class="article-h3">'.$blockContent.'</h4>';
                     break;
 
                 case 'quote':
-                    if (trim(strip_tags($blockContent)) === '') break;
-                    $html .= '<blockquote class="article-quote"><p>' . $blockContent . '</p></blockquote>';
+                    if (trim(strip_tags($blockContent)) === '') {
+                        break;
+                    }
+                    $html .= '<blockquote class="article-quote"><p>'.$blockContent.'</p></blockquote>';
                     break;
 
                 case 'callout':
-                    if (trim(strip_tags($blockContent)) === '') break;
-                    $html .= '<div class="article-callout"><span class="article-callout-icon">💡</span><div>' . $blockContent . '</div></div>';
+                    if (trim(strip_tags($blockContent)) === '') {
+                        break;
+                    }
+                    $html .= '<div class="article-callout"><span class="article-callout-icon">💡</span><div>'.$blockContent.'</div></div>';
                     break;
 
                 case 'bullet':
-                    if (trim(strip_tags($blockContent)) === '') break;
-                    $html .= '<ul class="article-list"><li>' . $blockContent . '</li></ul>';
+                    if (trim(strip_tags($blockContent)) === '') {
+                        break;
+                    }
+                    $html .= '<ul class="article-list"><li>'.$blockContent.'</li></ul>';
                     break;
 
                 case 'numbered':
-                    if (trim(strip_tags($blockContent)) === '') break;
+                    if (trim(strip_tags($blockContent)) === '') {
+                        break;
+                    }
                     $numberedSeq++;
-                    $html .= '<ol class="article-list article-list--numbered" start="' . $numberedSeq . '"><li>' . $blockContent . '</li></ol>';
+                    $html .= '<ol class="article-list article-list--numbered" start="'.$numberedSeq.'"><li>'.$blockContent.'</li></ol>';
                     break;
 
                 case 'image':
                     $src = $block['src'] ?? '';
-                    if (! $src || str_starts_with($src, 'data:')) break;
+                    if (! $src || str_starts_with($src, 'data:')) {
+                        break;
+                    }
                     $caption = e($block['caption'] ?? '');
                     $html .= '<figure class="article-figure">';
-                    $html .= '<img src="' . e($src) . '" alt="' . $caption . '" class="article-image" loading="lazy">';
+                    $html .= '<img src="'.e($src).'" alt="'.$caption.'" class="article-image" loading="lazy">';
                     if ($caption) {
-                        $html .= '<figcaption class="article-caption">' . $caption . '</figcaption>';
+                        $html .= '<figcaption class="article-caption">'.$caption.'</figcaption>';
                     }
                     $html .= '</figure>';
                     break;
 
                 case 'video':
                     $src = $block['embedSrc'] ?? $block['src'] ?? '';
-                    if (! $src) break;
+                    if (! $src) {
+                        break;
+                    }
                     if (str_contains($src, 'youtube.com/embed') || str_contains($src, 'drive.google.com')) {
-                        $html .= '<div class="article-video"><iframe src="' . e($src) . '" allowfullscreen frameborder="0" class="w-full h-full"></iframe></div>';
+                        $html .= '<div class="article-video"><iframe src="'.e($src).'" allowfullscreen frameborder="0" class="w-full h-full"></iframe></div>';
                     } else {
-                        $html .= '<video controls class="w-full rounded-xl my-6"><source src="' . e($src) . '"></video>';
+                        $html .= '<video controls class="w-full rounded-xl my-6"><source src="'.e($src).'"></video>';
                     }
                     break;
 
@@ -221,14 +242,16 @@ class ArticleService
                 $textTypes = ['paragraph', 'h1', 'h2', 'h3', 'quote', 'callout', 'bullet', 'numbered'];
                 foreach ($blocks as $block) {
                     if (in_array($block['type'] ?? '', $textTypes)) {
-                        $text .= strip_tags($block['content'] ?? '') . ' ';
+                        $text .= strip_tags($block['content'] ?? '').' ';
                     }
                 }
+
                 return Str::limit(trim($text), $length);
             }
         } catch (\Throwable $e) {
             // fallback
         }
+
         return Str::limit(strip_tags($content), $length);
     }
 
@@ -239,7 +262,7 @@ class ArticleService
     {
         $slug = Str::slug($title);
         $base = $slug;
-        $i    = 1;
+        $i = 1;
 
         while (true) {
             $query = Article::where('slug', $slug);
@@ -249,7 +272,7 @@ class ArticleService
             if (! $query->exists()) {
                 break;
             }
-            $slug = $base . '-' . $i++;
+            $slug = $base.'-'.$i++;
         }
 
         return $slug;
