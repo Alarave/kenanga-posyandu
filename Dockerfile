@@ -14,9 +14,15 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     && apt-get clean
 
-# Install ekstensi PHP untuk PostgreSQL
-RUN docker-php-ext-install pdo pdo_pgsql pgsql
+# ... (kode sebelumnya) ...
 
+# 1. Konfigurasi GD
+RUN docker-php-ext-configure gd
+
+# 2. Install GD (dan ekstensi lain yang mungkin sudah ada, seperti pdo_pgsql)
+RUN docker-php-ext-install gd pdo pdo_pgsql pgsql
+
+# ... (kode selanjutnya) ...
 # Install Node.js v18.x dan npm
 RUN curl -sL https://deb.nodesource.com/setup_18.x | bash - && \
     apt-get install -y nodejs
@@ -39,7 +45,7 @@ COPY . .
 
 # Install dependensi PHP dan optimasi autoloader
 # RUN composer install --no-dev --optimize-autoloader
-RUN composer install
+RUN composer install --ignore-platform-req=ext-gd
 
 # Expose port yang digunakan oleh aplikasi Laravel
 EXPOSE 8080
