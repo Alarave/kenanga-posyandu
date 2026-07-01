@@ -37,8 +37,7 @@ WORKDIR /var/www
 COPY package*.json ./
 
 # Install dependensi Node.js
-# RUN npm install --frozen-lockfile
-RUN npm install
+RUN rm -rf node_modules package-lock.json && npm install
 
 # Salin semua file proyek setelah dependensi terinstal
 COPY . .
