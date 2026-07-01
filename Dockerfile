@@ -43,6 +43,9 @@ RUN npm install
 # Salin semua file proyek setelah dependensi terinstal
 COPY . .
 
+# Build Vite assets
+RUN npm run build
+
 # Install dependensi PHP dan optimasi autoloader
 # RUN composer install --no-dev --optimize-autoloader
 RUN composer install --no-dev --optimize-autoloader
