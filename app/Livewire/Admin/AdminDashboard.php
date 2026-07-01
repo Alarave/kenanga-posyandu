@@ -362,7 +362,7 @@ class AdminDashboard extends BaseAdminComponent
     protected function getMonthlyWeighingData(Builder $medicalRecordQuery): array
     {
         $startDate = Carbon::now()->subMonths(11)->startOfMonth();
-        $dbDriver = config('database.default');
+        $dbDriver = $medicalRecordQuery->getConnection()->getDriverName();
         $dateFormat = match ($dbDriver) {
             'sqlite' => 'strftime("%m %Y", visit_date)',
             'pgsql' => 'TO_CHAR(visit_date, \'MM YYYY\')',
