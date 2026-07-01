@@ -42,12 +42,11 @@ RUN rm -rf node_modules package-lock.json && npm install
 # Salin semua file proyek setelah dependensi terinstal
 COPY . .
 
+# Install dependensi PHP dan optimasi autoloader (HARUS sebelum npm run build agar vendor tersedia untuk Vite)
+RUN composer install --no-dev --optimize-autoloader
+
 # Build Vite assets
 RUN npm run build
-
-# Install dependensi PHP dan optimasi autoloader
-# RUN composer install --no-dev --optimize-autoloader
-RUN composer install --no-dev --optimize-autoloader
 
 # Expose port yang digunakan oleh aplikasi Laravel
 EXPOSE 8080
