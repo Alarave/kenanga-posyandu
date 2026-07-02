@@ -897,9 +897,11 @@
 @script
 <script>
 // ── Global Chart Defaults ──
-Chart.defaults.font.family = "'Public Sans', sans-serif";
-Chart.defaults.font.weight = '700';
-Chart.defaults.color = '#475569';
+if (typeof Chart !== 'undefined') {
+    Chart.defaults.font.family = "'Public Sans', sans-serif";
+    Chart.defaults.font.weight = '700';
+    Chart.defaults.color = '#475569';
+}
 
 window.visitsTrendChart = null;
 window.nutritionTrendChart = null;
@@ -982,6 +984,11 @@ function hideChartError(canvasId) {
 }
 
 function initCharts(data = null) {
+    if (typeof Chart === 'undefined') {
+        setTimeout(() => initCharts(data), 100);
+        return;
+    }
+
     // Destroy existing if they exist (safely inside try-catch)
     try { if (visitsTrendChart) { visitsTrendChart.destroy(); visitsTrendChart = null; } } catch (e) {}
     try { if (nutritionTrendChart) { nutritionTrendChart.destroy(); nutritionTrendChart = null; } } catch (e) {}
