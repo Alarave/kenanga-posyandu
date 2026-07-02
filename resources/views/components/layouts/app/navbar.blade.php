@@ -140,7 +140,7 @@
 <div id="mobileSearchBar"
     class="hidden lg:hidden px-4 py-2.5 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800/80 shadow-sm">
     <div class="w-full">
-        @livewire('global-search', key('mobile-search'))
+        <livewire:global-search />
     </div>
 </div>
 
