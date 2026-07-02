@@ -1009,8 +1009,12 @@ function initCharts(data = null) {
 
     // Helper to extract plain array from data payload or Livewire proxy
     const getArr = (fromData, wireProp) => {
-        let val = fromData ? fromData[wireProp] : $wire.get(wireProp);
-        if (val === undefined || val === null) val = $wire[wireProp];
+        let val = null;
+        if (fromData && fromData[wireProp] !== undefined) {
+            val = fromData[wireProp];
+        } else {
+            val = $wire[wireProp];
+        }
         try {
             return JSON.parse(JSON.stringify(val || []));
         } catch(e) {
