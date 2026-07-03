@@ -100,31 +100,37 @@
                         $lanPct = $uTotal > 0 ? round(($ageCategories['lansia'] / $uTotal) * 100) : 0;
                         $resPct = $uTotal > 0 ? round(($ageCategories['resti'] / $uTotal) * 100) : 0;
                     @endphp
-                    <div>
+                    <div wire:click="$parent.drillDown('Kategori Usia Lansia: Pra-Lansia (45 - 59 Tahun)', 'lansia_age_pra')"
+                         class="cursor-pointer hover:bg-slate-50 px-2 -mx-2 py-1 rounded-xl transition-colors"
+                         title="Klik untuk melihat daftar pra-lansia">
                         <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-1.5">
-                            <span>Pra-Lansia (45 - 59 Tahun)</span>
+                            <span class="hover:underline hover:text-indigo-600">Pra-Lansia (45 - 59 Tahun)</span>
                             <span class="text-slate-900 font-extrabold">{{ $ageCategories['pra'] }} Jiwa ({{ $praPct }}%)</span>
                         </div>
                         <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                            <div class="h-full bg-indigo-400 rounded-full" style="width: {{ $praPct }}%"></div>
+                            <div class="h-full rounded-full" style="width: {{ $praPct }}%; background-color: #818cf8;"></div>
                         </div>
                     </div>
-                    <div>
+                    <div wire:click="$parent.drillDown('Kategori Usia Lansia: Lansia (60 - 69 Tahun)', 'lansia_age_lansia')"
+                         class="cursor-pointer hover:bg-slate-50 px-2 -mx-2 py-1 rounded-xl transition-colors"
+                         title="Klik untuk melihat daftar lansia">
                         <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-1.5">
-                            <span>Lansia (60 - 69 Tahun)</span>
+                            <span class="hover:underline hover:text-indigo-600">Lansia (60 - 69 Tahun)</span>
                             <span class="text-slate-900 font-extrabold">{{ $ageCategories['lansia'] }} Jiwa ({{ $lanPct }}%)</span>
                         </div>
                         <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                            <div class="h-full bg-indigo-500 rounded-full" style="width: {{ $lanPct }}%"></div>
+                            <div class="h-full rounded-full" style="width: {{ $lanPct }}%; background-color: #6366f1;"></div>
                         </div>
                     </div>
-                    <div>
+                    <div wire:click="$parent.drillDown('Kategori Usia Lansia: Risiko Tinggi (70+ Tahun)', 'lansia_age_resti')"
+                         class="cursor-pointer hover:bg-slate-50 px-2 -mx-2 py-1 rounded-xl transition-colors"
+                         title="Klik untuk melihat daftar lansia resiko tinggi">
                         <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-1.5">
-                            <span>Lansia Risiko Tinggi (70+ Tahun)</span>
+                            <span class="hover:underline hover:text-indigo-600">Lansia Risiko Tinggi (70+ Tahun)</span>
                             <span class="text-slate-900 font-extrabold">{{ $ageCategories['resti'] }} Jiwa ({{ $resPct }}%)</span>
                         </div>
                         <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                            <div class="h-full bg-indigo-650 rounded-full" style="width: {{ $resPct }}%"></div>
+                            <div class="h-full rounded-full" style="width: {{ $resPct }}%; background-color: #4338ca;"></div>
                         </div>
                     </div>
                 </div>
@@ -148,36 +154,44 @@
                         $lebihPct = $imtTotal > 0 ? round(($imtStats['lebih'] / $imtTotal) * 100) : 0;
                         $obesitasPct = $imtTotal > 0 ? round(($imtStats['obesitas'] / $imtTotal) * 100) : 0;
                     @endphp
-                    <div>
+                    <div wire:click="$parent.drillDown('IMT Lansia: Kekurangan Berat (IMT < 18.5)', 'lansia_imt_kurang')"
+                         class="cursor-pointer hover:bg-slate-50 px-2 -mx-2 py-1 rounded-xl transition-colors"
+                         title="Klik untuk melihat daftar lansia dengan kekurangan berat">
                         <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-1">
-                            <span>Kekurangan Berat (IMT &lt; 18.5)</span>
+                            <span class="hover:underline hover:text-teal-600">Kekurangan Berat (IMT &lt; 18.5)</span>
                             <span class="text-slate-900 font-extrabold">{{ $imtStats['kurang'] }} Jiwa ({{ $kurangPct }}%)</span>
                         </div>
                         <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
                             <div class="h-full bg-amber-400 rounded-full" style="width: {{ $kurangPct }}%"></div>
                         </div>
                     </div>
-                    <div>
+                    <div wire:click="$parent.drillDown('IMT Lansia: Berat Badan Normal (18.5 - 24.9)', 'lansia_imt_normal')"
+                         class="cursor-pointer hover:bg-slate-50 px-2 -mx-2 py-1 rounded-xl transition-colors"
+                         title="Klik untuk melihat daftar lansia dengan berat badan normal">
                         <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-1">
-                            <span>Berat Badan Normal (18.5 - 24.9)</span>
+                            <span class="hover:underline hover:text-teal-600">Berat Badan Normal (18.5 - 24.9)</span>
                             <span class="text-slate-900 font-extrabold">{{ $imtStats['normal'] }} Jiwa ({{ $normalPct }}%)</span>
                         </div>
                         <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
                             <div class="h-full bg-teal-500 rounded-full" style="width: {{ $normalPct }}%"></div>
                         </div>
                     </div>
-                    <div>
+                    <div wire:click="$parent.drillDown('IMT Lansia: Kelebihan Berat (25.0 - 26.9)', 'lansia_imt_lebih')"
+                         class="cursor-pointer hover:bg-slate-50 px-2 -mx-2 py-1 rounded-xl transition-colors"
+                         title="Klik untuk melihat daftar lansia dengan kelebihan berat">
                         <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-1">
-                            <span>Kelebihan Berat (25.0 - 26.9)</span>
+                            <span class="hover:underline hover:text-teal-600">Kelebihan Berat (25.0 - 26.9)</span>
                             <span class="text-slate-900 font-extrabold">{{ $imtStats['lebih'] }} Jiwa ({{ $lebihPct }}%)</span>
                         </div>
                         <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
                             <div class="h-full bg-orange-400 rounded-full" style="width: {{ $lebihPct }}%"></div>
                         </div>
                     </div>
-                    <div>
+                    <div wire:click="$parent.drillDown('IMT Lansia: Obesitas (IMT >= 27)', 'lansia_imt_obesitas')"
+                         class="cursor-pointer hover:bg-slate-50 px-2 -mx-2 py-1 rounded-xl transition-colors"
+                         title="Klik untuk melihat daftar lansia dengan obesitas">
                         <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-1">
-                            <span>Obesitas (IMT &ge; 27)</span>
+                            <span class="hover:underline hover:text-rose-700">Obesitas (IMT &ge; 27)</span>
                             <span class="text-slate-900 font-extrabold">{{ $imtStats['obesitas'] }} Jiwa ({{ $obesitasPct }}%)</span>
                         </div>
                         <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">

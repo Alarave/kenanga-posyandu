@@ -903,6 +903,17 @@
                             <div class="w-full bg-slate-100 rounded-full h-2">
                                 <div class="{{ $info['color'] }} h-2 rounded-full transition-all duration-500" style="width: {{ $percent }}%"></div>
                             </div>
+                            @if(count($bumilTrimesterNames[$key]) > 0)
+                            <div class="mt-2 flex flex-wrap gap-1">
+                                @foreach($bumilTrimesterNames[$key] as $warga)
+                                    <a href="{{ route('admin.patients.show', $warga['id']) }}" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-pink-50 hover:bg-pink-100 text-pink-700 hover:text-pink-800 text-[10px] transition-colors border border-pink-100/50">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-pink-400"></span>
+                                        <span class="font-medium truncate max-w-[120px]">{{ $warga['name'] }}</span>
+                                        <span class="text-pink-400 text-[9px] font-normal">({{ $warga['gestational_age'] }})</span>
+                                    </a>
+                                @endforeach
+                            </div>
+                            @endif
                         </div>
                     @endforeach
                 </div>
@@ -970,11 +981,59 @@
                     </div>
                 </div>
 
+                {{-- Daftar Lansia --}}
+                @if($totalLansia > 0)
+                <div class="mt-3 mb-3 pt-3 border-t border-slate-100 space-y-2">
+                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Daftar Lansia</span>
+                    
+                    @if(count($lansiaDemografiNames['60_69']) > 0)
+                    <div>
+                        <span class="text-[9px] font-semibold text-orange-600 block mb-1">60–69 Tahun:</span>
+                        <div class="flex flex-wrap gap-1">
+                            @foreach($lansiaDemografiNames['60_69'] as $warga)
+                                <a href="{{ route('admin.patients.show', $warga['id']) }}" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-orange-50 hover:bg-orange-100 text-orange-700 hover:text-orange-800 text-[10px] transition-colors border border-orange-100/50">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
+                                    <span class="font-medium truncate max-w-[120px]">{{ $warga['name'] }}</span>
+                                    <span class="text-orange-400 text-[9px] font-normal">({{ $warga['age'] }} thn)</span>
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+
+                    @if(count($lansiaDemografiNames['70_plus']) > 0)
+                    <div>
+                        <span class="text-[9px] font-semibold text-red-600 block mb-1">70+ Tahun:</span>
+                        <div class="flex flex-wrap gap-1">
+                            @foreach($lansiaDemografiNames['70_plus'] as $warga)
+                                <a href="{{ route('admin.patients.show', $warga['id']) }}" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-50 hover:bg-red-100 text-red-700 hover:text-red-800 text-[10px] transition-colors border border-red-100/50">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span>
+                                    <span class="font-medium truncate max-w-[120px]">{{ $warga['name'] }}</span>
+                                    <span class="text-red-400 text-[9px] font-normal">({{ $warga['age'] }} thn)</span>
+                                </a>
+                            @endforeach
+                        </div>
+                    </div>
+                    @endif
+                </div>
+                @endif
+
                 {{-- Keterangan risiko --}}
                 @if($lansiaDemografi['70_plus'] > 0)
-                <div class="flex items-center gap-2 p-2.5 rounded-xl bg-red-50 border border-red-200">
-                    <span class="material-symbols-outlined text-red-500 text-[16px]">monitor_heart</span>
-                    <span class="text-xs font-semibold text-red-700">{{ $lansiaDemografi['70_plus'] }} lansia perlu pemantauan intensif</span>
+                <div class="flex flex-col gap-2 p-2.5 rounded-xl bg-red-50 border border-red-200">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-red-500 text-[16px]">monitor_heart</span>
+                        <span class="text-xs font-semibold text-red-700">{{ $lansiaDemografi['70_plus'] }} lansia (70+ thn) perlu pemantauan intensif:</span>
+                    </div>
+                    <div class="flex flex-wrap gap-1 pl-6">
+                        @foreach($lansiaDemografiNames['70_plus'] as $warga)
+                            <a href="{{ route('admin.patients.show', $warga['id']) }}" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-100 hover:bg-red-200 text-red-800 hover:text-red-900 text-[10px] transition-colors border border-red-200/50">
+                                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                                <span class="font-medium truncate max-w-[120px]">{{ $warga['name'] }}</span>
+                                <span class="text-red-500 text-[9px] font-normal">({{ $warga['age'] }} thn)</span>
+                            </a>
+                        @endforeach
+                    </div>
                 </div>
                 @else
                 <div class="flex items-center gap-2 p-2.5 rounded-xl bg-emerald-50 border border-emerald-200">
@@ -1046,6 +1105,13 @@
                                 maintainAspectRatio: false,
                                 cutout: '80%',
                                 animation: { duration: 800, easing: 'easeOutQuart' },
+                                onClick: (event, activeElements) => {
+                                    if (activeElements && activeElements.length > 0) {
+                                        const index = activeElements[0].index;
+                                        const label = nd.labels[index];
+                                        $wire.selectNutritionStatus(label);
+                                    }
+                                },
                                 plugins: {
                                     legend: { display: false },
                                     tooltip: {
@@ -1103,21 +1169,24 @@
                                 default => '#94a3b8',
                             };
                         @endphp
-                        <div class="flex items-center gap-2 cursor-pointer transition-opacity duration-200 hover:opacity-80"
-                            :class="hiddenItems.includes({{ $index }}) ? 'opacity-40 grayscale' : ''"
-                            @click="toggleVisibility({{ $index }})">
-                            <span class="w-2 h-2 rounded-full shrink-0"
-                                style="background:{{ $color }}"></span>
+                        <div class="flex items-center gap-2 transition-opacity duration-200 hover:opacity-80"
+                             :class="hiddenItems.includes({{ $index }}) ? 'opacity-40 grayscale' : ''">
+                            <span class="w-2 h-2 rounded-full shrink-0 cursor-pointer"
+                                style="background:{{ $color }}" @click="toggleVisibility({{ $index }})"></span>
                             <span
-                                class="text-xs text-slate-600 flex-1 truncate select-none">{{ $label }}</span>
+                                class="text-xs text-slate-600 flex-1 truncate select-none cursor-pointer hover:text-indigo-600 hover:underline"
+                                wire:click="selectNutritionStatus('{{ $label }}')">{{ $label }}</span>
                             <div class="flex items-center gap-2 shrink-0">
-                                <div class="w-16 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                                <div class="w-12 h-1.5 bg-slate-100 rounded-full overflow-hidden cursor-pointer" @click="toggleVisibility({{ $index }})">
                                     <div class="h-full rounded-full transition-all duration-500"
                                         style="background:{{ $color }}; width:{{ $percentage }}%;">
                                     </div>
                                 </div>
-                                <span class="text-xs font-semibold text-slate-700 w-8 text-right select-none"
-                                    style="font-variant-numeric:tabular-nums;">{{ $percentage }}%</span>
+                                <span class="text-xs font-semibold text-slate-700 w-8 text-right select-none cursor-pointer"
+                                    style="font-variant-numeric:tabular-nums;" @click="toggleVisibility({{ $index }})">{{ $percentage }}%</span>
+                                <button wire:click="selectNutritionStatus('{{ $label }}')" class="w-6 h-6 flex items-center justify-center rounded bg-slate-50 hover:bg-indigo-50 text-slate-400 hover:text-indigo-600 transition-colors" title="Lihat daftar balita">
+                                    <span class="material-symbols-outlined text-[14px]">visibility</span>
+                                </button>
                             </div>
                         </div>
                     @endforeach
@@ -1255,6 +1324,50 @@
     </div>
 </section>
 
-
+    {{-- ── Daftar Balita berdasarkan Status Gizi Modal ── --}}
+    <div x-data="{ open: @entangle('showNutritionModal') }">
+        <x-modals.info-modal title="Daftar Balita - Status Gizi: {{ $selectedNutritionStatus }}" size="lg">
+            @if(empty($balitasForSelectedStatus))
+                <div class="text-center py-6 text-slate-400">
+                    <span class="material-symbols-outlined text-[32px] mb-2 opacity-50">child_care</span>
+                    <p class="text-xs font-medium">Tidak ada balita dengan status gizi ini.</p>
+                </div>
+            @else
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-100 text-slate-400 text-[10px] font-bold uppercase tracking-wider">
+                                <th class="py-2.5">Nama</th>
+                                <th class="py-2.5">Usia</th>
+                                <th class="py-2.5">Gender</th>
+                                <th class="py-2.5 text-right">BB / TB</th>
+                                <th class="py-2.5 pl-4">Posyandu</th>
+                                <th class="py-2.5 text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-xs text-slate-600">
+                            @foreach($balitasForSelectedStatus as $balita)
+                                <tr>
+                                    <td class="py-3 font-semibold text-slate-800">{{ $balita['name'] }}</td>
+                                    <td class="py-3">{{ $balita['age'] }}</td>
+                                    <td class="py-3">{{ $balita['gender'] }}</td>
+                                    <td class="py-3 text-right font-medium text-slate-800">
+                                        {{ $balita['weight'] }} kg / {{ $balita['height'] }} cm
+                                    </td>
+                                    <td class="py-3 pl-4">{{ $balita['posyandu_name'] }}</td>
+                                    <td class="py-3 text-right">
+                                        <a href="{{ route('admin.patients.show', $balita['id']) }}" 
+                                           class="inline-flex w-7 h-7 items-center justify-center rounded-lg bg-slate-50 text-slate-400 hover:bg-indigo-500 hover:text-white transition-all">
+                                            <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
+        </x-modals.info-modal>
+    </div>
 
 </div>

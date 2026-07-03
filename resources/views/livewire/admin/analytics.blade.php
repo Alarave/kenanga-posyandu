@@ -435,10 +435,12 @@
                                     $bulletColor = 'bg-slate-400';
                                 }
                             @endphp
-                            <div class="flex items-center justify-between py-2.5 text-sm font-bold text-slate-750">
+                            <div wire:click="drillDown('Balita ({{ $label }})', 'nutrition_status', null, '{{ $label }}')" 
+                                 class="flex items-center justify-between py-2.5 text-sm font-bold text-slate-750 hover:text-indigo-600 cursor-pointer transition-colors hover:bg-slate-50/50 px-2 -mx-2 rounded-lg"
+                                 title="Klik untuk melihat daftar balita">
                                 <span class="flex items-center gap-2">
                                     <span class="w-3 h-3 rounded-full inline-block {{ $bulletColor }}"></span>
-                                    {{ $label }}
+                                    <span class="hover:underline">{{ $label }}</span>
                                 </span>
                                 <span class="font-extrabold text-slate-900">{{ $val }} <span class="text-slate-400 font-semibold">({{ $pct }}%)</span></span>
                             </div>
@@ -807,7 +809,7 @@
                                 </td>
                                 <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ \Carbon\Carbon::parse($record->visit_date)->translatedFormat('d M Y') }}</td>
                                 <td class="px-6 py-4 text-right">
-                                    <a href="{{ route('admin.patients.show', $record->patient_id) }}" class="w-9 h-9 inline-flex items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:bg-indigo-650 hover:text-white hover:shadow-md hover:shadow-indigo-650/10 transition-all border border-slate-200/60">
+                                    <a href="{{ route('admin.patients.show', $record->patient_id) }}" class="w-9 h-9 inline-flex items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:bg-indigo-700 hover:text-white hover:shadow-md hover:shadow-indigo-700/10 transition-all border border-slate-200/60">
                                         <span class="material-symbols-outlined text-[20px]">visibility</span>
                                     </a>
                                 </td>
@@ -832,7 +834,7 @@
             <div class="px-8 py-6 border-b border-slate-200 flex items-center justify-between bg-slate-50">
                 <div>
                     <h3 class="text-xl font-extrabold text-slate-900">{{ $drillDownTitle }}</h3>
-                    <p class="text-xs text-slate-500 mt-1 font-bold">Menampilkan hingga 50 rekam medis pencocokan terbaru</p>
+                    <p class="text-xs text-slate-500 mt-1 font-bold">Menampilkan seluruh rekam medis pencocokan</p>
                 </div>
                 <button wire:click="closeDrillDown" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:text-slate-900 transition-colors cursor-pointer border border-slate-200">
                     <span class="material-symbols-outlined">close</span>
@@ -1298,11 +1300,8 @@ function initCharts(data = null) {
                             const firstPoint = activeElements[0];
                             const index = firstPoint.index;
                             const label = String(nutLabels[index]);
-                            let type = 'balita';
-                            if (label.includes('Buruk') || label.includes('Sangat Kurang')) type = 'gizi_buruk';
-                            else if (label.includes('Kurang') || label.includes('Pendek') || label.includes('Stunting')) type = 'stunting';
                             
-                            $wire.call('drillDown', `Balita (${label})`, type);
+                            $wire.call('drillDown', `Balita (${label})`, 'nutrition_status', null, label);
                         }
                     },
                     plugins: { legend: { display: false } }
@@ -1590,8 +1589,25 @@ function initCharts(data = null) {
                             const index = firstPoint.index;
                             const label = labels[index];
                             const month = index + 1;
-                            
-                            $wire.call('drillDown', `Lansia - ${label}`, 'lansia', month);
+                            const datasetIndex = firstPoint.datasetIndex;
+
+                            const types = [
+                                'lansia_hipertensi',
+                                'lansia_hiperglikemia',
+                                'lansia_hiperkolesterolemia',
+                                'lansia_hiperurisemia'
+                            ];
+                            const datasetLabels = [
+                                'Hipertensi',
+                                'Hiperglikemia',
+                                'Hiperkolesterolemia',
+                                'Hiperurisemia'
+                            ];
+
+                            const type = types[datasetIndex] || 'lansia';
+                            const datasetLabel = datasetLabels[datasetIndex] || '';
+
+                            $wire.call('drillDown', `Lansia - ${datasetLabel} (${label})`, type, month);
                         }
                     },
                     scales: {

@@ -207,10 +207,73 @@ class Analytics extends BaseAdminComponent
     }
 
     // ── ANA-22: Chart click drill-down ──
-    public function drillDown(string $label, string $type, ?int $month = null): void
+    public function drillDown(string $label, string $type, ?int $month = null, ?string $statusFilter = null): void
     {
         $this->showDrillDown = true;
         $this->drillDownTitle = "Detail: {$label}";
+
+        if (str_starts_with($type, 'lansia_age_')) {
+            $patients = $this->applyPosyanduScope(Patient::query(), $this->selectedPosyandu)
+                ->where('category', 'lansia')
+                ->where('status_mutasi', 'aktif')
+                ->get();
+
+            $filteredPatients = $patients->filter(function ($p) use ($type) {
+                if (!$p->birth_date) return false;
+                $age = $p->birth_date->age;
+                return match ($type) {
+                    'lansia_age_pra' => $age >= 45 && $age <= 59,
+                    'lansia_age_lansia' => $age >= 60 && $age <= 69,
+                    'lansia_age_resti' => $age >= 70,
+                    default => false,
+                };
+            });
+
+            $this->drillDownData = $filteredPatients->map(fn ($p) => [
+                'name' => $p->full_name ?? '-',
+                'nik' => $p->id_number ?? '-',
+                'posyandu' => $p->posyandu?->name ?? '-',
+                'nutrition_status' => 'Umur: ' . $p->age . ' Tahun',
+                'visit_date' => 'Terdaftar',
+                'patient_id' => $p->id,
+            ])->values()->toArray();
+            return;
+        }
+
+        if (str_starts_with($type, 'lansia_imt_')) {
+            $query = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
+                ->whereHas('patient', function ($q) {
+                    $q->where('category', 'lansia')->where('status_mutasi', 'aktif');
+                })
+                ->whereYear('visit_date', $this->selectedYear)
+                ->when($this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $this->selectedMonth))
+                ->orderBy('visit_date', 'desc')
+                ->orderBy('id', 'desc');
+
+            $records = $query->get()->unique('patient_id');
+
+            $filteredRecords = $records->filter(function ($r) use ($type) {
+                if (!$r->weight || !$r->height) return false;
+                $imt = $r->weight / (($r->height / 100) ** 2);
+                return match ($type) {
+                    'lansia_imt_kurang' => $imt < 18.5,
+                    'lansia_imt_normal' => $imt >= 18.5 && $imt < 25,
+                    'lansia_imt_lebih' => $imt >= 25 && $imt < 27,
+                    'lansia_imt_obesitas' => $imt >= 27,
+                    default => false,
+                };
+            });
+
+            $this->drillDownData = $filteredRecords->map(fn ($r) => [
+                'name' => $r->patient?->full_name ?? '-',
+                'nik' => $r->patient?->id_number ?? '-',
+                'posyandu' => $r->patient?->posyandu?->name ?? '-',
+                'nutrition_status' => 'IMT: ' . number_format($r->weight / (($r->height / 100) ** 2), 2),
+                'visit_date' => $r->visit_date?->format('d M Y') ?? '-',
+                'patient_id' => $r->patient_id,
+            ])->values()->toArray();
+            return;
+        }
 
         $query = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
             ->with(['patient.posyandu'])
@@ -233,14 +296,30 @@ class Analytics extends BaseAdminComponent
             'balita' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta'])),
             'ibu_hamil' => $query->whereHas('patient', fn ($q) => $q->where('category', 'ibu_hamil')),
             'lansia' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')),
+            'nutrition_status' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+                ->where('nutrition_status', $statusFilter),
+            'lansia_hipertensi' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
+                ->where(fn ($q) => $q->where('systolic_bp', '>=', 140)->orWhere('diastolic_bp', '>=', 90)),
+            'lansia_hiperglikemia' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
+                ->where('blood_sugar', '>=', 200),
+            'lansia_hiperkolesterolemia' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
+                ->where('cholesterol', '>=', 200),
+            'lansia_hiperurisemia' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
+                ->where('uric_acid', '>=', 7.0),
             default => null,
         };
 
-        $this->drillDownData = $query->latest('visit_date')->limit(50)->get()->map(fn ($r) => [
+        $this->drillDownData = $query->latest('visit_date')->get()->map(fn ($r) => [
             'name' => $r->patient?->full_name ?? '-',
             'nik' => $r->patient?->id_number ?? '-',
             'posyandu' => $r->patient?->posyandu?->name ?? '-',
-            'nutrition_status' => $r->nutrition_status ?? '-',
+            'nutrition_status' => match ($type) {
+                'lansia_hipertensi' => 'TD: ' . ($r->systolic_bp ?: '-') . '/' . ($r->diastolic_bp ?: '-') . ' mmHg',
+                'lansia_hiperglikemia' => 'GDS: ' . ($r->blood_sugar ?: '-') . ' mg/dL',
+                'lansia_hiperkolesterolemia' => 'Kolesterol: ' . ($r->cholesterol ?: '-') . ' mg/dL',
+                'lansia_hiperurisemia' => 'Asam Urat: ' . ($r->uric_acid ?: '-') . ' mg/dL',
+                default => $r->nutrition_status ?? '-',
+            },
             'visit_date' => $r->visit_date?->format('d M Y') ?? '-',
             'patient_id' => $r->patient_id,
         ])->toArray();

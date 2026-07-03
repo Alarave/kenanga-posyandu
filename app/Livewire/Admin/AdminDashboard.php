@@ -53,9 +53,19 @@ class AdminDashboard extends BaseAdminComponent
     // Dashboard metrics
     public $lansiaDemografi = ['60_69' => 0, '70_plus' => 0];
 
+    public array $lansiaDemografiNames = ['60_69' => [], '70_plus' => []];
+
     public $bumilTrimester = ['T1' => 0, 'T2' => 0, 'T3' => 0];
 
+    public array $bumilTrimesterNames = ['T1' => [], 'T2' => [], 'T3' => []];
+
     public $kehadiranBalita = ['hadir' => 0, 'tidak_hadir' => 0, 'persentase' => 0];
+
+    public bool $showNutritionModal = false;
+
+    public ?string $selectedNutritionStatus = null;
+
+    public array $balitasForSelectedStatus = [];
 
     public $kelahiranBulanIni = 0;
 
@@ -249,6 +259,10 @@ class AdminDashboard extends BaseAdminComponent
             ->limit(10)
             ->get();
 
+        $this->loadNamesForWidgets();
+        if ($this->selectedNutritionStatus) {
+            $this->loadBalitasForSelectedStatus();
+        }
     }
 
     protected function computeDashboardStatsRealtime()
@@ -375,6 +389,102 @@ class AdminDashboard extends BaseAdminComponent
         }
 
         return ['labels' => $labels, 'data' => $data];
+    }
+
+    protected function loadNamesForWidgets()
+    {
+        $patientQuery = $this->applyDashboardFilters(Patient::query(), 'patient');
+        $medicalRecordQuery = $this->applyDashboardFilters(MedicalRecord::query(), 'medical_record');
+
+        // 1. Lansia Names
+        $lansia = (clone $patientQuery)->where('category', 'lansia')->get(['id', 'full_name', 'birth_date']);
+        $group60 = [];
+        $group70 = [];
+        foreach ($lansia as $l) {
+            if ($l->birth_date) {
+                $age = $l->birth_date->age;
+                $lansiaData = [
+                    'id' => $l->id,
+                    'name' => $l->full_name,
+                    'age' => $age,
+                ];
+                if ($age >= 70) {
+                    $group70[] = $lansiaData;
+                } elseif ($age >= 60) {
+                    $group60[] = $lansiaData;
+                }
+            }
+        }
+        $this->lansiaDemografiNames = ['60_69' => $group60, '70_plus' => $group70];
+
+        // 2. Bumil Names
+        $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+        $records = (clone $medicalRecordQuery)
+            ->whereIn('id', $latestRecordSubquery)
+            ->whereHas('patient', fn ($q) => $q->where('category', 'ibu_hamil'))
+            ->with(['patient:id,full_name'])
+            ->get(['id', 'patient_id', 'gestational_age']);
+
+        $t1 = [];
+        $t2 = [];
+        $t3 = [];
+
+        foreach ($records as $record) {
+            $weeks = (int) filter_var($record->gestational_age, FILTER_SANITIZE_NUMBER_INT);
+            if ($weeks > 0 && $record->patient) {
+                $patientData = [
+                    'id' => $record->patient->id,
+                    'name' => $record->patient->full_name,
+                    'gestational_age' => $record->gestational_age,
+                ];
+                if ($weeks <= 13) {
+                    $t1[] = $patientData;
+                } elseif ($weeks <= 27) {
+                    $t2[] = $patientData;
+                } else {
+                    $t3[] = $patientData;
+                }
+            }
+        }
+        $this->bumilTrimesterNames = ['T1' => $t1, 'T2' => $t2, 'T3' => $t3];
+    }
+
+    public function selectNutritionStatus(string $status)
+    {
+        $this->selectedNutritionStatus = $status;
+        $this->loadBalitasForSelectedStatus();
+        $this->showNutritionModal = true;
+    }
+
+    protected function loadBalitasForSelectedStatus()
+    {
+        if (! $this->selectedNutritionStatus) {
+            $this->balitasForSelectedStatus = [];
+            return;
+        }
+
+        $medicalRecordQuery = $this->applyDashboardFilters(MedicalRecord::query(), 'medical_record');
+        $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+
+        $records = $medicalRecordQuery
+            ->whereIn('id', $latestRecordSubquery)
+            ->where('nutrition_status', $this->selectedNutritionStatus)
+            ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+            ->with(['patient', 'patient.posyandu'])
+            ->get();
+
+        $this->balitasForSelectedStatus = $records->map(function ($record) {
+            return [
+                'id' => $record->patient->id,
+                'name' => $record->patient->full_name,
+                'age' => $record->patient->age,
+                'gender' => $record->patient->gender === 'L' ? 'Laki-laki' : 'Perempuan',
+                'weight' => $record->weight,
+                'height' => $record->height,
+                'posyandu_name' => $record->patient->posyandu?->name ?? '-',
+                'visit_date' => Carbon::parse($record->visit_date)->translatedFormat('d M Y'),
+            ];
+        })->toArray();
     }
 
     public function render()
