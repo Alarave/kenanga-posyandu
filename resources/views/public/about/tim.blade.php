@@ -21,6 +21,8 @@
                     <div class="w-full aspect-3/4 overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-800 relative shadow-xs">
                         <img
                             src="{{ $k->image }}"
+                            loading="lazy"
+                            decoding="async"
                             class="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-500"
                             alt="{{ $k->name }}"
                         />

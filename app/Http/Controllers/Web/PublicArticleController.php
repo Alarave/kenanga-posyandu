@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class PublicArticleController extends Controller
 {
@@ -19,20 +20,27 @@ class PublicArticleController extends Controller
             ])
             ->latest('published_at');
 
-        $featured = Article::with(['category', 'user'])
-            ->where('status', 'published')
-            ->latest('published_at')
-            ->first();
+        $featured = Cache::remember('featured_article', 300, function () {
+            return Article::with(['category', 'user'])
+                ->where('status', 'published')
+                ->latest('published_at')
+                ->first();
+        });
 
         $articles = $query->paginate(4)->withQueryString();
-        $categories = Category::withCount(['articles' => fn ($q) => $q->where('status', 'published')])->get();
+        
+        $categories = Cache::remember('public_categories_count', 300, function () {
+            return Category::withCount(['articles' => fn ($q) => $q->where('status', 'published')])->get();
+        });
 
-        $popularArticles = Article::with(['category'])
-            ->where('status', 'published')
-            ->latest('published_at')
-            ->skip(1)
-            ->take(3)
-            ->get();
+        $popularArticles = Cache::remember('popular_articles', 300, function () {
+            return Article::with(['category', 'user'])
+                ->where('status', 'published')
+                ->latest('published_at')
+                ->skip(1)
+                ->take(3)
+                ->get();
+        });
 
         return view('public.articles.index', compact('articles', 'featured', 'categories', 'popularArticles'));
     }

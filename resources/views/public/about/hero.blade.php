@@ -52,8 +52,11 @@
 
                             {{-- Slide 1 --}}
                             <div class="carousel-slide absolute inset-0 transition-opacity duration-700 ease-in-out z-10" style="opacity:1;">
-                                <img src="{{ asset('assets/img/about_hero_illustration.png') }}"
+                                <img src="{{ asset('assets/img/about_hero_illustration.webp') }}"
                                      alt="Pelayanan Posyandu Kenanga"
+                                     fetchpriority="high"
+                                     loading="eager"
+                                     decoding="sync"
                                      class="w-full h-full object-cover">
                                 <div class="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-black/60 to-transparent"></div>
                                 <div class="absolute bottom-5 left-5 right-5">
@@ -64,8 +67,10 @@
 
                             {{-- Slide 2 --}}
                             <div class="carousel-slide absolute inset-0 transition-opacity duration-700 ease-in-out z-0" style="opacity:0;">
-                                <img src="{{ asset('assets/img/carousel_1.png') }}"
+                                <img src="{{ asset('assets/img/carousel_1.webp') }}"
                                      alt="Layanan Ibu dan Bayi"
+                                     loading="lazy"
+                                     decoding="async"
                                      class="w-full h-full object-cover object-top">
                                 <div class="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-black/60 to-transparent"></div>
                                 <div class="absolute bottom-5 left-5 right-5">
@@ -76,8 +81,10 @@
 
                             {{-- Slide 3 --}}
                             <div class="carousel-slide absolute inset-0 transition-opacity duration-700 ease-in-out z-0" style="opacity:0;">
-                                <img src="{{ asset('assets/img/carousel_2.png') }}"
+                                <img src="{{ asset('assets/img/carousel_2.webp') }}"
                                      alt="Pemeriksaan Lansia"
+                                     loading="lazy"
+                                     decoding="async"
                                      class="w-full h-full object-cover object-top">
                                 <div class="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-black/60 to-transparent"></div>
                                 <div class="absolute bottom-5 left-5 right-5">
@@ -88,8 +95,10 @@
 
                             {{-- Slide 4 --}}
                             <div class="carousel-slide absolute inset-0 transition-opacity duration-700 ease-in-out z-0" style="opacity:0;">
-                                <img src="{{ asset('assets/img/carousel_3.png') }}"
+                                <img src="{{ asset('assets/img/carousel_3.webp') }}"
                                      alt="Tim Kader Aktif"
+                                     loading="lazy"
+                                     decoding="async"
                                      class="w-full h-full object-cover object-top">
                                 <div class="absolute bottom-0 left-0 right-0 h-28 bg-gradient-to-t from-black/60 to-transparent"></div>
                                 <div class="absolute bottom-5 left-5 right-5">

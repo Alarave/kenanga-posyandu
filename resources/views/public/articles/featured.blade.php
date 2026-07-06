@@ -29,6 +29,9 @@
             <div class="relative aspect-[4/3] rounded-[3rem] overflow-hidden shadow-2xl border-4 border-white">
                 <img src="{{ $featured->thumbnail ? asset('storage/'.$featured->thumbnail) : 'https://images.unsplash.com/photo-1576091160550-217359f4ecf8?q=80&w=1200&auto=format&fit=crop' }}" 
                      alt="{{ $featured->title }}" 
+                     fetchpriority="high"
+                     loading="eager"
+                     decoding="sync"
                      class="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-110">
             </div>
         </div>

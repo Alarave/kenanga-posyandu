@@ -308,6 +308,14 @@ class User extends Authenticatable implements MustVerifyEmail
                 $user->role = self::ROLE_ADMIN;
             }
         });
+
+        static::saved(function ($user) {
+            \Illuminate\Support\Facades\Cache::forget('about_page_kaders');
+        });
+
+        static::deleted(function ($user) {
+            \Illuminate\Support\Facades\Cache::forget('about_page_kaders');
+        });
     }
 
     /**

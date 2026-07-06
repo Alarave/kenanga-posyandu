@@ -58,6 +58,9 @@
     <div class="w-full aspect-[21/9] rounded-[3rem] overflow-hidden mb-20 shadow-2xl relative group">
         <img src="{{ asset('storage/' . $article->thumbnail) }}"
              alt="{{ $article->title }}"
+             fetchpriority="high"
+             loading="eager"
+             decoding="sync"
              class="w-full h-full object-cover transition-transform duration-[3s] group-hover:scale-105">
     </div>
     @endif

@@ -19,6 +19,21 @@ class Article extends Model
         'content_blocks' => 'array',
     ];
 
+    protected static function booted()
+    {
+        static::saved(function ($article) {
+            \Illuminate\Support\Facades\Cache::forget('public_categories_count');
+            \Illuminate\Support\Facades\Cache::forget('popular_articles');
+            \Illuminate\Support\Facades\Cache::forget('featured_article');
+        });
+
+        static::deleted(function ($article) {
+            \Illuminate\Support\Facades\Cache::forget('public_categories_count');
+            \Illuminate\Support\Facades\Cache::forget('popular_articles');
+            \Illuminate\Support\Facades\Cache::forget('featured_article');
+        });
+    }
+
     // Relationship with User
     public function user()
     {

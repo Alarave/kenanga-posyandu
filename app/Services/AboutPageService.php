@@ -91,32 +91,49 @@ class AboutPageService
      */
     public function getCadres(): array
     {
-        $users = \App\Models\User::whereIn('role', ['admin', 'kader'])
-            ->orderBy('id')
-            ->get();
+        $kaders = \Illuminate\Support\Facades\Cache::remember('about_page_kaders', 600, function () {
+            $users = \App\Models\User::whereIn('role', ['admin', 'kader'])
+                ->orderBy('id')
+                ->get();
 
-        $kaders = $users->map(function ($user) {
-            $imagePath = $user->image;
-            if (empty($imagePath)) {
-                $imagePath = asset('assets/img/kaders/placeholder.svg'); // placeholder default jika kosong
-            } elseif (str_starts_with($imagePath, 'assets/')) {
-                $imagePath = asset($imagePath);
-            } else {
-                $imagePath = \Illuminate\Support\Facades\Storage::url('kaders/'.$imagePath);
-            }
+            return $users->map(function ($user) {
+                $imagePath = $user->image;
+                if (empty($imagePath)) {
+                    $imagePath = asset('assets/img/kaders/placeholder.svg'); // placeholder default jika kosong
+                } else {
+                    $webpName = pathinfo($imagePath, PATHINFO_FILENAME) . '.webp';
+                    
+                    if (str_starts_with($imagePath, 'assets/')) {
+                        $localPath = public_path($imagePath);
+                        $localWebpPath = dirname($localPath) . '/' . $webpName;
+                        
+                        if (file_exists($localWebpPath)) {
+                            $imagePath = dirname($imagePath) . '/' . $webpName;
+                        }
+                        $imagePath = asset($imagePath);
+                    } else {
+                        $localWebpPath = public_path('assets/img/kaders/' . $webpName);
+                        if (file_exists($localWebpPath)) {
+                            $imagePath = asset('assets/img/kaders/' . $webpName);
+                        } else {
+                            $imagePath = \Illuminate\Support\Facades\Storage::url('kaders/'.$imagePath);
+                        }
+                    }
+                }
 
-            return [
-                'name' => $user->name,
-                'role' => $user->cadre_role ?? 'Kader',
-                'ttl' => $user->ttl ?? '-',
-                'nik' => $user->nik ?? '-',
-                'pendidikan' => $user->pendidikan ?? '-',
-                'alamat' => $user->alamat ?? '-',
-                'hp' => $user->hp ?? '-',
-                'email' => $user->email,
-                'image' => $imagePath,
-            ];
-        })->toArray();
+                return [
+                    'name' => $user->name,
+                    'role' => $user->cadre_role ?? 'Kader',
+                    'ttl' => $user->ttl ?? '-',
+                    'nik' => $user->nik ?? '-',
+                    'pendidikan' => $user->pendidikan ?? '-',
+                    'alamat' => $user->alamat ?? '-',
+                    'hp' => $user->hp ?? '-',
+                    'email' => $user->email,
+                    'image' => $imagePath,
+                ];
+            })->toArray();
+        });
 
         return array_map(fn ($k) => CadreData::fromArray($k), $kaders);
     }

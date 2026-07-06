@@ -43,6 +43,7 @@ class PatientPolicy
 
     /**
      * Determine if the user can update the patient.
+     * Kaders have read-only access; only admins and superadmins can edit.
      */
     public function update(User $user, Patient $patient): bool
     {
@@ -50,7 +51,7 @@ class PatientPolicy
             return true;
         }
 
-        return ($user->isAdmin() || $user->isKader()) && $user->posyandu_id === $patient->posyandu_id;
+        return $user->isAdmin() && $user->posyandu_id === $patient->posyandu_id;
     }
 
     /**

@@ -23,7 +23,7 @@
                 <span class="text-4xl font-black text-slate-100 group-hover:text-indigo-50 transition-colors leading-none">0{{ $index + 1 }}</span>
                 <div class="space-y-2">
                     <div class="flex items-center gap-2">
-                        <span class="text-[10px] font-black text-slate-900 uppercase tracking-tighter">{{ $article->user->name ?? 'Admin' }}</span>
+                        <span class="text-[10px] font-black text-slate-900 uppercase tracking-tighter">{{ $pop->user->name ?? 'Admin' }}</span>
                         <span class="w-0.5 h-0.5 rounded-full bg-slate-300"></span>
                         <span class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">{{ $pop->category->name ?? 'Umum' }}</span>
                     </div>

@@ -80,12 +80,14 @@
         </div>
 
         <div class="flex items-center gap-3 flex-wrap">
+            @can('update', $patient)
             <x-button href="{{ route('admin.patients.edit', $patient->id) }}" 
                       variant="secondary" 
                       class="rounded-2xl! h-14 px-8! font-black shadow-xl {{ $theme['shadow'] }} hover:-translate-y-0.5 transition-all">
                 <span class="material-symbols-outlined mr-2">edit</span>
                 Edit Profil
             </x-button>
+            @endcan
 
             <x-button href="{{ route('admin.reports.individual', $patient->id) }}"
                       variant="primary"
@@ -94,6 +96,7 @@
                 Lihat Rapor
             </x-button>
             
+            @can('delete', $patient)
             <form action="{{ route('admin.patients.destroy', $patient->id) }}" method="POST" onsubmit="return confirm('Hapus data warga ini?')">
                 @csrf @method('DELETE')
                 <button type="submit" 
@@ -101,6 +104,7 @@
                     <span class="material-symbols-outlined">delete</span>
                 </button>
             </form>
+            @endcan
         </div>
     </div>
 

@@ -11,6 +11,17 @@ class Category extends Model
 
     protected $fillable = ['name', 'slug'];
 
+    protected static function booted()
+    {
+        static::saved(function ($category) {
+            \Illuminate\Support\Facades\Cache::forget('public_categories_count');
+        });
+
+        static::deleted(function ($category) {
+            \Illuminate\Support\Facades\Cache::forget('public_categories_count');
+        });
+    }
+
     public function articles()
     {
         return $this->hasMany(Article::class);

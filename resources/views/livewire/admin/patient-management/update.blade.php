@@ -20,13 +20,14 @@
         }
      }">
  
-    <div class="flex items-center justify-between px-4">
-        <div class="bg-white/80 backdrop-blur-md px-8 py-4 rounded-[2rem] border border-white shadow-sm flex items-center gap-4">
-            <div class="w-2 h-2 bg-teal-500 rounded-full animate-pulse"></div>
-            <h2 class="text-xl font-black text-slate-800 tracking-tight">Perbarui Data Warga</h2>
+    <div class="flex items-center justify-between gap-3 px-4">
+        <div class="flex items-center gap-3 min-w-0">
+            <div class="w-2 h-2 bg-teal-500 rounded-full animate-pulse flex-shrink-0"></div>
+            <h2 class="text-base sm:text-xl font-black text-slate-800 tracking-tight truncate">Perbarui Data Warga</h2>
         </div>
-        <x-button href="{{ route('admin.patients.index') }}" variant="ghost" class="!bg-white border border-slate-200 !rounded-2xl !px-6 h-14 font-black">
-            <span class="material-symbols-outlined mr-2 text-[24px]">arrow_back</span> Kembali
+        <x-button href="{{ route('admin.patients.index') }}" variant="ghost" class="!bg-white border border-slate-200 !rounded-2xl !px-3 sm:!px-6 h-11 sm:h-14 font-black flex-shrink-0">
+            <span class="material-symbols-outlined text-[20px]">arrow_back</span>
+            <span class="hidden sm:inline ml-2">Kembali</span>
         </x-button>
     </div>
  
@@ -487,14 +488,16 @@
             @endif
  
             {{-- ── Action Buttons ── --}}
-            <div class="flex items-center justify-between bg-white/50 backdrop-blur-md p-6 rounded-[2.5rem] border border-white shadow-xl">
-                <p class="text-[10px] font-bold text-slate-400 px-6 uppercase tracking-widest hidden md:block">Pastikan seluruh data yang bertanda <span class="text-teal-500 font-black">*</span> telah terisi dengan benar.</p>
-                <div class="flex items-center gap-4 ml-auto">
-                    <x-button href="{{ route('admin.patients.index') }}" variant="ghost" class="!rounded-2xl h-14 !px-8 font-black text-slate-400">Batal</x-button>
-                    <x-button type="submit" variant="primary" class="!rounded-2xl h-14 !px-10 shadow-lg shadow-teal-500/30 font-black">
-                        <span class="material-symbols-outlined mr-2">save</span> Simpan Perubahan
-                    </x-button>
-                </div>
+            <div class="flex items-center gap-2 bg-white border border-slate-100 p-3 rounded-2xl shadow-md overflow-hidden">
+                <a href="{{ route('admin.patients.index') }}"
+                   class="flex-1 flex items-center justify-center h-11 px-4 rounded-xl border border-slate-200 text-sm font-bold text-slate-500 hover:bg-slate-50 transition-colors whitespace-nowrap">
+                    Batal
+                </a>
+                <button type="submit"
+                        class="flex-1 flex items-center justify-center gap-1.5 h-11 px-4 rounded-xl bg-teal-600 text-white text-sm font-black hover:bg-teal-700 active:scale-95 transition-all shadow-sm shadow-teal-500/20 whitespace-nowrap overflow-hidden min-w-0">
+                    <span class="material-symbols-outlined text-[17px] flex-shrink-0">save</span>
+                    <span class="truncate">Simpan Perubahan</span>
+                </button>
             </div>
         </div>
     </form>

@@ -288,10 +288,10 @@
                             <div class="text-xs text-slate-400 mt-0.5">{{ $patient->age }}</div>
                         </td>
                         <td class="px-5 py-3.5 text-right">
-                            <div class="flex items-center justify-end gap-2">
+                            <div class="flex items-center justify-end gap-1.5">
                                 {{-- View Detail --}}
                                 <a href="{{ route('admin.patients.show', $patient->id) }}"
-                                    class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-50 border border-slate-200 text-slate-500 hover:bg-teal-500 hover:text-white hover:border-teal-500 transition-all"
+                                    class="w-9 h-9 flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-400 hover:bg-teal-500 hover:text-white hover:border-teal-500 transition-all flex-shrink-0"
                                     title="Lihat Detail">
                                     <span class="material-symbols-outlined text-[17px]">visibility</span>
                                 </a>
@@ -299,7 +299,7 @@
                                 {{-- Edit Record --}}
                                 @can('update', $patient)
                                     <a href="{{ route('admin.patients.edit', $patient->id) }}"
-                                        class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-50 border border-slate-200 text-slate-500 hover:bg-amber-500 hover:text-white hover:border-amber-500 transition-all"
+                                        class="w-9 h-9 flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-400 hover:bg-amber-500 hover:text-white hover:border-amber-500 transition-all flex-shrink-0"
                                         title="Edit Data">
                                         <span class="material-symbols-outlined text-[17px]">edit</span>
                                     </a>
@@ -308,7 +308,8 @@
                                 {{-- Delete --}}
                                 @can('delete', $patient)
                                     <button wire:click="confirmDelete({{ $patient->id }})"
-                                        class="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 border border-red-100 text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all"
+                                        type="button"
+                                        class="w-9 h-9 flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all flex-shrink-0"
                                         title="Hapus Data">
                                         <span class="material-symbols-outlined text-[17px]">delete</span>
                                     </button>
