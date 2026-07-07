@@ -644,3 +644,43 @@ select:focus[data-flux-control] {
 /* ── Uiverse Logout Button ── */
 /* Removed old Uiverse logout button styles for modern icon design */
 
+/* ── Indonesian Date and DateTime Placeholders (hh/bb/tt) ── */
+input[type="date"],
+input[type="datetime-local"] {
+    position: relative;
+}
+
+/* Hide default browser placeholder when input is empty and not focused */
+input[type="date"]:not(:focus):not(.has-value)::-webkit-datetime-edit,
+input[type="datetime-local"]:not(:focus):not(.has-value)::-webkit-datetime-edit {
+    color: transparent !important;
+}
+
+/* Show custom placeholder */
+input[type="date"]:not(:focus):not(.has-value)::before {
+    content: "hh/bb/tt" !important;
+    position: absolute;
+    color: #94a3b8 !important; /* slate-400 */
+    font-weight: 600;
+}
+
+input[type="datetime-local"]:not(:focus):not(.has-value)::before {
+    content: "hh/bb/tt --:--" !important;
+    position: absolute;
+    color: #94a3b8 !important;
+    font-weight: 600;
+}
+
+/* Adjust left spacing for inputs with an icon inside a relative container */
+div.relative > span.material-symbols-outlined ~ input[type="date"]:not(:focus):not(.has-value)::before,
+div.relative > span.material-symbols-outlined ~ input[type="datetime-local"]:not(:focus):not(.has-value)::before {
+    left: 2.5rem !important;
+}
+
+/* Adjust left spacing for normal inputs */
+input[type="date"]:not(:focus):not(.has-value)::before,
+input[type="datetime-local"]:not(:focus):not(.has-value)::before {
+    left: 1.25rem !important;
+}
+
+

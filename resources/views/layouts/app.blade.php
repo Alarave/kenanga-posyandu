@@ -161,5 +161,46 @@
     
     @stack('scripts')
     
+    {{-- Global Script to toggle .has-value class on date inputs (supports browser date-placeholder translation) --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            function updateDateInputClass(input) {
+                if (input.value) {
+                    input.classList.add('has-value');
+                } else {
+                    input.classList.remove('has-value');
+                }
+            }
+
+            // Listen to input changes
+            document.body.addEventListener('input', function (e) {
+                if (e.target && (e.target.type === 'date' || e.target.type === 'datetime-local')) {
+                    updateDateInputClass(e.target);
+                }
+            });
+
+            // Initialize existing inputs
+            document.querySelectorAll('input[type="date"], input[type="datetime-local"]').forEach(function (input) {
+                updateDateInputClass(input);
+            });
+
+            // Monitor DOM changes for dynamically loaded inputs (Livewire)
+            const observer = new MutationObserver(function (mutations) {
+                mutations.forEach(function (mutation) {
+                    mutation.addedNodes.forEach(function (node) {
+                        if (node.nodeType === 1) { // Element node
+                            if (node.type === 'date' || node.type === 'datetime-local') {
+                                updateDateInputClass(node);
+                            }
+                            node.querySelectorAll('input[type="date"], input[type="datetime-local"]').forEach(function (input) {
+                                updateDateInputClass(input);
+                            });
+                        }
+                    });
+                });
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+        });
+    </script>
 </body>
 </html>

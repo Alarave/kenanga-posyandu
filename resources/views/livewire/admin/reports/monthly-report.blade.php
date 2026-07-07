@@ -314,8 +314,27 @@
                         </td>
                         <td class="px-6 py-5">
                             @if($record->patient?->birth_date)
+                                @php
+                                    $cat = strtolower($record->patient->category ?? '');
+                                    $birthDate = $record->patient->birth_date;
+                                    $ageStr = '';
+                                    if (in_array($cat, ['bayi', 'baduta', 'balita'])) {
+                                        $ageStr = floor($birthDate->diffInMonths(now())) . ' Bln';
+                                    } else {
+                                        $years = $birthDate->diffInYears(now());
+                                        $months = $birthDate->diffInMonths(now()) % 12;
+                                        if ($years > 0) {
+                                            $ageStr = $years . ' Thn';
+                                            if ($months > 0) {
+                                                $ageStr .= ' ' . $months . ' Bln';
+                                            }
+                                        } else {
+                                            $ageStr = $months . ' Bln';
+                                        }
+                                    }
+                                @endphp
                                 <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-surface-container text-on-surface-variant text-xs font-bold">
-                                    {{ floor($record->patient->birth_date->diffInMonths(now())) }} Bln
+                                    {{ $ageStr }}
                                 </span>
                             @else
                                 <span class="text-outline-variant">-</span>
