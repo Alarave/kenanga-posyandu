@@ -95,10 +95,10 @@
         {{-- Total Kunjungan --}}
         <div class="group bg-white rounded-3xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.015)] transition-all duration-300 relative overflow-hidden hover:-translate-y-1 hover:shadow-lg hover:border-emerald-250">
             <div class="flex justify-between items-start mb-6">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-emerald-600 bg-emerald-50 border border-emerald-100/30">
-                    <span class="material-symbols-outlined text-[20px]">group</span>
+                <div class="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-100/50 px-2.5 py-1 rounded-full w-fit">
+                    <span class="material-symbols-outlined text-[16px]">group</span>
+                    <span class="text-[9px] font-black uppercase tracking-wider">Bulan Ini</span>
                 </div>
-                <span class="text-[9px] font-black text-emerald-750 bg-emerald-50 border border-emerald-100/50 px-2.5 py-1 rounded-lg uppercase tracking-wider">Bulan Ini</span>
             </div>
             <div>
                 <p class="text-[10px] font-bold text-slate-450 uppercase tracking-widest">Total Kunjungan</p>
@@ -110,10 +110,10 @@
         {{-- Balita Stunting --}}
         <div class="group bg-white rounded-3xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.015)] transition-all duration-300 relative overflow-hidden hover:-translate-y-1 hover:shadow-lg hover:border-rose-250">
             <div class="flex justify-between items-start mb-6">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-rose-600 bg-rose-50 border border-rose-100/30">
-                    <span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 1;">warning</span>
+                <div class="flex items-center gap-1.5 bg-rose-50 text-rose-700 border border-rose-100/50 px-2.5 py-1 rounded-full w-fit">
+                    <span class="material-symbols-outlined text-[16px]" style="font-variation-settings:'FILL' 1;">warning</span>
+                    <span class="text-[9px] font-black uppercase tracking-wider">Perhatian</span>
                 </div>
-                <span class="text-[9px] font-black text-rose-750 bg-rose-50 border border-rose-100/50 px-2.5 py-1 rounded-lg uppercase tracking-wider">Perhatian</span>
             </div>
             <div>
                 <p class="text-[10px] font-bold text-slate-450 uppercase tracking-widest">Balita Stunting</p>
@@ -125,10 +125,10 @@
         {{-- Ibu Hamil --}}
         <div class="group bg-white rounded-3xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.015)] transition-all duration-300 relative overflow-hidden hover:-translate-y-1 hover:shadow-lg hover:border-sky-250">
             <div class="flex justify-between items-start mb-6">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-sky-600 bg-sky-50 border border-sky-100/30">
-                    <span class="material-symbols-outlined text-[20px]">female</span>
+                <div class="flex items-center gap-1.5 bg-sky-50 text-sky-700 border border-sky-100/50 px-2.5 py-1 rounded-full w-fit">
+                    <span class="material-symbols-outlined text-[16px]">female</span>
+                    <span class="text-[9px] font-black uppercase tracking-wider">Terdaftar</span>
                 </div>
-                <span class="text-[9px] font-black text-sky-750 bg-sky-50 border border-sky-100/50 px-2.5 py-1 rounded-lg uppercase tracking-wider">Terdaftar</span>
             </div>
             <div>
                 <p class="text-[10px] font-bold text-slate-450 uppercase tracking-widest">Ibu Hamil</p>
@@ -140,10 +140,10 @@
         {{-- Cakupan Vitamin A --}}
         <div class="group bg-white rounded-3xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.015)] transition-all duration-300 relative overflow-hidden hover:-translate-y-1 hover:shadow-lg hover:border-amber-250">
             <div class="flex justify-between items-start mb-6">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-amber-600 bg-amber-50 border border-amber-100/30">
-                    <span class="material-symbols-outlined text-[20px]">medication</span>
+                <div class="flex items-center gap-1.5 bg-amber-50 text-amber-700 border border-amber-100/50 px-2.5 py-1 rounded-full w-fit">
+                    <span class="material-symbols-outlined text-[16px]">medication</span>
+                    <span class="text-[9px] font-black uppercase tracking-wider">Target: 95%</span>
                 </div>
-                <span class="text-[9px] font-black text-amber-750 bg-amber-50 border border-amber-100/50 px-2.5 py-1 rounded-lg uppercase tracking-wider">Target: 95%</span>
             </div>
             <div>
                 <p class="text-[10px] font-bold text-slate-450 uppercase tracking-widest">Cakupan Vitamin A</p>
@@ -155,10 +155,10 @@
         {{-- Lansia --}}
         <div class="group bg-white rounded-3xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.015)] transition-all duration-300 relative overflow-hidden hover:-translate-y-1 hover:shadow-lg hover:border-indigo-250">
             <div class="flex justify-between items-start mb-6">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-indigo-600 bg-indigo-50 border border-indigo-100/30">
-                    <span class="material-symbols-outlined text-[20px]">elderly</span>
+                <div class="flex items-center gap-1.5 bg-indigo-50 text-indigo-700 border border-indigo-100/50 px-2.5 py-1 rounded-full w-fit">
+                    <span class="material-symbols-outlined text-[16px]">elderly</span>
+                    <span class="text-[9px] font-black uppercase tracking-wider">Terdaftar</span>
                 </div>
-                <span class="text-[9px] font-black text-indigo-750 bg-indigo-50 border border-indigo-100/50 px-2.5 py-1 rounded-lg uppercase tracking-wider">Terdaftar</span>
             </div>
             <div>
                 <p class="text-[10px] font-bold text-slate-450 uppercase tracking-widest">Lansia</p>
