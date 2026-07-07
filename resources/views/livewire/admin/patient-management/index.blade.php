@@ -71,7 +71,7 @@
             <div>
                 <p class="text-xs font-semibold text-slate-500 leading-none mb-1">Bayi (0-11 bln)</p>
                 <p class="text-xl font-bold text-slate-900 leading-none" style="font-variant-numeric:tabular-nums;">
-                    {{ App\Models\Patient::where('category', 'bayi')->count() }}</p>
+                    {{ App\Models\Patient::where('category', 'bayi')->orWhere(fn($q) => $q->where('category', 'balita')->where('birth_date', '>=', now()->subMonths(12)))->count() }}</p>
             </div>
         </div>
 
@@ -84,7 +84,7 @@
             <div>
                 <p class="text-xs font-semibold text-slate-500 leading-none mb-1">Baduta (12-23 bln)</p>
                 <p class="text-xl font-bold text-slate-900 leading-none" style="font-variant-numeric:tabular-nums;">
-                    {{ App\Models\Patient::where('category', 'baduta')->count() }}</p>
+                    {{ App\Models\Patient::where('category', 'baduta')->orWhere(fn($q) => $q->where('category', 'balita')->where('birth_date', '<', now()->subMonths(12))->where('birth_date', '>=', now()->subMonths(24)))->count() }}</p>
             </div>
         </div>
 
@@ -97,7 +97,7 @@
             <div>
                 <p class="text-xs font-semibold text-slate-500 leading-none mb-1">Balita (24-59 bln)</p>
                 <p class="text-xl font-bold text-slate-900 leading-none" style="font-variant-numeric:tabular-nums;">
-                    {{ App\Models\Patient::where('category', 'balita')->count() }}</p>
+                    {{ App\Models\Patient::where('category', 'balita')->where(fn($q) => $q->whereNull('birth_date')->orWhere('birth_date', '<', now()->subMonths(24)))->count() }}</p>
             </div>
         </div>
 
@@ -278,8 +278,11 @@
                             </div>
                         </td>
                         <td class="px-5 py-3.5">
-                            <span class="badge {{ $catStyles[$patient->category] ?? 'badge-slate' }}">
-                                {{ str_replace('_', ' ', $patient->category) }}
+                            @php
+                                $dispCat = $patient->computed_category;
+                            @endphp
+                            <span class="badge {{ $catStyles[$dispCat] ?? 'badge-slate' }}">
+                                {{ str_replace('_', ' ', $dispCat) }}
                             </span>
                         </td>
                         <td class="px-5 py-3.5">
@@ -288,10 +291,10 @@
                             <div class="text-xs text-slate-400 mt-0.5">{{ $patient->age }}</div>
                         </td>
                         <td class="px-5 py-3.5 text-right">
-                            <div class="flex items-center justify-end gap-2">
+                            <div class="flex items-center justify-end gap-1.5">
                                 {{-- View Detail --}}
                                 <a href="{{ route('admin.patients.show', $patient->id) }}"
-                                    class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-50 border border-slate-200 text-slate-500 hover:bg-teal-500 hover:text-white hover:border-teal-500 transition-all"
+                                    class="w-9 h-9 flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-400 hover:bg-teal-500 hover:text-white hover:border-teal-500 transition-all flex-shrink-0"
                                     title="Lihat Detail">
                                     <span class="material-symbols-outlined text-[17px]">visibility</span>
                                 </a>
@@ -299,7 +302,7 @@
                                 {{-- Edit Record --}}
                                 @can('update', $patient)
                                     <a href="{{ route('admin.patients.edit', $patient->id) }}"
-                                        class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-50 border border-slate-200 text-slate-500 hover:bg-amber-500 hover:text-white hover:border-amber-500 transition-all"
+                                        class="w-9 h-9 flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-400 hover:bg-amber-500 hover:text-white hover:border-amber-500 transition-all flex-shrink-0"
                                         title="Edit Data">
                                         <span class="material-symbols-outlined text-[17px]">edit</span>
                                     </a>
@@ -308,7 +311,8 @@
                                 {{-- Delete --}}
                                 @can('delete', $patient)
                                     <button wire:click="confirmDelete({{ $patient->id }})"
-                                        class="w-8 h-8 flex items-center justify-center rounded-lg bg-red-50 border border-red-100 text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all"
+                                        type="button"
+                                        class="w-9 h-9 flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all flex-shrink-0"
                                         title="Hapus Data">
                                         <span class="material-symbols-outlined text-[17px]">delete</span>
                                     </button>

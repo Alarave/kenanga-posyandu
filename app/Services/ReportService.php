@@ -26,8 +26,8 @@ class ReportService
         // Date range for the month
         $startDate = sprintf('%04d-%02d-01', $year, $month);
         $endDate = date('Y-m-t', strtotime($startDate)); // Last day of month
-        $startDateTime = $startDate . ' 00:00:00';
-        $endDateTime = $endDate . ' 23:59:59';
+        $startDateTime = $startDate.' 00:00:00';
+        $endDateTime = $endDate.' 23:59:59';
 
         // 1. Kunjungan per kategori
         $visitsByCategory = MedicalRecord::query()
@@ -407,7 +407,7 @@ class ReportService
 
         // Get medical records within range
         $records = MedicalRecord::where('patient_id', $patient->id)
-            ->whereBetween('visit_date', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
+            ->whereBetween('visit_date', [$startDate.' 00:00:00', $endDate.' 23:59:59'])
             ->orderBy('visit_date', 'asc')
             ->get();
 

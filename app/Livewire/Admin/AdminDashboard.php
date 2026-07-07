@@ -53,9 +53,19 @@ class AdminDashboard extends BaseAdminComponent
     // Dashboard metrics
     public $lansiaDemografi = ['60_69' => 0, '70_plus' => 0];
 
+    public array $lansiaDemografiNames = ['60_69' => [], '70_plus' => []];
+
     public $bumilTrimester = ['T1' => 0, 'T2' => 0, 'T3' => 0];
 
+    public array $bumilTrimesterNames = ['T1' => [], 'T2' => [], 'T3' => []];
+
     public $kehadiranBalita = ['hadir' => 0, 'tidak_hadir' => 0, 'persentase' => 0];
+
+    public bool $showNutritionModal = false;
+
+    public ?string $selectedNutritionStatus = null;
+
+    public array $balitasForSelectedStatus = [];
 
     public $kelahiranBulanIni = 0;
 
@@ -158,15 +168,136 @@ class AdminDashboard extends BaseAdminComponent
         $year = now()->year;
         $key = "year_{$year}";
 
+        $loadedFromSnapshot = false;
+
         if (! $hasCustomFilters) {
             $snapshot = \App\Models\AnalyticsSnapshot::where('posyandu_id', $posyanduId)->where('key', $key)->first();
-            if ($snapshot && isset($snapshot->data['dashboard_stats']['lansiaDemografi'])) {
+            if ($snapshot && isset($snapshot->data['dashboard_stats']['lansiaDemografi']) && isset($snapshot->data['dashboard_stats']['recentActivities'])) {
                 $data = $snapshot->data['dashboard_stats'];
                 foreach ($data as $prop => $val) {
                     if (property_exists($this, $prop)) {
                         $this->{$prop} = $val;
                     }
                 }
+
+                // Hydrate Medical Records and Patients back to Eloquent models so Blade files can use object notation
+                if (isset($data['recentActivities'])) {
+                    $this->recentActivities = collect($data['recentActivities'])->map(function ($act) {
+                        $attributes = collect($act)->except(['patient', 'user'])->toArray();
+                        $record = (new MedicalRecord)->forceFill($attributes);
+                        $record->exists = true;
+                        if (isset($act['visit_date'])) {
+                            $record->visit_date = Carbon::parse($act['visit_date']);
+                        }
+                        if (isset($act['patient'])) {
+                            $pAttributes = collect($act['patient'])->except(['posyandu'])->toArray();
+                            $patient = (new Patient)->forceFill($pAttributes);
+                            $patient->exists = true;
+                            if (isset($act['patient']['posyandu'])) {
+                                $posyandu = (new Posyandu)->forceFill($act['patient']['posyandu']);
+                                $posyandu->exists = true;
+                                $patient->setRelation('posyandu', $posyandu);
+                            }
+                            $record->setRelation('patient', $patient);
+                        }
+                        if (isset($act['user'])) {
+                            $user = (new \App\Models\User)->forceFill($act['user']);
+                            $user->exists = true;
+                            $record->setRelation('user', $user);
+                        }
+                        return $record;
+                    });
+                }
+
+                if (isset($data['balitaStunting'])) {
+                    $this->balitaStunting = collect($data['balitaStunting'])->map(function ($pat) {
+                        $pAttributes = collect($pat)->except(['medical_records'])->toArray();
+                        $patient = (new Patient)->forceFill($pAttributes);
+                        $patient->exists = true;
+                        if (isset($pat['birth_date'])) {
+                            $patient->birth_date = Carbon::parse($pat['birth_date']);
+                        }
+                        if (isset($pat['medical_records'])) {
+                            $records = collect($pat['medical_records'])->map(function ($rec) {
+                                $record = (new MedicalRecord)->forceFill($rec);
+                                $record->exists = true;
+                                if (isset($rec['visit_date'])) {
+                                    $record->visit_date = Carbon::parse($rec['visit_date']);
+                                }
+                                return $record;
+                            });
+                            $patient->setRelation('medicalRecords', $records);
+                        }
+                        return $patient;
+                    });
+                }
+
+                if (isset($data['missingImmunizations'])) {
+                    $this->missingImmunizations = collect($data['missingImmunizations'])->map(function ($item) {
+                        if (isset($item['patient'])) {
+                            $patient = (new Patient)->forceFill($item['patient']);
+                            $patient->exists = true;
+                            if (isset($item['patient']['birth_date'])) {
+                                $patient->birth_date = Carbon::parse($item['patient']['birth_date']);
+                            }
+                            $item['patient'] = $patient;
+                        }
+                        return $item;
+                    });
+                }
+
+                if (isset($data['recentImmunizations'])) {
+                    $this->recentImmunizations = collect($data['recentImmunizations'])->map(function ($act) {
+                        $attributes = collect($act)->except(['patient', 'user'])->toArray();
+                        $record = (new MedicalRecord)->forceFill($attributes);
+                        $record->exists = true;
+                        if (isset($act['visit_date'])) {
+                            $record->visit_date = Carbon::parse($act['visit_date']);
+                        }
+                        if (isset($act['patient'])) {
+                            $pAttributes = collect($act['patient'])->except(['posyandu'])->toArray();
+                            $patient = (new Patient)->forceFill($pAttributes);
+                            $patient->exists = true;
+                            if (isset($act['patient']['posyandu'])) {
+                                $posyandu = (new Posyandu)->forceFill($act['patient']['posyandu']);
+                                $posyandu->exists = true;
+                                $patient->setRelation('posyandu', $posyandu);
+                            }
+                            $record->setRelation('patient', $patient);
+                        }
+                        if (isset($act['user'])) {
+                            $user = (new \App\Models\User)->forceFill($act['user']);
+                            $user->exists = true;
+                            $record->setRelation('user', $user);
+                        }
+                        return $record;
+                    });
+                }
+
+                if (isset($data['bumilRisikoTinggi'])) {
+                    $this->bumilRisikoTinggi = collect($data['bumilRisikoTinggi'])->map(function ($pat) {
+                        $pAttributes = collect($pat)->except(['medical_records'])->toArray();
+                        $patient = (new Patient)->forceFill($pAttributes);
+                        $patient->exists = true;
+                        if (isset($pat['birth_date'])) {
+                            $patient->birth_date = Carbon::parse($pat['birth_date']);
+                        }
+                        if (isset($pat['medical_records'])) {
+                            $records = collect($pat['medical_records'])->map(function ($rec) {
+                                $record = (new MedicalRecord)->forceFill($rec);
+                                $record->exists = true;
+                                if (isset($rec['visit_date'])) {
+                                    $record->visit_date = Carbon::parse($rec['visit_date']);
+                                }
+                                return $record;
+                            });
+                            $patient->setRelation('medicalRecords', $records);
+                        }
+                        return $patient;
+                    });
+                }
+
+                $loadedFromSnapshot = true;
             } else {
                 $this->computeDashboardStatsRealtime();
                 \App\Jobs\ComputeAnalyticsSnapshot::dispatch($posyanduId, $year);
@@ -180,75 +311,83 @@ class AdminDashboard extends BaseAdminComponent
         $scheduleQuery = $this->applyDashboardFilters($scheduleQuery, 'schedule');
         $this->upcomingSchedule = $scheduleQuery->where('start_time', '>=', now())->orderBy('start_time')->first();
 
-        $medicalRecordQuery = clone MedicalRecord::query();
-        $medicalRecordQuery = $this->applyDashboardFilters($medicalRecordQuery, 'medical_record');
-        $this->recentActivities = (clone $medicalRecordQuery)->with(['patient', 'patient.posyandu', 'user'])->latest('visit_date')->limit(5)->get();
+        if (! $loadedFromSnapshot) {
+            $medicalRecordQuery = clone MedicalRecord::query();
+            $medicalRecordQuery = $this->applyDashboardFilters($medicalRecordQuery, 'medical_record');
+            $this->recentActivities = (clone $medicalRecordQuery)->with(['patient', 'patient.posyandu', 'user'])->latest('visit_date')->limit(5)->get();
 
-        $patientQuery = clone Patient::query();
-        $patientQuery = $this->applyDashboardFilters($patientQuery, 'patient');
+            $patientQuery = clone Patient::query();
+            $patientQuery = $this->applyDashboardFilters($patientQuery, 'patient');
 
-        // Stunting alerts
-        $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
-        $this->balitaStunting = (clone $patientQuery)
-            ->whereIn('category', ['balita', 'bayi', 'baduta'])
-            ->whereHas('medicalRecords', function ($query) use ($latestRecordSubquery) {
-                $query->whereIn('id', $latestRecordSubquery)
-                    ->where(function ($sq) {
-                        $sq->whereIn('nutrition_status', ['Berat Badan Kurang', 'Berat Badan Sangat Kurang', 'Gizi Kurang', 'Gizi Buruk'])
-                            ->orWhereIn('stunting_status', ['Pendek', 'Sangat Pendek'])
-                            ->orWhereIn('wasting_status', ['Gizi Kurang', 'Gizi Buruk']);
-                    });
-            })
-            ->with(['medicalRecords' => fn ($q) => $q->latest('visit_date')->limit(1)])
-            ->limit(10)
-            ->get();
+            // Stunting alerts
+            $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+            $this->balitaStunting = (clone $patientQuery)
+                ->whereIn('category', ['balita', 'bayi', 'baduta'])
+                ->whereHas('medicalRecords', function ($query) use ($latestRecordSubquery) {
+                    $query->whereIn('id', $latestRecordSubquery)
+                        ->where(function ($sq) {
+                            $sq->whereIn('nutrition_status', ['Berat Badan Kurang', 'Berat Badan Sangat Kurang', 'Gizi Kurang', 'Gizi Buruk'])
+                                ->orWhereIn('stunting_status', ['Pendek', 'Sangat Pendek'])
+                                ->orWhereIn('wasting_status', ['Gizi Kurang', 'Gizi Buruk']);
+                        });
+                })
+                ->with(['medicalRecords' => fn ($q) => $q->latest('visit_date')->limit(1)])
+                ->limit(10)
+                ->get();
 
-        $this->missingImmunizations = (clone $patientQuery)
-            ->whereIn('category', ['balita', 'bayi', 'baduta'])
-            ->with('medicalRecords')
-            ->get()
-            ->map(function ($patient) {
-                $missing = $patient->getMissingVaccines();
-                if (empty($missing)) {
-                    return null;
-                }
+            $this->missingImmunizations = (clone $patientQuery)
+                ->whereIn('category', ['balita', 'bayi', 'baduta'])
+                ->where('status_mutasi', 'aktif')
+                ->with('medicalRecords')
+                ->get()
+                ->map(function ($patient) {
+                    $missing = $patient->getMissingVaccines();
+                    if (empty($missing)) {
+                        return null;
+                    }
 
-                return ['patient' => $patient, 'missing_count' => count($missing), 'next_vaccine' => $missing[0]];
-            })->filter()->sortByDesc('missing_count')->take(5);
+                    return ['patient' => $patient, 'missing_count' => count($missing), 'next_vaccine' => $missing[0]];
+                })->filter()->sortByDesc('missing_count')->take(5);
 
-        $this->recentImmunizations = (clone $medicalRecordQuery)
-            ->where(function ($q) {
-                $q->whereNotNull('immunization')->where('immunization', '!=', '')->where('immunization', '!=', 'Tidak ada')
-                    ->orWhere(function ($sq) {
-                        $sq->whereNotNull('vaccine_name')->where('vaccine_name', '!=', '')->where('vaccine_name', '!=', 'Tidak ada');
-                    });
-            })
-            ->with(['patient', 'user'])
-            ->latest('visit_date')
-            ->limit(5)
-            ->get();
+            $this->recentImmunizations = (clone $medicalRecordQuery)
+                ->where(function ($q) {
+                    $q->whereNotNull('immunization')->where('immunization', '!=', '')->where('immunization', '!=', 'Tidak ada')
+                        ->orWhere(function ($sq) {
+                            $sq->whereNotNull('vaccine_name')->where('vaccine_name', '!=', '')->where('vaccine_name', '!=', 'Tidak ada');
+                        });
+                })
+                ->with(['patient', 'user'])
+                ->latest('visit_date')
+                ->limit(5)
+                ->get();
 
-        $this->bumilRisikoTinggi = (clone $patientQuery)
-            ->where('category', 'ibu_hamil')
-            ->whereHas('medicalRecords', function ($query) use ($latestRecordSubquery) {
-                $query->whereIn('id', $latestRecordSubquery)
-                    ->where(function ($sq) {
-                        $sq->where('upper_arm_circumference', '<', 23.5)
-                            ->orWhere('systolic_bp', '>=', 140)
-                            ->orWhere('diastolic_bp', '>=', 90);
-                    });
-            })
-            ->orWhere(function ($query) {
-                $query->where('category', 'ibu_hamil')
-                    ->where(function ($sq) {
-                        $sq->where('birth_date', '>', now()->subYears(20))
-                            ->orWhere('birth_date', '<', now()->subYears(35));
-                    });
-            })
-            ->with(['medicalRecords' => fn ($q) => $q->latest('visit_date')->limit(1)])
-            ->limit(10)
-            ->get();
+            $this->bumilRisikoTinggi = (clone $patientQuery)
+                ->where('category', 'ibu_hamil')
+                ->whereHas('medicalRecords', function ($query) use ($latestRecordSubquery) {
+                    $query->whereIn('id', $latestRecordSubquery)
+                        ->where(function ($sq) {
+                            $sq->where('upper_arm_circumference', '<', 23.5)
+                                ->orWhere('systolic_bp', '>=', 140)
+                                ->orWhere('diastolic_bp', '>=', 90);
+                        });
+                })
+                ->orWhere(function ($query) {
+                    $query->where('category', 'ibu_hamil')
+                        ->where(function ($sq) {
+                            $sq->where('birth_date', '>', now()->subYears(20))
+                                ->orWhere('birth_date', '<', now()->subYears(35));
+                        });
+                })
+                ->with(['medicalRecords' => fn ($q) => $q->latest('visit_date')->limit(1)])
+                ->limit(10)
+                ->get();
 
+            $this->loadNamesForWidgets();
+        }
+
+        if ($this->selectedNutritionStatus) {
+            $this->loadBalitasForSelectedStatus();
+        }
     }
 
     protected function computeDashboardStatsRealtime()
@@ -380,6 +519,103 @@ class AdminDashboard extends BaseAdminComponent
         }
 
         return ['labels' => $labels, 'data' => $data];
+    }
+
+    protected function loadNamesForWidgets()
+    {
+        $patientQuery = $this->applyDashboardFilters(Patient::query(), 'patient');
+        $medicalRecordQuery = $this->applyDashboardFilters(MedicalRecord::query(), 'medical_record');
+
+        // 1. Lansia Names
+        $lansia = (clone $patientQuery)->where('category', 'lansia')->get(['id', 'full_name', 'birth_date']);
+        $group60 = [];
+        $group70 = [];
+        foreach ($lansia as $l) {
+            if ($l->birth_date) {
+                $age = $l->birth_date->age;
+                $lansiaData = [
+                    'id' => $l->id,
+                    'name' => $l->full_name,
+                    'age' => $age,
+                ];
+                if ($age >= 70) {
+                    $group70[] = $lansiaData;
+                } elseif ($age >= 60) {
+                    $group60[] = $lansiaData;
+                }
+            }
+        }
+        $this->lansiaDemografiNames = ['60_69' => $group60, '70_plus' => $group70];
+
+        // 2. Bumil Names
+        $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+        $records = (clone $medicalRecordQuery)
+            ->whereIn('id', $latestRecordSubquery)
+            ->whereHas('patient', fn ($q) => $q->where('category', 'ibu_hamil'))
+            ->with(['patient:id,full_name'])
+            ->get(['id', 'patient_id', 'gestational_age']);
+
+        $t1 = [];
+        $t2 = [];
+        $t3 = [];
+
+        foreach ($records as $record) {
+            $weeks = (int) filter_var($record->gestational_age, FILTER_SANITIZE_NUMBER_INT);
+            if ($weeks > 0 && $record->patient) {
+                $patientData = [
+                    'id' => $record->patient->id,
+                    'name' => $record->patient->full_name,
+                    'gestational_age' => $record->gestational_age,
+                ];
+                if ($weeks <= 13) {
+                    $t1[] = $patientData;
+                } elseif ($weeks <= 27) {
+                    $t2[] = $patientData;
+                } else {
+                    $t3[] = $patientData;
+                }
+            }
+        }
+        $this->bumilTrimesterNames = ['T1' => $t1, 'T2' => $t2, 'T3' => $t3];
+    }
+
+    public function selectNutritionStatus(string $status)
+    {
+        $this->selectedNutritionStatus = $status;
+        $this->loadBalitasForSelectedStatus();
+        $this->showNutritionModal = true;
+    }
+
+    protected function loadBalitasForSelectedStatus()
+    {
+        if (! $this->selectedNutritionStatus) {
+            $this->balitasForSelectedStatus = [];
+
+            return;
+        }
+
+        $medicalRecordQuery = $this->applyDashboardFilters(MedicalRecord::query(), 'medical_record');
+        $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+
+        $records = $medicalRecordQuery
+            ->whereIn('id', $latestRecordSubquery)
+            ->where('nutrition_status', $this->selectedNutritionStatus)
+            ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+            ->with(['patient', 'patient.posyandu'])
+            ->get();
+
+        $this->balitasForSelectedStatus = $records->map(function ($record) {
+            return [
+                'id' => $record->patient->id,
+                'name' => $record->patient->full_name,
+                'age' => $record->patient->age,
+                'gender' => $record->patient->gender === 'L' ? 'Laki-laki' : 'Perempuan',
+                'weight' => $record->weight,
+                'height' => $record->height,
+                'posyandu_name' => $record->patient->posyandu?->name ?? '-',
+                'visit_date' => Carbon::parse($record->visit_date)->translatedFormat('d M Y'),
+            ];
+        })->toArray();
     }
 
     public function render()

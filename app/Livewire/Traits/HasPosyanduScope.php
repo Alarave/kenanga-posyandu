@@ -15,8 +15,15 @@ trait HasPosyanduScope
     /**
      * Terapkan scope posyandu ke query builder.
      */
-    protected function applyPosyanduScope(Builder $query, ?int $selectedPosyanduId = null): Builder
+    protected function applyPosyanduScope(Builder $query, $selectedPosyanduId = null): Builder
     {
+        if ($selectedPosyanduId === '' || $selectedPosyanduId === 'semua') {
+            $selectedPosyanduId = null;
+        }
+        if ($selectedPosyanduId !== null) {
+            $selectedPosyanduId = (int) $selectedPosyanduId;
+        }
+
         /** @var User $user */
         $user = Auth::user();
 

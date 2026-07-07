@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
-use App\Models\Patient;
 use App\Models\MedicalRecord;
+use App\Models\Patient;
 use Carbon\Carbon;
 use Faker\Factory as Faker;
+use Illuminate\Database\Seeder;
 
 class IbuHamil5Seeder extends Seeder
 {
@@ -25,7 +25,7 @@ class IbuHamil5Seeder extends Seeder
         for ($i = 0; $i < 5; $i++) {
             $hpht = Carbon::now()->subMonths(rand(1, 8))->subDays(rand(1, 20));
             $age = rand(18, 40);
-            
+
             $patient = Patient::create([
                 'id_number' => $faker->unique()->numerify('################'),
                 'full_name' => $faker->name('female'),

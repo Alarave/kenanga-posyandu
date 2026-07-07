@@ -4,9 +4,33 @@
 
 @section('admin-content')
 @php
-    $cat = $patient->category;
+    $cat = $patient->computed_category;
     $theme = match($cat) {
-        'bayi', 'baduta', 'balita' => [
+        'bayi' => [
+            'name' => 'Bayi',
+            'gradient' => 'from-teal-600 to-emerald-500',
+            'shadow' => 'shadow-teal-500/10',
+            'border' => 'border-teal-100',
+            'bg-light' => 'bg-teal-50',
+            'text' => 'text-teal-600',
+            'text-hover' => 'hover:text-teal-600',
+            'border-hover' => 'hover:border-teal-200',
+            'partial' => 'balita',
+            'avatar_icon' => 'child_care'
+        ],
+        'baduta' => [
+            'name' => 'Baduta',
+            'gradient' => 'from-teal-600 to-emerald-500',
+            'shadow' => 'shadow-teal-500/10',
+            'border' => 'border-teal-100',
+            'bg-light' => 'bg-teal-50',
+            'text' => 'text-teal-600',
+            'text-hover' => 'hover:text-teal-600',
+            'border-hover' => 'hover:border-teal-200',
+            'partial' => 'balita',
+            'avatar_icon' => 'child_care'
+        ],
+        'balita' => [
             'name' => 'Balita',
             'gradient' => 'from-teal-600 to-emerald-500',
             'shadow' => 'shadow-teal-500/10',
@@ -80,12 +104,14 @@
         </div>
 
         <div class="flex items-center gap-3 flex-wrap">
+            @can('update', $patient)
             <x-button href="{{ route('admin.patients.edit', $patient->id) }}" 
                       variant="secondary" 
                       class="rounded-2xl! h-14 px-8! font-black shadow-xl {{ $theme['shadow'] }} hover:-translate-y-0.5 transition-all">
                 <span class="material-symbols-outlined mr-2">edit</span>
                 Edit Profil
             </x-button>
+            @endcan
 
             <x-button href="{{ route('admin.reports.individual', $patient->id) }}"
                       variant="primary"
@@ -94,6 +120,7 @@
                 Lihat Rapor
             </x-button>
             
+            @can('delete', $patient)
             <form action="{{ route('admin.patients.destroy', $patient->id) }}" method="POST" onsubmit="return confirm('Hapus data warga ini?')">
                 @csrf @method('DELETE')
                 <button type="submit" 
@@ -101,6 +128,7 @@
                     <span class="material-symbols-outlined">delete</span>
                 </button>
             </form>
+            @endcan
         </div>
     </div>
 
@@ -145,7 +173,7 @@
         @include('livewire.admin.patient-management.details.' . $theme['partial'])
     </div>
 
-    @if(in_array($patient->category, ['bayi', 'baduta', 'balita']))
+    @if(in_array($patient->computed_category, ['bayi', 'baduta', 'balita']))
         {{-- Growth Chart (Full Width) ── --}}
         <div class="w-full mt-10 pb-16">
             @livewire('admin.patient-management.growth-chart', ['patient' => $patient, 'isEmbedded' => true])

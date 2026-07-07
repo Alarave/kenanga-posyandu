@@ -28,6 +28,21 @@
         .animate-ping-slow {
             animation: ping-slow 2.5s ease-in-out infinite;
         }
+
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        .scrollbar-none::-webkit-scrollbar {
+            display: none;
+        }
+        /* Hide scrollbar for IE, Edge and Firefox */
+        .scrollbar-none {
+            -ms-overflow-style: none;  /* IE and Edge */
+            scrollbar-width: none;  /* Firefox */
+        }
+
+        /* Allow vertical scrolling/panning when touching charts on mobile */
+        canvas {
+            touch-action: pan-y;
+        }
     </style>
 @endpush
 
@@ -73,36 +88,36 @@
     </section>
 
     {{-- ── Accessible Tab Navigation ── --}}
-    <div class="flex flex-wrap items-center bg-slate-100/90 backdrop-blur-md p-1.5 rounded-2xl border border-slate-200 shadow-xs gap-1">
+    <div class="flex overflow-x-auto whitespace-nowrap bg-slate-100/90 backdrop-blur-md p-1.5 rounded-2xl border border-slate-200 shadow-xs gap-1.5 scrollbar-none w-full">
         <button wire:click="$set('activeTab', 'overview')" @class([
-            'flex-1 min-w-[120px] py-3.5 px-5 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 border cursor-pointer',
+            'flex-1 shrink-0 min-w-max py-3.5 px-5 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 border cursor-pointer',
             'bg-white text-teal-850 border-slate-200 shadow-sm font-extrabold' => $activeTab === 'overview',
             'text-slate-600 hover:text-slate-900 hover:bg-white/50 border-transparent' => $activeTab !== 'overview'
-        ])>
+        ]) style="min-width: max-content; flex-shrink: 0;">
             <span class="material-symbols-outlined text-[20px] {{ $activeTab === 'overview' ? 'text-teal-700' : 'text-slate-400' }}">dashboard</span>
             Overview Ringkasan
         </button>
         <button wire:click="$set('activeTab', 'balita')" @class([
-            'flex-1 min-w-[120px] py-3.5 px-5 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 border cursor-pointer',
+            'flex-1 shrink-0 min-w-max py-3.5 px-5 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 border cursor-pointer',
             'bg-white text-teal-850 border-slate-200 shadow-sm font-extrabold' => $activeTab === 'balita',
             'text-slate-600 hover:text-slate-900 hover:bg-white/50 border-transparent' => $activeTab !== 'balita'
-        ])>
+        ]) style="min-width: max-content; flex-shrink: 0;">
             <span class="material-symbols-outlined text-[20px] {{ $activeTab === 'balita' ? 'text-teal-700' : 'text-slate-400' }}">child_care</span>
             Balita &amp; Anak
         </button>
         <button wire:click="$set('activeTab', 'pregnancy')" @class([
-            'flex-1 min-w-[120px] py-3.5 px-5 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 border cursor-pointer',
+            'flex-1 shrink-0 min-w-max py-3.5 px-5 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 border cursor-pointer',
             'bg-white text-teal-850 border-slate-200 shadow-sm font-extrabold' => $activeTab === 'pregnancy',
             'text-slate-600 hover:text-slate-900 hover:bg-white/50 border-transparent' => $activeTab !== 'pregnancy'
-        ])>
+        ]) style="min-width: max-content; flex-shrink: 0;">
             <span class="material-symbols-outlined text-[20px] {{ $activeTab === 'pregnancy' ? 'text-teal-700' : 'text-slate-400' }}">pregnant_woman</span>
             Ibu Hamil
         </button>
         <button wire:click="$set('activeTab', 'lansia')" @class([
-            'flex-1 min-w-[120px] py-3.5 px-5 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 border cursor-pointer',
+            'flex-1 shrink-0 min-w-max py-3.5 px-5 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 border cursor-pointer',
             'bg-white text-teal-850 border-slate-200 shadow-sm font-extrabold' => $activeTab === 'lansia',
             'text-slate-600 hover:text-slate-900 hover:bg-white/50 border-transparent' => $activeTab !== 'lansia'
-        ])>
+        ]) style="min-width: max-content; flex-shrink: 0;">
             <span class="material-symbols-outlined text-[20px] {{ $activeTab === 'lansia' ? 'text-teal-700' : 'text-slate-400' }}">elderly</span>
             Lanjut Usia (Lansia)
         </button>
@@ -435,10 +450,12 @@
                                     $bulletColor = 'bg-slate-400';
                                 }
                             @endphp
-                            <div class="flex items-center justify-between py-2.5 text-sm font-bold text-slate-750">
+                            <div wire:click="drillDown('Balita ({{ $label }})', 'nutrition_status', null, '{{ $label }}')" 
+                                 class="flex items-center justify-between py-2.5 text-sm font-bold text-slate-750 hover:text-indigo-600 cursor-pointer transition-colors hover:bg-slate-50/50 px-2 -mx-2 rounded-lg"
+                                 title="Klik untuk melihat daftar balita">
                                 <span class="flex items-center gap-2">
                                     <span class="w-3 h-3 rounded-full inline-block {{ $bulletColor }}"></span>
-                                    {{ $label }}
+                                    <span class="hover:underline">{{ $label }}</span>
                                 </span>
                                 <span class="font-extrabold text-slate-900">{{ $val }} <span class="text-slate-400 font-semibold">({{ $pct }}%)</span></span>
                             </div>
@@ -807,7 +824,7 @@
                                 </td>
                                 <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ \Carbon\Carbon::parse($record->visit_date)->translatedFormat('d M Y') }}</td>
                                 <td class="px-6 py-4 text-right">
-                                    <a href="{{ route('admin.patients.show', $record->patient_id) }}" class="w-9 h-9 inline-flex items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:bg-indigo-650 hover:text-white hover:shadow-md hover:shadow-indigo-650/10 transition-all border border-slate-200/60">
+                                    <a href="{{ route('admin.patients.show', $record->patient_id) }}" class="w-9 h-9 inline-flex items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:bg-indigo-700 hover:text-white hover:shadow-md hover:shadow-indigo-700/10 transition-all border border-slate-200/60">
                                         <span class="material-symbols-outlined text-[20px]">visibility</span>
                                     </a>
                                 </td>
@@ -832,7 +849,7 @@
             <div class="px-8 py-6 border-b border-slate-200 flex items-center justify-between bg-slate-50">
                 <div>
                     <h3 class="text-xl font-extrabold text-slate-900">{{ $drillDownTitle }}</h3>
-                    <p class="text-xs text-slate-500 mt-1 font-bold">Menampilkan hingga 50 rekam medis pencocokan terbaru</p>
+                    <p class="text-xs text-slate-500 mt-1 font-bold">Menampilkan seluruh rekam medis pencocokan</p>
                 </div>
                 <button wire:click="closeDrillDown" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:text-slate-900 transition-colors cursor-pointer border border-slate-200">
                     <span class="material-symbols-outlined">close</span>
@@ -1319,11 +1336,8 @@ function initCharts(data = null) {
                             const firstPoint = activeElements[0];
                             const index = firstPoint.index;
                             const label = String(nutLabels[index]);
-                            let type = 'balita';
-                            if (label.includes('Buruk') || label.includes('Sangat Kurang')) type = 'gizi_buruk';
-                            else if (label.includes('Kurang') || label.includes('Pendek') || label.includes('Stunting')) type = 'stunting';
                             
-                            $wire.call('drillDown', `Balita (${label})`, type);
+                            $wire.call('drillDown', `Balita (${label})`, 'nutrition_status', null, label);
                         }
                     },
                     plugins: { legend: { display: false } }
@@ -1611,8 +1625,25 @@ function initCharts(data = null) {
                             const index = firstPoint.index;
                             const label = labels[index];
                             const month = index + 1;
-                            
-                            $wire.call('drillDown', `Lansia - ${label}`, 'lansia', month);
+                            const datasetIndex = firstPoint.datasetIndex;
+
+                            const types = [
+                                'lansia_hipertensi',
+                                'lansia_hiperglikemia',
+                                'lansia_hiperkolesterolemia',
+                                'lansia_hiperurisemia'
+                            ];
+                            const datasetLabels = [
+                                'Hipertensi',
+                                'Hiperglikemia',
+                                'Hiperkolesterolemia',
+                                'Hiperurisemia'
+                            ];
+
+                            const type = types[datasetIndex] || 'lansia';
+                            const datasetLabel = datasetLabels[datasetIndex] || '';
+
+                            $wire.call('drillDown', `Lansia - ${datasetLabel} (${label})`, type, month);
                         }
                     },
                     scales: {

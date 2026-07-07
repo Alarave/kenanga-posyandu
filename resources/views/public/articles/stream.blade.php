@@ -83,6 +83,8 @@
             <div class="w-full md:w-52 aspect-[16/10] md:aspect-[4/3] rounded-2xl overflow-hidden shadow-md ring-1 ring-slate-100 flex-shrink-0 relative group-hover:shadow-lg transition-all duration-500">
                 <img src="{{ $article->thumbnail ? asset('storage/'.$article->thumbnail) : 'https://images.unsplash.com/photo-1576091160550-217359f4ecf8?q=80&w=800&auto=format&fit=crop' }}" 
                      alt="{{ $article->title }}" 
+                     loading="lazy"
+                     decoding="async"
                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out">
             </div>
         </article>

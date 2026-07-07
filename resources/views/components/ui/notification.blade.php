@@ -48,8 +48,8 @@
     }" 
     x-show="show" 
     x-init="
-        if($attributes.has('x-bind:type')) nType = $attributes.get('x-bind:type');
-        if($attributes.has('x-bind:message')) nMessage = $attributes.get('x-bind:message');
+        if($el.hasAttribute('type')) nType = $el.getAttribute('type');
+        if($el.hasAttribute('message')) nMessage = $el.getAttribute('message');
         setTimeout(() => show = false, 5000)
     "
     x-transition:enter="transition ease-out duration-300"

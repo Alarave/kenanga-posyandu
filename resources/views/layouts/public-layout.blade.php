@@ -6,11 +6,21 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'Posyandu Digital - Portal Berita')</title>
 
-    <!-- Fonts -->
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
+
+    <!-- Fonts & CDNs -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Public+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+
+    <!-- Google Fonts & Material Symbols -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Public+Sans:wght@300;400;500;600;700;800&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+
+    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <!-- Scripts & Styles -->
@@ -31,5 +41,14 @@
     {{-- Komponen Footer Modular --}}
     <x-layouts.public.footer />
 
+    <!-- Speculation Rules API for instant prerendering on hover -->
+    <script type="speculationrules">
+    {
+      "prerender": [{
+        "where": { "href_matches": "/*" },
+        "eagerness": "moderate"
+      }]
+    }
+    </script>
 </body>
 </html>

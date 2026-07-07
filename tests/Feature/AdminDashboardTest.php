@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Admin\AdminDashboard;
 use App\Models\MedicalRecord;
 use App\Models\Patient;
 use App\Models\Pedukuhan;
@@ -7,6 +8,7 @@ use App\Models\Posyandu;
 use App\Models\Schedule;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
 
@@ -140,4 +142,85 @@ test('admin dashboard displays balita stunting warning', function () {
     $response->assertSee('Total Imunisasi');
     $response->assertSee('Pemeriksaan Terbaru');
     $response->assertSee('Imunisasi Terbaru');
+});
+
+test('admin dashboard displays bumil trimester and lansia names', function () {
+    /** @var \Tests\TestCase $this */
+    $pedukuhan = Pedukuhan::factory()->create();
+    $posyandu = Posyandu::factory()->create(['pedukuhan_id' => $pedukuhan->id]);
+
+    /** @var \App\Models\User $admin */
+    $admin = User::factory()->create([
+        'role' => 'admin',
+        'posyandu_id' => $posyandu->id,
+    ]);
+
+    // Create a pregnant woman
+    $bumil = Patient::factory()->create([
+        'posyandu_id' => $posyandu->id,
+        'category' => 'ibu_hamil',
+        'full_name' => 'Siti Aminah Ibu Hamil',
+    ]);
+
+    // Create medical record with gestational age
+    MedicalRecord::factory()->create([
+        'patient_id' => $bumil->id,
+        'gestational_age' => '12 minggu', // Trimester 1
+        'visit_date' => now(),
+    ]);
+
+    // Create an elderly citizen (lansia)
+    $lansia = Patient::factory()->create([
+        'posyandu_id' => $posyandu->id,
+        'category' => 'lansia',
+        'full_name' => 'Mbah Karto Lansia',
+        'birth_date' => now()->subYears(65), // 65 years old
+    ]);
+
+    // Act as admin and visit dashboard
+    $this->actingAs($admin);
+    $response = $this->get('/dashboard');
+
+    // Assert
+    $response->assertStatus(200);
+    $response->assertSeeLivewire('admin.admin-dashboard');
+    $response->assertSee('Siti Aminah Ibu Hamil');
+    $response->assertSee('12 minggu');
+    $response->assertSee('Mbah Karto Lansia');
+    $response->assertSee('65 thn');
+});
+
+test('admin dashboard allows selecting nutrition status and viewing balita list', function () {
+    /** @var \Tests\TestCase $this */
+    $pedukuhan = Pedukuhan::factory()->create();
+    $posyandu = Posyandu::factory()->create(['pedukuhan_id' => $pedukuhan->id]);
+
+    $admin = User::factory()->create([
+        'role' => 'admin',
+        'posyandu_id' => $posyandu->id,
+    ]);
+
+    $balita = Patient::factory()->create([
+        'posyandu_id' => $posyandu->id,
+        'category' => 'balita',
+        'full_name' => 'Budi Santoso Balita',
+    ]);
+
+    MedicalRecord::factory()->create([
+        'patient_id' => $balita->id,
+        'nutrition_status' => 'Gizi Baik',
+        'visit_date' => now(),
+        'weight' => 12.5,
+        'height' => 85.0,
+    ]);
+
+    $this->actingAs($admin);
+
+    Livewire::test(AdminDashboard::class)
+        ->call('selectNutritionStatus', 'Gizi Baik')
+        ->assertSet('showNutritionModal', true)
+        ->assertSet('selectedNutritionStatus', 'Gizi Baik')
+        ->assertSee('Budi Santoso Balita')
+        ->assertSee('12.50 kg')
+        ->assertSee('85.00 cm');
 });
