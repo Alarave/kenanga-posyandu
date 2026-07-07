@@ -188,15 +188,16 @@
     const overlay   = document.getElementById('sidebarOverlay');
     const EXP = '260px', COL = '64px';
 
+    const desktopMedia = window.matchMedia('(min-width: 1024px)');
     let collapsed = localStorage.getItem(KEY) === 'true';
     
     // Force collapsed on mobile by default to prevent blocking the screen
-    if (window.innerWidth < 1024) {
+    if (!desktopMedia.matches) {
         collapsed = true;
     }
 
     function apply(animate) {
-        const isDesktop = window.innerWidth >= 1024;
+        const isDesktop = desktopMedia.matches;
         const width = isDesktop ? (collapsed ? COL : EXP) : (collapsed ? '0px' : EXP);
 
         document.documentElement.style.setProperty('--sidebar-width', width);
@@ -244,16 +245,12 @@
         }
     });
 
-    let isMobile = window.innerWidth < 1024;
-    window.addEventListener('resize', () => {
-        const currentlyMobile = window.innerWidth < 1024;
-        if (currentlyMobile !== isMobile) {
-            isMobile = currentlyMobile;
-            if (isMobile) {
-                collapsed = true;
-            }
-            apply(false);
+    // Listen to screen size changes at 1024px breakpoint only (high performance)
+    desktopMedia.addEventListener('change', (e) => {
+        if (!e.matches) {
+            collapsed = true;
         }
+        apply(false);
     });
 })();
 </script>
