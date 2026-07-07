@@ -107,7 +107,7 @@
         {{-- Bottom Section --}}
         <div class="mt-20 pt-8 border-t border-slate-200/80 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
             <p class="text-slate-500 text-xs font-semibold">
-                &copy; {{ date('Y') }} Posyandu Digital Bekasi Timur. All rights reserved.
+                &copy; {{ date('Y') }} Posyandu Kenanga Bekasi Timur. All rights reserved.
             </p>
             <div class="flex gap-6 text-xs font-semibold text-slate-400">
                 <a href="#" class="hover:text-slate-600 transition-colors">Privacy Policy</a>
