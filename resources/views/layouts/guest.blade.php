@@ -42,7 +42,7 @@
                     <span class="material-symbols-outlined text-[48px]">health_and_safety</span>
                 </div>
                 <h1 class="text-5xl font-black text-white mb-6 font-jakarta tracking-tight leading-tight">
-                    Sistem Layanan <br> <span class="text-teal-400 italic">Posyandu Digital.</span>
+                    Posyandu <br> <span class="text-teal-400 italic">Kenanga.</span>
                 </h1>
                 <p class="text-teal-100 text-xl font-medium max-w-md mx-auto opacity-80 leading-relaxed italic">
                     Memudahkan pencatatan dan pemantauan kesehatan seluruh warga dalam satu genggaman.
@@ -62,7 +62,7 @@
                             <span class="material-symbols-outlined text-[32px]">health_and_safety</span>
                         </div>
                         <h2 class="text-2xl font-black text-teal-900 font-jakarta uppercase tracking-tighter">Posyandu
-                            Digital</h2>
+                            Kenanga</h2>
                     </div>
                 </div>
 
@@ -93,7 +93,7 @@
                 {{-- Copyright --}}
                 <div class="mt-12 text-center">
                     <p class="text-sm font-bold text-slate-400 uppercase tracking-widest leading-loose">
-                        &copy; {{ date('Y') }} POSYANDU DIGITAL <br> BEKASI TIMUR
+                        &copy; {{ date('Y') }} POSYANDU KENANGA <br> BEKASI TIMUR
                     </p>
                 </div>
 

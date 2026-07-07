@@ -2,133 +2,246 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet" />
     <style>
-        .hero-gradient {
-            background: linear-gradient(135deg, #0d9488 0%, #0f766e 50%, #115e59 100%);
-        }
-
-        .hero-orb-1 {
-            background: radial-gradient(circle, rgba(204, 251, 241, 0.12) 0%, transparent 70%);
-        }
-
-        .hero-orb-2 {
-            background: radial-gradient(circle, rgba(45, 212, 191, 0.1) 0%, transparent 70%);
-        }
+        .hero-gradient { background: linear-gradient(135deg, #0d9488 0%, #0f766e 50%, #115e59 100%); }
+        .hero-orb-1 { background: radial-gradient(circle, rgba(204,251,241,0.12) 0%, transparent 70%); }
+        .hero-orb-2 { background: radial-gradient(circle, rgba(45,212,191,0.1) 0%, transparent 70%); }
 
         @keyframes ping-slow {
-            0%, 100% {
-                transform: scale(1);
-                opacity: 0.8;
-            }
-            50% {
-                transform: scale(1.8);
-                opacity: 0;
-            }
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.8); opacity: 0; }
+        }
+        .animate-ping-slow { animation: ping-slow 2.5s ease-in-out infinite; }
+        .scrollbar-none::-webkit-scrollbar { display: none; }
+        .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+        canvas { touch-action: pan-y; }
+
+        /* ── KPI Cards: rich gradient personalities ── */
+        .kpi-card {
+            position: relative; overflow: hidden; border-radius: 24px;
+            padding: 1.4rem 1.5rem 1.25rem;
+            display: flex; flex-direction: column;
+            transition: transform 250ms ease-out, box-shadow 250ms ease-out;
+            cursor: default;
+        }
+        .kpi-card:hover { transform: translateY(-5px); }
+
+        /* Noise texture overlay */
+        .kpi-card::after {
+            content: ''; position: absolute; inset: 0; border-radius: 24px;
+            pointer-events: none;
+            background-image: radial-gradient(circle at 80% 20%, rgba(255,255,255,0.12) 0%, transparent 50%);
         }
 
-        .animate-ping-slow {
-            animation: ping-slow 2.5s ease-in-out infinite;
+        /* Color variants */
+        .kpi-slate  { background: linear-gradient(145deg,#1e293b,#0f172a); box-shadow:0 4px 20px -4px rgba(15,23,42,.45); }
+        .kpi-teal   { background: linear-gradient(145deg,#0d9488,#0f766e); box-shadow:0 4px 20px -4px rgba(13,148,136,.5); }
+        .kpi-rose   { background: linear-gradient(145deg,#e11d48,#be123c); box-shadow:0 4px 20px -4px rgba(225,29,72,.5); }
+        .kpi-indigo { background: linear-gradient(145deg,#4f46e5,#3730a3); box-shadow:0 4px 20px -4px rgba(79,70,229,.5); }
+        .kpi-red    { background: linear-gradient(145deg,#dc2626,#b91c1c); box-shadow:0 4px 20px -4px rgba(220,38,38,.5); }
+        .kpi-blue   { background: linear-gradient(145deg,#2563eb,#1d4ed8); box-shadow:0 4px 20px -4px rgba(37,99,235,.5); }
+        .kpi-amber  { background: linear-gradient(145deg,#d97706,#b45309); box-shadow:0 4px 20px -4px rgba(217,119,6,.5); }
+
+        .kpi-slate:hover  { box-shadow:0 14px 36px -6px rgba(15,23,42,.6); }
+        .kpi-teal:hover   { box-shadow:0 14px 36px -6px rgba(13,148,136,.65); }
+        .kpi-rose:hover   { box-shadow:0 14px 36px -6px rgba(225,29,72,.65); }
+        .kpi-indigo:hover { box-shadow:0 14px 36px -6px rgba(79,70,229,.65); }
+        .kpi-red:hover    { box-shadow:0 14px 36px -6px rgba(220,38,38,.65); }
+        .kpi-blue:hover   { box-shadow:0 14px 36px -6px rgba(37,99,235,.65); }
+        .kpi-amber:hover  { box-shadow:0 14px 36px -6px rgba(217,119,6,.65); }
+
+        /* Icon wrappers */
+        .kpi-card .kpi-icon-wrap {
+            width:44px; height:44px; border-radius:13px; flex-shrink:0;
+            display:flex; align-items:center; justify-content:center;
+            background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.18);
+            transition: transform 250ms ease-out;
+        }
+        .kpi-card:hover .kpi-icon-wrap { transform: scale(1.1) rotate(-4deg); }
+
+        /* Unit badge */
+        .kpi-unit {
+            font-size:9.5px; font-weight:800; letter-spacing:0.08em;
+            text-transform:uppercase; padding:2px 7px; border-radius:5px;
+            background:rgba(255,255,255,0.16); color:rgba(255,255,255,0.8);
         }
 
-        /* Hide scrollbar for Chrome, Safari and Opera */
-        .scrollbar-none::-webkit-scrollbar {
-            display: none;
-        }
-        /* Hide scrollbar for IE, Edge and Firefox */
-        .scrollbar-none {
-            -ms-overflow-style: none;  /* IE and Edge */
-            scrollbar-width: none;  /* Firefox */
+        /* Big number */
+        .kpi-number {
+            font-size:2.75rem; font-weight:900; line-height:1;
+            letter-spacing:-0.045em; margin:0.55rem 0 0.15rem;
+            font-family:'Outfit',sans-serif; color:#fff;
         }
 
-        /* Allow vertical scrolling/panning when touching charts on mobile */
-        canvas {
-            touch-action: pan-y;
+        /* Label */
+        .kpi-label {
+            font-size:0.68rem; font-weight:800; letter-spacing:0.1em;
+            text-transform:uppercase; margin-bottom:0.8rem;
+            color:rgba(255,255,255,0.65);
+        }
+
+        /* Description area */
+        .kpi-desc {
+            font-size:0.75rem; font-weight:500; line-height:1.5;
+            border-top:1px solid rgba(255,255,255,0.15);
+            padding-top:0.7rem; margin-top:auto;
+            color:rgba(255,255,255,0.55);
+        }
+
+        /* Bottom accent line */
+        .kpi-accent-bar {
+            position:absolute; bottom:0; left:0; right:0; height:3px;
+            background:linear-gradient(90deg,rgba(255,255,255,0.5),rgba(255,255,255,0.05));
+        }
+
+        /* ── Chart cards ── */
+        .chart-card { background:white; border-radius:20px; padding:1.75rem 2rem; border:1px solid #e2e8f0; box-shadow:0 1px 6px rgba(0,0,0,0.05); }
+
+        /* ── Animations ── */
+        @keyframes fadeInUp {
+            from { opacity:0; transform:translateY(10px); }
+            to   { opacity:1; transform:translateY(0); }
+        }
+        .animate-fadeIn { animation: fadeInUp 280ms ease-out both; }
+
+        @keyframes scaleUp {
+            from { opacity:0; transform:scale(0.96); }
+            to   { opacity:1; transform:scale(1); }
+        }
+        .animate-scaleUp { animation: scaleUp 200ms ease-out both; }
+
+        /* ── Mobile KPI overrides ── */
+        @media (max-width: 639px) {
+            .kpi-card { padding: 1rem 1rem 0.9rem; border-radius: 18px; }
+            .kpi-number { font-size: 2rem; }
+            .kpi-label { font-size: 0.6rem; margin-bottom: 0.6rem; }
+            .kpi-desc { font-size: 0.68rem; padding-top: 0.55rem; }
+            .kpi-icon-wrap { width: 36px; height: 36px; border-radius: 10px; }
+            .kpi-unit { font-size: 8px; padding: 2px 5px; }
+        }
+
+        /* ── Mobile tab nav ── */
+        @media (max-width: 479px) {
+            .analytics-tab-btn { padding: 0.6rem 0.875rem; font-size: 0.75rem; }
         }
     </style>
 @endpush
 
-<div class="max-w-7xl mx-auto space-y-8 pb-20 px-4 sm:px-6">
+<div class="max-w-7xl mx-auto space-y-4 sm:space-y-6 pb-20 px-3 sm:px-6">
 
     {{-- ── Hero Section (Analitik) ── --}}
-    <section class="relative rounded-2xl overflow-hidden border border-teal-900/10 shadow-xs" style="background:#0f766e;">
+    <section class="relative rounded-2xl sm:rounded-3xl overflow-hidden shadow-lg" style="background:#0f766e;">
         {{-- Background layers --}}
         <div class="absolute inset-0 hero-gradient"></div>
-        <div class="absolute top-0 left-1/4 w-80 h-80 hero-orb-1 rounded-full filter blur-[60px] animate-pulse"></div>
-        <div class="absolute bottom-0 right-1/4 w-80 h-80 hero-orb-2 rounded-full filter blur-[60px]"
-            style="animation:pulse 5s ease-in-out 1.5s infinite;"></div>
+        <div class="absolute top-0 left-1/4 w-96 h-96 hero-orb-1 rounded-full filter blur-[70px] animate-pulse"></div>
+        <div class="absolute bottom-0 right-1/4 w-96 h-96 hero-orb-2 rounded-full filter blur-[70px]" style="animation:pulse 5s ease-in-out 1.5s infinite;"></div>
+        {{-- Decorative grid pattern --}}
+        <div class="absolute inset-0 opacity-[0.04]" style="background-image:linear-gradient(rgba(255,255,255,0.5) 1px, transparent 1px),linear-gradient(90deg, rgba(255,255,255,0.5) 1px, transparent 1px); background-size:40px 40px;"></div>
 
-        <div class="relative z-10 px-8 py-10 md:px-12 md:py-12 max-w-3xl">
-            {{-- Live badge --}}
-            <div class="inline-flex items-center gap-2.5 px-3.5 py-1.5 rounded-full mb-6 shadow-xs"
-                style="background:rgba(255, 255, 255, 0.08); border:1px solid rgba(255, 255, 255, 0.15);">
-                <span class="relative flex h-2 w-2">
-                    <span class="animate-ping-slow absolute inline-flex h-full w-full rounded-full bg-teal-200 opacity-75"></span>
-                    <span class="relative inline-flex h-2 w-2 rounded-full bg-teal-350"></span>
-                </span>
-                <span class="text-xs font-semibold text-teal-100 tracking-wide uppercase">Sistem Analitik Pelayanan Kesehatan</span>
-            </div>
+        <div class="relative z-10 px-5 py-7 sm:px-8 sm:py-10 md:px-12 md:py-12">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6">
 
-            <h1 class="text-3xl md:text-4xl lg:text-5xl font-extrabold text-white mb-4 leading-tight drop-shadow-xs" style="letter-spacing:-0.03em;">
-                Wawasan &amp; Analitik Posyandu
-            </h1>
+                {{-- Left: Title block --}}
+                <div class="min-w-0">
+                    {{-- Live badge --}}
+                    <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full mb-3 sm:mb-5"
+                        style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.18);">
+                        <span class="relative flex h-1.5 w-1.5 shrink-0">
+                            <span class="animate-ping-slow absolute inline-flex h-full w-full rounded-full bg-teal-200 opacity-75"></span>
+                            <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-teal-300"></span>
+                        </span>
+                        <span class="text-[10px] font-bold text-teal-100 tracking-wider uppercase leading-none">Analitik &middot; Posyandu Kenanga</span>
+                    </div>
 
-            <p class="text-teal-50 text-base max-w-xl leading-relaxed mb-8 font-semibold">
-                Data wawasan klinis &amp; keaktifan posyandu periode tahun <span class="text-white font-black underline decoration-teal-300 decoration-2">{{ $selectedYear }}</span>
-                @if(auth()->user()->posyandu)
-                    | <span class="text-white font-bold">Unit Kerja: {{ auth()->user()->posyandu->name }}</span>
-                @endif
-            </p>
+                    <h1 class="text-[1.6rem] sm:text-3xl md:text-4xl lg:text-[2.75rem] font-black text-white leading-[1.1] mb-2 sm:mb-3" style="letter-spacing:-0.03em; font-family:'Outfit',sans-serif;">
+                        Wawasan &amp; Data Kesehatan
+                    </h1>
+                    <p class="text-teal-100/75 text-xs sm:text-sm leading-relaxed font-medium mb-4 md:mb-0">
+                        Periode tahun <span class="text-white font-black">{{ $selectedYear }}</span>
+                        @if(auth()->user()->posyandu)
+                            &nbsp;&middot;&nbsp; <span class="text-teal-200 font-semibold">{{ auth()->user()->posyandu->name }}</span>
+                        @endif
+                    </p>
 
-            <div class="flex flex-wrap items-center gap-3">
-                <div class="inline-flex items-center gap-2.5 h-11 px-5 rounded-xl font-semibold text-sm text-teal-50 bg-teal-950/45 border border-teal-400/25 backdrop-blur-md shadow-sm no-print">
-                    <span class="material-symbols-outlined text-[20px] text-teal-200">sync</span>
-                    Terakhir Diperbarui: <span class="text-white font-black">{{ $lastUpdated }}</span>
+                    {{-- Meta pills: visible on mobile below title, hidden on md (shown right column) --}}
+                    <div class="flex flex-wrap gap-2 md:hidden no-print">
+                        <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg"
+                            style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.14);">
+                            <span class="material-symbols-outlined text-[14px] text-teal-300">sync</span>
+                            <span class="text-[11px] font-semibold text-teal-100">{{ $lastUpdated }}</span>
+                        </div>
+                        <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg"
+                            style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.14);">
+                            <span class="material-symbols-outlined text-[14px] text-teal-300">query_stats</span>
+                            <span class="text-[11px] font-semibold text-teal-100"><strong class="text-white font-black">{{ number_format($totalKunjungan) }}</strong> kunjungan</span>
+                        </div>
+                    </div>
                 </div>
+
+                {{-- Right: Quick meta — desktop only --}}
+                <div class="hidden md:flex flex-col gap-2.5 shrink-0">
+                    <div class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-teal-100 no-print"
+                        style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12);">
+                        <span class="material-symbols-outlined text-[18px] text-teal-300">sync</span>
+                        <span class="text-xs">Diperbarui: <strong class="text-white font-black">{{ $lastUpdated }}</strong></span>
+                    </div>
+                    <div class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-teal-100"
+                        style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12);">
+                        <span class="material-symbols-outlined text-[18px] text-teal-300">query_stats</span>
+                        <span class="text-xs">Total: <strong class="text-white font-black">{{ number_format($totalKunjungan) }}</strong> kunjungan</span>
+                    </div>
+                </div>
+
             </div>
         </div>
     </section>
 
-    {{-- ── Accessible Tab Navigation ── --}}
-    <div class="flex overflow-x-auto whitespace-nowrap bg-slate-100/90 backdrop-blur-md p-1.5 rounded-2xl border border-slate-200 shadow-xs gap-1.5 scrollbar-none w-full">
+    {{-- ── Tab Navigation ── --}}
+    <div class="flex overflow-x-auto whitespace-nowrap bg-slate-100/80 backdrop-blur-sm p-1 sm:p-1.5 rounded-xl sm:rounded-2xl border border-slate-200/80 shadow-sm gap-0.5 sm:gap-1 scrollbar-none w-full">
         <button wire:click="$set('activeTab', 'overview')" @class([
-            'flex-1 shrink-0 min-w-max py-3.5 px-5 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 border cursor-pointer',
-            'bg-white text-teal-850 border-slate-200 shadow-sm font-extrabold' => $activeTab === 'overview',
-            'text-slate-600 hover:text-slate-900 hover:bg-white/50 border-transparent' => $activeTab !== 'overview'
+            'analytics-tab-btn flex-1 shrink-0 min-w-max py-2.5 sm:py-3 px-3 sm:px-5 rounded-lg sm:rounded-xl text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer',
+            'bg-white text-teal-800 border border-teal-100/80 shadow-md font-extrabold tracking-tight' => $activeTab === 'overview',
+            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-semibold' => $activeTab !== 'overview'
         ]) style="min-width: max-content; flex-shrink: 0;">
-            <span class="material-symbols-outlined text-[20px] {{ $activeTab === 'overview' ? 'text-teal-700' : 'text-slate-400' }}">dashboard</span>
-            Overview Ringkasan
+            <span class="material-symbols-outlined text-[16px] sm:text-[18px] {{ $activeTab === 'overview' ? 'text-teal-600' : 'text-slate-400' }}">dashboard</span>
+            <span class="hidden xs:inline sm:inline">Overview</span>
+            <span class="inline xs:hidden sm:hidden">Ov.</span>
+            @if($activeTab === 'overview')<span class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-teal-500 ml-0.5 sm:ml-1"></span>@endif
         </button>
         <button wire:click="$set('activeTab', 'balita')" @class([
-            'flex-1 shrink-0 min-w-max py-3.5 px-5 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 border cursor-pointer',
-            'bg-white text-teal-850 border-slate-200 shadow-sm font-extrabold' => $activeTab === 'balita',
-            'text-slate-600 hover:text-slate-900 hover:bg-white/50 border-transparent' => $activeTab !== 'balita'
+            'analytics-tab-btn flex-1 shrink-0 min-w-max py-2.5 sm:py-3 px-3 sm:px-5 rounded-lg sm:rounded-xl text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer',
+            'bg-white text-teal-800 border border-teal-100/80 shadow-md font-extrabold tracking-tight' => $activeTab === 'balita',
+            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-semibold' => $activeTab !== 'balita'
         ]) style="min-width: max-content; flex-shrink: 0;">
-            <span class="material-symbols-outlined text-[20px] {{ $activeTab === 'balita' ? 'text-teal-700' : 'text-slate-400' }}">child_care</span>
-            Balita &amp; Anak
+            <span class="material-symbols-outlined text-[16px] sm:text-[18px] {{ $activeTab === 'balita' ? 'text-teal-600' : 'text-slate-400' }}">child_care</span>
+            Balita
+            @if($activeTab === 'balita')<span class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-teal-500 ml-0.5 sm:ml-1"></span>@endif
         </button>
         <button wire:click="$set('activeTab', 'pregnancy')" @class([
-            'flex-1 shrink-0 min-w-max py-3.5 px-5 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 border cursor-pointer',
-            'bg-white text-teal-850 border-slate-200 shadow-sm font-extrabold' => $activeTab === 'pregnancy',
-            'text-slate-600 hover:text-slate-900 hover:bg-white/50 border-transparent' => $activeTab !== 'pregnancy'
+            'analytics-tab-btn flex-1 shrink-0 min-w-max py-2.5 sm:py-3 px-3 sm:px-5 rounded-lg sm:rounded-xl text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer',
+            'bg-white text-rose-800 border border-rose-100/80 shadow-md font-extrabold tracking-tight' => $activeTab === 'pregnancy',
+            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-semibold' => $activeTab !== 'pregnancy'
         ]) style="min-width: max-content; flex-shrink: 0;">
-            <span class="material-symbols-outlined text-[20px] {{ $activeTab === 'pregnancy' ? 'text-teal-700' : 'text-slate-400' }}">pregnant_woman</span>
-            Ibu Hamil
+            <span class="material-symbols-outlined text-[16px] sm:text-[18px] {{ $activeTab === 'pregnancy' ? 'text-rose-500' : 'text-slate-400' }}">pregnant_woman</span>
+            Hamil
+            @if($activeTab === 'pregnancy')<span class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-rose-500 ml-0.5 sm:ml-1"></span>@endif
         </button>
         <button wire:click="$set('activeTab', 'lansia')" @class([
-            'flex-1 shrink-0 min-w-max py-3.5 px-5 rounded-xl text-sm font-bold transition-all duration-200 flex items-center justify-center gap-2 border cursor-pointer',
-            'bg-white text-teal-850 border-slate-200 shadow-sm font-extrabold' => $activeTab === 'lansia',
-            'text-slate-600 hover:text-slate-900 hover:bg-white/50 border-transparent' => $activeTab !== 'lansia'
+            'analytics-tab-btn flex-1 shrink-0 min-w-max py-2.5 sm:py-3 px-3 sm:px-5 rounded-lg sm:rounded-xl text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer',
+            'bg-white text-indigo-800 border border-indigo-100/80 shadow-md font-extrabold tracking-tight' => $activeTab === 'lansia',
+            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-semibold' => $activeTab !== 'lansia'
         ]) style="min-width: max-content; flex-shrink: 0;">
-            <span class="material-symbols-outlined text-[20px] {{ $activeTab === 'lansia' ? 'text-teal-700' : 'text-slate-400' }}">elderly</span>
-            Lanjut Usia (Lansia)
+            <span class="material-symbols-outlined text-[16px] sm:text-[18px] {{ $activeTab === 'lansia' ? 'text-indigo-500' : 'text-slate-400' }}">elderly</span>
+            Lansia
+            @if($activeTab === 'lansia')<span class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-indigo-500 ml-0.5 sm:ml-1"></span>@endif
         </button>
     </div>
 
     {{-- ── Unified Control Card (Filter + View Settings) ── --}}
-    <div class="bg-white rounded-3xl shadow-xs border border-slate-200 overflow-hidden">
+    <div class="bg-white rounded-2xl shadow-xs border border-slate-200 overflow-hidden">
 
         {{-- ── Baris 1: Filter Global ── --}}
-        <div class="p-6">
-            <div class="flex flex-col xl:flex-row gap-6 items-start xl:items-end">
+        <div class="p-4 sm:p-6">
+            <div class="flex flex-col xl:flex-row gap-4 sm:gap-6 items-start xl:items-end">
 
                 {{-- Label kiri atas --}}
                 <div class="flex-1 w-full">
@@ -254,9 +367,9 @@
     {{-- ── Tab Contents ── --}}
     @if($activeTab === 'overview')
         {{-- ================= OVERVIEW TAB ================= --}}
-        <div class="space-y-8 animate-fadeIn">
-            {{-- Stats Grid --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="space-y-4 sm:space-y-6 animate-fadeIn">
+            {{-- Stats Grid: 2 cols mobile, 4 cols desktop --}}
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
                 @php
                     $overviewCards = [
                         ['label' => 'Total Kunjungan', 'val' => number_format($totalKunjungan), 'unit' => 'Pemeriksaan', 'icon' => 'analytics', 'color' => 'slate', 'desc' => 'Total rekam medis terdaftar'],
@@ -267,37 +380,23 @@
                 @endphp
 
                 @foreach($overviewCards as $c)
-                <div @class([
-                    'relative overflow-hidden bg-white rounded-3xl p-6 border transition-all duration-300 group shadow-xs hover:shadow-md hover:-translate-y-1.5',
-                    'border-slate-200/85 hover:border-slate-400' => $c['color'] === 'slate',
-                    'border-teal-200/60 hover:border-teal-500/80' => $c['color'] === 'teal',
-                    'border-rose-200/60 hover:border-rose-500/80' => $c['color'] === 'rose',
-                    'border-indigo-200/60 hover:border-indigo-500/80' => $c['color'] === 'indigo',
-                ])>
-                    <div class="relative z-10 flex items-center justify-between mb-4">
-                        <div @class([
-                            'w-12 h-12 rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-sm',
-                            'bg-slate-900 text-white shadow-slate-900/10' => $c['color'] === 'slate',
-                            'bg-teal-600 text-white shadow-teal-600/10' => $c['color'] === 'teal',
-                            'bg-rose-600 text-white shadow-rose-600/10' => $c['color'] === 'rose',
-                            'bg-indigo-600 text-white shadow-indigo-600/10' => $c['color'] === 'indigo',
-                        ])>
-                            <span class="material-symbols-outlined text-[24px]">{{ $c['icon'] }}</span>
+                <div class="kpi-card kpi-{{ $c['color'] }}">
+                    <div class="relative z-10 flex items-center justify-between mb-3">
+                        <div class="kpi-icon-wrap">
+                            <span class="material-symbols-outlined text-[22px] text-white">{{ $c['icon'] }}</span>
                         </div>
-                        <span class="text-[10px] font-black uppercase tracking-widest text-slate-500 bg-slate-100/80 px-2.5 py-1 rounded-lg">{{ $c['unit'] }}</span>
+                        <span class="kpi-unit">{{ $c['unit'] }}</span>
                     </div>
-
-                    <div class="space-y-1.5">
-                        <h3 class="text-3xl font-black text-slate-900 tracking-tight leading-none mb-1">{{ $c['val'] }}</h3>
-                        <p class="text-sm font-extrabold text-slate-800 uppercase tracking-wide">{{ $c['label'] }}</p>
-                        <p class="text-xs text-slate-500 mt-3 border-t border-slate-100 pt-3 font-medium leading-relaxed">{{ $c['desc'] }}</p>
-                    </div>
+                    <p class="kpi-number relative z-10">{{ $c['val'] }}</p>
+                    <p class="kpi-label relative z-10">{{ $c['label'] }}</p>
+                    <p class="kpi-desc relative z-10">{{ $c['desc'] }}</p>
+                    <div class="kpi-accent-bar"></div>
                 </div>
                 @endforeach
             </div>
 
             {{-- Combined Trend Line Chart --}}
-            <div class="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-xs">
+            <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-slate-200 shadow-xs">
                 <div class="flex items-center justify-between gap-4 mb-6">
                     <div>
                         <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Tren Kunjungan Bulanan Gabungan</h3>
@@ -322,8 +421,8 @@
     @if($activeTab === 'balita')
         {{-- ================= BALITA TAB ================= --}}
         <div class="space-y-8 animate-fadeIn">
-            {{-- Stats Grid --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {{-- Stats Grid: 2 cols mobile, 4 cols desktop --}}
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
                 @php
                     $balitaCards = [
                         ['label' => 'Total Balita', 'val' => number_format($totalBalita), 'unit' => 'Jiwa', 'icon' => 'child_care', 'color' => 'teal', 'desc' => 'Tumbuh kembang aktif terpantau'],
@@ -334,37 +433,23 @@
                 @endphp
 
                 @foreach($balitaCards as $c)
-                <div @class([
-                    'relative overflow-hidden bg-white rounded-3xl p-6 border transition-all duration-300 group shadow-xs hover:shadow-md hover:-translate-y-1.5',
-                    'border-teal-200/60 hover:border-teal-500/80' => $c['color'] === 'teal',
-                    'border-red-200/60 hover:border-red-500/80' => $c['color'] === 'red',
-                    'border-blue-200/60 hover:border-blue-500/80' => $c['color'] === 'blue',
-                    'border-amber-200/60 hover:border-amber-500/80' => $c['color'] === 'amber',
-                ])>
-                    <div class="relative z-10 flex items-center justify-between mb-4">
-                        <div @class([
-                            'w-12 h-12 rounded-2xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110 shadow-sm text-white',
-                            'bg-teal-600 shadow-teal-600/10' => $c['color'] === 'teal',
-                            'bg-red-650 shadow-red-600/10' => $c['color'] === 'red',
-                            'bg-blue-600 shadow-blue-600/10' => $c['color'] === 'blue',
-                            'bg-amber-600 shadow-amber-600/10' => $c['color'] === 'amber',
-                        ])>
-                            <span class="material-symbols-outlined text-[24px]">{{ $c['icon'] }}</span>
+                <div class="kpi-card kpi-{{ $c['color'] }}">
+                    <div class="relative z-10 flex items-center justify-between mb-3">
+                        <div class="kpi-icon-wrap">
+                            <span class="material-symbols-outlined text-[22px] text-white">{{ $c['icon'] }}</span>
                         </div>
-                        <span class="text-[10px] font-black uppercase tracking-widest text-slate-500 bg-slate-100/80 px-2.5 py-1 rounded-lg">{{ $c['unit'] }}</span>
+                        <span class="kpi-unit">{{ $c['unit'] }}</span>
                     </div>
-
-                    <div class="space-y-1.5">
-                        <h3 class="text-3xl font-black text-slate-900 tracking-tight leading-none mb-1">{{ $c['val'] }}</h3>
-                        <p class="text-sm font-extrabold text-slate-800 uppercase tracking-wide">{{ $c['label'] }}</p>
-                        <p class="text-xs text-slate-500 mt-3 border-t border-slate-100 pt-3 font-medium leading-relaxed">{{ $c['desc'] }}</p>
-                    </div>
+                    <p class="kpi-number relative z-10">{{ $c['val'] }}</p>
+                    <p class="kpi-label relative z-10">{{ $c['label'] }}</p>
+                    <p class="kpi-desc relative z-10">{{ $c['desc'] }}</p>
+                    <div class="kpi-accent-bar"></div>
                 </div>
                 @endforeach
             </div>
 
             {{-- Prevalensi Pertumbuhan Balita — Full Width Card --}}
-            <div class="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-xs">
+            <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-slate-200 shadow-xs">
                 <div class="flex items-start justify-between gap-4 mb-6">
                     <div>
                         <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Prevalensi Pertumbuhan Balita</h3>
@@ -402,7 +487,7 @@
             </div>
 
             {{-- Status Gizi Balita — Dedicated Card --}}
-            <div class="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-xs">
+            <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-slate-200 shadow-xs">
                 <div class="flex items-start justify-between gap-4 mb-6">
                     <div>
                         <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Status Gizi Balita (Pemeriksaan Terbaru)</h3>
@@ -471,7 +556,7 @@
             </div>
 
             {{-- Capaian Imunisasi Per Jenis — Full Width Card --}}
-            <div class="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-xs">
+            <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-slate-200 shadow-xs">
                 <div class="flex items-start justify-between gap-4 mb-6">
                     <div>
                         <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Capaian Imunisasi Per Jenis Vaksin</h3>
@@ -508,7 +593,7 @@
             </div>
 
             {{-- Growth Chart (BB & TB Rata-rata) --}}
-            <div class="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-xs">
+            <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-slate-200 shadow-xs">
                 <div class="flex items-center justify-between mb-6">
                     <div>
                         <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Grafik Pertumbuhan Keseluruhan Balita & Anak</h3>
@@ -540,7 +625,7 @@
 
             {{-- Detailed Stunting per Posyandu --}}
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div class="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-xs">
+                <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-slate-200 shadow-xs">
                     <h3 class="text-lg font-bold text-slate-900 mb-6">Prevalensi Stunting per Wilayah Posyandu</h3>
                     <div class="space-y-6">
                         @forelse($stuntingByPosyandu as $item)
@@ -561,7 +646,7 @@
 
                 {{-- Demographic segments and insights --}}
                 <div class="space-y-6 flex flex-col justify-between">
-                    <div class="bg-white rounded-2xl p-6 md:p-8 border border-slate-200 shadow-xs">
+                    <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-slate-200 shadow-xs">
                         <h3 class="text-lg font-bold text-slate-900 mb-6 text-center">Segmentasi Usia Terpantau</h3>
                         <div class="grid grid-cols-3 gap-4">
                             <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center">

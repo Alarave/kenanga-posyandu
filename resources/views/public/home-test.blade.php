@@ -1,6 +1,6 @@
 @extends('layouts.public-layout')
 
-@section('title', 'Beranda - Posyandu Digital')
+@section('title', 'Beranda - Posyandu Kenanga')
 
 @section('content')
 <div class="max-w-7xl mx-auto px-6 md:px-12 py-20">
