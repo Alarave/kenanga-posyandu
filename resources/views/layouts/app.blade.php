@@ -19,7 +19,8 @@
 
     <!-- Core fonts (render-blocking intentionally: prevents FOUT on LCP text) -->
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"></noscript>
 
     <!-- Font Awesome: deferred to unblock main thread (icons are non-LCP) -->
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -34,9 +35,28 @@
     <style>
         :root { --sidebar-width: 260px; }
 
+        /* High-performance CSS transitions for sidebar collapse */
+        .sidebar-text, 
+        .sidebar-section-label {
+            transition: opacity 200ms ease-out, max-width 200ms ease-out, visibility 200ms;
+            opacity: 1;
+            max-width: 200px;
+            visibility: visible;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .sidebar-collapsed .sidebar-text, 
+        .sidebar-collapsed .sidebar-section-label {
+            opacity: 0 !important;
+            max-width: 0 !important;
+            visibility: hidden !important;
+            pointer-events: none !important;
+            overflow: hidden !important;
+        }
+
         #mainContent {
             width: 100%;
-            transition: all 300ms ease-out;
         }
 
         @media (min-width: 1024px) {
@@ -103,6 +123,18 @@
     </style>
 
     @stack('styles')
+    
+    <!-- Prevent Sidebar Layout Shift (CLS) on initial load -->
+    <script>
+        (function () {
+            var collapsed = localStorage.getItem('sidebar_v2_collapsed') === 'true';
+            if (window.innerWidth < 1024) {
+                collapsed = true;
+            }
+            var width = (window.innerWidth >= 1024) ? (collapsed ? '64px' : '260px') : '0px';
+            document.documentElement.style.setProperty('--sidebar-width', width);
+        })();
+    </script>
 </head>
 <body class="font-sans antialiased bg-slate-50 text-slate-900">
 
@@ -180,26 +212,14 @@
             });
 
             // Initialize existing inputs
-            document.querySelectorAll('input[type="date"], input[type="datetime-local"]').forEach(function (input) {
-                updateDateInputClass(input);
-            });
+            document.querySelectorAll('input[type="date"], input[type="datetime-local"]').forEach(updateDateInputClass);
 
-            // Monitor DOM changes for dynamically loaded inputs (Livewire)
-            const observer = new MutationObserver(function (mutations) {
-                mutations.forEach(function (mutation) {
-                    mutation.addedNodes.forEach(function (node) {
-                        if (node.nodeType === 1) { // Element node
-                            if (node.type === 'date' || node.type === 'datetime-local') {
-                                updateDateInputClass(node);
-                            }
-                            node.querySelectorAll('input[type="date"], input[type="datetime-local"]').forEach(function (input) {
-                                updateDateInputClass(input);
-                            });
-                        }
-                    });
+            // High-performance Livewire hook to initialize dynamic date inputs without blocking the main thread
+            document.addEventListener('livewire:init', function () {
+                Livewire.hook('request.respond', function () {
+                    document.querySelectorAll('input[type="date"], input[type="datetime-local"]').forEach(updateDateInputClass);
                 });
             });
-            observer.observe(document.body, { childList: true, subtree: true });
         });
     </script>
 </body>

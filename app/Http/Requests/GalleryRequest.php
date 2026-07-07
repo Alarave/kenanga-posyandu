@@ -22,10 +22,32 @@ class GalleryRequest extends FormRequest
 
         if ($this->isMethod('POST')) {
             $rules['photos'] = 'required|array';
-            $rules['photos.*'] = 'required|file|mimes:jpg,jpeg,png,webp,gif,mp4,mov,avi,webm,mkv|max:1048576';
+            $rules['photos.*'] = [
+                'required',
+                'file',
+                'max:1048576',
+                function ($attribute, $value, $fail) {
+                    $extension = strtolower($value->getClientOriginalExtension());
+                    $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'mp4', 'mov', 'avi', 'webm', 'mkv'];
+                    if (!in_array($extension, $allowedExtensions)) {
+                        $fail('Format file harus berupa gambar (jpg, jpeg, png, webp, gif) atau video (mp4, mov, avi, webm, mkv).');
+                    }
+                }
+            ];
         } else {
             $rules['photos'] = 'nullable|array';
-            $rules['photos.*'] = 'nullable|file|mimes:jpg,jpeg,png,webp,gif,mp4,mov,avi,webm,mkv|max:1048576';
+            $rules['photos.*'] = [
+                'nullable',
+                'file',
+                'max:1048576',
+                function ($attribute, $value, $fail) {
+                    $extension = strtolower($value->getClientOriginalExtension());
+                    $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'mp4', 'mov', 'avi', 'webm', 'mkv'];
+                    if ($value && !in_array($extension, $allowedExtensions)) {
+                        $fail('Format file harus berupa gambar (jpg, jpeg, png, webp, gif) atau video (mp4, mov, avi, webm, mkv).');
+                    }
+                }
+            ];
         }
 
         return $rules;
@@ -36,7 +58,6 @@ class GalleryRequest extends FormRequest
         return [
             'photos.required' => 'Wajib memilih minimal satu file media.',
             'photos.*.file' => 'File yang diunggah tidak valid.',
-            'photos.*.mimes' => 'Format file harus berupa gambar (jpg, jpeg, png, webp, gif) atau video (mp4, mov, avi, webm, mkv).',
             'photos.*.max' => 'Ukuran file tidak boleh melebihi 1GB.',
         ];
     }

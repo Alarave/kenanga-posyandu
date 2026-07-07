@@ -1,7 +1,7 @@
 {{-- Sidebar Component --}}
 <aside id="sidebar"
     class="shrink-0 flex flex-col h-screen fixed lg:sticky top-0 left-0 z-50 overflow-hidden transition-all duration-300 ease-in-out bg-white dark:bg-slate-900 border-r border-slate-100 dark:border-slate-800/80 shadow-md shadow-slate-100/30 dark:shadow-none"
-    style="width:260px;">
+    style="width: var(--sidebar-width, 260px);">
 
     {{-- ── Logo & Toggle ── --}}
     <div class="h-16 flex items-center justify-between px-4 shrink-0 border-b border-slate-100 dark:border-slate-800/80">
@@ -107,7 +107,9 @@
         </div>
 
         @php
-            $pendingArticlesCount = \App\Models\Article::where('status', 'pending')->count();
+            $pendingArticlesCount = cache()->remember('pending_articles_count', 60, function() {
+                return \App\Models\Article::where('status', 'pending')->count();
+            });
         @endphp
         <a href="{{ route('admin.articles.index') }}"
            class="{{ $navLinkBase }} {{ $isActive('admin.articles.*') }} flex items-center justify-between">
@@ -205,13 +207,14 @@
             if (main) main.style.transition = 'none';
         }
 
-        if (icon) icon.style.transform = collapsed ? 'rotate(180deg)' : 'rotate(0deg)';
+        // Toggle root collapsed class for CSS transitions
+        if (collapsed) {
+            document.documentElement.classList.add('sidebar-collapsed');
+        } else {
+            document.documentElement.classList.remove('sidebar-collapsed');
+        }
 
-        const texts = document.querySelectorAll('.sidebar-text, .sidebar-section-label');
-        texts.forEach(el => {
-            el.style.opacity  = collapsed ? '0' : '1';
-            el.style.maxWidth = collapsed ? '0' : '200px';
-        });
+        if (icon) icon.style.transform = collapsed ? 'rotate(180deg)' : 'rotate(0deg)';
 
         if (overlay) {
             overlay.classList.toggle('hidden', isDesktop || collapsed);

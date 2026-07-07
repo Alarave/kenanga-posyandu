@@ -22,7 +22,14 @@ class GalleryService
 
         if (isset($data['photo']) && $data['photo'] instanceof UploadedFile) {
             $mimeType = $data['photo']->getMimeType();
-            $data['type'] = str_starts_with($mimeType, 'video/') ? 'video' : 'image';
+            $extension = strtolower($data['photo']->getClientOriginalExtension());
+            $videoExtensions = ['mp4', 'mov', 'avi', 'webm', 'mkv'];
+
+            if (str_starts_with($mimeType, 'video/') || in_array($extension, $videoExtensions)) {
+                $data['type'] = 'video';
+            } else {
+                $data['type'] = 'image';
+            }
             $data['photo'] = $data['photo']->store('galleries', 'public');
         } else {
             $data['type'] = 'image';
@@ -41,7 +48,14 @@ class GalleryService
                 Storage::disk('public')->delete($gallery->photo);
             }
             $mimeType = $data['photo']->getMimeType();
-            $data['type'] = str_starts_with($mimeType, 'video/') ? 'video' : 'image';
+            $extension = strtolower($data['photo']->getClientOriginalExtension());
+            $videoExtensions = ['mp4', 'mov', 'avi', 'webm', 'mkv'];
+
+            if (str_starts_with($mimeType, 'video/') || in_array($extension, $videoExtensions)) {
+                $data['type'] = 'video';
+            } else {
+                $data['type'] = 'image';
+            }
             $data['photo'] = $data['photo']->store('galleries', 'public');
         }
 

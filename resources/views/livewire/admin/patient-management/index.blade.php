@@ -65,104 +65,104 @@
         {{-- Bayi --}}
         <div class="stat-card flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style="background:#eff6ff; color:#2563eb;">
+                 style="background:#eff6ff; color:#2563eb;">
                 <span class="material-symbols-outlined text-[20px]">baby_changing_station</span>
             </div>
             <div>
                 <p class="text-xs font-semibold text-slate-500 leading-none mb-1">Bayi (0-11 bln)</p>
                 <p class="text-xl font-bold text-slate-900 leading-none" style="font-variant-numeric:tabular-nums;">
-                    {{ App\Models\Patient::where('category', 'bayi')->orWhere(fn($q) => $q->where('category', 'balita')->where('birth_date', '>=', now()->subMonths(12)))->count() }}</p>
+                    {{ $stats['bayi'] }}</p>
             </div>
         </div>
 
         {{-- Baduta --}}
         <div class="stat-card flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style="background:#dbeafe; color:#1d4ed8;">
+                 style="background:#dbeafe; color:#1d4ed8;">
                 <span class="material-symbols-outlined text-[20px]">child_friendly</span>
             </div>
             <div>
                 <p class="text-xs font-semibold text-slate-500 leading-none mb-1">Baduta (12-23 bln)</p>
                 <p class="text-xl font-bold text-slate-900 leading-none" style="font-variant-numeric:tabular-nums;">
-                    {{ App\Models\Patient::where('category', 'baduta')->orWhere(fn($q) => $q->where('category', 'balita')->where('birth_date', '<', now()->subMonths(12))->where('birth_date', '>=', now()->subMonths(24)))->count() }}</p>
+                    {{ $stats['baduta'] }}</p>
             </div>
         </div>
 
         {{-- Balita --}}
         <div class="stat-card flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style="background:#f0fdfa; color:#0f766e;">
+                 style="background:#f0fdfa; color:#0f766e;">
                 <span class="material-symbols-outlined text-[20px]">child_care</span>
             </div>
             <div>
                 <p class="text-xs font-semibold text-slate-500 leading-none mb-1">Balita (24-59 bln)</p>
                 <p class="text-xl font-bold text-slate-900 leading-none" style="font-variant-numeric:tabular-nums;">
-                    {{ App\Models\Patient::where('category', 'balita')->where(fn($q) => $q->whereNull('birth_date')->orWhere('birth_date', '<', now()->subMonths(24)))->count() }}</p>
+                    {{ $stats['balita'] }}</p>
             </div>
         </div>
 
         {{-- Anak Sekolah --}}
         <div class="stat-card flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style="background:#eef2ff; color:#4338ca;">
+                 style="background:#eef2ff; color:#4338ca;">
                 <span class="material-symbols-outlined text-[20px]">school</span>
             </div>
             <div>
                 <p class="text-xs font-semibold text-slate-500 leading-none mb-1">Anak Sekolah</p>
                 <p class="text-xl font-bold text-slate-900 leading-none" style="font-variant-numeric:tabular-nums;">
-                    {{ App\Models\Patient::where('category', 'anak_sekolah')->count() }}</p>
+                    {{ $stats['anak_sekolah'] }}</p>
             </div>
         </div>
 
         {{-- Ibu Hamil --}}
         <div class="stat-card flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style="background:#fdf2f8; color:#be185d;">
+                 style="background:#fdf2f8; color:#be185d;">
                 <span class="material-symbols-outlined text-[20px]">pregnant_woman</span>
             </div>
             <div>
                 <p class="text-xs font-semibold text-slate-500 leading-none mb-1">Ibu Hamil</p>
                 <p class="text-xl font-bold text-slate-900 leading-none" style="font-variant-numeric:tabular-nums;">
-                    {{ App\Models\Patient::where('category', 'ibu_hamil')->count() }}</p>
+                    {{ $stats['ibu_hamil'] }}</p>
             </div>
         </div>
 
         {{-- Remaja --}}
         <div class="stat-card flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style="background:#f5f3ff; color:#7c3aed;">
+                 style="background:#f5f3ff; color:#7c3aed;">
                 <span class="material-symbols-outlined text-[20px]">emoji_people</span>
             </div>
             <div>
                 <p class="text-xs font-semibold text-slate-500 leading-none mb-1">Remaja</p>
                 <p class="text-xl font-bold text-slate-900 leading-none" style="font-variant-numeric:tabular-nums;">
-                    {{ App\Models\Patient::where('category', 'remaja')->count() }}</p>
+                    {{ $stats['remaja'] }}</p>
             </div>
         </div>
 
         {{-- Lansia --}}
         <div class="stat-card flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style="background:#fff7ed; color:#c2410c;">
+                 style="background:#fff7ed; color:#c2410c;">
                 <span class="material-symbols-outlined text-[20px]">elderly</span>
             </div>
             <div>
                 <p class="text-xs font-semibold text-slate-500 leading-none mb-1">Lansia</p>
                 <p class="text-xl font-bold text-slate-900 leading-none" style="font-variant-numeric:tabular-nums;">
-                    {{ App\Models\Patient::where('category', 'lansia')->count() }}</p>
+                    {{ $stats['lansia'] }}</p>
             </div>
         </div>
 
         {{-- Umum / Lainnya --}}
         <div class="stat-card flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style="background:#f8fafc; color:#475569;">
+                 style="background:#f8fafc; color:#475569;">
                 <span class="material-symbols-outlined text-[20px]">groups</span>
             </div>
             <div>
                 <p class="text-xs font-semibold text-slate-500 leading-none mb-1">Umum / Lainnya</p>
                 <p class="text-xl font-bold text-slate-900 leading-none" style="font-variant-numeric:tabular-nums;">
-                    {{ App\Models\Patient::where('category', 'umum')->count() }}</p>
+                    {{ $stats['umum'] }}</p>
             </div>
         </div>
     </div>

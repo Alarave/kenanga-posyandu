@@ -1,3 +1,7 @@
+@push('scripts')
+    @vite(['resources/js/charts.js'])
+@endpush
+
 <div class="space-y-6">
     {{-- Dashboard-specific styles --}}
     @push('styles')

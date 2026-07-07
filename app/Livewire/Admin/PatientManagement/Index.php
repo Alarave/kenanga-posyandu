@@ -77,7 +77,42 @@ class Index extends BaseAdminComponent
 
     public function render()
     {
-        // Terapkan scope posyandu secara otomatis
+        // Base query for counts (respecting the posyandu scope)
+        $baseQuery = $this->applyPosyanduScope(Patient::query());
+
+        // Fetch scoped counts for summary cards
+        $stats = [
+            'bayi' => (clone $baseQuery)->where(function ($q) {
+                $q->where('category', 'bayi')
+                    ->orWhere(function ($q2) {
+                        $q2->where('category', 'balita')
+                            ->where('birth_date', '>=', now()->subMonths(12));
+                    });
+            })->count(),
+
+            'baduta' => (clone $baseQuery)->where(function ($q) {
+                $q->where('category', 'baduta')
+                    ->orWhere(function ($q2) {
+                        $q2->where('category', 'balita')
+                            ->where('birth_date', '<', now()->subMonths(12))
+                            ->where('birth_date', '>=', now()->subMonths(24));
+                    });
+            })->count(),
+
+            'balita' => (clone $baseQuery)->where('category', 'balita')
+                ->where(function ($q) {
+                    $q->whereNull('birth_date')
+                        ->orWhere('birth_date', '<', now()->subMonths(24));
+                })->count(),
+
+            'anak_sekolah' => (clone $baseQuery)->where('category', 'anak_sekolah')->count(),
+            'ibu_hamil' => (clone $baseQuery)->where('category', 'ibu_hamil')->count(),
+            'remaja' => (clone $baseQuery)->where('category', 'remaja')->count(),
+            'lansia' => (clone $baseQuery)->where('category', 'lansia')->count(),
+            'umum' => (clone $baseQuery)->where('category', 'umum')->count(),
+        ];
+
+        // Terapkan scope posyandu secara otomatis untuk list utama
         $query = $this->applyPosyanduScope(Patient::with('posyandu'))
             ->when($this->search, function ($q) {
                 $q->where(function ($q2) {
@@ -119,6 +154,7 @@ class Index extends BaseAdminComponent
 
         return view('livewire.admin.patient-management.index', [
             'patients' => $query->paginate(10),
+            'stats' => $stats,
         ])->title('Data Warga Terdaftar');
     }
 }

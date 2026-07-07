@@ -574,6 +574,7 @@
 
 {{-- Chart.js Rendering (browser only) --}}
 @push('scripts')
+@vite(['resources/js/charts.js'])
 <script>
     function initCharts() {
         if (typeof Chart === 'undefined') {

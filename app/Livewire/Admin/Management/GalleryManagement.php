@@ -26,6 +26,7 @@ class GalleryManagement extends Component
     public function render()
     {
         $query = GalleryFolder::query()
+            ->with(['posyandu'])
             ->accessibleBy(auth()->user())
             ->withCount('galleries')
             ->when($this->search, function ($q) {

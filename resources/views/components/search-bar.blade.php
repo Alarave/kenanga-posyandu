@@ -7,7 +7,7 @@
         </svg>
     </div>
     <input 
-        @if($model) wire:model.live="{{ $model }}" @endif
+        @if($model) wire:model.live.debounce.300ms="{{ $model }}" @endif
         type="search" 
         placeholder="{{ $placeholder }}"
         class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition duration-150 ease-in-out"
