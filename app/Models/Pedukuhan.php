@@ -19,4 +19,10 @@ class Pedukuhan extends Model
     {
         return $this->hasMany(Posyandu::class);
     }
+
+    // Relationship with Patient (through Posyandu)
+    public function patients()
+    {
+        return $this->hasManyThrough(Patient::class, Posyandu::class);
+    }
 }

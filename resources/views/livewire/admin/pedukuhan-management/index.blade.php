@@ -37,8 +37,6 @@
     {{-- ── Summary Cards ── --}}
     @php
         $totalPedukuhan = $pedukuhans->total();
-        $totalPosyandu  = \App\Models\Posyandu::count();
-        $totalWarga     = \App\Models\Patient::count();
     @endphp
     <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
         <div class="bg-white border border-slate-200 rounded-2xl p-5 flex items-center gap-4 shadow-sm">
@@ -113,7 +111,6 @@
                         $initial = strtoupper(substr($pedukuhan->name, 0, 1));
                         $colors  = ['teal','blue','amber','indigo','emerald','rose','violet','orange'];
                         $color   = $colors[($pedukuhan->id - 1) % count($colors)];
-                        $totalWargaPedukuhan = \App\Models\Patient::whereHas('posyandu', fn($q) => $q->where('pedukuhan_id', $pedukuhan->id))->count();
                     @endphp
                     <tr class="hover:bg-slate-50 transition-colors">
                         <td class="px-6 py-4">
@@ -134,11 +131,11 @@
                         </td>
                         <td class="px-6 py-4 text-center">
                             <span class="px-2.5 py-1 bg-slate-100 rounded-lg text-sm font-bold text-slate-700">
-                                {{ str_pad($pedukuhan->posyandus_count ?? $pedukuhan->posyandus()->count(), 2, '0', STR_PAD_LEFT) }}
+                                {{ str_pad($pedukuhan->posyandus_count, 2, '0', STR_PAD_LEFT) }}
                             </span>
                         </td>
                         <td class="px-6 py-4 text-center text-sm font-semibold text-slate-700">
-                            {{ number_format($totalWargaPedukuhan) }}
+                            {{ number_format($pedukuhan->patients_count) }}
                         </td>
                         <td class="px-6 py-4 text-right">
                             <div class="flex items-center justify-end gap-1">

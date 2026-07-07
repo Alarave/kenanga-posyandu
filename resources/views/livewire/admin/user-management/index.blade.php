@@ -49,7 +49,7 @@
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
             <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Kader Aktif</div>
             <div class="text-2xl font-black text-slate-900">
-                {{ App\Models\User::where('role', 'kader')->where('is_active', true)->count() }}</div>
+                {{ $activeKaders }}</div>
         </div>
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
             <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Unit Terdaftar</div>
