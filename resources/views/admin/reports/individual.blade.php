@@ -1,8 +1,5 @@
 @extends('layouts.admin-layout')
 
-@section('admin-title', 'Rapor Perkembangan Individu')
-
-@section('admin-content')
 @php
     $patient = $reportData['patient'];
     $cat = $patient['category'];
@@ -46,32 +43,23 @@
     };
 @endphp
 
-<div class="max-w-6xl mx-auto space-y-6 pb-16 px-4 md:px-8 pt-4">
+@section('title', 'Rapor Perkembangan Warga')
+@section('admin-title', 'Rapor Perkembangan: ' . $patient['full_name'])
 
-    {{-- Breadcrumbs & Header --}}
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 relative z-10">
-        <div class="space-y-4">
-            <nav class="flex items-center gap-2">
-                <div class="flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-white/80 backdrop-blur-md border border-white/60 shadow-sm text-[10px] font-black uppercase tracking-widest text-slate-400">
-                    <a href="{{ route('dashboard') }}" class="flex items-center gap-1.5 text-slate-400 hover:text-teal-600 transition-colors">
-                        <span class="material-symbols-outlined text-[16px]">home</span>
-                        Beranda
-                    </a>
-                    <span class="material-symbols-outlined text-[16px] text-slate-300">chevron_right</span>
-                    <a href="{{ route('admin.reports.index') }}" class="text-slate-400 hover:text-teal-600 transition-colors">Rekap Laporan</a>
-                    <span class="material-symbols-outlined text-[16px] text-slate-300">chevron_right</span>
-                    <span class="{{ $theme['text'] }}">Rapor Individu</span>
-                </div>
-            </nav>
-            <h1 class="text-3xl md:text-4xl font-black tracking-tight leading-none text-slate-800">
-                Rapor Perkembangan: <br class="md:hidden"><span class="text-transparent bg-clip-text bg-linear-to-r {{ $theme['gradient'] }} drop-shadow-sm">{{ $patient['full_name'] }}</span>
-            </h1>
-        </div>
-    </div>
+@section('admin-actions')
+<a href="{{ route('admin.reports.index') }}" class="inline-flex items-center gap-2 text-xs font-black text-slate-500 uppercase tracking-widest hover:text-teal-600 transition-colors group">
+    <span class="material-symbols-outlined text-[18px] group-hover:-translate-x-1 transition-transform">arrow_back</span>
+    Kembali ke Rekap Laporan
+</a>
+@endsection
+
+@section('admin-content')
+
+<div class="max-w-6xl mx-auto space-y-6 pb-16 px-4 md:px-8">
 
     {{-- ── 1. Filter Rentang Periode (Floating Glass) ── --}}
-    <section class="bg-white/80 backdrop-blur-xl rounded-3xl border border-white/50 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.05)] p-6 relative overflow-hidden">
-        <div class="absolute -right-24 -top-24 w-64 h-64 bg-slate-100 rounded-full blur-3xl pointer-events-none -z-10"></div>
+    <section class="bg-white rounded-3xl border border-slate-100 shadow-sm p-6 relative overflow-hidden w-full mx-auto">
+        <div class="absolute -right-24 -top-24 w-64 h-64 bg-slate-100 rounded-full blur-3xl pointer-events-none -z-10 will-change-transform"></div>
         <div class="flex items-center gap-2 mb-4 ml-1">
             <span class="material-symbols-outlined text-slate-400 text-[20px]">date_range</span>
             <h3 class="text-[11px] font-black text-slate-500 uppercase tracking-widest">Rentang Periode Rapor</h3>
@@ -89,7 +77,7 @@
                 {{-- Mulai --}}
                 <div class="md:col-span-5">
                     <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Periode Mulai</label>
-                    <input type="month" id="start_period" value="{{ sprintf('%04d-%02d', $startYear, $startMonth) }}" onchange="updateHiddenFields()" class="w-full h-12 px-4 rounded-2xl border border-slate-200/60 text-sm font-semibold bg-slate-50/50 focus:bg-white focus:ring-4 focus:ring-teal-500/10 focus:border-teal-400 transition-all shadow-inner-sm">
+                    <input type="month" id="start_period" value="{{ sprintf('%04d-%02d', $startYear, $startMonth) }}" onchange="updateHiddenFields()" class="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50/50 text-sm font-bold text-slate-900 focus:outline-none focus:border-teal-500 focus:bg-white transition-all">
                 </div>
 
                 {{-- Divider --}}
@@ -100,12 +88,12 @@
                 {{-- Selesai --}}
                 <div class="md:col-span-4">
                     <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">Periode Selesai</label>
-                    <input type="month" id="end_period" value="{{ sprintf('%04d-%02d', $endYear, $endMonth) }}" onchange="updateHiddenFields()" class="w-full h-12 px-4 rounded-2xl border border-slate-200/60 text-sm font-semibold bg-slate-50/50 focus:bg-white focus:ring-4 focus:ring-teal-500/10 focus:border-teal-400 transition-all shadow-inner-sm">
+                    <input type="month" id="end_period" value="{{ sprintf('%04d-%02d', $endYear, $endMonth) }}" onchange="updateHiddenFields()" class="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50/50 text-sm font-bold text-slate-900 focus:outline-none focus:border-teal-500 focus:bg-white transition-all">
                 </div>
 
                 {{-- Action --}}
                 <div class="md:col-span-2">
-                    <button type="submit" class="w-full h-12 bg-slate-800 hover:bg-slate-900 active:scale-95 text-white rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all shadow-md flex items-center justify-center gap-2">
+                    <button type="submit" class="w-full h-12 bg-linear-to-r {{ $theme['gradient'] }} hover:opacity-90 active:scale-95 text-white rounded-xl text-[11px] font-black uppercase tracking-widest transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer">
                         <span class="material-symbols-outlined text-[18px]">sync</span>
                         Terapkan
                     </button>
@@ -131,7 +119,7 @@
         {{-- ── 2. Identitas Warga Bento-Card (Left Col - 4 span) ── --}}
         <div class="lg:col-span-4 space-y-6">
             <div class="bg-white rounded-3xl border border-slate-100/60 p-8 flex flex-col items-center text-center relative overflow-hidden group shadow-[0_4px_24px_-8px_rgba(0,0,0,0.05)] {{ $theme['bg-mesh'] }}">
-                <div class="absolute -right-16 -top-16 w-48 h-48 bg-white/40 backdrop-blur-3xl rounded-full pointer-events-none"></div>
+                <div class="absolute -right-16 -top-16 w-48 h-48 bg-white/40 rounded-full blur-3xl pointer-events-none will-change-transform"></div>
                 
                 {{-- Profile icon/photo --}}
                 <div class="w-32 h-32 rounded-4xl bg-linear-to-br {{ $theme['gradient'] }} p-1 mb-6 {{ $theme['shadow'] }} relative z-10 group-hover:scale-105 transition-transform duration-500">
@@ -145,17 +133,17 @@
                 </div>
 
                 <h2 class="text-2xl font-black text-slate-800 leading-tight mb-2 tracking-tight">{{ $patient['full_name'] }}</h2>
-                <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-white/60 backdrop-blur-sm border border-slate-200/60 rounded-xl text-[11px] font-bold text-slate-500 font-mono shadow-sm">
-                    <span class="material-symbols-outlined text-[14px]">pin</span>
-                    {{ $patient['id_number'] }}
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 bg-slate-50 border border-slate-200/60 rounded-xl text-[11px] font-bold text-slate-500 font-mono shadow-sm">
+                    <span class="material-symbols-outlined text-[14px]">badge</span>
+                    NIK: {{ $patient['id_number'] }}
                 </div>
 
                 <div class="w-full mt-8 pt-6 border-t border-slate-200/50 grid grid-cols-2 gap-4 text-left relative z-10">
-                    <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-4 border border-white">
+                    <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 shadow-inner-sm">
                         <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Kategori</span>
                         <span class="text-sm font-black text-slate-800 uppercase">{{ str_replace('_', ' ', $patient['category']) }}</span>
                     </div>
-                    <div class="bg-white/60 backdrop-blur-sm rounded-2xl p-4 border border-white">
+                    <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 shadow-inner-sm">
                         <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-1">Usia Saat Ini</span>
                         <span class="text-sm font-black text-slate-800">{{ $patient['age'] }}</span>
                     </div>
@@ -192,38 +180,6 @@
                 </div>
             </div>
 
-            {{-- Actions / Exports --}}
-            <div class="bg-white rounded-3xl border border-slate-100 p-6 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.05)]">
-                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 ml-1">Ekspor Laporan</h4>
-                
-                <div class="space-y-3">
-                    {{-- PDF Export Form --}}
-                    <form action="{{ route('admin.reports.individual.pdf', $patient['id']) }}" method="POST" target="_blank">
-                        @csrf
-                        <input type="hidden" name="start_month" value="{{ $startMonth }}">
-                        <input type="hidden" name="start_year" value="{{ $startYear }}">
-                        <input type="hidden" name="end_month" value="{{ $endMonth }}">
-                        <input type="hidden" name="end_year" value="{{ $endYear }}">
-                        <button type="submit" class="w-full h-12 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 active:scale-95 rounded-2xl text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-sm">
-                            <span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
-                            Unduh Rapor PDF
-                        </button>
-                    </form>
-
-                    {{-- Excel Export Form --}}
-                    <form action="{{ route('admin.reports.individual.excel', $patient['id']) }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="start_month" value="{{ $startMonth }}">
-                        <input type="hidden" name="start_year" value="{{ $startYear }}">
-                        <input type="hidden" name="end_month" value="{{ $endMonth }}">
-                        <input type="hidden" name="end_year" value="{{ $endYear }}">
-                        <button type="submit" class="w-full h-12 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-600 active:scale-95 rounded-2xl text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-sm">
-                            <span class="material-symbols-outlined text-[18px]">description</span>
-                            Unduh Data Excel
-                        </button>
-                    </form>
-                </div>
-            </div>
         </div>
 
         {{-- ── 3. Chart Analytics & History (Right Col - 8 span) ── --}}
@@ -363,92 +319,6 @@
             </div>
             @endif
 
-            {{-- 3.2. Tabel Detail Pengukuran Bulanan --}}
-            <div class="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col">
-                <div class="px-8 py-6 border-b border-slate-100 bg-slate-50/30">
-                    <h3 class="text-sm font-black text-slate-800 tracking-tight flex items-center gap-2">
-                        <span class="material-symbols-outlined text-indigo-500 bg-indigo-50 p-2 rounded-xl">table_rows</span>
-                        Riwayat Pengukuran Bulanan
-                    </h3>
-                </div>
-                
-                <div class="overflow-x-auto p-4">
-                    <table class="w-full text-left border-collapse whitespace-nowrap">
-                        <thead>
-                            <tr>
-                                <th class="px-5 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Periode</th>
-                                <th class="px-5 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Tgl Kunjungan</th>
-                                <th class="px-5 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">BB (kg)</th>
-                                <th class="px-5 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">TB (cm)</th>
-                                @if(in_array($cat, ['bayi', 'baduta', 'balita']))
-                                    <th class="px-5 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">LILA / LK</th>
-                                    <th class="px-5 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Status Gizi</th>
-                                @elseif($cat === 'lansia')
-                                    <th class="px-5 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Tensi / Gula / Urat / Kol</th>
-                                    <th class="px-5 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Catatan</th>
-                                @else
-                                    <th class="px-5 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Tensi / Gula</th>
-                                    <th class="px-5 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Catatan</th>
-                                @endif
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100/50">
-                            @foreach($reportData['monthly_records'] as $slot)
-                                @php $record = $slot['record']; @endphp
-                                <tr class="hover:bg-slate-50/80 transition-colors group">
-                                    <td class="px-5 py-4">
-                                        <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 text-[11px] font-black uppercase tracking-wider">
-                                            {{ $slot['period']['label'] }}
-                                        </span>
-                                    </td>
-                                    @if($record)
-                                        <td class="px-5 py-4 text-sm font-semibold text-slate-500">{{ $record['visit_date'] }}</td>
-                                        <td class="px-5 py-4 text-sm font-black text-slate-800">{{ $record['weight'] ?? '-' }}</td>
-                                        <td class="px-5 py-4 text-sm font-black text-slate-800">{{ $record['height'] ?? '-' }}</td>
-                                        
-                                        @if(in_array($cat, ['bayi', 'baduta', 'balita']))
-                                            <td class="px-5 py-4 text-sm font-medium text-slate-500">
-                                                {{ $record['upper_arm_circumference'] ?? '-' }} / {{ $record['head_circumference'] ?? '-' }}
-                                            </td>
-                                            <td class="px-5 py-4">
-                                                @php
-                                                    $st = $record['nutrition_status'] ?? null;
-                                                    $badge = match($st) {
-                                                        'Normal', 'Gizi Baik' => 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20',
-                                                        'Gizi Kurang', 'Kurang' => 'bg-amber-50 text-amber-700 ring-1 ring-amber-600/20',
-                                                        'Gizi Buruk/Stunting', 'Gizi Buruk' => 'bg-rose-50 text-rose-700 ring-1 ring-rose-600/20',
-                                                        'Gizi Lebih', 'Berisiko Gizi Lebih', 'Obesitas' => 'bg-orange-50 text-orange-700 ring-1 ring-orange-600/20',
-                                                        default => 'bg-slate-100 text-slate-500 ring-1 ring-slate-400/20',
-                                                    };
-                                                @endphp
-                                                <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider {{ $badge }}">{{ $st ?? '-' }}</span>
-                                            </td>
-                                        @elseif($cat === 'lansia')
-                                            <td class="px-5 py-4 text-sm font-medium text-slate-500">
-                                                {{ $record['blood_pressure'] ?? '-' }} / 
-                                                {{ $record['blood_sugar'] ?? '-' }} / 
-                                                {{ $record['uric_acid'] ?? '-' }} / 
-                                                {{ $record['cholesterol'] ?? '-' }}
-                                            </td>
-                                            <td class="px-5 py-4 text-sm text-slate-500 max-w-xs truncate">{{ $record['health_note'] ?? $record['complaint'] ?? '-' }}</td>
-                                        @else
-                                            <td class="px-5 py-4 text-sm font-medium text-slate-500">
-                                                {{ $record['blood_pressure'] ?? '-' }} / {{ $record['blood_sugar'] ?? '-' }}
-                                            </td>
-                                            <td class="px-5 py-4 text-sm text-slate-500 max-w-xs truncate">{{ $record['health_note'] ?? $record['complaint'] ?? '-' }}</td>
-                                        @endif
-                                    @else
-                                        <td colspan="5" class="px-5 py-4 text-center">
-                                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-widest bg-slate-50 px-3 py-1 rounded-lg border border-slate-100">Tidak Hadir / Kosong</span>
-                                        </td>
-                                    @endif
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
             {{-- 3.3. Imunisasi & Vitamin A --}}
             @if($cat !== 'lansia')
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -520,15 +390,158 @@
 
     </div>
 
+    {{-- ── 4. Tabel Detail Pengukuran Bulanan (Full Width) ── --}}
+    <div class="bg-white rounded-3xl border border-slate-100 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col">
+        <div class="px-8 py-6 border-b border-slate-100 bg-slate-50/30">
+            <h3 class="text-sm font-black text-slate-800 tracking-tight flex items-center gap-2">
+                <span class="material-symbols-outlined text-indigo-500 bg-indigo-50 p-2 rounded-xl">table_rows</span>
+                Riwayat Pengukuran Bulanan
+            </h3>
+        </div>
+        
+        <div class="overflow-x-auto p-4">
+            <table class="w-full text-left border-collapse whitespace-nowrap">
+                <thead>
+                    <tr>
+                        <th class="px-5 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Periode</th>
+                        <th class="px-5 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Tgl Kunjungan</th>
+                        <th class="px-5 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">BB (kg)</th>
+                        <th class="px-5 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">TB (cm)</th>
+                        @if(in_array($cat, ['bayi', 'baduta', 'balita']))
+                            <th class="px-5 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">LILA / LK</th>
+                            <th class="px-5 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Status Gizi</th>
+                        @elseif($cat === 'lansia')
+                            <th class="px-5 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Tensi / Gula / Urat / Kol</th>
+                            <th class="px-5 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Catatan</th>
+                        @else
+                            <th class="px-5 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Tensi / Gula</th>
+                            <th class="px-5 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-100">Catatan</th>
+                        @endif
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100/50">
+                    @php
+                        $activeRecords = array_filter($reportData['monthly_records'], function($slot) {
+                            return !empty($slot['record']);
+                        });
+                    @endphp
+                    @forelse($activeRecords as $slot)
+                        @php $record = $slot['record']; @endphp
+                        <tr class="hover:bg-slate-50/80 transition-colors group">
+                            <td class="px-5 py-4">
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-slate-100 text-slate-600 text-[11px] font-black uppercase tracking-wider">
+                                    {{ $slot['period']['label'] }}
+                                </span>
+                            </td>
+                            <td class="px-5 py-4 text-sm font-semibold text-slate-500">{{ $record['visit_date'] }}</td>
+                            <td class="px-5 py-4 text-sm font-black text-slate-800">{{ $record['weight'] ?? '-' }}</td>
+                            <td class="px-5 py-4 text-sm font-black text-slate-800">{{ $record['height'] ?? '-' }}</td>
+                            
+                            @if(in_array($cat, ['bayi', 'baduta', 'balita']))
+                                <td class="px-5 py-4 text-sm font-medium text-slate-500">
+                                    {{ $record['upper_arm_circumference'] ?? '-' }} / {{ $record['head_circumference'] ?? '-' }}
+                                </td>
+                                <td class="px-5 py-4">
+                                    @php
+                                        $st = $record['nutrition_status'] ?? null;
+                                        $badge = match($st) {
+                                            'Normal', 'Gizi Baik' => 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20',
+                                            'Gizi Kurang', 'Kurang' => 'bg-amber-50 text-amber-700 ring-1 ring-amber-600/20',
+                                            'Gizi Buruk/Stunting', 'Gizi Buruk' => 'bg-rose-50 text-rose-700 ring-1 ring-rose-600/20',
+                                            'Gizi Lebih', 'Berisiko Gizi Lebih', 'Obesitas' => 'bg-orange-50 text-orange-700 ring-1 ring-orange-600/20',
+                                            default => 'bg-slate-100 text-slate-500 ring-1 ring-slate-400/20',
+                                        };
+                                    @endphp
+                                    <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider {{ $badge }}">{{ $st ?? '-' }}</span>
+                                </td>
+                            @elseif($cat === 'lansia')
+                                <td class="px-5 py-4 text-sm font-medium text-slate-500">
+                                    {{ $record['blood_pressure'] ?? '-' }} / 
+                                    {{ $record['blood_sugar'] ?? '-' }} / 
+                                    {{ $record['uric_acid'] ?? '-' }} / 
+                                    {{ $record['cholesterol'] ?? '-' }}
+                                </td>
+                                <td class="px-5 py-4 text-sm text-slate-500 max-w-xs truncate">{{ $record['health_note'] ?? $record['complaint'] ?? '-' }}</td>
+                            @else
+                                <td class="px-5 py-4 text-sm font-medium text-slate-500">
+                                    {{ $record['blood_pressure'] ?? '-' }} / {{ $record['blood_sugar'] ?? '-' }}
+                                </td>
+                                <td class="px-5 py-4 text-sm text-slate-500 max-w-xs truncate">{{ $record['health_note'] ?? $record['complaint'] ?? '-' }}</td>
+                            @endif
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="px-5 py-8 text-center">
+                                <span class="text-xs font-bold text-slate-400 uppercase tracking-widest bg-slate-50 px-4 py-2 rounded-xl border border-slate-100">Tidak ada riwayat kunjungan pada periode ini</span>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    {{-- ── 5. Ekspor Laporan (At the very bottom) ── --}}
+    <div class="bg-white rounded-3xl border border-slate-100 p-6 md:p-8 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.05)] relative overflow-hidden">
+        <div class="absolute -right-24 -top-24 w-64 h-64 bg-slate-100 rounded-full blur-3xl pointer-events-none -z-10 will-change-transform"></div>
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
+            <div>
+                <h4 class="text-sm font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                    <span class="material-symbols-outlined text-teal-600">download</span>
+                    Ekspor Laporan Perkembangan Warga
+                </h4>
+                <p class="text-xs text-slate-400 font-medium mt-1">Unduh seluruh laporan riwayat perkembangan dan rekam medis warga dalam format PDF atau Excel.</p>
+            </div>
+            
+            <div class="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                {{-- PDF Export Form --}}
+                <form action="{{ route('admin.reports.individual.pdf', $patient['id']) }}" method="POST" target="_blank" class="w-full sm:w-auto">
+                    @csrf
+                    <input type="hidden" name="start_month" value="{{ $startMonth }}">
+                    <input type="hidden" name="start_year" value="{{ $startYear }}">
+                    <input type="hidden" name="end_month" value="{{ $endMonth }}">
+                    <input type="hidden" name="end_year" value="{{ $endYear }}">
+                    <button type="submit" class="w-full sm:w-auto h-12 px-6 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 active:scale-95 rounded-xl text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-sm cursor-pointer">
+                        <span class="material-symbols-outlined text-[18px]">picture_as_pdf</span>
+                        Unduh Rapor PDF
+                    </button>
+                </form>
+
+                {{-- Excel Export Form --}}
+                <form action="{{ route('admin.reports.individual.excel', $patient['id']) }}" method="POST" class="w-full sm:w-auto">
+                    @csrf
+                    <input type="hidden" name="start_month" value="{{ $startMonth }}">
+                    <input type="hidden" name="start_year" value="{{ $startYear }}">
+                    <input type="hidden" name="end_month" value="{{ $endMonth }}">
+                    <input type="hidden" name="end_year" value="{{ $endYear }}">
+                    <button type="submit" class="w-full sm:w-auto h-12 px-6 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-600 active:scale-95 rounded-xl text-[11px] font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all shadow-sm cursor-pointer">
+                        <span class="material-symbols-outlined text-[18px]">description</span>
+                        Unduh Data Excel
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 {{-- Custom Styles for Scrollbar & Animations --}}
 @push('styles')
 <style>
-    .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-    .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-    .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 4px; }
-    .custom-scrollbar:hover::-webkit-scrollbar-thumb { background: #cbd5e1; }
+    .custom-scrollbar::-webkit-scrollbar { 
+        width: 5px; 
+        height: 5px; 
+    }
+    .custom-scrollbar::-webkit-scrollbar-track { 
+        background: transparent; 
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb { 
+        background: var(--color-outline-variant, #e2e8f0); 
+        border-radius: 9999px; 
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { 
+        background: var(--color-outline, #cbd5e1); 
+    }
 </style>
 @endpush
 

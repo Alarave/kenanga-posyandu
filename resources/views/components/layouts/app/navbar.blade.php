@@ -160,7 +160,7 @@
     // Smart sticky navbar - bind to window since layout overflow has been fixed
     const navbar = document.getElementById('topNavbar');
     if (navbar) {
-        let lastScroll = window.scrollY || document.documentElement.scrollTop;
+        let lastScroll = 0; // Initialize to 0 to avoid forced synchronous layout reflow on page load
         window.addEventListener('scroll', () => {
             const currentScroll = window.scrollY || document.documentElement.scrollTop;
             if (currentScroll > lastScroll && currentScroll > 64) {

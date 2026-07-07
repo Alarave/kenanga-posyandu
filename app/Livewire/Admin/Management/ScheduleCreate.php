@@ -9,6 +9,7 @@ use App\Services\ScheduleService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
+use Illuminate\Support\Carbon;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -31,6 +32,10 @@ class ScheduleCreate extends Component
     public string $status = 'upcoming';
 
     public ?int $posyandu_id = null;
+
+    public bool $is_recurring = false;
+
+    public int $repeat_months = 12;
 
     /**
      * Inisialisasi komponen.
@@ -57,6 +62,8 @@ class ScheduleCreate extends Component
             'location' => 'required|string|max:255',
             'status' => 'required|in:upcoming,ongoing,completed,cancelled',
             'posyandu_id' => 'required|exists:posyandus,id',
+            'is_recurring' => 'boolean',
+            'repeat_months' => 'required_if:is_recurring,true|integer|min:1|max:36',
         ];
     }
 
@@ -70,7 +77,24 @@ class ScheduleCreate extends Component
 
         /** @var User $user */
         $user = Auth::user();
-        $service->createSchedule($validated, $user);
+        
+        if ($this->is_recurring) {
+            $start = Carbon::parse($this->start_time);
+            $end = Carbon::parse($this->end_time);
+
+            for ($i = 0; $i < $this->repeat_months; $i++) {
+                $currentStart = $start->copy()->addMonths($i);
+                $currentEnd = $end->copy()->addMonths($i);
+
+                $singleData = $validated;
+                $singleData['start_time'] = $currentStart->toDateTimeString();
+                $singleData['end_time'] = $currentEnd->toDateTimeString();
+
+                $service->createSchedule($singleData, $user);
+            }
+        } else {
+            $service->createSchedule($validated, $user);
+        }
 
         session()->flash('success', 'Jadwal kegiatan berhasil ditambahkan.');
 

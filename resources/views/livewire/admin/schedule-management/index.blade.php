@@ -137,41 +137,40 @@
 
     {{-- ── Filters ── --}}
     <div
-        class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800/80 p-4 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div class="flex flex-col md:flex-row md:items-center gap-3 flex-1 w-full">
-            <div class="relative w-full md:flex-1 md:min-w-[400px] lg:min-w-[480px] group">
-                <span
-                    class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-teal-600 transition-colors pointer-events-none text-[20px]">search</span>
-                <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari agenda atau lokasi..."
-                    class="search-input-premium w-full">
-            </div>
-
-            <div class="flex flex-row gap-3 w-full md:w-auto">
-                <x-forms.select-input wire:model.live="status" placeholder="Semua Status" :placeholderDisabled="false"
-                    value="{{ $status }}" class="flex-1 md:flex-initial md:min-w-[150px]">
-                    <option value="upcoming">Mendatang</option>
-                    <option value="ongoing">Berlangsung</option>
-                    <option value="completed">Selesai</option>
-                    <option value="cancelled">Dibatalkan</option>
-                </x-forms.select-input>
-
-                @if (auth()->user()->isSuperAdmin())
-                    <x-forms.select-input wire:model.live="posyandu_id" placeholder="Seluruh Unit" :placeholderDisabled="false"
-                        value="{{ $posyandu_id }}" class="flex-1 md:flex-initial md:min-w-[150px]">
-                        @foreach ($posyandus as $p)
-                            <option value="{{ $p->id }}">{{ $p->name }}</option>
-                        @endforeach
-                    </x-forms.select-input>
-                @endif
-            </div>
+        class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800/80 p-4 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4 w-full">
+        <div class="relative w-full lg:flex-grow min-w-0 lg:min-w-[280px] group">
+            <span
+                class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-teal-600 transition-colors pointer-events-none text-[20px]">search</span>
+            <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari agenda atau lokasi..."
+                class="search-input-premium w-full">
         </div>
 
-        @if ($search || $status || $posyandu_id)
-            <button wire:click="$set('search', ''); $set('status', ''); $set('posyandu_id', '');"
-                class="w-full md:w-auto text-[10px] font-black text-red-500 uppercase tracking-[0.2em] hover:text-red-600 transition-colors py-2 px-4 text-center md:text-left">
-                Reset Filter
-            </button>
-        @endif
+        <div class="flex flex-row items-center gap-3 w-full lg:w-auto shrink-0">
+            <x-forms.select-input wire:model.live="status" placeholder="Semua Status" :placeholderDisabled="false"
+                value="{{ $status }}" class="flex-1 lg:flex-initial lg:w-[140px]">
+                <option value="upcoming">Mendatang</option>
+                <option value="ongoing">Berlangsung</option>
+                <option value="completed">Selesai</option>
+                <option value="cancelled">Dibatalkan</option>
+            </x-forms.select-input>
+
+            @if (auth()->user()->isSuperAdmin())
+                <x-forms.select-input wire:model.live="posyandu_id" placeholder="Seluruh Unit" :placeholderDisabled="false"
+                    value="{{ $posyandu_id }}" class="flex-1 lg:flex-initial lg:w-[150px]">
+                    @foreach ($posyandus as $p)
+                        <option value="{{ $p->id }}">{{ $p->name }}</option>
+                    @endforeach
+                </x-forms.select-input>
+            @endif
+
+            @if ($search || $status || $posyandu_id)
+                <button wire:click="resetFilters"
+                    class="h-11 px-4 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 rounded-xl text-xs font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer shrink-0">
+                    <span class="material-symbols-outlined text-[18px]">filter_alt_off</span>
+                    Reset
+                </button>
+            @endif
+        </div>
     </div>
 
     {{-- ── Data Table ── --}}

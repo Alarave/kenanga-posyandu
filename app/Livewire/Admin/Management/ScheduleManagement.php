@@ -62,6 +62,15 @@ class ScheduleManagement extends BaseAdminComponent
     }
 
     /**
+     * Reset filter parameters and pagination.
+     */
+    public function resetFilters(): void
+    {
+        $this->reset(['search', 'status', 'posyandu_id']);
+        $this->resetPage();
+    }
+
+    /**
      * Simpan jadwal baru.
      */
     public function save(ScheduleService $service)
@@ -122,11 +131,21 @@ class ScheduleManagement extends BaseAdminComponent
     {
         $now = now();
         
+        $statusCounts = (clone $query)
+            ->select('status', \DB::raw('count(*) as count'))
+            ->groupBy('status')
+            ->pluck('count', 'status');
+
+        $totalMonth = (clone $query)
+            ->whereMonth('start_time', $now->month)
+            ->whereYear('start_time', $now->year)
+            ->count();
+        
         return [
-            'total_month' => (clone $query)->whereMonth('start_time', $now->month)->whereYear('start_time', $now->year)->count(),
-            'completed' => (clone $query)->where('status', 'completed')->count(),
-            'upcoming' => (clone $query)->where('status', 'upcoming')->count(),
-            'ongoing' => (clone $query)->where('status', 'ongoing')->count(),
+            'total_month' => $totalMonth,
+            'completed' => $statusCounts->get('completed', 0),
+            'upcoming' => $statusCounts->get('upcoming', 0),
+            'ongoing' => $statusCounts->get('ongoing', 0),
         ];
     }
 
