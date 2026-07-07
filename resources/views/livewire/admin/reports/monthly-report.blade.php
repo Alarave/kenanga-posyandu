@@ -34,21 +34,21 @@
     @endif
 
     {{-- ── Filter Section (Glassmorphism & Floating Style) ── --}}
-    <section class="bg-white/80 backdrop-blur-xl rounded-2xl border border-white/40 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.05)] p-6 relative overflow-hidden">
+    <section class="bg-white rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.015)] p-6 relative overflow-hidden">
         {{-- Inner subtle glow --}}
-        <div class="absolute -top-24 -right-24 w-48 h-48 bg-primary/10 rounded-lg blur-3xl pointer-events-none"></div>
+        <div class="absolute -top-24 -right-24 w-48 h-48 bg-teal-500/5 rounded-lg blur-3xl pointer-events-none"></div>
         
         <div class="flex items-center gap-2 mb-5">
-            <span class="material-symbols-outlined text-primary text-[20px]">filter_list</span>
-            <h3 class="text-xs font-black text-on-surface-variant uppercase tracking-widest">Filter Laporan</h3>
+            <span class="material-symbols-outlined text-teal-600 text-[20px]">filter_list</span>
+            <h3 class="text-xs font-black text-slate-800 uppercase tracking-widest">Filter Laporan</h3>
         </div>
         
         <div class="flex flex-wrap items-end gap-5 relative z-10">
             {{-- Pilih Posyandu (superadmin only) --}}
             @if(auth()->user()->isSuperAdmin())
             <div class="flex-1 min-w-50">
-                <label class="block text-[10px] font-bold text-outline-variant uppercase tracking-widest ml-1 mb-2">Posyandu</label>
-                <x-forms.select-input wire:model="selectedPosyanduId" class="rounded-2xl! bg-surface-container-low/50! focus:bg-white! border-outline-variant/60! shadow-inner-sm transition-all" value="{{ $selectedPosyanduId }}">
+                <label class="block text-[10px] font-bold text-slate-450 uppercase tracking-widest ml-1 mb-2">Posyandu</label>
+                <x-forms.select-input wire:model="selectedPosyanduId" class="rounded-2xl! bg-slate-50/50! focus:bg-white! border-slate-100! shadow-inner-sm transition-all focus:border-teal-500!" value="{{ $selectedPosyanduId }}">
                     @foreach($posyandus as $pos)
                         <option value="{{ $pos->id }}">{{ $pos->name }}</option>
                     @endforeach
@@ -58,8 +58,8 @@
 
             {{-- Tanggal Mulai --}}
             <div class="flex-1 min-w-35">
-                <label class="block text-[10px] font-bold text-outline-variant uppercase tracking-widest ml-1 mb-2">Periode Mulai</label>
-                <input type="month" wire:model.live="startPeriod" class="w-full h-12 px-4 rounded-2xl border border-outline-variant bg-surface-container-low/50 text-sm font-medium focus:bg-white focus:border-teal-400 focus:ring-4 focus:ring-teal-400/10 transition-all shadow-inner-sm">
+                <label class="block text-[10px] font-bold text-slate-450 uppercase tracking-widest ml-1 mb-2">Periode Mulai</label>
+                <input type="month" wire:model.live="startPeriod" class="w-full h-12 px-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50 text-sm font-semibold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-0 transition-all">
             </div>
 
             {{-- Divider --}}
@@ -69,8 +69,8 @@
 
             {{-- Tanggal Akhir --}}
             <div class="flex-1 min-w-35">
-                <label class="block text-[10px] font-bold text-outline-variant uppercase tracking-widest ml-1 mb-2">Periode Selesai</label>
-                <input type="month" wire:model.live="endPeriod" class="w-full h-12 px-4 rounded-2xl border border-outline-variant bg-surface-container-low/50 text-sm font-medium focus:bg-white focus:border-teal-400 focus:ring-4 focus:ring-teal-400/10 transition-all shadow-inner-sm">
+                <label class="block text-[10px] font-bold text-slate-450 uppercase tracking-widest ml-1 mb-2">Periode Selesai</label>
+                <input type="month" wire:model.live="endPeriod" class="w-full h-12 px-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50 text-sm font-semibold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-0 transition-all">
             </div>
 
             {{-- Tombol Tampilkan --}}
@@ -93,90 +93,90 @@
     <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
 
         {{-- Total Kunjungan --}}
-        <div class="group bg-white rounded-2xl border border-outline-variant p-6 shadow-sm transition-all duration-300 relative overflow-hidden">
+        <div class="group bg-white rounded-3xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.015)] transition-all duration-300 relative overflow-hidden hover:-translate-y-1 hover:shadow-lg hover:border-emerald-250">
             <div class="flex justify-between items-start mb-6">
-                <div class="w-12 h-12 flex items-center justify-center border border-primary rounded-lg text-primary bg-primary-container/30">
-                    <span class="material-symbols-outlined text-[24px]">group</span>
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-emerald-600 bg-emerald-50 border border-emerald-100/30">
+                    <span class="material-symbols-outlined text-[20px]">group</span>
                 </div>
-                <span class="text-[9px] font-black text-primary bg-primary-container/50 border border-primary px-3 py-1 rounded-lg uppercase tracking-wider">Bulan Ini</span>
+                <span class="text-[9px] font-black text-emerald-750 bg-emerald-50 border border-emerald-100/50 px-2.5 py-1 rounded-lg uppercase tracking-wider">Bulan Ini</span>
             </div>
             <div>
-                <p class="text-[11px] font-bold text-outline-variant uppercase tracking-widest">Total Kunjungan</p>
-                <h3 class="text-4xl font-black text-on-surface mt-2 mb-1 tracking-tight">{{ $totalKunjungan }}</h3>
-                <p class="text-[11px] text-outline-variant font-semibold mt-1">{{ $periodLabel }}</p>
+                <p class="text-[10px] font-bold text-slate-450 uppercase tracking-widest">Total Kunjungan</p>
+                <h3 class="text-3xl font-black text-slate-800 mt-2 mb-1 tracking-tight leading-none">{{ $totalKunjungan }}</h3>
+                <p class="text-[10px] text-slate-400 font-semibold mt-1.5">{{ $periodLabel }}</p>
             </div>
         </div>
 
         {{-- Balita Stunting --}}
-        <div class="group bg-white rounded-2xl border border-outline-variant p-6 shadow-sm transition-all duration-300 relative overflow-hidden">
+        <div class="group bg-white rounded-3xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.015)] transition-all duration-300 relative overflow-hidden hover:-translate-y-1 hover:shadow-lg hover:border-rose-250">
             <div class="flex justify-between items-start mb-6">
-                <div class="w-12 h-12 flex items-center justify-center border border-error rounded-lg text-error bg-error-container/30">
-                    <span class="material-symbols-outlined text-[24px]" style="font-variation-settings:'FILL' 1;">warning</span>
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-rose-600 bg-rose-50 border border-rose-100/30">
+                    <span class="material-symbols-outlined text-[20px]" style="font-variation-settings:'FILL' 1;">warning</span>
                 </div>
-                <span class="text-[9px] font-black text-error bg-error-container/50 border border-error px-3 py-1 rounded-lg uppercase tracking-wider">Perhatian</span>
+                <span class="text-[9px] font-black text-rose-750 bg-rose-50 border border-rose-100/50 px-2.5 py-1 rounded-lg uppercase tracking-wider">Perhatian</span>
             </div>
             <div>
-                <p class="text-[11px] font-bold text-outline-variant uppercase tracking-widest">Balita Stunting</p>
-                <h3 class="text-4xl font-black text-on-surface mt-2 mb-1 tracking-tight">{{ $balitaStunting }}</h3>
-                <p class="text-[11px] text-outline-variant font-semibold mt-1">Ditemukan bulan ini</p>
+                <p class="text-[10px] font-bold text-slate-450 uppercase tracking-widest">Balita Stunting</p>
+                <h3 class="text-3xl font-black text-slate-800 mt-2 mb-1 tracking-tight leading-none">{{ $balitaStunting }}</h3>
+                <p class="text-[10px] text-slate-400 font-semibold mt-1.5">Ditemukan bulan ini</p>
             </div>
         </div>
 
         {{-- Ibu Hamil --}}
-        <div class="group bg-white rounded-2xl border border-outline-variant p-6 shadow-sm transition-all duration-300 relative overflow-hidden">
+        <div class="group bg-white rounded-3xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.015)] transition-all duration-300 relative overflow-hidden hover:-translate-y-1 hover:shadow-lg hover:border-sky-250">
             <div class="flex justify-between items-start mb-6">
-                <div class="w-12 h-12 flex items-center justify-center border border-blue-200 rounded-lg text-secondary bg-blue-50/30">
-                    <span class="material-symbols-outlined text-[24px]">female</span>
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-sky-600 bg-sky-50 border border-sky-100/30">
+                    <span class="material-symbols-outlined text-[20px]">female</span>
                 </div>
-                <span class="text-[9px] font-black text-secondary bg-blue-50/50 border border-blue-200 px-3 py-1 rounded-lg uppercase tracking-wider">Terdaftar</span>
+                <span class="text-[9px] font-black text-sky-750 bg-sky-50 border border-sky-100/50 px-2.5 py-1 rounded-lg uppercase tracking-wider">Terdaftar</span>
             </div>
             <div>
-                <p class="text-[11px] font-bold text-outline-variant uppercase tracking-widest">Ibu Hamil</p>
-                <h3 class="text-4xl font-black text-on-surface mt-2 mb-1 tracking-tight">{{ $totalIbuHamil }}</h3>
-                <p class="text-[11px] text-outline-variant font-semibold mt-1">Terdaftar aktif</p>
+                <p class="text-[10px] font-bold text-slate-450 uppercase tracking-widest">Ibu Hamil</p>
+                <h3 class="text-3xl font-black text-slate-800 mt-2 mb-1 tracking-tight leading-none">{{ $totalIbuHamil }}</h3>
+                <p class="text-[10px] text-slate-400 font-semibold mt-1.5">Terdaftar aktif</p>
             </div>
         </div>
 
         {{-- Cakupan Vitamin A --}}
-        <div class="group bg-white rounded-2xl border border-outline-variant p-6 shadow-sm transition-all duration-300 relative overflow-hidden">
+        <div class="group bg-white rounded-3xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.015)] transition-all duration-300 relative overflow-hidden hover:-translate-y-1 hover:shadow-lg hover:border-amber-250">
             <div class="flex justify-between items-start mb-6">
-                <div class="w-12 h-12 flex items-center justify-center border border-amber-200 rounded-lg text-amber-500 bg-amber-50/30">
-                    <span class="material-symbols-outlined text-[24px]">medication</span>
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-amber-600 bg-amber-50 border border-amber-100/30">
+                    <span class="material-symbols-outlined text-[20px]">medication</span>
                 </div>
-                <span class="text-[9px] font-black text-amber-600 bg-amber-50/50 border border-amber-200 px-3 py-1 rounded-lg uppercase tracking-wider">Target: 95%</span>
+                <span class="text-[9px] font-black text-amber-750 bg-amber-50 border border-amber-100/50 px-2.5 py-1 rounded-lg uppercase tracking-wider">Target: 95%</span>
             </div>
             <div>
-                <p class="text-[11px] font-bold text-outline-variant uppercase tracking-widest">Cakupan Vitamin A</p>
-                <h3 class="text-4xl font-black text-on-surface mt-2 mb-1 tracking-tight">{{ $cakupanVitaminA }}%</h3>
-                <p class="text-[11px] text-outline-variant font-semibold mt-1">Capaian posyandu</p>
+                <p class="text-[10px] font-bold text-slate-450 uppercase tracking-widest">Cakupan Vitamin A</p>
+                <h3 class="text-3xl font-black text-slate-800 mt-2 mb-1 tracking-tight leading-none">{{ $cakupanVitaminA }}%</h3>
+                <p class="text-[10px] text-slate-400 font-semibold mt-1.5">Capaian posyandu</p>
             </div>
         </div>
 
         {{-- Lansia --}}
-        <div class="group bg-white rounded-2xl border border-outline-variant p-6 shadow-sm transition-all duration-300 relative overflow-hidden">
+        <div class="group bg-white rounded-3xl border border-slate-100 p-6 shadow-[0_8px_30px_rgb(0,0,0,0.015)] transition-all duration-300 relative overflow-hidden hover:-translate-y-1 hover:shadow-lg hover:border-indigo-250">
             <div class="flex justify-between items-start mb-6">
-                <div class="w-12 h-12 flex items-center justify-center border border-secondary rounded-lg text-secondary bg-secondary-container/30">
-                    <span class="material-symbols-outlined text-[24px]">elderly</span>
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center text-indigo-600 bg-indigo-50 border border-indigo-100/30">
+                    <span class="material-symbols-outlined text-[20px]">elderly</span>
                 </div>
-                <span class="text-[9px] font-black text-secondary bg-secondary-container/50 border border-secondary px-3 py-1 rounded-lg uppercase tracking-wider">Terdaftar</span>
+                <span class="text-[9px] font-black text-indigo-750 bg-indigo-50 border border-indigo-100/50 px-2.5 py-1 rounded-lg uppercase tracking-wider">Terdaftar</span>
             </div>
             <div>
-                <p class="text-[11px] font-bold text-outline-variant uppercase tracking-widest">Lansia</p>
-                <h3 class="text-4xl font-black text-on-surface mt-2 mb-1 tracking-tight">{{ $totalLansia }}</h3>
-                <p class="text-[11px] text-outline-variant font-semibold mt-1">Terdaftar aktif</p>
+                <p class="text-[10px] font-bold text-slate-450 uppercase tracking-widest">Lansia</p>
+                <h3 class="text-3xl font-black text-slate-800 mt-2 mb-1 tracking-tight leading-none">{{ $totalLansia }}</h3>
+                <p class="text-[10px] text-slate-400 font-semibold mt-1.5">Terdaftar aktif</p>
             </div>
         </div>
 
     </section>
 
     {{-- ── Tabel Detail Kunjungan (Redesigned) ── --}}
-    <section class="bg-white rounded-2xl border border-slate-100 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col">
+    <section class="bg-white rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.015)] overflow-hidden flex flex-col">
 
         {{-- Header Tabel --}}
-        <div class="px-8 py-6 border-b border-slate-100/60 bg-surface-container-low/30 flex flex-wrap justify-between items-center gap-6">
+        <div class="px-8 py-6 border-b border-slate-100 bg-slate-50/50 flex flex-wrap justify-between items-center gap-6">
             <div>
-                <h2 class="text-headline-sm font-black text-on-surface tracking-tight">Detail Kunjungan</h2>
-                <p class="text-[13px] text-outline font-medium mt-1"><span class="font-bold text-primary">{{ $posyanduName }}</span> • {{ $periodLabel }}</p>
+                <h2 class="text-headline-sm font-black text-slate-800 tracking-tight">Detail Kunjungan</h2>
+                <p class="text-[13px] text-slate-500 font-medium mt-1"><span class="font-bold text-teal-600">{{ $posyanduName }}</span> • {{ $periodLabel }}</p>
             </div>
             <div class="flex flex-wrap gap-3">
                 {{-- Ekspor Excel --}}
@@ -208,49 +208,49 @@
         </div>
 
         {{-- Search & Sort Section --}}
-        <div class="px-6 lg:px-8 py-5 border-b border-slate-100/60 flex flex-col gap-4">
+        <div class="px-6 lg:px-8 py-5 border-b border-slate-100 flex flex-col gap-4 bg-white">
             {{-- Search Input --}}
             <div class="relative w-full max-w-100 shrink-0 group">
                 <div class="absolute inset-y-0 left-0 w-10 flex items-center justify-center pointer-events-none">
-                    <span class="material-symbols-outlined text-outline-variant group-focus-within:text-teal-500 transition-colors text-[20px]">search</span>
+                    <span class="material-symbols-outlined text-slate-350 group-focus-within:text-teal-500 transition-colors text-[20px]">search</span>
                 </div>
                 <input type="text" wire:model.live.debounce.300ms="search" 
                        placeholder="Cari Nama/NIK..."
-                       class="w-full pl-10 pr-4 h-10 rounded-xl border border-outline-variant bg-surface-container-low/50 text-[13px] font-medium focus:bg-white focus:border-teal-400 focus:ring-4 focus:ring-teal-400/10 transition-all shadow-sm">
+                       class="w-full pl-10 pr-4 h-11 rounded-2xl border-2 border-slate-100 bg-slate-50/50 text-[13px] font-semibold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-0 transition-all shadow-sm">
             </div>
 
             {{-- Sort Options Row --}}
             <div class="flex items-center gap-3 overflow-x-auto hide-scrollbar w-full pb-1">
-                <span class="text-[10px] font-black text-outline-variant uppercase tracking-widest whitespace-nowrap shrink-0">Urutkan:</span>
+                <span class="text-[10px] font-black text-slate-450 uppercase tracking-widest whitespace-nowrap shrink-0">Urutkan:</span>
             
                 {{-- Sort by Patient Name --}}
-                <div class="flex bg-surface-container/80 p-1 rounded-xl">
+                <div class="flex bg-slate-100/80 p-1 rounded-xl">
                     <button wire:click="$set('sortBy', 'patient_name_asc')"
                             @class(['px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap flex items-center gap-1', 
-                                    'bg-white text-primary shadow-sm' => $sortBy === 'patient_name_asc',
-                                    'text-outline hover:text-on-surface-variant' => $sortBy !== 'patient_name_asc'])>
+                                    'bg-white text-teal-600 shadow-sm border border-slate-100/10' => $sortBy === 'patient_name_asc',
+                                    'text-slate-500 hover:text-slate-800' => $sortBy !== 'patient_name_asc'])>
                         <span class="material-symbols-outlined text-[14px]">sort_by_alpha</span> A-Z
                     </button>
                     <button wire:click="$set('sortBy', 'patient_name_desc')"
                             @class(['px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap flex items-center gap-1', 
-                                    'bg-white text-primary shadow-sm' => $sortBy === 'patient_name_desc',
-                                    'text-outline hover:text-on-surface-variant' => $sortBy !== 'patient_name_desc'])>
+                                    'bg-white text-teal-600 shadow-sm border border-slate-100/10' => $sortBy === 'patient_name_desc',
+                                    'text-slate-500 hover:text-slate-800' => $sortBy !== 'patient_name_desc'])>
                         <span class="material-symbols-outlined text-[14px]">sort_by_alpha</span> Z-A
                     </button>
                 </div>
 
                 {{-- Sort by Visit Date --}}
-                <div class="flex bg-surface-container/80 p-1 rounded-xl">
+                <div class="flex bg-slate-100/80 p-1 rounded-xl">
                     <button wire:click="$set('sortBy', 'visit_date_desc')"
                             @class(['px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap flex items-center gap-1', 
-                                    'bg-white text-primary shadow-sm' => $sortBy === 'visit_date_desc',
-                                    'text-outline hover:text-on-surface-variant' => $sortBy !== 'visit_date_desc'])>
+                                    'bg-white text-teal-600 shadow-sm border border-slate-100/10' => $sortBy === 'visit_date_desc',
+                                    'text-slate-500 hover:text-slate-800' => $sortBy !== 'visit_date_desc'])>
                         <span class="material-symbols-outlined text-[14px]">event_available</span> Terbaru
                     </button>
                     <button wire:click="$set('sortBy', 'visit_date_asc')"
                             @class(['px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap flex items-center gap-1', 
-                                    'bg-white text-primary shadow-sm' => $sortBy === 'visit_date_asc',
-                                    'text-outline hover:text-on-surface-variant' => $sortBy !== 'visit_date_asc'])>
+                                    'bg-white text-teal-600 shadow-sm border border-slate-100/10' => $sortBy === 'visit_date_asc',
+                                    'text-slate-500 hover:text-slate-800' => $sortBy !== 'visit_date_asc'])>
                         <span class="material-symbols-outlined text-[14px]">history_toggle_off</span> Terlama
                     </button>
                 </div>
@@ -275,7 +275,7 @@
                 </thead>
                 <tbody class="divide-y divide-slate-100/50">
                     @forelse($records as $index => $record)
-                    <tr class="hover:bg-surface-container-low/80 transition-colors group">
+                    <tr class="hover:bg-slate-50 transition-colors group bg-white">
                         <td class="px-8 py-5 text-sm font-bold text-outline-variant">
                             {{ ($records->currentPage() - 1) * $records->perPage() + $index + 1 }}
                         </td>
@@ -283,11 +283,11 @@
                             @php
                                 $cat = $record->patient->category ?? 'Lainnya';
                                 $catColor = match(strtolower($cat)) {
-                                    'bayi', 'baduta', 'balita' => 'text-emerald-700 bg-emerald-50 border-emerald-200',
-                                    'ibu hamil', 'ibu_hamil' => 'text-blue-700 bg-blue-50 border-blue-200',
-                                    'lansia' => 'text-amber-700 bg-amber-50 border-amber-200',
-                                    'pua', 'wus', 'remaja' => 'text-purple-700 bg-purple-50 border-purple-200',
-                                    default => 'text-on-surface-variant bg-surface-container-low border-outline-variant'
+                                    'bayi', 'baduta', 'balita' => 'text-emerald-700 bg-emerald-50 border-emerald-100',
+                                    'ibu hamil', 'ibu_hamil' => 'text-sky-700 bg-sky-50 border-sky-100',
+                                    'lansia' => 'text-amber-700 bg-amber-50 border-amber-100',
+                                    'pua', 'wus', 'remaja' => 'text-purple-700 bg-purple-50 border-purple-100',
+                                    default => 'text-slate-650 bg-slate-50 border-slate-200'
                                 };
                             @endphp
                             <span class="inline-flex px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded border {{ $catColor }}">
@@ -297,17 +297,17 @@
                         <td class="px-6 py-5">
                             <div class="flex items-center gap-3">
                                 @if($record->patient?->profile_photo)
-                                    <img src="{{ asset('storage/' . $record->patient->profile_photo) }}" class="h-9 w-9 rounded-xl object-cover border border-outline-variant flex-shrink-0">
+                                    <img src="{{ asset('storage/' . $record->patient->profile_photo) }}" class="h-9 w-9 rounded-xl object-cover border border-slate-100 flex-shrink-0">
                                 @else
                                     @php
                                         $initials = $record->patient ? strtoupper(substr($record->patient->full_name, 0, 2)) : '-';
                                     @endphp
-                                    <div class="h-9 w-9 rounded-xl bg-primary-container text-on-primary-container flex items-center justify-center font-bold text-xs flex-shrink-0 font-sans">
+                                    <div class="h-9 w-9 rounded-xl bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-xs flex-shrink-0 font-sans border border-slate-200/50">
                                         {{ $initials }}
                                     </div>
                                 @endif
                                 <div>
-                                    <div class="font-bold text-sm text-on-surface">{{ $record->patient->full_name ?? '-' }}</div>
+                                    <div class="font-bold text-sm text-slate-800">{{ $record->patient->full_name ?? '-' }}</div>
                                     <div class="text-[11px] font-medium text-outline font-mono mt-0.5">{{ $record->patient->id_number ?? '' }}</div>
                                 </div>
                             </div>
@@ -333,26 +333,26 @@
                                         }
                                     }
                                 @endphp
-                                <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-surface-container text-on-surface-variant text-xs font-bold">
+                                <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-slate-50 text-slate-600 text-xs font-bold border border-slate-100">
                                     {{ $ageStr }}
                                 </span>
                             @else
-                                <span class="text-outline-variant">-</span>
+                                <span class="text-slate-400">-</span>
                             @endif
                         </td>
-                        <td class="px-6 py-5 text-sm font-semibold text-on-surface-variant">
+                        <td class="px-6 py-5 text-sm font-semibold text-slate-600">
                             {{ \Carbon\Carbon::parse($record->visit_date)->format('d M Y') }}
                         </td>
                         <td class="px-6 py-5">
                             <div class="flex items-center gap-3">
                                 <div title="Berat Badan">
-                                    <span class="text-[10px] font-bold text-outline-variant uppercase">BB</span>
-                                    <div class="text-sm font-bold text-on-surface">{{ $record->weight ? number_format($record->weight, 1) : '-' }} <span class="text-xs text-outline-variant font-medium">kg</span></div>
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase">BB</span>
+                                    <div class="text-sm font-bold text-slate-800">{{ $record->weight ? number_format($record->weight, 1) : '-' }} <span class="text-xs text-slate-400 font-medium">kg</span></div>
                                 </div>
-                                <div class="w-px h-6 bg-surface-container-high"></div>
+                                <div class="w-px h-6 bg-slate-100"></div>
                                 <div title="Tinggi Badan">
-                                    <span class="text-[10px] font-bold text-outline-variant uppercase">TB</span>
-                                    <div class="text-sm font-bold text-on-surface">{{ $record->height ? number_format($record->height, 1) : '-' }} <span class="text-xs text-outline-variant font-medium">cm</span></div>
+                                    <span class="text-[10px] font-bold text-slate-400 uppercase">TB</span>
+                                    <div class="text-sm font-bold text-slate-800">{{ $record->height ? number_format($record->height, 1) : '-' }} <span class="text-xs text-slate-400 font-medium">cm</span></div>
                                 </div>
                             </div>
                         </td>
@@ -386,27 +386,27 @@
                         <td class="px-6 py-5">
                             <div class="flex items-center justify-center gap-2">
                                 <div class="flex flex-col items-center gap-1" title="Vitamin A">
-                                    <span class="text-[9px] font-bold text-outline-variant uppercase">Vit. A</span>
+                                    <span class="text-[9px] font-bold text-slate-400 uppercase">Vit. A</span>
                                     @if($record->vitamin_a)
-                                        <div class="w-6 h-6 rounded-lg bg-emerald-100 flex items-center justify-center text-primary"><span class="material-symbols-outlined text-[14px]" style="font-variation-settings:'FILL' 1;">check</span></div>
+                                        <div class="w-6 h-6 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 border border-emerald-100"><span class="material-symbols-outlined text-[14px]" style="font-variation-settings:'FILL' 1;">check</span></div>
                                     @else
-                                        <div class="w-6 h-6 rounded-lg bg-surface-container flex items-center justify-center text-outline-variant"><span class="material-symbols-outlined text-[14px]">close</span></div>
+                                        <div class="w-6 h-6 rounded-lg bg-slate-50 flex items-center justify-center text-slate-350 border border-slate-100"><span class="material-symbols-outlined text-[14px]">close</span></div>
                                     @endif
                                 </div>
-                                <div class="w-px h-6 bg-surface-container"></div>
+                                <div class="w-px h-6 bg-slate-100"></div>
                                 <div class="flex flex-col items-center gap-1" title="Pil FE">
-                                    <span class="text-[9px] font-bold text-outline-variant uppercase">Pil FE</span>
+                                    <span class="text-[9px] font-bold text-slate-450 uppercase">Pil FE</span>
                                     @if($record->pill_fe)
-                                        <div class="w-6 h-6 rounded-lg bg-emerald-100 flex items-center justify-center text-primary"><span class="material-symbols-outlined text-[14px]" style="font-variation-settings:'FILL' 1;">check</span></div>
+                                        <div class="w-6 h-6 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 border border-emerald-100"><span class="material-symbols-outlined text-[14px]" style="font-variation-settings:'FILL' 1;">check</span></div>
                                     @else
-                                        <div class="w-6 h-6 rounded-lg bg-surface-container flex items-center justify-center text-outline-variant"><span class="material-symbols-outlined text-[14px]">close</span></div>
+                                        <div class="w-6 h-6 rounded-lg bg-slate-50 flex items-center justify-center text-slate-350 border border-slate-100"><span class="material-symbols-outlined text-[14px]">close</span></div>
                                     @endif
                                 </div>
                             </div>
                         </td>
                         <td class="px-8 py-5 text-center">
                             <a href="{{ route('admin.reports.individual', ['patient' => $record->patient_id, 'start_month' => $startMonth, 'start_year' => $startYear, 'end_month' => $endMonth, 'end_year' => $endYear]) }}"
-                               class="inline-flex items-center justify-center rounded-xl bg-white border border-outline-variant shadow-sm px-4 py-2.5 text-xs font-black text-on-surface-variant hover:bg-primary-container hover:text-on-primary-container hover:border-primary active:scale-95 transition-all">
+                               class="inline-flex items-center justify-center rounded-xl bg-white border border-slate-200 shadow-sm px-4 py-2.5 text-xs font-black text-slate-650 hover:bg-teal-50 hover:text-teal-700 hover:border-teal-300 active:scale-95 transition-all">
                                 <span class="material-symbols-outlined text-[18px]">assignment_ind</span>
                                 <span class="ml-1.5">Rapor</span>
                             </a>
@@ -445,15 +445,14 @@
     </section>
     @else
     {{-- Empty State --}}
-    {{-- Empty State --}}
-    <section class="bg-white rounded-2xl border border-outline-variant shadow-sm p-12 mt-8 text-center">
+    <section class="bg-white rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.015)] p-12 mt-8 text-center">
         <div class="flex flex-col items-center justify-center gap-4">
-            <div class="w-20 h-20 rounded-2xl bg-primary-container flex items-center justify-center border border-teal-100 mb-2">
+            <div class="w-20 h-20 rounded-2xl bg-teal-50 flex items-center justify-center border border-teal-100 mb-2">
                 <span class="material-symbols-outlined text-[40px] text-teal-500" style="font-variation-settings:'FILL' 1;">analytics</span>
             </div>
             <div>
-                <h2 class="text-headline-md font-black text-on-surface tracking-tight">Pilih Periode Laporan</h2>
-                <p class="text-sm font-medium text-outline mt-2 max-w-md mx-auto leading-relaxed">Pilih posyandu, bulan, dan tahun pada filter di atas lalu klik <span class="font-bold text-primary">Analisis</span> untuk menghasilkan rekap dan laporan detail.</p>
+                <h2 class="text-headline-md font-black text-slate-800 tracking-tight">Pilih Periode Laporan</h2>
+                <p class="text-sm font-medium text-slate-500 mt-2 max-w-md mx-auto leading-relaxed">Pilih posyandu, bulan, and tahun pada filter di atas lalu klik <span class="font-bold text-teal-650">Analisis</span> untuk menghasilkan rekap dan laporan detail.</p>
             </div>
         </div>
     </section>
