@@ -76,8 +76,8 @@
                         @endif
 
                         {{-- Frosted High Contrast Media Count Badge --}}
-                        <div class="absolute top-4 right-4 z-20 shadow-sm">
-                            <div class="bg-slate-950/85 text-white backdrop-blur-md px-3 py-1.5 rounded-xl flex items-center gap-1.5 border border-white/10">
+                        <div class="absolute top-4 right-4 z-20">
+                            <div class="bg-slate-950/85 text-white backdrop-blur-md px-3.5 py-1.5 rounded-full flex items-center gap-1.5 border border-white/10 shadow-md">
                                 <span class="material-symbols-outlined text-[13px] text-white">photo_library</span>
                                 <span class="text-[9px] font-black uppercase tracking-widest text-white">{{ $folder->galleries_count }} Media</span>
                             </div>
