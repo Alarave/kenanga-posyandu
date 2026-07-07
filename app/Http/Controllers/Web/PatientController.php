@@ -48,6 +48,10 @@ class PatientController extends Controller
             return redirect()->back()
                 ->withInput()
                 ->withErrors($e->errors());
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Gagal menyimpan data: ' . $e->getMessage());
         }
     }
 
@@ -104,6 +108,10 @@ class PatientController extends Controller
             return redirect()->back()
                 ->withInput()
                 ->withErrors($e->errors());
+        } catch (\Exception $e) {
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Gagal memperbarui data: ' . $e->getMessage());
         }
     }
 
@@ -114,9 +122,12 @@ class PatientController extends Controller
     {
         $this->authorize('delete', $patient);
 
-        $this->patientService->deletePatient($patient);
-
-        return redirect()->route('admin.patients.index')->with('success', 'Data warga berhasil dihapus.');
+        try {
+            $this->patientService->deletePatient($patient);
+            return redirect()->route('admin.patients.index')->with('success', 'Data warga berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.patients.index')->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+        }
     }
 
     /**

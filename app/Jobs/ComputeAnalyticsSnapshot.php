@@ -543,12 +543,12 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
         $currentMonth = now()->month;
         $currentYear = now()->year;
 
-        $counts = (clone $patientQuery)
-            ->selectRaw('COUNT(CASE WHEN category IN ("balita", "bayi", "baduta") THEN 1 END) as balita')
-            ->selectRaw('COUNT(CASE WHEN category = "ibu_hamil" THEN 1 END) as ibu_hamil')
-            ->selectRaw('COUNT(CASE WHEN category = "remaja" THEN 1 END) as remaja')
-            ->selectRaw('COUNT(CASE WHEN category = "lansia" THEN 1 END) as lansia')
-            ->first();
+        $counts = (object) [
+            'balita' => (clone $patientQuery)->whereIn('category', ['balita', 'bayi', 'baduta'])->count(),
+            'ibu_hamil' => (clone $patientQuery)->where('category', 'ibu_hamil')->count(),
+            'remaja' => (clone $patientQuery)->where('category', 'remaja')->count(),
+            'lansia' => (clone $patientQuery)->where('category', 'lansia')->count(),
+        ];
 
         $kunjunganBaru = (clone $medicalRecordQuery)
             ->whereMonth('visit_date', $currentMonth)
@@ -594,7 +594,7 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
             ->where('visit_date', '>=', $startDate)
             ->selectRaw("$dateFormat as month_year")
             ->selectRaw('COUNT(*) as total')
-            ->groupBy('month_year')
+            ->groupByRaw($dateFormat)
             ->get()
             ->pluck('total', 'month_year');
 
