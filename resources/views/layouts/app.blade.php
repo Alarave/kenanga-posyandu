@@ -34,6 +34,9 @@
     
     <style>
         :root { --sidebar-width: 260px; }
+        @media (max-width: 1023px) {
+            :root { --sidebar-width: 0px; }
+        }
 
         /* High-performance CSS transitions for sidebar collapse */
         .sidebar-text, 
@@ -128,11 +131,10 @@
     <script>
         (function () {
             var collapsed = localStorage.getItem('sidebar_v2_collapsed') === 'true';
-            if (window.innerWidth < 1024) {
-                collapsed = true;
+            if (collapsed) {
+                document.documentElement.style.setProperty('--sidebar-width', '64px');
+                document.documentElement.classList.add('sidebar-collapsed');
             }
-            var width = (window.innerWidth >= 1024) ? (collapsed ? '64px' : '260px') : '0px';
-            document.documentElement.style.setProperty('--sidebar-width', width);
         })();
     </script>
 </head>

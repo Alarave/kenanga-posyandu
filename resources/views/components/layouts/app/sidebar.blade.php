@@ -234,7 +234,9 @@
         apply(true);
     }
 
-    apply(false);
+    requestAnimationFrame(() => {
+        apply(false);
+    });
 
     document.addEventListener('click', (e) => {
         if (e.target.closest('#sidebarToggleBtn') || e.target.closest('#mobileSidebarToggle') || e.target.closest('#sidebarOverlay')) {
