@@ -24,7 +24,7 @@
         user-select: text !important;
     }
     #blocks-container .group\/row > div > div[style*="position: absolute"] {
-        left: 2px !important;
+        left: 6px !important;
     }
     @media (min-width: 640px) {
         #blocks-container .group\/row > div > div[style*="position: absolute"] {
@@ -131,13 +131,13 @@
     <div id="blocks-container" wire:ignore class="relative mb-12" @input="showContentError = false">
 
         <template x-for="(block, index) in blocks" :key="block.id">
-            <div class="relative group/row -ml-10 sm:-ml-12 pl-10 sm:pl-12"
+            <div class="relative group/row -ml-4 sm:-ml-12 pl-12 sm:pl-12"
                  @mouseenter="hoveredIndex = index"
                  @mouseleave="hoveredIndex = (hoveredIndex === index) ? -1 : hoveredIndex">
 
                 {{-- PARAGRAPH --}}
                 <div x-show="block.type === 'paragraph'">
-                    <div style="position: absolute; left: 6px; top: 8px; width: 36px; z-index: 10;">
+                    <div class="absolute left-1.5 sm:left-1.5" style="top: 8px; width: 36px; z-index: 10;">
                         <button type="button" @click.stop="toggleBlockMenu(index, $event)"
                                 x-show="hoveredIndex === index || blockMenuAt === index"
                                 class="w-9 h-9 rounded-full border-2 border-teal-600 flex items-center justify-center transition-all bg-white text-teal-800 shadow-md hover:bg-teal-600 hover:text-white"
@@ -147,7 +147,7 @@
                         </button>
                     </div>
                     <div :id="'block-' + block.id" contenteditable="true"
-                         x-init="$el.innerHTML = block.content || ''"
+                         x-init="if ($el.innerHTML !== (block.content || '')) $el.innerHTML = block.content || ''"
                          @keydown="handleKeydown($event, index)"
                          @focus="focusedIndex = index; activeBlockId = block.id"
                          @blur="handleBlur(index)"
@@ -159,7 +159,7 @@
 
                 {{-- HEADING 1 --}}
                 <div x-show="block.type === 'h1'">
-                    <div style="position: absolute; left: 6px; top: 10px; width: 36px; z-index: 10;">
+                    <div class="absolute left-1.5 sm:left-1.5" style="top: 10px; width: 36px; z-index: 10;">
                         <button type="button" @click.stop="toggleBlockMenu(index, $event)"
                                 x-show="hoveredIndex === index || blockMenuAt === index"
                                 class="w-9 h-9 rounded-full border-2 border-teal-600 flex items-center justify-center transition-all bg-white text-teal-800 shadow-md hover:bg-teal-600 hover:text-white"
@@ -169,7 +169,7 @@
                         </button>
                     </div>
                     <div :id="'block-' + block.id" contenteditable="true"
-                         x-init="$el.innerHTML = block.content || ''"
+                         x-init="if ($el.innerHTML !== (block.content || '')) $el.innerHTML = block.content || ''"
                          @keydown="handleKeydown($event, index)"
                          @focus="focusedIndex = index; activeBlockId = block.id"
                          @blur="handleBlur(index)"
@@ -181,7 +181,7 @@
 
                 {{-- HEADING 2 --}}
                 <div x-show="block.type === 'h2'">
-                    <div style="position: absolute; left: 6px; top: 8px; width: 36px; z-index: 10;">
+                    <div class="absolute left-1.5 sm:left-1.5" style="top: 8px; width: 36px; z-index: 10;">
                         <button type="button" @click.stop="toggleBlockMenu(index, $event)"
                                 x-show="hoveredIndex === index || blockMenuAt === index"
                                 class="w-9 h-9 rounded-full border-2 border-teal-600 flex items-center justify-center transition-all bg-white text-teal-800 shadow-md hover:bg-teal-600 hover:text-white"
@@ -191,7 +191,7 @@
                         </button>
                     </div>
                     <div :id="'block-' + block.id" contenteditable="true"
-                         x-init="$el.innerHTML = block.content || ''"
+                         x-init="if ($el.innerHTML !== (block.content || '')) $el.innerHTML = block.content || ''"
                          @keydown="handleKeydown($event, index)"
                          @focus="focusedIndex = index; activeBlockId = block.id"
                          @blur="handleBlur(index)"
@@ -203,7 +203,7 @@
 
                 {{-- HEADING 3 --}}
                 <div x-show="block.type === 'h3'">
-                    <div style="position: absolute; left: 6px; top: 6px; width: 36px; z-index: 10;">
+                    <div class="absolute left-1.5 sm:left-1.5" style="top: 6px; width: 36px; z-index: 10;">
                         <button type="button" @click.stop="toggleBlockMenu(index, $event)"
                                 x-show="hoveredIndex === index || blockMenuAt === index"
                                 class="w-9 h-9 rounded-full border-2 border-teal-600 flex items-center justify-center transition-all bg-white text-teal-800 shadow-md hover:bg-teal-600 hover:text-white"
@@ -213,7 +213,7 @@
                         </button>
                     </div>
                     <div :id="'block-' + block.id" contenteditable="true"
-                         x-init="$el.innerHTML = block.content || ''"
+                         x-init="if ($el.innerHTML !== (block.content || '')) $el.innerHTML = block.content || ''"
                          @keydown="handleKeydown($event, index)"
                          @focus="focusedIndex = index; activeBlockId = block.id"
                          @blur="handleBlur(index)"
@@ -225,7 +225,7 @@
 
                 {{-- QUOTE --}}
                 <div x-show="block.type === 'quote'" class="my-2">
-                    <div style="position: absolute; left: 6px; top: 6px; width: 36px; z-index: 10;">
+                    <div class="absolute left-1.5 sm:left-1.5" style="top: 6px; width: 36px; z-index: 10;">
                         <button type="button" @click.stop="toggleBlockMenu(index, $event)"
                                 x-show="hoveredIndex === index || blockMenuAt === index"
                                 class="w-9 h-9 rounded-full border-2 border-teal-600 flex items-center justify-center transition-all bg-white text-teal-800 shadow-md hover:bg-teal-600 hover:text-white"
@@ -237,12 +237,12 @@
                     <div class="flex-1 flex gap-3">
                         <div class="w-1 rounded-lg bg-inverse-surface flex-shrink-0 self-stretch"></div>
                         <div :id="'block-' + block.id" contenteditable="true"
-                             x-init="$el.innerHTML = block.content || ''"
+                             x-init="if ($el.innerHTML !== (block.content || '')) $el.innerHTML = block.content || ''"
                              @keydown="handleKeydown($event, index)"
                              @focus="focusedIndex = index; activeBlockId = block.id"
                              @blur="handleBlur(index)"
                              @mouseup="checkSelection()" @keyup="checkSelection()"
-                             :data-placeholder="'Kutipanâ€¦'"
+                             :data-placeholder="'Kutipan'"
                              class="flex-1 min-h-[1.8em] py-1 text-[1.15rem] leading-[1.9] text-on-surface-variant italic ce-placeholder"
                              style="font-family:'Georgia',serif; text-align: justify; outline: none; border: none; box-shadow: none;"></div>
                     </div>
@@ -250,7 +250,7 @@
 
                 {{-- CALLOUT --}}
                 <div x-show="block.type === 'callout'" class="my-2">
-                    <div style="position: absolute; left: 6px; top: 14px; width: 36px; z-index: 10;">
+                    <div class="absolute left-1.5 sm:left-1.5" style="top: 14px; width: 36px; z-index: 10;">
                         <button type="button" @click.stop="toggleBlockMenu(index, $event)"
                                 x-show="hoveredIndex === index || blockMenuAt === index"
                                 class="w-9 h-9 rounded-full border-2 border-teal-600 flex items-center justify-center transition-all bg-white text-teal-800 shadow-md hover:bg-teal-600 hover:text-white"
@@ -262,12 +262,12 @@
                     <div class="flex-1 bg-gradient-to-r from-amber-50 to-orange-50 border-l-4 border-amber-500 rounded-2xl px-5 py-4 shadow-sm hover:shadow-md transition-all">
                         <span class="material-symbols-outlined text-amber-600">tips_and_updates</span>
                         <div :id="'block-' + block.id" contenteditable="true"
-                             x-init="$el.innerHTML = block.content || ''"
+                             x-init="if ($el.innerHTML !== (block.content || '')) $el.innerHTML = block.content || ''"
                              @keydown="handleKeydown($event, index)"
                              @focus="focusedIndex = index; activeBlockId = block.id"
                              @blur="handleBlur(index)"
                              @mouseup="checkSelection()" @keyup="checkSelection()"
-                             :data-placeholder="'Catatan pentingâ€¦'"
+                             :data-placeholder="'Catatan penting...'"
                              class="flex-1 min-h-[1.8em] py-0.5 text-amber-900 ce-placeholder"
                              style="font-family:'Georgia',serif; text-align: justify; outline: none; border: none; box-shadow: none;"></div>
                     </div>
@@ -275,7 +275,7 @@
 
                 {{-- BULLETED LIST --}}
                 <div x-show="block.type === 'bullet'">
-                    <div style="position: absolute; left: 6px; top: 6px; width: 36px; z-index: 10;">
+                    <div class="absolute left-1.5 sm:left-1.5" style="top: 6px; width: 36px; z-index: 10;">
                         <button type="button" @click.stop="toggleBlockMenu(index, $event)"
                                 x-show="hoveredIndex === index || blockMenuAt === index"
                                 class="w-9 h-9 rounded-full border-2 border-teal-600 flex items-center justify-center transition-all bg-white text-teal-800 shadow-md hover:bg-teal-600 hover:text-white"
@@ -287,12 +287,12 @@
                     <div class="flex-1 flex items-start gap-2 py-0.5">
                         <span class="w-1.5 h-1.5 rounded-lg bg-slate-700 flex-shrink-0 mt-3"></span>
                         <div :id="'block-' + block.id" contenteditable="true"
-                             x-init="$el.innerHTML = block.content || ''"
+                             x-init="if ($el.innerHTML !== (block.content || '')) $el.innerHTML = block.content || ''"
                              @keydown="handleKeydown($event, index)"
                              @focus="focusedIndex = index; activeBlockId = block.id"
                              @blur="handleBlur(index)"
                              @mouseup="checkSelection()" @keyup="checkSelection()"
-                             :data-placeholder="'Item listâ€¦'"
+                             :data-placeholder="'Item list'"
                              class="flex-1 min-h-[1.8em] text-[1.15rem] leading-[1.9] text-on-surface-variant ce-placeholder"
                              style="font-family:'Georgia',serif; text-align: justify; outline: none; border: none; box-shadow: none;"></div>
                     </div>
@@ -300,7 +300,7 @@
 
                 {{-- NUMBERED LIST --}}
                 <div x-show="block.type === 'numbered'">
-                    <div style="position: absolute; left: 6px; top: 6px; width: 36px; z-index: 10;">
+                    <div class="absolute left-1.5 sm:left-1.5" style="top: 6px; width: 36px; z-index: 10;">
                         <button type="button" @click.stop="toggleBlockMenu(index, $event)"
                                 x-show="hoveredIndex === index || blockMenuAt === index"
                                 class="w-9 h-9 rounded-full border-2 border-teal-600 flex items-center justify-center transition-all bg-white text-teal-800 shadow-md hover:bg-teal-600 hover:text-white"
@@ -312,12 +312,12 @@
                     <div class="flex-1 flex items-start gap-2 py-0.5">
                         <span class="text-sm font-bold text-outline flex-shrink-0 w-5 text-right mt-1.5" x-text="getNumberedIndex(index) + '.'"></span>
                         <div :id="'block-' + block.id" contenteditable="true"
-                             x-init="$el.innerHTML = block.content || ''"
+                             x-init="if ($el.innerHTML !== (block.content || '')) $el.innerHTML = block.content || ''"
                              @keydown="handleKeydown($event, index)"
                              @focus="focusedIndex = index; activeBlockId = block.id"
                              @blur="handleBlur(index)"
                              @mouseup="checkSelection()" @keyup="checkSelection()"
-                             :data-placeholder="'Item bernomorâ€¦'"
+                             :data-placeholder="'Item bernomor...'"
                              class="flex-1 min-h-[1.8em] text-[1.15rem] leading-[1.9] text-on-surface-variant ce-placeholder"
                              style="font-family:'Georgia',serif; text-align: justify; outline: none; border: none; box-shadow: none;"></div>
                     </div>
@@ -330,7 +330,7 @@
                      @keydown.delete.prevent="removeBlock(index)"
                      @keydown.backspace.prevent="removeBlock(index)"
                      @focus="focusedIndex = index">
-                    <div style="position: absolute; left: 6px; top: 6px; width: 36px; z-index: 10;">
+                    <div class="absolute left-1.5 sm:left-1.5" style="top: 6px; width: 36px; z-index: 10;">
                         <button type="button" @click.stop="toggleBlockMenu(index, $event)"
                                 x-show="hoveredIndex === index || blockMenuAt === index"
                                 class="w-9 h-9 rounded-full border-2 border-teal-600 flex items-center justify-center transition-all bg-white text-teal-800 shadow-md hover:bg-teal-600 hover:text-white"
@@ -343,7 +343,7 @@
                         <img :src="block.src" class="w-full h-auto block object-contain" alt="" style="max-width:100%;height:auto;">
                     </figure>
                     <input type="text" x-model="block.caption"
-                           placeholder="Keterangan gambar (opsional)â€¦"
+                           placeholder="Keterangan gambar (opsional)..."
                            class="w-full mt-2 text-center text-sm text-outline-variant italic bg-transparent border-none outline-none placeholder:text-slate-300">
                     <button type="button" @click="removeBlock(index)"
                             class="absolute top-2 right-2 w-8 h-8 bg-black/60 hover:bg-red-500 text-white rounded-lg flex items-center justify-center opacity-0 group-hover/img:opacity-100 transition-all">
@@ -359,7 +359,7 @@
                     @keydown.backspace.prevent="removeBlock(index)"
                     @focus="focusedIndex = index">
 
-                    <div style="position: absolute; left: 6px; top: 6px; width: 36px; z-index: 10;">
+                    <div class="absolute left-1.5 sm:left-1.5" style="top: 6px; width: 36px; z-index: 10;">
                         <button type="button" @click.stop="toggleBlockMenu(index, $event)"
                                 x-show="hoveredIndex === index || blockMenuAt === index"
                                 class="w-9 h-9 rounded-full border-2 border-teal-600 flex items-center justify-center transition-all bg-white text-teal-800 shadow-md hover:bg-teal-600 hover:text-white"
@@ -448,15 +448,15 @@
                         isDirty = true;
                         $nextTick(() => {
                             setTimeout(() => {
-                                const el = document.getElementById('block-' + nb.id);
+                                const el = this.getBlockEl(nb.id);
                                 if (el) el.focus();
-                            }, 50);
+                            }, 100);
                         });
                     "
                     @focus="focusedIndex = index"
                     class="my-6 cursor-pointer focus:outline-none"
                     @click="$el.focus()">
-                    <div style="position: absolute; left: 6px; top: 6px; width: 36px; z-index: 10; display: flex; justify-content: center;">
+                    <div class="absolute left-1.5 sm:left-1.5" style="top: 6px; width: 36px; z-index: 10; display: flex; justify-content: center;">
                         <button type="button" @click.stop="removeBlock(index)"
                                 class="w-5 h-5 flex items-center justify-center rounded-full bg-red-50 hover:bg-red-100 text-red-400 transition-all flex-shrink-0"
                                 style="min-width: unset; min-height: unset; width: 20px; height: 20px;">
@@ -732,21 +732,43 @@ function articleEditor() {
                     if (html) {
                         const tempDiv = document.createElement('div');
                         tempDiv.innerHTML = html;
-                        const allElements = tempDiv.querySelectorAll('*');
-                        allElements.forEach(el => {
-                            const attributes = Array.from(el.attributes);
-                            attributes.forEach(attr => {
-                                if (attr.name !== 'href') {
-                                    el.removeAttribute(attr.name);
+                        
+                        // List tag formatting filter: keep only inline format tags (a, b, i, strong, em, u)
+                        // and strip block tags (p, div, span, ul, li) to prevent breaking focus/typing
+                        const allowedTags = ['A', 'B', 'I', 'STRONG', 'EM', 'U'];
+                        const cleanNode = (node) => {
+                            if (node.nodeType === Node.ELEMENT_NODE) {
+                                if (!allowedTags.includes(node.tagName)) {
+                                    const fragment = document.createDocumentFragment();
+                                    while (node.firstChild) {
+                                        fragment.appendChild(node.firstChild);
+                                    }
+                                    node.parentNode.replaceChild(fragment, node);
+                                } else {
+                                    const attributes = Array.from(node.attributes);
+                                    attributes.forEach(attr => {
+                                        if (attr.name !== 'href') {
+                                            node.removeAttribute(attr.name);
+                                        }
+                                    });
                                 }
-                            });
-                        });
+                            }
+                        };
+
+                        const allElements = Array.from(tempDiv.querySelectorAll('*')).reverse();
+                        allElements.forEach(cleanNode);
+
                         document.execCommand('insertHTML', false, tempDiv.innerHTML);
                     } else {
                         const text = (e.clipboardData || window.clipboardData).getData('text/plain');
                         document.execCommand('insertText', false, text);
                     }
                     this.isDirty = true;
+                    // Force focus and position caret at the end of text to allow direct typing
+                    setTimeout(() => {
+                        target.focus();
+                        placeCaretAtEnd(target);
+                    }, 15);
                 }
             });
         },
@@ -769,7 +791,7 @@ function articleEditor() {
 
         focusFirstBlock() {
             this.$nextTick(() => {
-                const el = document.getElementById('block-' + this.blocks[0]?.id);
+                const el = this.getBlockEl(this.blocks[0]?.id);
                 if (el) { el.focus(); placeCaretAtEnd(el); }
             });
         },
@@ -787,7 +809,7 @@ function articleEditor() {
                 this.isDirty = true;
                 this.$nextTick(() => {
                     setTimeout(() => {
-                        const el = document.getElementById('block-' + nb.id);
+                        const el = this.getBlockEl(nb.id);
                         if (el) { el.focus(); placeCaretAtEnd(el); }
                     }, 50);
                 });
@@ -795,62 +817,69 @@ function articleEditor() {
             }
 
             if (event.key === 'Backspace') {
-                const el = document.getElementById('block-' + block.id);
+                const el = this.getBlockEl(block.id);
                 const isEmpty = !el || el.innerText.trim() === '';
                 const sel = window.getSelection();
-                const atStart = sel && sel.anchorOffset === 0 && sel.focusOffset === 0;
-
-                if (atStart && index > 0) {
-                    event.preventDefault();
-                    const prevBlock = this.blocks[index - 1];
-                    const textTypes = ['paragraph', 'h1', 'h2', 'h3', 'quote', 'callout', 'bullet', 'numbered'];
-                    if (textTypes.includes(prevBlock.type) && textTypes.includes(block.type)) {
-                        const prevEl = document.getElementById('block-' + prevBlock.id);
-                        const currentEl = document.getElementById('block-' + block.id);
-                        prevBlock.content = (prevEl ? prevEl.innerHTML : prevBlock.content) + (currentEl ? currentEl.innerHTML : block.content);
-                        this.blocks.splice(index, 1);
-                        this.isDirty = true;
-                        this.$nextTick(() => {
-                            setTimeout(() => {
-                                const el = document.getElementById('block-' + prevBlock.id);
-                                if (el) { el.innerHTML = prevBlock.content; placeCaretAtEnd(el); }
-                            }, 50);
-                        });
-                        return;
-                    }
+                
+                // Only consider caret at the start of block if the selection is collapsed (no text selected)
+                // and there is no text content before the caret in the contenteditable block.
+                let atStart = false;
+                if (sel && sel.isCollapsed && el && sel.rangeCount > 0) {
+                    const range = sel.getRangeAt(0);
+                    const preCaretRange = range.cloneRange();
+                    preCaretRange.selectNodeContents(el);
+                    preCaretRange.setEnd(range.startContainer, range.startOffset);
+                    atStart = preCaretRange.toString().length === 0;
                 }
 
-                const convertTypes = ['h1', 'h2', 'h3', 'quote', 'callout'];
+                // 1. Jika blok bertipe khusus (heading/quote/callout/list dll) dan kosong, ubah kembali ke paragraf biasa dahulu
+                const convertTypes = ['h1', 'h2', 'h3', 'quote', 'callout', 'bullet', 'numbered'];
                 if (convertTypes.includes(block.type) && isEmpty) {
                     event.preventDefault();
                     this.blocks[index] = { ...block, type: 'paragraph', content: '' };
                     this.isDirty = true;
                     this.$nextTick(() => {
-                        setTimeout(() => {
-                            const el = document.getElementById('block-' + block.id);
-                            if (el) { el.focus(); placeCaretAtEnd(el); }
-                        }, 50);
+                        const el = this.getBlockEl(block.id);
+                        if (el) { el.focus(); placeCaretAtEnd(el); }
                     });
                     return;
                 }
 
+                // 2. Jika kursor berada di awal blok dan ada blok sebelumnya, gabungkan dengan blok sebelumnya
+                if (atStart && index > 0) {
+                    event.preventDefault();
+                    const prevBlock = this.blocks[index - 1];
+                    const textTypes = ['paragraph', 'h1', 'h2', 'h3', 'quote', 'callout', 'bullet', 'numbered'];
+                    if (textTypes.includes(prevBlock.type) && textTypes.includes(block.type)) {
+                        const prevEl = this.getBlockEl(prevBlock.id);
+                        const currentEl = this.getBlockEl(block.id);
+                        prevBlock.content = (prevEl ? prevEl.innerHTML : prevBlock.content) + (currentEl ? currentEl.innerHTML : block.content);
+                        this.blocks.splice(index, 1);
+                        this.isDirty = true;
+                        this.$nextTick(() => {
+                            const el = this.getBlockEl(prevBlock.id);
+                            if (el) { el.innerHTML = prevBlock.content; placeCaretAtEnd(el); }
+                        });
+                        return;
+                    }
+                }
+
+                // 3. Normal: hapus blok kosong jika panjang blok > 1
                 if (isEmpty && this.blocks.length > 1) {
                     event.preventDefault();
                     const prevBlock = this.blocks[index - 1] || this.blocks[0];
                     this.blocks.splice(index, 1);
                     this.isDirty = true;
                     this.$nextTick(() => {
-                        setTimeout(() => {
-                            const el = document.getElementById('block-' + prevBlock.id);
-                            if (el) { el.focus(); placeCaretAtEnd(el); }
-                        }, 50);
+                        const el = this.getBlockEl(prevBlock.id);
+                        if (el) { el.focus(); placeCaretAtEnd(el); }
                     });
                 }
                 return;
             }
 
             if (event.key === 'Delete') {
-                const el = document.getElementById('block-' + block.id);
+                const el = this.getBlockEl(block.id);
                 const isEmpty = !el || el.innerText.trim() === '';
                 if (isEmpty && this.blocks.length > 1) {
                     event.preventDefault();
@@ -859,7 +888,7 @@ function articleEditor() {
                     this.$nextTick(() => {
                         const next = this.blocks[Math.min(this.blocks.length - 1, index)];
                         if (next) {
-                            const nel = document.getElementById('block-' + next.id);
+                            const nel = this.getBlockEl(next.id);
                             if (nel) nel.focus();
                         }
                     });
@@ -869,6 +898,14 @@ function articleEditor() {
 
         handleBlur(index) {
             setTimeout(() => { if (this.focusedIndex === index) this.focusedIndex = -1; }, 150);
+        },
+
+        getBlockEl(id) {
+            const els = document.querySelectorAll('[id="block-' + id + '"]');
+            for (const el of els) {
+                if (el.offsetParent !== null) return el;
+            }
+            return els[0] || null;
         },
 
         checkSelection() {
@@ -927,11 +964,11 @@ function articleEditor() {
         changeBlockType(index, type) {
             const block = this.blocks[index];
             if (!block) return;
-            const el = document.getElementById('block-' + block.id);
+            const el = this.getBlockEl(block.id);
             this.blocks[index] = { ...block, type, content: el ? el.innerHTML : block.content };
             this.isDirty = true;
             this.$nextTick(() => {
-                const newEl = document.getElementById('block-' + block.id);
+                const newEl = this.getBlockEl(block.id);
                 if (newEl) { newEl.focus(); placeCaretAtEnd(newEl); }
             });
         },
@@ -945,7 +982,7 @@ function articleEditor() {
                 const nb = { id: this.nextId++, type: 'paragraph', content: '' };
                 this.blocks.splice(afterIndex + 2, 0, nb);
                 this.isDirty = true;
-                this.$nextTick(() => { const el = document.getElementById('block-' + nb.id); if (el) el.focus(); });
+                this.$nextTick(() => { const el = this.getBlockEl(nb.id); if (el) el.focus(); });
             };
             reader.readAsDataURL(file);
         },
@@ -1035,7 +1072,7 @@ function articleEditor() {
         serializeContent() {
             return JSON.stringify(this.blocks.map(b => {
                 if (['paragraph','h1','h2','h3','quote','callout','bullet','numbered'].includes(b.type)) {
-                    const el = document.getElementById('block-' + b.id);
+                    const el = this.getBlockEl(b.id);
                     return { type: b.type, content: el ? el.innerHTML : (b.content || '') };
                 }
                 if (b.type === 'image')   return { type: 'image', src: b.src, caption: b.caption || '' };
@@ -1061,12 +1098,12 @@ function articleEditor() {
             const hasContent = this.blocks.some(b => {
                 const textTypes = ['paragraph','h1','h2','h3','quote','callout','bullet','numbered'];
                 if (!textTypes.includes(b.type)) return true;
-                const el = document.getElementById('block-' + b.id);
+                const el = this.getBlockEl(b.id);
                 return el ? el.innerText.trim().length > 0 : (b.content || '').trim().length > 0;
             });
             if (!hasContent) {
                 this.showContentError = true;
-                const el = document.getElementById('block-' + this.blocks[0]?.id);
+                const el = this.getBlockEl(this.blocks[0]?.id);
                 if (el) el.focus();
                 valid = false;
             } else {
@@ -1080,7 +1117,7 @@ function articleEditor() {
             this.blocks.forEach(b => {
                 const textTypes = ['paragraph','h1','h2','h3','quote','callout','bullet','numbered'];
                 if (textTypes.includes(b.type)) {
-                    const el = document.getElementById('block-' + b.id);
+                    const el = this.getBlockEl(b.id);
                     if (el) b.content = el.innerHTML;
                 }
             });
