@@ -30,4 +30,4 @@ RUN npm install && npm run build
 EXPOSE 8080
 
 # Run migrations and start the server using Laravel's artisan serve
-CMD ["bash", "-c", "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT:-8080}"]
+CMD ["bash", "-c", "rm -rf public/storage && php artisan storage:link && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT:-8080}"]
