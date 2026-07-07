@@ -89,27 +89,27 @@ class Index extends BaseAdminComponent
                 if ($this->category === 'bayi') {
                     $q->where(function ($sq) {
                         $sq->where('category', 'bayi')
-                           ->orWhere(function ($q2) {
-                               $q2->where('category', 'balita')
-                                  ->where('birth_date', '>=', now()->subMonths(12));
-                           });
+                            ->orWhere(function ($q2) {
+                                $q2->where('category', 'balita')
+                                    ->where('birth_date', '>=', now()->subMonths(12));
+                            });
                     });
                 } elseif ($this->category === 'baduta') {
                     $q->where(function ($sq) {
                         $sq->where('category', 'baduta')
-                           ->orWhere(function ($q2) {
-                               $q2->where('category', 'balita')
-                                  ->where('birth_date', '<', now()->subMonths(12))
-                                  ->where('birth_date', '>=', now()->subMonths(24));
-                           });
+                            ->orWhere(function ($q2) {
+                                $q2->where('category', 'balita')
+                                    ->where('birth_date', '<', now()->subMonths(12))
+                                    ->where('birth_date', '>=', now()->subMonths(24));
+                            });
                     });
                 } elseif ($this->category === 'balita') {
                     $q->where(function ($sq) {
                         $sq->where('category', 'balita')
-                           ->where(function ($q2) {
-                               $q2->whereNull('birth_date')
-                                  ->orWhere('birth_date', '<', now()->subMonths(24));
-                           });
+                            ->where(function ($q2) {
+                                $q2->whereNull('birth_date')
+                                    ->orWhere('birth_date', '<', now()->subMonths(24));
+                            });
                     });
                 } else {
                     $q->where('category', $this->category);

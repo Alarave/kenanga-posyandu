@@ -28,7 +28,7 @@ class PublicArticleController extends Controller
         });
 
         $articles = $query->paginate(4)->withQueryString();
-        
+
         $categories = Cache::remember('public_categories_count', 300, function () {
             return Category::withCount(['articles' => fn ($q) => $q->where('status', 'published')])->get();
         });

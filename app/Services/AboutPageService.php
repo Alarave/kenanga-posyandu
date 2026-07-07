@@ -102,20 +102,20 @@ class AboutPageService
                 if (empty($imagePath)) {
                     $imagePath = asset('assets/img/kaders/placeholder.svg'); // placeholder default jika kosong
                 } else {
-                    $webpName = pathinfo($imagePath, PATHINFO_FILENAME) . '.webp';
-                    
+                    $webpName = pathinfo($imagePath, PATHINFO_FILENAME).'.webp';
+
                     if (str_starts_with($imagePath, 'assets/')) {
                         $localPath = public_path($imagePath);
-                        $localWebpPath = dirname($localPath) . '/' . $webpName;
-                        
+                        $localWebpPath = dirname($localPath).'/'.$webpName;
+
                         if (file_exists($localWebpPath)) {
-                            $imagePath = dirname($imagePath) . '/' . $webpName;
+                            $imagePath = dirname($imagePath).'/'.$webpName;
                         }
                         $imagePath = asset($imagePath);
                     } else {
-                        $localWebpPath = public_path('assets/img/kaders/' . $webpName);
+                        $localWebpPath = public_path('assets/img/kaders/'.$webpName);
                         if (file_exists($localWebpPath)) {
-                            $imagePath = asset('assets/img/kaders/' . $webpName);
+                            $imagePath = asset('assets/img/kaders/'.$webpName);
                         } else {
                             $imagePath = \Illuminate\Support\Facades\Storage::url('kaders/'.$imagePath);
                         }
@@ -141,8 +141,6 @@ class AboutPageService
 
     /**
      * Get total count of target citizens (warga sasaran).
-     *
-     * @return int
      */
     public function getSasaranCount(): int
     {
@@ -151,8 +149,6 @@ class AboutPageService
 
     /**
      * Get total count of Posyandu units.
-     *
-     * @return int
      */
     public function getPosyanduCount(): int
     {

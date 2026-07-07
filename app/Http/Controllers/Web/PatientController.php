@@ -63,7 +63,7 @@ class PatientController extends Controller
             'medicalRecords' => function ($q) {
                 $q->reorder('visit_date', 'asc');
             },
-            'medicalRecords.user'
+            'medicalRecords.user',
         ]);
 
         $medicalRecords = $patient->medicalRecords()

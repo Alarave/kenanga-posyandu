@@ -460,6 +460,7 @@ class AdminDashboard extends BaseAdminComponent
     {
         if (! $this->selectedNutritionStatus) {
             $this->balitasForSelectedStatus = [];
+
             return;
         }
 

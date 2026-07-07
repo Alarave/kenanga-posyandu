@@ -106,6 +106,7 @@ class Patient extends Model
                 return 'baduta';
             }
         }
+
         return $dbCat;
     }
 

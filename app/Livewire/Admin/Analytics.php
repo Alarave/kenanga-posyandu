@@ -219,8 +219,11 @@ class Analytics extends BaseAdminComponent
                 ->get();
 
             $filteredPatients = $patients->filter(function ($p) use ($type) {
-                if (!$p->birth_date) return false;
+                if (! $p->birth_date) {
+                    return false;
+                }
                 $age = $p->birth_date->age;
+
                 return match ($type) {
                     'lansia_age_pra' => $age >= 45 && $age <= 59,
                     'lansia_age_lansia' => $age >= 60 && $age <= 69,
@@ -233,10 +236,11 @@ class Analytics extends BaseAdminComponent
                 'name' => $p->full_name ?? '-',
                 'nik' => $p->id_number ?? '-',
                 'posyandu' => $p->posyandu?->name ?? '-',
-                'nutrition_status' => 'Umur: ' . $p->age . ' Tahun',
+                'nutrition_status' => 'Umur: '.$p->age.' Tahun',
                 'visit_date' => 'Terdaftar',
                 'patient_id' => $p->id,
             ])->values()->toArray();
+
             return;
         }
 
@@ -253,8 +257,11 @@ class Analytics extends BaseAdminComponent
             $records = $query->get()->unique('patient_id');
 
             $filteredRecords = $records->filter(function ($r) use ($type) {
-                if (!$r->weight || !$r->height) return false;
+                if (! $r->weight || ! $r->height) {
+                    return false;
+                }
                 $imt = $r->weight / (($r->height / 100) ** 2);
+
                 return match ($type) {
                     'lansia_imt_kurang' => $imt < 18.5,
                     'lansia_imt_normal' => $imt >= 18.5 && $imt < 25,
@@ -268,10 +275,11 @@ class Analytics extends BaseAdminComponent
                 'name' => $r->patient?->full_name ?? '-',
                 'nik' => $r->patient?->id_number ?? '-',
                 'posyandu' => $r->patient?->posyandu?->name ?? '-',
-                'nutrition_status' => 'IMT: ' . number_format($r->weight / (($r->height / 100) ** 2), 2),
+                'nutrition_status' => 'IMT: '.number_format($r->weight / (($r->height / 100) ** 2), 2),
                 'visit_date' => $r->visit_date?->format('d M Y') ?? '-',
                 'patient_id' => $r->patient_id,
             ])->values()->toArray();
+
             return;
         }
 
@@ -314,10 +322,10 @@ class Analytics extends BaseAdminComponent
             'nik' => $r->patient?->id_number ?? '-',
             'posyandu' => $r->patient?->posyandu?->name ?? '-',
             'nutrition_status' => match ($type) {
-                'lansia_hipertensi' => 'TD: ' . ($r->systolic_bp ?: '-') . '/' . ($r->diastolic_bp ?: '-') . ' mmHg',
-                'lansia_hiperglikemia' => 'GDS: ' . ($r->blood_sugar ?: '-') . ' mg/dL',
-                'lansia_hiperkolesterolemia' => 'Kolesterol: ' . ($r->cholesterol ?: '-') . ' mg/dL',
-                'lansia_hiperurisemia' => 'Asam Urat: ' . ($r->uric_acid ?: '-') . ' mg/dL',
+                'lansia_hipertensi' => 'TD: '.($r->systolic_bp ?: '-').'/'.($r->diastolic_bp ?: '-').' mmHg',
+                'lansia_hiperglikemia' => 'GDS: '.($r->blood_sugar ?: '-').' mg/dL',
+                'lansia_hiperkolesterolemia' => 'Kolesterol: '.($r->cholesterol ?: '-').' mg/dL',
+                'lansia_hiperurisemia' => 'Asam Urat: '.($r->uric_acid ?: '-').' mg/dL',
                 default => $r->nutrition_status ?? '-',
             },
             'visit_date' => $r->visit_date?->format('d M Y') ?? '-',

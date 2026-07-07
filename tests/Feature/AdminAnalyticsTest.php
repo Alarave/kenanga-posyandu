@@ -229,6 +229,3 @@ test('analytics component can drill down on lansia metabolic risks', function ()
         ->assertDontSee('Mbah Sugeng Hipertensi')
         ->assertSee('GDS: 250 mg/dL');
 });
-
-
-

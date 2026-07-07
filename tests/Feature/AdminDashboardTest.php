@@ -1,5 +1,6 @@
 <?php
- 
+
+use App\Livewire\Admin\AdminDashboard;
 use App\Models\MedicalRecord;
 use App\Models\Patient;
 use App\Models\Pedukuhan;
@@ -8,8 +9,7 @@ use App\Models\Schedule;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
-use App\Livewire\Admin\AdminDashboard;
- 
+
 uses(RefreshDatabase::class);
 
 test('admin dashboard displays correct statistics for superadmin', function () {
@@ -161,7 +161,7 @@ test('admin dashboard displays bumil trimester and lansia names', function () {
         'category' => 'ibu_hamil',
         'full_name' => 'Siti Aminah Ibu Hamil',
     ]);
-    
+
     // Create medical record with gestational age
     MedicalRecord::factory()->create([
         'patient_id' => $bumil->id,
@@ -224,5 +224,3 @@ test('admin dashboard allows selecting nutrition status and viewing balita list'
         ->assertSee('12.50 kg')
         ->assertSee('85.00 cm');
 });
-
-

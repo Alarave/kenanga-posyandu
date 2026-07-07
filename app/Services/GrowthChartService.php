@@ -19,7 +19,7 @@ class GrowthChartService
     public function getWeightForAgeData(Patient $patient): array
     {
         $gender = $this->normalizeGender($patient->gender);
-        
+
         $records = $patient->relationLoaded('medicalRecords')
             ? $patient->medicalRecords->sortBy('visit_date')->values()
             : $patient->medicalRecords()->reorder('visit_date', 'asc')->get();
@@ -71,7 +71,7 @@ class GrowthChartService
     public function getHeightForAgeData(Patient $patient): array
     {
         $gender = $this->normalizeGender($patient->gender);
-        
+
         $records = $patient->relationLoaded('medicalRecords')
             ? $patient->medicalRecords->where('height', '>', 0)->sortBy('visit_date')->values()
             : $patient->medicalRecords()->where('height', '>', 0)->reorder('visit_date', 'asc')->get();
