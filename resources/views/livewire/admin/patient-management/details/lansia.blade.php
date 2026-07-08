@@ -95,7 +95,27 @@
         <h4 class="text-sm font-black text-slate-800 uppercase tracking-widest">Pengukuran Posbindu Terakhir</h4>
     </div>
 
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+        {{-- Berat Badan --}}
+        <div class="p-6 rounded-3xl border border-slate-100 bg-slate-50/50 hover:bg-white hover:shadow-xl transition-all duration-300">
+            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Berat Badan</p>
+            @if(isset($lastRecord->weight) && $lastRecord->weight > 0)
+                <p class="text-xl font-black text-slate-800">{{ number_format($lastRecord->weight, 1) }} <span class="text-[10px] text-slate-400">kg</span></p>
+            @else
+                <p class="text-xl font-black text-slate-400">-</p>
+            @endif
+        </div>
+
+        {{-- Tinggi Badan --}}
+        <div class="p-6 rounded-3xl border border-slate-100 bg-slate-50/50 hover:bg-white hover:shadow-xl transition-all duration-300">
+            <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Tinggi Badan</p>
+            @if(isset($lastRecord->height) && $lastRecord->height > 0)
+                <p class="text-xl font-black text-slate-800">{{ number_format($lastRecord->height, 1) }} <span class="text-[10px] text-slate-400">cm</span></p>
+            @else
+                <p class="text-xl font-black text-slate-400">-</p>
+            @endif
+        </div>
+
         {{-- Blood Pressure --}}
         <div class="p-6 rounded-3xl border border-slate-100 bg-slate-50/50 hover:bg-white hover:shadow-xl transition-all duration-300">
             <p class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Tekanan Darah</p>
@@ -106,11 +126,14 @@
                     $isLowBp = $lastRecord->systolic_bp < 90 || $lastRecord->diastolic_bp < 60;
                 @endphp
                 @if($isHighBp)
-                    <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-red-50 text-red-600 border border-red-100">Hipertensi</span>
+                    <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-red-50 text-red-600 border border-red-100 cursor-help" title="Hipertensi jika Sistolik ≥ 140 atau Diastolik ≥ 90 mmHg (WHO/Kemenkes RI)">Hipertensi</span>
+                    <span class="block text-[8px] text-slate-400 mt-1.5 font-bold">≥ 140/90 mmHg = Hipertensi</span>
                 @elseif($isLowBp)
-                    <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-blue-50 text-blue-600 border border-blue-100">Hipotensi</span>
+                    <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-blue-50 text-blue-600 border border-blue-100 cursor-help" title="Hipotensi jika Sistolik < 90 atau Diastolik < 60 mmHg (WHO/Kemenkes RI)">Hipotensi</span>
+                    <span class="block text-[8px] text-slate-400 mt-1.5 font-bold">&lt; 90/60 mmHg = Hipotensi</span>
                 @else
-                    <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-600 border border-emerald-100">Normal</span>
+                    <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-600 border border-emerald-100 cursor-help" title="Normal jika Sistolik 90-139 dan Diastolik 60-89 mmHg (WHO/Kemenkes RI)">Normal</span>
+                    <span class="block text-[8px] text-slate-400 mt-1.5 font-bold">90-139/60-89 mmHg = Normal</span>
                 @endif
             @else
                 <p class="text-xl font-black text-slate-400">-</p>
@@ -123,11 +146,14 @@
             @if(isset($lastRecord->blood_sugar))
                 <p class="text-xl font-black text-slate-800">{{ $lastRecord->blood_sugar }} <span class="text-[10px] text-slate-400">mg/dL</span></p>
                 @if($lastRecord->blood_sugar >= 200)
-                    <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-red-50 text-red-600 border border-red-100">Tinggi</span>
+                    <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-red-50 text-red-600 border border-red-100 cursor-help" title="Tinggi jika Gula Darah Sewaktu ≥ 200 mg/dL (Diabetes Melitus - Kemenkes RI)">Tinggi</span>
+                    <span class="block text-[8px] text-slate-400 mt-1.5 font-bold">≥ 200 mg/dL = Tinggi</span>
                 @elseif($lastRecord->blood_sugar < 70)
-                    <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-blue-50 text-blue-600 border border-blue-100">Rendah</span>
+                    <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-blue-50 text-blue-600 border border-blue-100 cursor-help" title="Rendah jika Gula Darah Sewaktu < 70 mg/dL (Hipoglikemia - Kemenkes RI)">Rendah</span>
+                    <span class="block text-[8px] text-slate-400 mt-1.5 font-bold">&lt; 70 mg/dL = Rendah</span>
                 @else
-                    <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-600 border border-emerald-100">Normal</span>
+                    <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-600 border border-emerald-100 cursor-help" title="Normal jika Gula Darah Sewaktu 70-199 mg/dL (Kemenkes RI)">Normal</span>
+                    <span class="block text-[8px] text-slate-400 mt-1.5 font-bold">70-199 mg/dL = Normal</span>
                 @endif
             @else
                 <p class="text-xl font-black text-slate-400">-</p>
@@ -143,9 +169,19 @@
                     $isHighUric = ($patient->gender == 'L' || $patient->gender == 'M') ? ($lastRecord->uric_acid >= 7.0) : ($lastRecord->uric_acid >= 6.0);
                 @endphp
                 @if($isHighUric)
-                    <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-red-50 text-red-600 border border-red-100">Tinggi</span>
+                    <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-red-50 text-red-600 border border-red-100 cursor-help" title="Tinggi jika Asam Urat ≥ 7.0 mg/dL (Laki-laki) atau ≥ 6.0 mg/dL (Perempuan) (Kemenkes RI)">Tinggi</span>
+                    @if($patient->gender == 'L' || $patient->gender == 'M')
+                        <span class="block text-[8px] text-slate-400 mt-1.5 font-bold">≥ 7.0 mg/dL (L) = Tinggi</span>
+                    @else
+                        <span class="block text-[8px] text-slate-400 mt-1.5 font-bold">≥ 6.0 mg/dL (P) = Tinggi</span>
+                    @endif
                 @else
-                    <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-600 border border-emerald-100">Normal</span>
+                    <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-600 border border-emerald-100 cursor-help" title="Normal jika Asam Urat < 7.0 mg/dL (Laki-laki) atau < 6.0 mg/dL (Perempuan) (Kemenkes RI)">Normal</span>
+                    @if($patient->gender == 'L' || $patient->gender == 'M')
+                        <span class="block text-[8px] text-slate-400 mt-1.5 font-bold">&lt; 7.0 mg/dL (L) = Normal</span>
+                    @else
+                        <span class="block text-[8px] text-slate-400 mt-1.5 font-bold">&lt; 6.0 mg/dL (P) = Normal</span>
+                    @endif
                 @endif
             @else
                 <p class="text-xl font-black text-slate-400">-</p>
@@ -158,9 +194,11 @@
             @if(isset($lastRecord->cholesterol))
                 <p class="text-xl font-black text-slate-800">{{ $lastRecord->cholesterol }} <span class="text-[10px] text-slate-400">mg/dL</span></p>
                 @if($lastRecord->cholesterol >= 200)
-                    <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-red-50 text-red-600 border border-red-100">Tinggi</span>
+                    <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-red-50 text-red-600 border border-red-100 cursor-help" title="Tinggi jika Kolesterol Total ≥ 200 mg/dL (Kemenkes RI)">Tinggi</span>
+                    <span class="block text-[8px] text-slate-400 mt-1.5 font-bold">≥ 200 mg/dL = Tinggi</span>
                 @else
-                    <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-600 border border-emerald-100">Normal</span>
+                    <span class="inline-block mt-2 px-2.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-widest bg-emerald-50 text-emerald-600 border border-emerald-100 cursor-help" title="Normal jika Kolesterol Total < 200 mg/dL (Kemenkes RI)">Normal</span>
+                    <span class="block text-[8px] text-slate-400 mt-1.5 font-bold">&lt; 200 mg/dL = Normal</span>
                 @endif
             @else
                 <p class="text-xl font-black text-slate-400">-</p>
