@@ -67,6 +67,12 @@ class AdminDashboard extends BaseAdminComponent
 
     public array $balitasForSelectedStatus = [];
 
+    public bool $showMonthActivityModal = false;
+
+    public ?string $selectedMonthYear = null;
+
+    public array $activitiesForSelectedMonth = [];
+
     public $kelahiranBulanIni = 0;
 
     protected $listeners = [
@@ -512,15 +518,13 @@ class AdminDashboard extends BaseAdminComponent
         })->selectRaw("$dateFormat as month_year")->selectRaw('COUNT(*) as total')->groupByRaw($dateFormat)->get()->pluck('total', 'month_year');
         $labels = [];
         $data = [];
-        $periods = [];
         for ($i = 11; $i >= 0; $i--) {
             $carbon = now()->subMonths($i);
             $labels[] = $carbon->translatedFormat('M Y');
             $data[] = $trends->get($carbon->format('m Y'), 0);
-            $periods[] = $carbon->format('Y-m');
         }
 
-        return ['labels' => $labels, 'data' => $data, 'periods' => $periods];
+        return ['labels' => $labels, 'data' => $data];
     }
 
     protected function loadNamesForWidgets()
@@ -618,6 +622,63 @@ class AdminDashboard extends BaseAdminComponent
                 'visit_date' => Carbon::parse($record->visit_date)->translatedFormat('d M Y'),
             ];
         })->toArray();
+    }
+
+    public function selectMonthActivity(string $monthYear)
+    {
+        $this->selectedMonthYear = $monthYear;
+        $this->loadActivitiesForSelectedMonth();
+        $this->showMonthActivityModal = true;
+    }
+
+    protected function loadActivitiesForSelectedMonth()
+    {
+        if (! $this->selectedMonthYear) {
+            $this->activitiesForSelectedMonth = [];
+
+            return;
+        }
+
+        try {
+            $monthMap = [
+                'jan' => 1, 'peb' => 2, 'feb' => 2, 'mar' => 3, 'apr' => 4, 'mei' => 5, 'jun' => 6,
+                'jul' => 7, 'agu' => 8, 'sep' => 9, 'okt' => 10, 'nop' => 11, 'nov' => 11, 'des' => 12
+            ];
+
+            $parts = explode(' ', strtolower($this->selectedMonthYear));
+            $month = 1;
+            $year = (int) now()->format('Y');
+
+            if (count($parts) === 2) {
+                $monthStr = substr($parts[0], 0, 3);
+                $month = $monthMap[$monthStr] ?? 1;
+                $year = (int) $parts[1];
+            }
+
+            $medicalRecordQuery = $this->applyDashboardFilters(MedicalRecord::query(), 'medical_record')
+                ->whereMonth('visit_date', $month)
+                ->whereYear('visit_date', $year);
+
+            $records = $medicalRecordQuery
+                ->with(['patient', 'patient.posyandu'])
+                ->latest('visit_date')
+                ->limit(50)
+                ->get();
+
+            $this->activitiesForSelectedMonth = $records->map(function ($record) {
+                return [
+                    'id' => $record->patient->id,
+                    'patient_name' => $record->patient->full_name,
+                    'category' => ucfirst($record->patient->category === 'balita' ? 'Balita' : ($record->patient->category === 'ibu_hamil' ? 'Ibu Hamil' : 'Lansia')),
+                    'visit_date' => \Carbon\Carbon::parse($record->visit_date)->translatedFormat('d M Y'),
+                    'weight' => $record->weight,
+                    'height' => $record->height,
+                    'posyandu_name' => $record->patient->posyandu?->name ?? '-',
+                ];
+            })->toArray();
+        } catch (\Exception $e) {
+            $this->activitiesForSelectedMonth = [];
+        }
     }
 
     public function render()

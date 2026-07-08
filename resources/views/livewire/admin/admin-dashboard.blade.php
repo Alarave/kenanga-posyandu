@@ -1277,10 +1277,8 @@
                     onClick: (event, activeElements) => {
                         if (activeElements && activeElements.length > 0) {
                             const index = activeElements[0].index;
-                            const period = wd.periods[index];
-                            if (period) {
-                                window.location.href = `{{ route('admin.reports.index') }}?startPeriod=${period}&endPeriod=${period}`;
-                            }
+                            const label = wd.labels[index];
+                            $wire.selectMonthActivity(label);
                         }
                     },
                     plugins: {
@@ -1386,6 +1384,60 @@
                                     <td class="py-3 pl-4">{{ $balita['posyandu_name'] }}</td>
                                     <td class="py-3 text-right">
                                         <a href="{{ route('admin.patients.show', $balita['id']) }}" 
+                                           class="inline-flex w-7 h-7 items-center justify-center rounded-lg bg-slate-50 text-slate-400 hover:bg-indigo-500 hover:text-white transition-all">
+                                            <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
+        </x-modals.info-modal>
+    </div>
+
+    {{-- ── Daftar Pemeriksaan berdasarkan Bulan Modal ── --}}
+    <div x-data="{ open: @entangle('showMonthActivityModal') }">
+        <x-modals.info-modal title="Detail Aktivitas Pemeriksaan: {{ $selectedMonthYear }}" size="lg">
+            @if(empty($activitiesForSelectedMonth))
+                <div class="text-center py-6 text-slate-400">
+                    <span class="material-symbols-outlined text-[32px] mb-2 opacity-50">event_note</span>
+                    <p class="text-xs font-medium">Tidak ada pemeriksaan terdaftar pada bulan ini.</p>
+                </div>
+            @else
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-100 text-slate-400 text-[10px] font-bold uppercase tracking-wider">
+                                <th class="py-2.5">Nama Pasien</th>
+                                <th class="py-2.5">Kategori</th>
+                                <th class="py-2.5">Tanggal Kunjungan</th>
+                                <th class="py-2.5 text-right">BB / TB</th>
+                                <th class="py-2.5 pl-4">Posyandu</th>
+                                <th class="py-2.5 text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-xs text-slate-600">
+                            @foreach($activitiesForSelectedMonth as $activity)
+                                <tr>
+                                    <td class="py-3 font-semibold text-slate-800">{{ $activity['patient_name'] }}</td>
+                                    <td class="py-3">
+                                        <span class="px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-wider
+                                            @if($activity['category'] === 'Balita') bg-teal-50 text-teal-650 border border-teal-100
+                                            @elseif($activity['category'] === 'Ibu Hamil') bg-indigo-50 text-indigo-600 border border-indigo-100
+                                            @else bg-amber-50 text-amber-600 border border-amber-100
+                                            @endif">
+                                            {{ $activity['category'] }}
+                                        </span>
+                                    </td>
+                                    <td class="py-3 font-medium">{{ $activity['visit_date'] }}</td>
+                                    <td class="py-3 text-right font-medium text-slate-800">
+                                        {{ $activity['weight'] ?? '-' }} kg / {{ $activity['height'] ?? '-' }} cm
+                                    </td>
+                                    <td class="py-3 pl-4">{{ $activity['posyandu_name'] }}</td>
+                                    <td class="py-3 text-right">
+                                        <a href="{{ route('admin.patients.show', $activity['id']) }}" 
                                            class="inline-flex w-7 h-7 items-center justify-center rounded-lg bg-slate-50 text-slate-400 hover:bg-indigo-500 hover:text-white transition-all">
                                             <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
                                         </a>
