@@ -7,8 +7,10 @@ use App\Models\Article;
 use App\Models\Category;
 use App\Services\ArticleService;
 use Illuminate\View\View;
+use Livewire\Attributes\Layout;
 use Livewire\WithFileUploads;
 
+#[Layout('layouts.admin-layout')]
 class ArticleUpdate extends BaseAdminComponent
 {
     use WithFileUploads;
