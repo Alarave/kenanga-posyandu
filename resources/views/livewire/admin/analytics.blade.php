@@ -698,13 +698,13 @@
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
                                 <span class="material-symbols-outlined text-[20px]">search</span>
                             </span>
-                            <input type="text" wire:model.live.debounce.300ms="tableSearch" 
+                            <input type="text" wire:model.live.debounce.300ms="tableSearch" wire:key="search-balita"
                                    class="w-full pl-10 pr-4 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-teal-100 focus:border-teal-600 shadow-xs transition-all" 
                                    placeholder="Cari Nama atau NIK Anak...">
                         </div>
                         <div class="flex items-center gap-2 w-full sm:w-auto">
                             <span class="text-xs font-bold text-slate-650 whitespace-nowrap uppercase tracking-wider">Gender:</span>
-                            <select wire:model.live="filterGender" 
+                            <select wire:model.live="filterGender" wire:key="gender-balita"
                                     class="w-full sm:w-36 py-2 px-3 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-4 focus:ring-teal-100 focus:border-teal-600 shadow-xs transition-all">
                                 <option value="">Semua</option>
                                 <option value="L">Laki-laki</option>
@@ -790,7 +790,7 @@
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
                                 <span class="material-symbols-outlined text-[20px]">search</span>
                             </span>
-                            <input type="text" wire:model.live.debounce.300ms="tableSearch" 
+                            <input type="text" wire:model.live.debounce.300ms="tableSearch" wire:key="search-hamil"
                                    class="w-full pl-10 pr-4 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-teal-100 focus:border-teal-600 shadow-xs transition-all" 
                                    placeholder="Cari Nama atau NIK Ibu...">
                         </div>
@@ -863,13 +863,13 @@
                             <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
                                 <span class="material-symbols-outlined text-[20px]">search</span>
                             </span>
-                            <input type="text" wire:model.live.debounce.300ms="tableSearch" 
+                            <input type="text" wire:model.live.debounce.300ms="tableSearch" wire:key="search-lansia"
                                    class="w-full pl-10 pr-4 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-teal-100 focus:border-teal-600 shadow-xs transition-all" 
                                    placeholder="Cari Nama atau NIK Lansia...">
                         </div>
                         <div class="flex items-center gap-2 w-full sm:w-auto">
                             <span class="text-xs font-bold text-slate-650 whitespace-nowrap uppercase tracking-wider">Gender:</span>
-                            <select wire:model.live="filterGender" 
+                            <select wire:model.live="filterGender" wire:key="gender-lansia"
                                     class="w-full sm:w-36 py-2 px-3 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-4 focus:ring-teal-100 focus:border-teal-600 shadow-xs transition-all">
                                 <option value="">Semua</option>
                                 <option value="L">Laki-laki</option>

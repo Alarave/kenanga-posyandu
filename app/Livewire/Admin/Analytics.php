@@ -189,6 +189,7 @@ class Analytics extends BaseAdminComponent
     public function updatedActiveTab(): void
     {
         $this->tableSearch = '';
+        $this->filterGender = '';
         $this->drillDownData = [];
         $this->showDrillDown = false;
         $this->loadData();
