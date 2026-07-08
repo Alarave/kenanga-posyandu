@@ -48,7 +48,8 @@
             @if(auth()->user()->isSuperAdmin())
             <div class="flex-1 min-w-50">
                 <label class="block text-[10px] font-bold text-slate-450 uppercase tracking-widest ml-1 mb-2">Posyandu</label>
-                <x-forms.select-input wire:model.live="selectedPosyanduId" class="rounded-2xl! bg-slate-50/50! focus:bg-white! border-slate-100! shadow-inner-sm transition-all focus:border-teal-500!" value="{{ $selectedPosyanduId }}">
+                <x-forms.select-input wire:model.live="selectedPosyanduId" class="rounded-2xl! bg-slate-50/50! focus:bg-white! border-slate-100! shadow-inner-sm transition-all focus:border-teal-500!">
+                    <option value="">Semua Posyandu</option>
                     @foreach($posyandus as $pos)
                         <option value="{{ $pos->id }}">{{ $pos->name }}</option>
                     @endforeach
@@ -56,11 +57,35 @@
             </div>
             @endif
 
-            {{-- Pilih Bulan --}}
+            {{-- Tanggal Mulai --}}
             <div class="flex-1 min-w-35">
-                <label class="block text-[10px] font-bold text-slate-450 uppercase tracking-widest ml-1 mb-2">Bulan Laporan</label>
-                <input type="month" wire:model.live="selectedMonth" class="w-full h-12 px-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50 text-sm font-semibold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-0 transition-all">
+                <label class="block text-[10px] font-bold text-slate-450 uppercase tracking-widest ml-1 mb-2">Periode Mulai</label>
+                <input type="month" wire:model.live="startPeriod" class="w-full h-12 px-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50 text-sm font-semibold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-0 transition-all">
             </div>
+
+            {{-- Divider --}}
+            <div class="hidden md:flex items-center justify-center w-6 h-12 pb-2">
+                <span class="material-symbols-outlined text-slate-300">arrow_right_alt</span>
+            </div>
+
+            {{-- Tanggal Akhir --}}
+            <div class="flex-1 min-w-35">
+                <label class="block text-[10px] font-bold text-slate-450 uppercase tracking-widest ml-1 mb-2">Periode Selesai</label>
+                <input type="month" wire:model.live="endPeriod" class="w-full h-12 px-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50 text-sm font-semibold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-0 transition-all">
+            </div>
+
+            {{-- Tombol Tampilkan --}}
+            <button wire:click="generateReport"
+                    wire:loading.attr="disabled"
+                    class="h-12 px-8 bg-linear-to-r from-teal-600 to-emerald-500 text-white rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2 shadow-[0_8px_16px_-6px_rgba(13,148,136,0.4)]">
+                <span wire:loading.remove wire:target="generateReport" class="material-symbols-outlined text-[18px]">magic_button</span>
+                <svg wire:loading wire:target="generateReport" class="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                </svg>
+                <span wire:loading.remove wire:target="generateReport">Analisis</span>
+                <span wire:loading wire:target="generateReport">Proses...</span>
+            </button>
         </div>
     </section>
 
@@ -184,27 +209,49 @@
         </div>
 
         {{-- Search & Sort Section --}}
-        <div class="px-6 lg:px-8 py-5 border-b border-slate-100 flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white">
-            <div class="flex flex-col md:flex-row md:items-center gap-4 w-full md:w-auto">
+        <div class="px-6 lg:px-8 py-5 border-b border-slate-100 flex flex-col gap-4 bg-white">
+            <div class="flex flex-col md:flex-row md:items-center gap-4">
                 {{-- Search Input --}}
-                <div class="relative w-full md:w-80 shrink-0 group">
+                <div class="relative flex-1 max-w-md group">
                     <div class="absolute inset-y-0 left-0 w-10 flex items-center justify-center pointer-events-none">
                         <span class="material-symbols-outlined text-slate-350 group-focus-within:text-teal-500 transition-colors text-[20px]">search</span>
                     </div>
                     <input type="text" wire:model.live.debounce.300ms="search" 
                            placeholder="Cari Nama/NIK..."
-                           class="w-full pl-10 pr-4 h-10 rounded-xl border-2 border-slate-100 bg-slate-50/50 text-[13px] font-semibold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-0 transition-all shadow-sm">
+                           class="w-full pl-10 pr-4 h-11 rounded-2xl border-2 border-slate-100 bg-slate-50/50 text-[13px] font-semibold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-0 transition-all shadow-sm">
                 </div>
 
-                {{-- Category Filter --}}
-                <div class="flex items-center gap-2 w-full md:w-56">
-                    <span class="text-[10px] font-black text-slate-450 uppercase tracking-widest whitespace-nowrap shrink-0">Kategori:</span>
-                    <x-forms.select-input wire:model.live="categoryFilter" class="h-10 rounded-xl! bg-slate-50/50! focus:bg-white! border-slate-100! shadow-sm transition-all focus:border-teal-500!">
-                        <option value="all">Semua Kategori</option>
+                {{-- Filter Bulan --}}
+                <div class="w-full md:w-48">
+                    <select wire:model.live="filterMonth" 
+                            class="w-full h-11 px-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50 text-[13px] font-semibold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-0 transition-all shadow-sm">
+                        <option value="">Semua Bulan</option>
+                        <option value="1">Januari</option>
+                        <option value="2">Februari</option>
+                        <option value="3">Maret</option>
+                        <option value="4">April</option>
+                        <option value="5">Mei</option>
+                        <option value="6">Juni</option>
+                        <option value="7">Juli</option>
+                        <option value="8">Agustus</option>
+                        <option value="9">September</option>
+                        <option value="10">Oktober</option>
+                        <option value="11">November</option>
+                        <option value="12">Desember</option>
+                    </select>
+                </div>
+
+                {{-- Filter Kategori --}}
+                <div class="w-full md:w-48">
+                    <select wire:model.live="filterCategory" 
+                            class="w-full h-11 px-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50 text-[13px] font-semibold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-0 transition-all shadow-sm">
+                        <option value="">Semua Kategori</option>
                         <option value="balita">Balita</option>
                         <option value="ibu_hamil">Ibu Hamil</option>
                         <option value="lansia">Lansia</option>
-                    </x-forms.select-input>
+                        <option value="remaja">Remaja</option>
+                        <option value="umum">Umum</option>
+                    </select>
                 </div>
             </div>
 
@@ -297,7 +344,14 @@
                                 @endif
                                 <div>
                                     <div class="font-bold text-sm text-slate-800">{{ $record->patient->full_name ?? '-' }}</div>
-                                    <div class="text-[11px] font-medium text-outline font-mono mt-0.5">{{ $record->patient->id_number ?? '' }}</div>
+                                    <div class="flex items-center gap-2 mt-0.5">
+                                        <span class="text-[11px] font-medium text-outline font-mono">{{ $record->patient->id_number ?? '' }}</span>
+                                        @if(auth()->user()->isSuperAdmin() && !$selectedPosyanduId)
+                                            <span class="inline-flex items-center px-1.5 py-0.5 rounded bg-slate-100 text-slate-500 text-[9px] font-bold border border-slate-200">
+                                                {{ $record->patient->posyandu->name ?? '-' }}
+                                            </span>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
                         </td>
@@ -394,10 +448,7 @@
                             </div>
                         </td>
                         <td class="px-8 py-5 text-center">
-                            @php
-                                [$y, $m] = explode('-', $selectedMonth);
-                            @endphp
-                            <a href="{{ route('admin.reports.individual', ['patient' => $record->patient_id, 'start_month' => (int)$m, 'start_year' => (int)$y, 'end_month' => (int)$m, 'end_year' => (int)$y]) }}"
+                            <a href="{{ route('admin.reports.individual', ['patient' => $record->patient_id, 'start_month' => $startMonth, 'start_year' => $startYear, 'end_month' => $endMonth, 'end_year' => $endYear]) }}"
                                class="inline-flex items-center justify-center rounded-xl bg-white border border-slate-200 shadow-sm px-4 py-2.5 text-xs font-black text-slate-650 hover:bg-teal-50 hover:text-teal-700 hover:border-teal-300 active:scale-95 transition-all">
                                 <span class="material-symbols-outlined text-[18px]">assignment_ind</span>
                                 <span class="ml-1.5">Rapor</span>
