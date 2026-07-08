@@ -9,13 +9,13 @@ class GallerySeeder extends Seeder
 {
     public function run()
     {
-        DB::table('galleries')->insert([
+        $items = [
             [
                 'posyandu_id' => 1,
                 'user_id' => 2,
                 'title' => 'Kegiatan Posyandu Januari',
                 'description' => 'Foto-foto kegiatan posyandu bulan Januari',
-                'photo' => 'kegiatan-januari.jpg',
+                'photo' => 'galleries/mPS2Z5BOZn32qMXbUY3oi1O4ronv0aK98iGaQpya.jpg',
                 'type' => 'activity',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -25,7 +25,7 @@ class GallerySeeder extends Seeder
                 'user_id' => 2,
                 'title' => 'Imunisasi Campak',
                 'description' => 'Foto kegiatan imunisasi campak',
-                'photo' => 'imunisasi-campak.jpg',
+                'photo' => 'galleries/6q7QMwvCsyIMMyfH2JmFJf6quPU0sebiGylimEps.jpg',
                 'type' => 'immunization',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -35,11 +35,18 @@ class GallerySeeder extends Seeder
                 'user_id' => 2,
                 'title' => 'Penyuluhan Gizi',
                 'description' => 'Foto kegiatan penyuluhan gizi',
-                'photo' => 'penyuluhan-gizi.jpg',
+                'photo' => 'galleries/LgezeX9kJO8zfJBRGJ0Kw9Tj06bPcmUeGQUpjM9P.jpg',
                 'type' => 'education',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
-        ]);
+        ];
+
+        foreach ($items as $item) {
+            DB::table('galleries')->updateOrInsert(
+                ['title' => $item['title']],
+                $item
+            );
+        }
     }
 }

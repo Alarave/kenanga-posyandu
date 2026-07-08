@@ -38,7 +38,7 @@ class ArticleSeeder extends Seeder
                         'category_id' => $category->id,
                         'title' => 'Menjaga Kesehatan Ibu dan Anak: Peran Posyandu dalam Masyarakat',
                         'content' => '<p>Pelayanan rutin Posyandu terus ditingkatkan untuk memastikan tumbuh kembang anak yang optimal dan kesehatan ibu yang terjaga. Melalui berbagai program seperti imunisasi, pemberian vitamin, dan edukasi gizi, Posyandu menjadi garda terdepan dalam menciptakan generasi yang sehat dan kuat.</p><p>Pemeriksaan rutin setiap bulan sangat penting untuk memantau perkembangan berat badan dan tinggi badan anak, serta memberikan konseling gizi kepada para ibu.</p>',
-                        'thumbnail' => null,
+                        'thumbnail' => 'articles/cjO1PxvTnYe5nUw60kppvNEM3PAgF1lNfKHQ99uk.jpg',
                         'status' => 'published',
                         'published_at' => now(),
                     ]
@@ -53,7 +53,7 @@ class ArticleSeeder extends Seeder
                         'category_id' => $category->id,
                         'title' => 'Menu Sehat Pendamping ASI (MPASI) Terbaik',
                         'content' => '<p>Panduan gizi penting selama masa kehamilan agar ibu dan janin tetap sehat dan bertenaga sepanjang hari. MPASI yang sehat harus mengandung nutrisi makro dan mikro yang seimbang, mulai dari karbohidrat, protein hewani, hingga lemak sehat.</p>',
-                        'thumbnail' => null,
+                        'thumbnail' => 'articles/56NlMAq3aBI0X7J1RwW2grVVnZKAMa89XZCK6KZT.jpg',
                         'status' => 'published',
                         'published_at' => now()->subDays(1),
                     ]
@@ -68,7 +68,7 @@ class ArticleSeeder extends Seeder
                         'category_id' => $category->id,
                         'title' => 'Pentingnya Imunisasi Dasar Lengkap',
                         'content' => '<p>Imunisasi adalah cara terbaik untuk melindungi anak dari berbagai penyakit berbahaya yang dapat dicegah. Pastikan anak Anda mendapatkan jadwal imunisasi yang lengkap sesuai anjuran tenaga kesehatan di Posyandu terdekat.</p>',
-                        'thumbnail' => null,
+                        'thumbnail' => 'articles/CvanpYGFdbmSG9iY3DNrm38RFh1khVD64unx1VrW.jpg',
                         'status' => 'published',
                         'published_at' => now()->subDays(2),
                     ]
@@ -85,7 +85,7 @@ class ArticleSeeder extends Seeder
                     'category_id' => Category::inRandomOrder()->first()->id,
                     'title' => 'Tips Kesehatan Keluarga Bagian '.($i + 1),
                     'content' => '<p>Ini adalah artikel edukasi kesehatan untuk memberikan wawasan lebih mendalam tentang pola hidup sehat di lingkungan keluarga.</p>',
-                    'thumbnail' => null,
+                    'thumbnail' => 'articles/FkioJITwfL0Cw2MdZzk0CcJ52MdOwTiuZSoKRXCs.jpg',
                     'status' => 'published',
                     'published_at' => now()->subDays($i + 3),
                 ]

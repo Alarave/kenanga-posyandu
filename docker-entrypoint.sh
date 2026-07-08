@@ -49,6 +49,7 @@ php artisan storage:link
 echo "==> Running database migrations..."
 php artisan migrate --force
 php artisan db:seed --class=ArticleSeeder --force
+php artisan db:seed --class=GallerySeeder --force
 
 # ── 4. Start Apache ──────────────────────────────────────────────────────────
 echo "==> Starting Apache on port $PORT..."
