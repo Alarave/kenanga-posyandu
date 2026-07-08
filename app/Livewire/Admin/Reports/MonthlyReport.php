@@ -13,17 +13,7 @@ use Illuminate\Support\Facades\Log;
 
 class MonthlyReport extends BaseAdminComponent
 {
-    public int $startMonth;
-
-    public int $startYear;
-
-    public int $endMonth;
-
-    public int $endYear;
-
-    public string $startPeriod;
-
-    public string $endPeriod;
+    public string $selectedMonth;
 
     public ?int $selectedPosyanduId = null;
 
@@ -49,13 +39,7 @@ class MonthlyReport extends BaseAdminComponent
     public function mount(): void
     {
         $now = now();
-        $this->endMonth = (int) $now->month;
-        $this->endYear = (int) $now->year;
-
-        // Default ke 6 bulan sebelumnya
-        $sixMonthsAgo = $now->subMonths(6);
-        $this->startMonth = (int) $sixMonthsAgo->month;
-        $this->startYear = (int) $sixMonthsAgo->year;
+        $this->selectedMonth = $now->format('Y-m');
 
         $user = Auth::user();
         if ($user->isSuperAdmin()) {
@@ -64,29 +48,20 @@ class MonthlyReport extends BaseAdminComponent
             $this->selectedPosyanduId = $user->posyandu_id;
         }
 
-        $this->startPeriod = sprintf('%04d-%02d', $this->startYear, $this->startMonth);
-        $this->endPeriod = sprintf('%04d-%02d', $this->endYear, $this->endMonth);
-
         $this->reportGenerated = true;
         $this->loadStats();
     }
 
-    public function updatedStartPeriod($value)
+    public function updatedSelectedMonth(): void
     {
-        if ($value) {
-            [$year, $month] = explode('-', $value);
-            $this->startYear = (int) $year;
-            $this->startMonth = (int) $month;
-        }
+        $this->resetPage();
+        $this->loadStats();
     }
 
-    public function updatedEndPeriod($value)
+    public function updatedSelectedPosyanduId(): void
     {
-        if ($value) {
-            [$year, $month] = explode('-', $value);
-            $this->endYear = (int) $year;
-            $this->endMonth = (int) $month;
-        }
+        $this->resetPage();
+        $this->loadStats();
     }
 
     public function updatedCategoryFilter(): void
@@ -104,17 +79,19 @@ class MonthlyReport extends BaseAdminComponent
     protected function loadStats(): void
     {
         $posyanduId = $this->getEffectivePosyanduId();
-        if (! $posyanduId) {
+        if (! $posyanduId || empty($this->selectedMonth)) {
             return;
         }
 
-        // Gunakan applyPosyanduScope (disesuaikan untuk spesifik Posyandu ID yang dipilih)
+        [$year, $month] = explode('-', $this->selectedMonth);
+        $year = (int) $year;
+        $month = (int) $month;
+
+        $startDate = sprintf('%04d-%02d-01', $year, $month);
+        $endDate = date('Y-m-t', strtotime($startDate));
+
         $basePatientQuery = Patient::where('posyandu_id', $posyanduId);
         $baseRecordQuery = MedicalRecord::whereHas('patient', fn ($q) => $q->where('posyandu_id', $posyanduId));
-
-        // Get date range
-        $startDate = sprintf('%04d-%02d-01', $this->startYear, $this->startMonth);
-        $endDate = date('Y-m-t', strtotime(sprintf('%04d-%02d-01', $this->endYear, $this->endMonth)));
 
         $this->totalKunjungan = (clone $baseRecordQuery)
             ->whereBetween('visit_date', [$startDate, $endDate])
@@ -150,13 +127,17 @@ class MonthlyReport extends BaseAdminComponent
     public function exportExcel(ReportService $reportService, ActivityLogService $activityLogService): void
     {
         $posyanduId = $this->getEffectivePosyanduId();
-        if (! $posyanduId) {
+        if (! $posyanduId || empty($this->selectedMonth)) {
             return;
         }
 
         try {
+            [$year, $month] = explode('-', $this->selectedMonth);
+            $year = (int) $year;
+            $month = (int) $month;
+
             $posyandu = Posyandu::findOrFail($posyanduId);
-            $reportData = $reportService->generateMonthlyReport($posyanduId, $this->endMonth, $this->endYear);
+            $reportData = $reportService->generateMonthlyReport($posyanduId, $month, $year);
             $filePath = $reportService->exportToExcel($reportData, $posyandu->name);
 
             $activityLogService->log(
@@ -177,13 +158,17 @@ class MonthlyReport extends BaseAdminComponent
     public function exportPdf(ReportService $reportService, ActivityLogService $activityLogService)
     {
         $posyanduId = $this->getEffectivePosyanduId();
-        if (! $posyanduId) {
+        if (! $posyanduId || empty($this->selectedMonth)) {
             return;
         }
 
         try {
+            [$year, $month] = explode('-', $this->selectedMonth);
+            $year = (int) $year;
+            $month = (int) $month;
+
             $posyandu = Posyandu::findOrFail($posyanduId);
-            $reportData = $reportService->generateMonthlyReport($posyanduId, $this->endMonth, $this->endYear);
+            $reportData = $reportService->generateMonthlyReport($posyanduId, $month, $year);
             $filePath = $reportService->exportToPdf($reportData, $posyandu->name);
 
             $activityLogService->log(
@@ -212,7 +197,10 @@ class MonthlyReport extends BaseAdminComponent
 
     public function getMonthNameProperty(?int $month = null): string
     {
-        $month = $month ?? $this->endMonth;
+        if (!$month && !empty($this->selectedMonth)) {
+            [, $month] = explode('-', $this->selectedMonth);
+            $month = (int) $month;
+        }
         $months = [
             1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
             5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
@@ -235,9 +223,13 @@ class MonthlyReport extends BaseAdminComponent
         $records = collect();
         $total = 0;
 
-        if ($this->reportGenerated && $posyanduId) {
-            $startDate = sprintf('%04d-%02d-01', $this->startYear, $this->startMonth);
-            $endDate = date('Y-m-t', strtotime(sprintf('%04d-%02d-01', $this->endYear, $this->endMonth)));
+        if ($this->reportGenerated && $posyanduId && !empty($this->selectedMonth)) {
+            [$year, $month] = explode('-', $this->selectedMonth);
+            $year = (int) $year;
+            $month = (int) $month;
+
+            $startDate = sprintf('%04d-%02d-01', $year, $month);
+            $endDate = date('Y-m-t', strtotime($startDate));
 
             $query = MedicalRecord::with(['patient', 'user'])
                 ->whereHas('patient', fn ($q) => $q->where('posyandu_id', $posyanduId))
@@ -274,10 +266,8 @@ class MonthlyReport extends BaseAdminComponent
             $records = $query->paginate(10);
         }
 
-        $periodLabel = $this->getMonthNameProperty($this->startMonth).' '.$this->startYear;
-        if ($this->startMonth !== $this->endMonth || $this->startYear !== $this->endYear) {
-            $periodLabel .= ' - '.$this->getMonthNameProperty($this->endMonth).' '.$this->endYear;
-        }
+        [$year, ] = explode('-', $this->selectedMonth);
+        $periodLabel = $this->getMonthNameProperty().' '.$year;
 
         return view('livewire.admin.reports.monthly-report', [
             'records' => $records,
