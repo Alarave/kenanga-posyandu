@@ -11,9 +11,9 @@ use Illuminate\Support\Facades\Log;
  */
 class WhatsAppService
 {
-    protected string $token;
+    protected ?string $token = null;
 
-    protected string $baseUrl;
+    protected ?string $baseUrl = null;
 
     public function __construct()
     {
