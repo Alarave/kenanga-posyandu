@@ -90,7 +90,7 @@
         <div class="relative flex-1 w-full group">
             <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-teal-600 transition-colors pointer-events-none"
                 style="font-variation-settings: 'wght' 300;">search</span>
-            <input type="text" wire:model.live.debounce.300ms="search"
+            <input type="text" wire:model.live.debounce.300ms="search" wire:key="search-input-posyandu"
                 placeholder="Cari nama posyandu, kode, atau alamat..."
                 class="w-full h-12 pl-12 pr-4 bg-slate-50 border border-slate-200 rounded-[1.5rem] text-sm font-semibold text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-4 focus:ring-teal-50 focus:border-teal-600 transition-all shadow-xs">
         </div>

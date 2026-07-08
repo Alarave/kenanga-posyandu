@@ -80,7 +80,7 @@
         {{-- Search Input --}}
         <div class="relative flex-1 w-full group">
             <span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-teal-600 transition-colors text-[20px]">search</span>
-            <input type="text" wire:model.live.debounce.300ms="search"
+            <input type="text" wire:model.live.debounce.300ms="search" wire:key="search-input-article"
                   placeholder="Cari judul, kategori, atau penulis..."
                   class="w-full h-12 pl-12 pr-6 bg-slate-50 border-none rounded-2xl text-sm font-bold text-slate-900 placeholder:text-slate-400 focus:ring-4 focus:ring-teal-500/10 transition-all">
         </div>

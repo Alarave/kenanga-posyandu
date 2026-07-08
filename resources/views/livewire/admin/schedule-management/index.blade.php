@@ -140,7 +140,7 @@
         <div class="relative w-full lg:flex-grow min-w-0 lg:min-w-[280px] group">
             <span
                 class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-teal-600 transition-colors pointer-events-none text-[20px]">search</span>
-            <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari agenda atau lokasi..."
+            <input type="text" wire:model.live.debounce.300ms="search" wire:key="search-input-schedule" placeholder="Cari agenda atau lokasi..."
                 class="search-input-premium w-full">
         </div>
 

@@ -68,7 +68,7 @@
             <div class="flex-1 min-w-[280px] relative group">
                 <span
                     class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-teal-600 transition-colors pointer-events-none">search</span>
-                <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari nama atau email..."
+                <input type="text" wire:model.live.debounce.300ms="search" wire:key="search-input-user" placeholder="Cari nama atau email..."
                     class="search-input-premium w-full">
             </div>
 
