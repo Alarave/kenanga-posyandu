@@ -1274,6 +1274,15 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     animation: { duration: 1000, easing: 'easeOutQuart' },
+                    onClick: (event, activeElements) => {
+                        if (activeElements && activeElements.length > 0) {
+                            const index = activeElements[0].index;
+                            const period = wd.periods[index];
+                            if (period) {
+                                window.location.href = `{{ route('admin.reports.index') }}?startPeriod=${period}&endPeriod=${period}`;
+                            }
+                        }
+                    },
                     plugins: {
                         legend: { display: false },
                         tooltip: {
