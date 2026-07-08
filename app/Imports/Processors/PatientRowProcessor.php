@@ -178,6 +178,8 @@ class PatientRowProcessor
 
         if ($existing) {
             $updateData = [
+                'posyandu_id' => $this->posyanduId, // Update posyandu_id to currently selected posyandu
+                'full_name' => $nama ?: $existing->full_name, // Update name if present
                 'parent_name' => $namaOrtu ?: $existing->parent_name,
                 'address' => $fullAddress ?: $existing->address,
                 'gender' => $gender ?? $existing->gender,
@@ -258,8 +260,8 @@ class PatientRowProcessor
         ?Carbon $birthDate
     ): ?Patient {
         if ($hasValidNik) {
+            // NIK is database-wide unique, so check system-wide to avoid duplicate key errors
             $found = Patient::where('id_number_hash', Patient::generateBlindIndex($nikClean))
-                ->where('posyandu_id', $this->posyanduId)
                 ->first();
             if ($found) {
                 return $found;
@@ -267,13 +269,34 @@ class PatientRowProcessor
         }
 
         if ($birthDate instanceof Carbon) {
-            return Patient::where('full_name', $nama)
+            // Try exact name match first
+            $found = Patient::where('full_name', $nama)
                 ->where('birth_date', $birthDate->format('Y-m-d'))
                 ->where('posyandu_id', $this->posyanduId)
                 ->first();
+            if ($found) {
+                return $found;
+            }
+
+            // Fallback: try normalized name comparison to match spelling variations (e.g. trailing dots, casing, spaces)
+            $normalizedNamaInput = $this->normalizeName($nama);
+            $candidates = Patient::where('birth_date', $birthDate->format('Y-m-d'))
+                ->where('posyandu_id', $this->posyanduId)
+                ->get();
+            foreach ($candidates as $cand) {
+                if ($this->normalizeName($cand->full_name) === $normalizedNamaInput) {
+                    return $cand;
+                }
+            }
         }
 
         return null;
+    }
+
+    private function normalizeName(string $name): string
+    {
+        $name = strtolower($name);
+        return preg_replace('/[^a-z0-9]/', '', $name); // Keep only alphanumeric
     }
 
     // ── Medical record ────────────────────────────────────────────────
@@ -295,14 +318,6 @@ class PatientRowProcessor
             $visitDate = now();
         }
 
-        $alreadyExists = MedicalRecord::where('patient_id', $patient->id)
-            ->where('visit_date', $visitDate->format('Y-m-d'))
-            ->exists();
-
-        if ($alreadyExists) {
-            return;
-        }
-
         $weightVal = $this->parseDecimal($berat);
         $heightVal = $this->parseDecimal($tinggi);
         $lkVal = $this->parseDecimal($lingkarKepala);
@@ -310,21 +325,39 @@ class PatientRowProcessor
 
         [$zScore, $nutritionStatus] = $this->calcNutrition($weightVal, $heightVal, $birthDate, $visitDate, $gender);
 
-        MedicalRecord::create([
-            'patient_id' => $patient->id,
-            'user_id' => $this->userId,
-            'visit_date' => $visitDate->format('Y-m-d'),
-            'weight' => $weightVal,
-            'height' => $heightVal,
-            'head_circumference' => $lkVal,
-            'immunization' => $imunisasi,
-            'vitamin_a' => $vitaminA,
-            'pill_fe' => false,
-            'z_score' => $zScore,
-            'nutrition_status' => $nutritionStatus,
-            'complaint' => '—',
-            'diagnosis' => 'Sehat',
-        ]);
+        $existingRecord = MedicalRecord::where('patient_id', $patient->id)
+            ->where('visit_date', $visitDate->format('Y-m-d'))
+            ->first();
+
+        if ($existingRecord) {
+            // Update the existing medical record with new values instead of skipping
+            $existingRecord->update([
+                'weight' => $weightVal ?? $existingRecord->weight,
+                'height' => $heightVal ?? $existingRecord->height,
+                'head_circumference' => $lkVal ?? $existingRecord->head_circumference,
+                'immunization' => $imunisasi ?: $existingRecord->immunization,
+                'vitamin_a' => $vitaminA,
+                'z_score' => $zScore ?? $existingRecord->z_score,
+                'nutrition_status' => $nutritionStatus ?? $existingRecord->nutrition_status,
+            ]);
+        } else {
+            // Create a new medical record
+            MedicalRecord::create([
+                'patient_id' => $patient->id,
+                'user_id' => $this->userId,
+                'visit_date' => $visitDate->format('Y-m-d'),
+                'weight' => $weightVal,
+                'height' => $heightVal,
+                'head_circumference' => $lkVal,
+                'immunization' => $imunisasi,
+                'vitamin_a' => $vitaminA,
+                'pill_fe' => false,
+                'z_score' => $zScore,
+                'nutrition_status' => $nutritionStatus,
+                'complaint' => '—',
+                'diagnosis' => 'Sehat',
+            ]);
+        }
 
         $this->recordsImported++;
     }

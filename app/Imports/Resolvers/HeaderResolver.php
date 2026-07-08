@@ -17,14 +17,14 @@ class HeaderResolver
      * @var array<string, list<string>>
      */
     private const ALIASES = [
-        'nama_anak' => ['nama', 'full_name', 'nama_lengkap'],
+        'nama_anak' => ['nama', 'full_name', 'nama_lengkap', 'nama_balita', 'nama_bayi', 'nama_anak'],
         'nik' => ['nomor_nik', 'no_nik', 'nik_balita', 'nomor_induk_kependudukan', 'id_number', 'nik_16_digit'],
         'tgl_lahir' => ['tanggal_lahir', 'birth_date', 'tgl_lahir_anak'],
-        'jk' => ['jenis_kelamin', 'gender', 'kelamin'],
+        'jk' => ['jenis_kelamin', 'gender', 'kelamin', 'l_p', 'lp'],
         'nm_ortu' => ['nama_ortu', 'parent_name', 'orang_tua', 'nama_orang_tua'],
         'tanggal_ukur' => ['tgl_ukur', 'tanggalukur', 'tanggal_periksa', 'tgl_periksa'],
-        'berat' => ['berat_badan', 'bb', 'weight'],
-        'tinggi' => ['tinggi_badan', 'tb', 'height', 'panjang'],
+        'berat' => ['berat_badan', 'bb', 'weight', 'bb_kg', 'bb_dalam_kg'],
+        'tinggi' => ['tinggi_badan', 'tb', 'height', 'panjang', 'tb_cm', 'tb_dalam_cm'],
         'lingkar_kepala' => ['lk', 'head_circumference', 'lingkarkepala'],
         'vitamin' => ['vitamin_a', 'vita', 'vit_a'],
         'imunisasi' => ['immunization', 'vaksin'],
@@ -36,6 +36,7 @@ class HeaderResolver
         'phone_number' => ['phone_number', 'no_telp', 'no_hp', 'whatsapp', 'telepon', 'telp'],
         'rt_domisili' => ['rt_domisili', 'rt', 'rt_dom'],
         'dusun_rt_rw' => ['dusun_rt_rw', 'rw', 'dusun', 'rw_domisili', 'rw_dom'],
+        'rt_rw' => ['rt_rw', 'rt/rw', 'rtrw'],
         'historical_diseases' => ['historical_diseases', 'riwayat_penyakit', 'penyakit', 'riwayat_kesehatan'],
         'is_pregnant' => ['is_pregnant', 'apakah_hamil', 'hamil', 'status_kehamilan'],
     ];
