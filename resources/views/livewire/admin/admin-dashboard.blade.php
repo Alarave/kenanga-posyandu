@@ -1318,7 +1318,9 @@
                             ticks: {
                                 font: { family: '\'Public Sans\', sans-serif', size: 12 },
                                 color: '#94a3b8',
-                                padding: 8
+                                padding: 8,
+                                precision: 0,
+                                stepSize: 1
                             }
                         },
                         x: {
