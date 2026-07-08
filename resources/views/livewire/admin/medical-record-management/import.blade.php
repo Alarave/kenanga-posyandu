@@ -182,7 +182,7 @@
                 <div>
                     <p class="text-base font-black text-slate-800">Kategori Balita</p>
                     <p class="text-xs font-bold text-slate-500 mt-2 leading-relaxed">
-                        Wajib mengisi Nama Anak, Tanggal Lahir, Jenis Kelamin (L/P), dan Nama Orang Tua (nm_ortu/ayah/ibu). Bisa mengimpor hasil timbangan langsung: Berat, Tinggi, LILA, Lingkar Kepala, dan Imunisasi.
+                        Wajib mengisi Nama Anak, Tanggal Lahir, Jenis Kelamin (L/P), dan Nama Orang Tua (nm_ortu/ayah/ibu). Bisa mengimpor hasil timbangan langsung: Berat, Tinggi, Lingkar Kepala, Vitamin A (Ya/Tidak), dan Imunisasi.
                     </p>
                 </div>
             </div>
@@ -195,7 +195,7 @@
                 <div>
                     <p class="text-base font-black text-slate-800">Kategori Ibu Hamil</p>
                     <p class="text-xs font-bold text-slate-500 mt-2 leading-relaxed">
-                        Wajib mengisi Nama, Tanggal Lahir, Jenis Kelamin (P), Nama Suami, dan Apakah Hamil (Ya/Tidak). Bisa mencatat pemeriksaan klinis: Berat, Tinggi, dan LILA.
+                        Wajib mengisi Nama, Tanggal Lahir, Jenis Kelamin (P), Nama Suami, dan Apakah Hamil (Ya/Tidak). Bisa mencatat pemeriksaan klinis: Berat, Tinggi, dan Lingkar Lengan Atas (LILA).
                     </p>
                 </div>
             </div>
@@ -219,9 +219,9 @@
                     <span class="material-symbols-outlined text-[24px]">info</span>
                 </div>
                 <div>
-                    <p class="text-base font-black text-slate-800">Format Tanggal & NIK</p>
+                    <p class="text-base font-black text-slate-800">Format Tanggal &amp; NIK</p>
                     <p class="text-xs font-bold text-slate-500 mt-2 leading-relaxed">
-                        - Tanggal Lahir/Ukur: Gunakan format `YYYY-MM-DD` (misal: 2022-08-06). Jika format tidak sesuai, data dilewati dengan peringatan.<br>
+                        - Tanggal Lahir/Ukur: Gunakan format <code class="bg-slate-100 px-1 rounded text-teal-700">YYYY-MM-DD</code> (misal: 2022-08-06). Jika format tidak sesuai, data dilewati dengan peringatan.<br>
                         - NIK: Harus berupa 16 digit angka. Jika tidak sesuai atau kosong, akan muncul peringatan.
                     </p>
                 </div>
