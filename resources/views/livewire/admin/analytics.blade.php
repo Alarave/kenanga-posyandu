@@ -867,15 +867,6 @@
                                    class="w-full pl-10 pr-4 py-2 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-teal-100 focus:border-teal-600 shadow-xs transition-all" 
                                    placeholder="Cari Nama atau NIK Lansia...">
                         </div>
-                        <div class="flex items-center gap-2 w-full sm:w-auto">
-                            <span class="text-xs font-bold text-slate-650 whitespace-nowrap uppercase tracking-wider">Gender:</span>
-                            <select wire:model.live="filterGender" wire:key="gender-lansia"
-                                    class="w-full sm:w-36 py-2 px-3 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-4 focus:ring-teal-100 focus:border-teal-600 shadow-xs transition-all">
-                                <option value="">Semua</option>
-                                <option value="L">Laki-laki</option>
-                                <option value="P">Perempuan</option>
-                            </select>
-                        </div>
                     </div>
                 </div>
                 <div class="overflow-x-auto">
