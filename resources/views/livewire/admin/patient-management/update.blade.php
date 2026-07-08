@@ -321,9 +321,9 @@
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div class="space-y-3">
-                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">No. HP / WhatsApp <span class="text-teal-500">*</span></label>
+                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">No. HP / WhatsApp</label>
                         <div class="relative">
-                            <input type="tel" name="phone_number" value="{{ old('phone_number', $patient->phone_number) }}" required
+                            <input type="tel" name="phone_number" value="{{ old('phone_number', $patient->phone_number) }}"
                                    placeholder="Contoh: 0812..." maxlength="13"
                                    class="w-full h-16 px-6 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all bg-slate-50/30">
                             <span class="absolute right-6 top-5 text-slate-300 material-symbols-outlined">call</span>
@@ -353,8 +353,8 @@
                                class="w-full h-16 px-6 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all bg-slate-50/30">
                     </div>
                     <div class="space-y-3" x-show="['ibu_hamil', 'lansia', 'bayi', 'baduta', 'balita', 'anak_sekolah'].includes(category)">
-                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">RW Domisili <span class="text-teal-500">*</span></label>
-                        <input type="text" name="dusun_rt_rw" value="{{ old('dusun_rt_rw', $patient->dusun_rt_rw) }}" x-bind:required="['ibu_hamil', 'lansia', 'bayi', 'baduta', 'balita', 'anak_sekolah'].includes(category)"
+                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">RW Domisili</label>
+                        <input type="text" name="dusun_rt_rw" value="{{ old('dusun_rt_rw', $patient->dusun_rt_rw) }}"
                                placeholder="Contoh: 011..."
                                class="w-full h-16 px-6 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all bg-slate-50/30"
                                x-bind:disabled="!['ibu_hamil', 'lansia', 'bayi', 'baduta', 'balita', 'anak_sekolah'].includes(category)">
