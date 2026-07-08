@@ -215,7 +215,7 @@
                     </div>
                     <div class="space-y-2">
                         <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">No HP / WhatsApp</label>
-                        <input type="text" name="phone_number" placeholder="08..." value="{{ old('phone_number') }}"
+                        <input type="text" name="phone_number" placeholder="08..." value="{{ old('phone_number') }}" maxlength="13"
                                class="w-full h-12 px-4 border @error('phone_number') border-rose-500 bg-rose-50/20 @else border-slate-200 @enderror rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all">
                         @error('phone_number')
                             <p class="text-xs text-rose-500 mt-1 font-semibold">{{ $message }}</p>
@@ -831,7 +831,7 @@
                     </div>
                     <div class="space-y-2">
                         <label class="text-xs font-bold text-slate-600">Nomor HP / WhatsApp</label>
-                        <input type="text" name="phone_number" placeholder="08xx-xxxx-xxxx" value="{{ old('phone_number') }}"
+                        <input type="text" name="phone_number" placeholder="08xx-xxxx-xxxx" value="{{ old('phone_number') }}" maxlength="13"
                                class="w-full h-[44px] px-4 border @error('phone_number') border-rose-500 bg-rose-50/20 @else border-[#D9D9D9] @enderror rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:border-[#006C49] focus:ring-4 focus:ring-[#006C49]/5 transition-all bg-white">
                         @error('phone_number')
                             <p class="text-xs text-rose-500 mt-1 font-semibold">{{ $message }}</p>

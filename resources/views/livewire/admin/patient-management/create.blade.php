@@ -316,7 +316,7 @@
                         <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">No. HP / WhatsApp <span class="text-primary">*</span></label>
                         <div class="relative">
                             <input type="tel" name="phone_number" value="{{ old('phone_number') }}" required
-                                   placeholder="Contoh: 0812..."
+                                   placeholder="Contoh: 0812..." maxlength="13"
                                    class="w-full h-16 px-6 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 focus:outline-none focus:border-primary focus:ring-4 focus:ring-primary/5 transition-all bg-slate-50/30">
                             <span class="absolute right-6 top-5 text-slate-300 material-symbols-outlined">call</span>
                         </div>

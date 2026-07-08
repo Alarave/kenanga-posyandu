@@ -60,7 +60,7 @@ class MedicalRecordRequest extends FormRequest
             'full_name' => 'nullable|string|max:255',
             'id_number' => 'nullable|string|max:20',
             'birth_date' => 'nullable|date',
-            'phone_number' => 'nullable|string|max:20',
+            'phone_number' => 'nullable|string|max:13',
             'husband_name' => 'nullable|string|max:255',
             'address' => 'nullable|string',
             'dusun_rt_rw' => 'nullable|string|max:255',
