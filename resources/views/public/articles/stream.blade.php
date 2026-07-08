@@ -7,7 +7,7 @@
         </div>
         
         {{-- Category Filter Pills --}}
-        <div class="flex items-center gap-2 overflow-x-auto pb-2 sm:pb-0 scrollbar-none max-w-full sm:max-w-[400px] -mx-6 px-6 sm:mx-0 sm:px-0">
+        <div class="flex flex-wrap items-center gap-2">
             <a href="{{ route('public.articles.index') }}" 
                class="px-5 py-2.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider border transition-all duration-300 whitespace-nowrap {{ !request('category') ? 'bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-100' : 'bg-slate-50 text-slate-600 border-slate-200/60 hover:bg-slate-100 hover:text-slate-900 hover:border-slate-300' }}">
                 Semua
