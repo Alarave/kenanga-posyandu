@@ -170,7 +170,7 @@
             <div class="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm space-y-6">
                 <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 pb-4 border-b border-slate-100">
                     <div class="flex items-center gap-3">
-                        <span class="px-3 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase tracking-widest rounded-full border border-emerald-100">Section 1</span>
+                        <span class="px-3 py-1 bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase tracking-widest rounded-full border border-emerald-100">Bagian 1</span>
                         <h2 class="text-lg font-bold text-slate-800">Data Identitas Pasien</h2>
                     </div>
                 </div>
@@ -293,7 +293,7 @@
             <div class="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm space-y-6">
                 <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 pb-4 border-b border-slate-100">
                     <div class="flex items-center gap-3">
-                        <span class="px-3 py-1 bg-pink-50 text-pink-700 text-[10px] font-black uppercase tracking-widest rounded-full border border-pink-100">Section 2</span>
+                        <span class="px-3 py-1 bg-pink-50 text-pink-700 text-[10px] font-black uppercase tracking-widest rounded-full border border-pink-100">Bagian 2</span>
                         <h2 class="text-lg font-bold text-slate-800">Pemeriksaan Ibu Hamil (ANC)</h2>
                     </div>
                     <div class="flex items-center gap-3">
@@ -446,7 +446,7 @@
             <div class="bg-white rounded-3xl border border-slate-100 p-8 shadow-sm space-y-6">
                 <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 pb-4 border-b border-slate-100">
                     <div class="flex items-center gap-3">
-                        <span class="px-3 py-1 bg-orange-50 text-orange-700 text-[10px] font-black uppercase tracking-widest rounded-full border border-orange-100">Section 3</span>
+                        <span class="px-3 py-1 bg-orange-50 text-orange-700 text-[10px] font-black uppercase tracking-widest rounded-full border border-orange-100">Bagian 3</span>
                         <h2 class="text-lg font-bold text-slate-800">Pemeriksaan Ibu Nifas/Menyusui</h2>
                     </div>
                     <div class="flex items-center gap-3">
