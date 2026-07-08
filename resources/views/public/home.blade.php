@@ -1347,10 +1347,6 @@
                         </div>
                     </div>
                     <div class="feature-card-visual">
-                        <div class="chart-stat">
-                            <span class="chart-stat-dot"></span>
-                            Live Data
-                        </div>
                         <div class="mini-chart">
                             <div class="chart-bar-wrap"><div class="chart-bar-dot"></div><div class="chart-bar" style="height: 15%;"></div></div>
                             <div class="chart-bar-wrap"><div class="chart-bar-dot"></div><div class="chart-bar" style="height: 35%;"></div></div>
