@@ -3,4 +3,7 @@ builder = "DOCKERFILE"
 dockerfilePath = "Dockerfile"
 
 [deploy]
-startCommand = "bash -c 'a2dismod mpm_event mpm_worker 2>/dev/null; a2enmod mpm_prefork 2>/dev/null; rm -rf public/storage && php artisan storage:link && php artisan migrate --force && apache2-foreground'"
+startCommand = "bash -c 'a2dismod mpm_event mpm_worker 2>/dev/null; a2enmod mpm_prefork 2>/dev/null; sed -i \"s/Listen 8080/Listen ${PORT}/g\" /etc/apache2/ports.conf; sed -i \"s/*:8080/*:${PORT}/g\" /etc/apache2/sites-available/000-default.conf; rm -rf public/storage && php artisan storage:link && php artisan migrate --force && apache2-foreground'"
+
+[deploy.variables]
+PORT = "8080"
