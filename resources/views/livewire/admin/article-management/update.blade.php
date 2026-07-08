@@ -734,47 +734,101 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
                 const target = e.target;
                 if (target && target.getAttribute('contenteditable') === 'true') {
                     e.preventDefault();
+                    
                     let html = (e.clipboardData || window.clipboardData).getData('text/html');
-                    if (html) {
-                        const tempDiv = document.createElement('div');
-                        tempDiv.innerHTML = html;
-                        
-                        // List tag formatting filter: keep only inline format tags (a, b, i, strong, em, u)
-                        // and strip block tags (p, div, span, ul, li) to prevent breaking focus/typing
-                        const allowedTags = ['A', 'B', 'I', 'STRONG', 'EM', 'U'];
-                        const cleanNode = (node) => {
-                            if (node.nodeType === Node.ELEMENT_NODE) {
-                                if (!allowedTags.includes(node.tagName)) {
-                                    const fragment = document.createDocumentFragment();
-                                    while (node.firstChild) {
-                                        fragment.appendChild(node.firstChild);
-                                    }
-                                    node.parentNode.replaceChild(fragment, node);
-                                } else {
-                                    const attributes = Array.from(node.attributes);
-                                    attributes.forEach(attr => {
-                                        if (attr.name !== 'href') {
-                                            node.removeAttribute(attr.name);
+                    let text = (e.clipboardData || window.clipboardData).getData('text/plain') || '';
+                    
+                    // Split the text into lines by newline characters
+                    let lines = text.split(/\r?\n/);
+                    
+                    // If it is single-line, we can preserve HTML formatting (like bold/italic) if available
+                    if (lines.length <= 1) {
+                        if (html) {
+                            const tempDiv = document.createElement('div');
+                            tempDiv.innerHTML = html;
+                            
+                            // Keep only inline tags
+                            const allowedTags = ['A', 'B', 'I', 'STRONG', 'EM', 'U'];
+                            const cleanNode = (node) => {
+                                if (node.nodeType === Node.ELEMENT_NODE) {
+                                    if (!allowedTags.includes(node.tagName)) {
+                                        const fragment = document.createDocumentFragment();
+                                        while (node.firstChild) {
+                                            fragment.appendChild(node.firstChild);
                                         }
-                                    });
+                                        node.parentNode.replaceChild(fragment, node);
+                                    } else {
+                                        const attributes = Array.from(node.attributes);
+                                        attributes.forEach(attr => {
+                                            if (attr.name !== 'href') {
+                                                node.removeAttribute(attr.name);
+                                            }
+                                        });
+                                    }
                                 }
-                            }
-                        };
+                            };
 
-                        const allElements = Array.from(tempDiv.querySelectorAll('*')).reverse();
-                        allElements.forEach(cleanNode);
+                            const allElements = Array.from(tempDiv.querySelectorAll('*')).reverse();
+                            allElements.forEach(cleanNode);
 
-                        document.execCommand('insertHTML', false, tempDiv.innerHTML);
-                    } else {
-                        const text = (e.clipboardData || window.clipboardData).getData('text/plain');
-                        document.execCommand('insertText', false, text);
+                            document.execCommand('insertHTML', false, tempDiv.innerHTML);
+                        } else {
+                            document.execCommand('insertText', false, text);
+                        }
+                        this.isDirty = true;
+                        
+                        // Refocus caret at the end
+                        setTimeout(() => {
+                            target.focus();
+                            placeCaretAtEnd(target);
+                        }, 15);
+                        return;
                     }
+                    
+                    // Multi-line paste: Split by lines and create new blocks
+                    const blockIdMatch = target.id.match(/^block-(\d+)$/);
+                    if (!blockIdMatch) {
+                        document.execCommand('insertText', false, text);
+                        return;
+                    }
+                    
+                    const blockId = parseInt(blockIdMatch[1], 10);
+                    const blockIndex = this.blocks.findIndex(b => b.id === blockId);
+                    if (blockIndex === -1) {
+                        document.execCommand('insertText', false, text);
+                        return;
+                    }
+                    
+                    // First line goes to the current cursor position
+                    const firstLine = lines[0];
+                    if (firstLine !== undefined) {
+                        document.execCommand('insertText', false, firstLine);
+                    }
+                    
+                    // Update current block content
+                    this.blocks[blockIndex].content = target.innerHTML;
                     this.isDirty = true;
-                    // Force focus and position caret at the end of text to allow direct typing
-                    setTimeout(() => {
-                        target.focus();
-                        placeCaretAtEnd(target);
-                    }, 15);
+                    
+                    // Subsequent lines go to new paragraph blocks
+                    let currentFocusIndex = blockIndex;
+                    for (let i = 1; i < lines.length; i++) {
+                        const lineText = lines[i].trim();
+                        // Add paragraph block for each line
+                        const newBlock = { id: this.nextId++, type: 'paragraph', content: lineText };
+                        this.blocks.splice(currentFocusIndex + 1, 0, newBlock);
+                        currentFocusIndex++;
+                    }
+                    
+                    this.blocks = [...this.blocks];
+                    
+                    this.$nextTick(() => {
+                        const focusBlockId = this.blocks[currentFocusIndex].id;
+                        const focusEl = this.getBlockEl(focusBlockId);
+                        if (focusEl) {
+                            focusEl.focus();
+                            placeCaretAtEnd(focusEl);
+                        }
+                    });
                 }
             });
         },
@@ -817,6 +871,13 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
         handleKeydown(event, index) {
             const block = this.blocks[index];
             if (!block) return;
+
+            if (event.key === 'Tab') {
+                event.preventDefault();
+                document.execCommand('insertHTML', false, '&nbsp;&nbsp;&nbsp;&nbsp;');
+                this.isDirty = true;
+                return;
+            }
 
             if (event.key === 'Enter') {
                 event.preventDefault();
