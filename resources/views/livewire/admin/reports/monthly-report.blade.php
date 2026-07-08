@@ -218,53 +218,66 @@
                     </div>
                     <input type="text" wire:model.live.debounce.300ms="search" 
                            placeholder="Cari Nama/NIK..."
-                           class="w-full pl-10 pr-4 h-11 rounded-2xl border-2 border-slate-100 bg-slate-50/50 text-[13px] font-semibold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-0 transition-all shadow-sm">
+                           class="w-full pl-10 pr-4 h-11 rounded-2xl border border-slate-200 bg-slate-50/50 text-[13px] font-semibold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all shadow-sm">
                 </div>
 
                 {{-- Filter Posyandu (Hanya untuk Superadmin) --}}
                 @if(auth()->user()->isSuperAdmin())
-                <div class="w-full md:w-48">
-                    <select wire:model.live="selectedPosyanduId" 
-                            class="w-full h-11 px-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50 text-[13px] font-semibold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-0 transition-all shadow-sm">
-                        <option value="">Semua Posyandu</option>
-                        @foreach($posyandus as $pos)
-                            <option value="{{ $pos->id }}">{{ $pos->name }}</option>
-                        @endforeach
-                    </select>
+                <div class="w-full md:w-52">
+                    <div class="relative">
+                        <select wire:model.live="selectedPosyanduId" 
+                                class="w-full h-11 pl-4 pr-10 rounded-2xl border border-slate-200 bg-slate-50/50 text-[13px] font-bold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all appearance-none shadow-sm">
+                            <option value="">Semua Posyandu</option>
+                            @foreach($posyandus as $pos)
+                                <option value="{{ $pos->id }}">{{ $pos->name }}</option>
+                            @endforeach
+                        </select>
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-450">
+                            <span class="material-symbols-outlined text-[18px]">keyboard_arrow_down</span>
+                        </div>
+                    </div>
                 </div>
                 @endif
 
                 {{-- Filter Bulan --}}
-                <div class="w-full md:w-48">
-                    <select wire:model.live="filterMonth" 
-                            class="w-full h-11 px-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50 text-[13px] font-semibold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-0 transition-all shadow-sm">
-                        <option value="">Semua Bulan</option>
-                        <option value="1">Januari</option>
-                        <option value="2">Februari</option>
-                        <option value="3">Maret</option>
-                        <option value="4">April</option>
-                        <option value="5">Mei</option>
-                        <option value="6">Juni</option>
-                        <option value="7">Juli</option>
-                        <option value="8">Agustus</option>
-                        <option value="9">September</option>
-                        <option value="10">Oktober</option>
-                        <option value="11">November</option>
-                        <option value="12">Desember</option>
-                    </select>
+                <div class="w-full md:w-44">
+                    <div class="relative">
+                        <select wire:model.live="filterMonth" 
+                                class="w-full h-11 pl-4 pr-10 rounded-2xl border border-slate-200 bg-slate-50/50 text-[13px] font-bold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all appearance-none shadow-sm">
+                            <option value="">Semua Bulan</option>
+                            <option value="1">Januari</option>
+                            <option value="2">Februari</option>
+                            <option value="3">Maret</option>
+                            <option value="4">April</option>
+                            <option value="5">Mei</option>
+                            <option value="6">Juni</option>
+                            <option value="7">Juli</option>
+                            <option value="8">Agustus</option>
+                            <option value="9">September</option>
+                            <option value="10">Oktober</option>
+                            <option value="11">November</option>
+                            <option value="12">Desember</option>
+                        </select>
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-450">
+                            <span class="material-symbols-outlined text-[18px]">keyboard_arrow_down</span>
+                        </div>
+                    </div>
                 </div>
 
                 {{-- Filter Kategori --}}
-                <div class="w-full md:w-48">
-                    <select wire:model.live="filterCategory" 
-                            class="w-full h-11 px-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50 text-[13px] font-semibold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-0 transition-all shadow-sm">
-                        <option value="">Semua Kategori</option>
-                        <option value="balita">Balita</option>
-                        <option value="ibu_hamil">Ibu Hamil</option>
-                        <option value="lansia">Lansia</option>
-                        <option value="remaja">Remaja</option>
-                        <option value="umum">Umum</option>
-                    </select>
+                <div class="w-full md:w-44">
+                    <div class="relative">
+                        <select wire:model.live="filterCategory" 
+                                class="w-full h-11 pl-4 pr-10 rounded-2xl border border-slate-200 bg-slate-50/50 text-[13px] font-bold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all appearance-none shadow-sm">
+                            <option value="">Semua Kategori</option>
+                            <option value="balita">Balita</option>
+                            <option value="ibu_hamil">Ibu Hamil</option>
+                            <option value="lansia">Lansia</option>
+                        </select>
+                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-450">
+                            <span class="material-symbols-outlined text-[18px]">keyboard_arrow_down</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -332,14 +345,19 @@
                             @php
                                 $cat = $record->patient->category ?? 'Lainnya';
                                 $catColor = match(strtolower($cat)) {
-                                    'bayi', 'baduta', 'balita' => 'text-emerald-700 bg-emerald-50 border-emerald-100',
-                                    'ibu hamil', 'ibu_hamil' => 'text-sky-700 bg-sky-50 border-sky-100',
-                                    'lansia' => 'text-amber-700 bg-amber-50 border-amber-100',
-                                    'pua', 'wus', 'remaja' => 'text-purple-700 bg-purple-50 border-purple-100',
-                                    default => 'text-slate-650 bg-slate-50 border-slate-200'
+                                    'bayi', 'baduta', 'balita' => 'text-emerald-700 bg-emerald-50/60 border-emerald-200/80',
+                                    'ibu hamil', 'ibu_hamil' => 'text-sky-700 bg-sky-50/60 border-sky-200/80',
+                                    'lansia' => 'text-amber-700 bg-amber-50/60 border-amber-200/80',
+                                    default => 'text-slate-650 bg-slate-50/60 border-slate-200'
                                 };
                             @endphp
-                            <span class="inline-flex px-2 py-1 text-[10px] font-bold uppercase tracking-wider rounded border {{ $catColor }}">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-wider border {{ $catColor }}">
+                                <span class="w-1.5 h-1.5 rounded-full {{ match(strtolower($cat)) {
+                                    'bayi', 'baduta', 'balita' => 'bg-emerald-500',
+                                    'ibu hamil', 'ibu_hamil' => 'bg-sky-500',
+                                    'lansia' => 'bg-amber-500',
+                                    default => 'bg-slate-400'
+                                } }}"></span>
                                 {{ str_replace('_', ' ', $cat) }}
                             </span>
                         </td>
@@ -377,8 +395,8 @@
                                     if (in_array($cat, ['bayi', 'baduta', 'balita'])) {
                                         $ageStr = floor($birthDate->diffInMonths(now())) . ' Bln';
                                     } else {
-                                        $years = $birthDate->diffInYears(now());
-                                        $months = $birthDate->diffInMonths(now()) % 12;
+                                        $years = (int) $birthDate->diffInYears(now());
+                                        $months = (int) ($birthDate->diffInMonths(now()) % 12);
                                         if ($years > 0) {
                                             $ageStr = $years . ' Thn';
                                             if ($months > 0) {
@@ -389,7 +407,7 @@
                                         }
                                     }
                                 @endphp
-                                <span class="inline-flex items-center px-2.5 py-1 rounded-lg bg-slate-50 text-slate-600 text-xs font-bold border border-slate-100">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full bg-slate-50 text-slate-600 text-xs font-black border border-slate-100">
                                     {{ $ageStr }}
                                 </span>
                             @else
@@ -400,15 +418,15 @@
                             {{ \Carbon\Carbon::parse($record->visit_date)->format('d M Y') }}
                         </td>
                         <td class="px-6 py-5">
-                            <div class="flex items-center gap-3">
-                                <div title="Berat Badan">
-                                    <span class="text-[10px] font-bold text-slate-400 uppercase">BB</span>
-                                    <div class="text-sm font-bold text-slate-800">{{ $record->weight ? number_format($record->weight, 1) : '-' }} <span class="text-xs text-slate-400 font-medium">kg</span></div>
+                            <div class="flex items-center gap-3.5 bg-slate-50/60 px-3.5 py-2 rounded-2xl border border-slate-100/50 w-fit">
+                                <div class="flex items-center gap-1">
+                                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">BB</span>
+                                    <span class="text-xs font-black text-slate-800">{{ $record->weight ? number_format($record->weight, 1) : '-' }} <span class="text-[10px] font-medium text-slate-450">kg</span></span>
                                 </div>
-                                <div class="w-px h-6 bg-slate-100"></div>
-                                <div title="Tinggi Badan">
-                                    <span class="text-[10px] font-bold text-slate-400 uppercase">TB</span>
-                                    <div class="text-sm font-bold text-slate-800">{{ $record->height ? number_format($record->height, 1) : '-' }} <span class="text-xs text-slate-400 font-medium">cm</span></div>
+                                <div class="w-px h-3 bg-slate-200"></div>
+                                <div class="flex items-center gap-1">
+                                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">TB</span>
+                                    <span class="text-xs font-black text-slate-800">{{ $record->height ? number_format($record->height, 1) : '-' }} <span class="text-[10px] font-medium text-slate-450">cm</span></span>
                                 </div>
                             </div>
                         </td>
@@ -440,24 +458,30 @@
                             @endif
                         </td>
                         <td class="px-6 py-5">
-                            <div class="flex items-center justify-center gap-2">
-                                <div class="flex flex-col items-center gap-1" title="Vitamin A">
-                                    <span class="text-[9px] font-bold text-slate-400 uppercase">Vit. A</span>
-                                    @if($record->vitamin_a)
-                                        <div class="w-6 h-6 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 border border-emerald-100"><span class="material-symbols-outlined text-[14px]" style="font-variation-settings:'FILL' 1;">check</span></div>
-                                    @else
-                                        <div class="w-6 h-6 rounded-lg bg-slate-50 flex items-center justify-center text-slate-350 border border-slate-100"><span class="material-symbols-outlined text-[14px]">close</span></div>
-                                    @endif
-                                </div>
-                                <div class="w-px h-6 bg-slate-100"></div>
-                                <div class="flex flex-col items-center gap-1" title="Pil FE">
-                                    <span class="text-[9px] font-bold text-slate-450 uppercase">Pil FE</span>
-                                    @if($record->pill_fe)
-                                        <div class="w-6 h-6 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 border border-emerald-100"><span class="material-symbols-outlined text-[14px]" style="font-variation-settings:'FILL' 1;">check</span></div>
-                                    @else
-                                        <div class="w-6 h-6 rounded-lg bg-slate-50 flex items-center justify-center text-slate-350 border border-slate-100"><span class="material-symbols-outlined text-[14px]">close</span></div>
-                                    @endif
-                                </div>
+                            <div class="flex items-center justify-center gap-2.5">
+                                @if($record->vitamin_a)
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-black border border-emerald-100/80">
+                                        <span class="material-symbols-outlined text-[13px] font-black">check</span>
+                                        Vit A
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-slate-50 text-slate-400 text-[10px] font-black border border-slate-100">
+                                        <span class="material-symbols-outlined text-[13px]">close</span>
+                                        Vit A
+                                    </span>
+                                @endif
+
+                                @if($record->pill_fe)
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-black border border-indigo-100/80">
+                                        <span class="material-symbols-outlined text-[13px] font-black">check</span>
+                                        Pil FE
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-slate-50 text-slate-400 text-[10px] font-black border border-slate-100">
+                                        <span class="material-symbols-outlined text-[13px]">close</span>
+                                        Pil FE
+                                    </span>
+                                @endif
                             </div>
                         </td>
                         <td class="px-8 py-5 text-center">

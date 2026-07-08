@@ -254,6 +254,7 @@ class MonthlyReport extends BaseAdminComponent
             $endDate = date('Y-m-t', strtotime(sprintf('%04d-%02d-01', $this->endYear, $this->endMonth)));
 
             $query = MedicalRecord::with(['patient', 'user', 'patient.posyandu'])
+                ->whereHas('patient', fn ($q) => $q->whereIn('category', ['bayi', 'baduta', 'balita', 'ibu_hamil', 'lansia']))
                 ->whereBetween('visit_date', [$startDate, $endDate]);
 
             if ($posyanduId) {
