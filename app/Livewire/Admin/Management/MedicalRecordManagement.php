@@ -28,7 +28,9 @@ class MedicalRecordManagement extends BaseAdminComponent
             ->when($this->search, function ($q) {
                 $q->whereHas('patient', function ($sq) {
                     $searchTerm = '%'.strtolower($this->search).'%';
-                    $sq->whereRaw('LOWER(full_name) LIKE ?', [$searchTerm]);
+                    $sq->whereRaw('LOWER(full_name) LIKE ?', [$searchTerm])
+                        ->orWhere('id_number_hash', Patient::generateBlindIndex($this->search))
+                        ->orWhereRaw('LOWER(id_number) LIKE ?', [$searchTerm]);
                 });
             })
             ->when($this->posyandu_id, function ($q) {

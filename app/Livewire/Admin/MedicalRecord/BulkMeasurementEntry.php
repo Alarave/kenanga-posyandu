@@ -60,6 +60,7 @@ class BulkMeasurementEntry extends Component
         $this->searchResults = $query->where(function ($q) {
             $searchTerm = '%'.strtolower($this->search).'%';
             $q->whereRaw('LOWER(full_name) LIKE ?', [$searchTerm])
+                ->orWhere('id_number_hash', Patient::generateBlindIndex($this->search))
                 ->orWhereRaw('LOWER(id_number) LIKE ?', [$searchTerm]);
         })
             ->limit(5)

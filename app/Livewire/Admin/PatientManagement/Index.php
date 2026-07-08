@@ -112,13 +112,13 @@ class Index extends BaseAdminComponent
             'umum' => (clone $baseQuery)->where('category', 'umum')->count(),
         ];
 
-        // Terapkan scope posyandu secara otomatis untuk list utama
         $query = $this->applyPosyanduScope(Patient::with('posyandu'))
             ->when($this->search, function ($q) {
                 $q->where(function ($q2) {
                     $searchTerm = '%'.strtolower($this->search).'%';
                     $q2->whereRaw('LOWER(full_name) LIKE ?', [$searchTerm])
-                        ->orWhere('id_number_hash', Patient::generateBlindIndex($this->search));
+                        ->orWhere('id_number_hash', Patient::generateBlindIndex($this->search))
+                        ->orWhereRaw('LOWER(id_number) LIKE ?', [$searchTerm]);
                 });
             })
             ->when($this->category !== 'all', function ($q) {

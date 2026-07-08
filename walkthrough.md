@@ -1,11 +1,12 @@
 # Walkthrough
 
-We resolved five main issues in the Posyandu management system:
+We resolved six main issues in the Posyandu management system:
 1. The blank content area on the article edit page (`/admin/articles/{id}/edit`).
 2. The non-functional "Ingat Perangkat" (Remember Me) checkbox on the login page.
 3. The search bar on both the Admin Article Management and Public Articles pages not correctly filtering results.
 4. Removed the "Pedukuhan" field when creating or editing a Posyandu.
 5. Inconsistency in active cadre/kader counts between the admin panel and public pages.
+6. Case-sensitivity issues on all search bars when running on PostgreSQL (production on Railway).
 
 ## Changes Made
 
@@ -36,3 +37,19 @@ We resolved five main issues in the Posyandu management system:
 - Modified [UserManagement.php](file:///c:/Users/evaej/Downloads/posyandu-kenangaa/app/Livewire/Admin/Management/UserManagement.php) inside the `render` function to compute the "Kader Aktif" stat using `whereIn('role', ['superadmin', 'admin', 'kader'])`.
 - Modified [AboutMetricsTest.php](file:///c:/Users/evaej/Downloads/posyandu-kenangaa/tests/Feature/AboutMetricsTest.php) to use the updated role check array.
 - Created [UserManagementTest.php](file:///c:/Users/evaej/Downloads/posyandu-kenangaa/tests/Feature/Admin/UserManagementTest.php) to ensure the component calculates and displays the correct count of active cadres.
+
+### 6. Make Search Bars Case-Insensitive (PostgreSQL Compatibility)
+- Because the production server on Railway uses **PostgreSQL**, search queries using `LIKE` were behaving case-sensitively, making the searches fail for various casings (e.g. typing lowercase `kenanga` would not match a Posyandu named `Kenanga`).
+- Updated all search queries across the codebase to use `LOWER(column) LIKE ?` with `strtolower($searchTerm)` for case-insensitive matching. Files modified:
+  - `app/Models/Article.php` (Public & Admin article filters)
+  - `app/Services/ArticleService.php` (Admin article searches)
+  - `app/Models/User.php` (User profile filters)
+  - `app/Models/Schedule.php` (Agenda search)
+  - `app/Http/Controllers/Web/ScheduleController.php` (Schedule management search)
+  - `app/Http/Controllers/Web/PosyanduController.php` (Posyandu select dropdown filters)
+  - `app/Livewire/Admin/Management/PosyanduManagement.php` (Posyandu management index search)
+  - `app/Livewire/Admin/Management/GalleryManagement.php` (Gallery/activities search)
+  - `app/Livewire/Admin/PatientManagement/Index.php` (Patient index name search)
+  - `app/Livewire/Admin/Management/MedicalRecordManagement.php` (Medical records search)
+  - `app/Livewire/Admin/MedicalRecord/BulkMeasurementEntry.php` (Bulk measurement entry search)
+  - `app/Livewire/Admin/Reports/MonthlyReport.php` (Monthly report search)
