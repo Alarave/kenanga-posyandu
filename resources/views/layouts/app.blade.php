@@ -244,6 +244,13 @@
                 Livewire.hook('request.respond', function () {
                     document.querySelectorAll('input[type="date"], input[type="datetime-local"]').forEach(updateDateInputClass);
                 });
+                Livewire.hook('commit', ({ component, commit, respond, succeed, fail }) => {
+                    succeed(function () {
+                        queueMicrotask(function () {
+                            document.querySelectorAll('input[type="date"], input[type="datetime-local"]').forEach(updateDateInputClass);
+                        });
+                    });
+                });
             });
         });
     </script>
