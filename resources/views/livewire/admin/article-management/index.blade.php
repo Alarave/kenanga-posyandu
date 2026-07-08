@@ -66,7 +66,7 @@
             <div class="flex items-center">
                 @can('create', App\Models\Article::class)
                 <a href="{{ route('admin.articles.create') }}"
-                   class="h-16 px-10 flex items-center gap-4 bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white rounded-[1.5rem] text-xs font-black uppercase tracking-[0.2em] shadow-2xl shadow-teal-500/40 transition-all hover:-translate-y-1 active:scale-95 group">
+                   class="h-16 px-10 flex items-center gap-4 bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white rounded-[1.5rem] text-xs font-black uppercase tracking-[0.2em] shadow-2xl shadow-teal-500/40 transition-all hover:-translate-y-1 active:scale-95 group whitespace-nowrap shrink-0">
                     <span class="material-symbols-outlined text-[24px] group-hover:rotate-90 transition-transform">add_circle</span>
                     Tulis Artikel Baru
                 </a>
