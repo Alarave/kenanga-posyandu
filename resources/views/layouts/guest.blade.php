@@ -21,6 +21,10 @@
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"></noscript>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
+    <style>
+        @view-transition { navigation: auto; }
+    </style>
 </head>
 
 <body class="antialiased text-slate-800">
@@ -101,6 +105,16 @@
         </div>
 
     </div>
+    
+    <!-- Speculation Rules API for instant prerendering on hover -->
+    <script type="speculationrules">
+    {
+      "prerender": [{
+        "where": { "href_matches": "/*" },
+        "eagerness": "moderate"
+      }]
+    }
+    </script>
 </body>
 
 </html>

@@ -1,21 +1,48 @@
 <div class="space-y-8 p-6 md:p-8 pt-2 md:pt-4">
-    {{-- Header Section --}}
-    <div class="flex flex-col md:flex-row md:items-start justify-between gap-6">
-        <div class="relative pl-6">
-            {{-- Vertical Bar --}}
-            <div class="absolute left-0 top-1 bottom-1 w-1.5 bg-gradient-to-b from-teal-500 via-emerald-400 to-transparent rounded-full"></div>
-            
-            <div class="flex flex-col gap-4">
-
-                <div>
-                    <h1 class="text-4xl font-black tracking-tight leading-none text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">
-                        Artikel & Berita
-                    </h1>
-                    <p class="text-sm font-bold text-slate-900 mt-3">Kelola konten edukasi kesehatan dan informasi penting posyandu.</p>
-                </div>
-            </div>
-        </div>
-    </div>
+    @php
+        $getCategoryTheme = function($categoryName) {
+            $name = strtolower($categoryName ?? '');
+            if (str_contains($name, 'gizi')) {
+                return [
+                    'bg' => 'bg-emerald-50 dark:bg-emerald-950/30',
+                    'text' => 'text-emerald-600 dark:text-emerald-400',
+                    'border' => 'border-emerald-100 dark:border-emerald-900/50',
+                    'shadow' => 'hover:shadow-emerald-100/50',
+                ];
+            }
+            if (str_contains($name, 'imunisasi') || str_contains($name, 'vaksin')) {
+                return [
+                    'bg' => 'bg-indigo-50 dark:bg-indigo-950/30',
+                    'text' => 'text-indigo-600 dark:text-indigo-400',
+                    'border' => 'border-indigo-100 dark:border-indigo-900/50',
+                    'shadow' => 'hover:shadow-indigo-100/50',
+                ];
+            }
+            if (str_contains($name, 'hamil') || str_contains($name, 'ibu') || str_contains($name, 'bumil')) {
+                return [
+                    'bg' => 'bg-pink-50 dark:bg-pink-950/30',
+                    'text' => 'text-pink-600 dark:text-pink-400',
+                    'border' => 'border-pink-100 dark:border-pink-900/50',
+                    'shadow' => 'hover:shadow-pink-100/50',
+                ];
+            }
+            if (str_contains($name, 'lansia') || str_contains($name, 'tua')) {
+                return [
+                    'bg' => 'bg-orange-50 dark:bg-orange-950/30',
+                    'text' => 'text-orange-600 dark:text-orange-400',
+                    'border' => 'border-orange-100 dark:border-orange-900/50',
+                    'shadow' => 'hover:shadow-orange-100/50',
+                ];
+            }
+            // Default / Umum
+            return [
+                'bg' => 'bg-teal-50 dark:bg-teal-950/30',
+                'text' => 'text-teal-600 dark:text-teal-400',
+                'border' => 'border-teal-100 dark:border-teal-900/50',
+                'shadow' => 'hover:shadow-teal-100/50',
+            ];
+        };
+    @endphp
 
     {{-- ── Modern Header with Hero Mesh Banner ── --}}
     <div class="relative rounded-[2rem] p-8 md:p-10 overflow-hidden text-white shadow-2xl shadow-emerald-100"
@@ -86,7 +113,11 @@
 {{-- ── Articles Grid Layout ── --}}
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
     @forelse($articles as $article)
-    <div class="group bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col h-full">
+    @php
+        $categoryName = $article->category->name ?? 'Umum';
+        $theme = $getCategoryTheme($categoryName);
+    @endphp
+    <div class="group bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl {{ $theme['shadow'] }} transition-all duration-300 overflow-hidden flex flex-col h-full">
         
         {{-- Thumbnail — klik untuk baca --}}
         <a href="{{ route('admin.articles.show', $article->id) }}" class="block relative h-48 bg-gradient-to-br from-slate-100 to-slate-200 overflow-hidden">
@@ -117,8 +148,8 @@
         <a href="{{ route('admin.articles.show', $article->id) }}" class="p-6 flex-1 flex flex-col gap-3 hover:bg-slate-50/50 transition-colors">
             {{-- Category & Meta --}}
             <div class="flex items-center justify-between">
-                <span class="px-2.5 py-0.5 rounded-full bg-indigo-50 text-indigo-600 text-[9px] font-black uppercase tracking-widest border border-indigo-100">
-                    {{ $article->category->name ?? 'Umum' }}
+                <span class="px-2.5 py-0.5 rounded-full {{ $theme['bg'] }} {{ $theme['text'] }} text-[9px] font-black uppercase tracking-widest border {{ $theme['border'] }}">
+                    {{ $categoryName }}
                 </span>
                 <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wide flex items-center gap-1">
                     <span class="material-symbols-outlined text-[14px]">schedule</span>
@@ -138,7 +169,7 @@
 
             {{-- Author Info --}}
             <div class="flex items-center gap-3 pt-4 border-t border-slate-100">
-                <div class="w-9 h-9 rounded-full bg-indigo-100 flex items-center justify-center text-[11px] font-black text-indigo-600 uppercase flex-shrink-0">
+                <div class="w-9 h-9 rounded-full {{ $theme['bg'] }} flex items-center justify-center text-[11px] font-black {{ $theme['text'] }} uppercase flex-shrink-0">
                     {{ substr($article->user->name ?? 'A', 0, 1) }}
                 </div>
                 <div class="flex-1 min-w-0">
