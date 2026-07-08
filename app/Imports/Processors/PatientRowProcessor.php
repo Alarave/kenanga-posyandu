@@ -84,6 +84,8 @@ class PatientRowProcessor
         $phoneNumber = $get('phone_number');
         $historicalDiseases = $get('historical_diseases');
         $isPregnantInput = $get('is_pregnant');
+        $umur = $get('umur');
+        $umurBulan = $get('umur_bulan');
 
         // Medical fields
         $tglUkur = $get('tanggal_ukur');
@@ -141,7 +143,7 @@ class PatientRowProcessor
             $patient = $this->resolvePatient(
                 $hasValidNik, $nikClean, $nama, $birthDate, $namaOrtu, $fullAddress, $gender,
                 $categoryInput, $husbandName, $fatherName, $motherName, $placeOfBirth, $phoneNumber,
-                $historicalDiseases, $isPregnantInput, $rt, $rw
+                $historicalDiseases, $isPregnantInput, $rt, $rw, $umur, $umurBulan
             );
 
             if ($berat !== '' || $tinggi !== '' || $tensi !== '' || $gds !== '' || $asamUrat !== '' || $kolesterol !== '') {
@@ -172,9 +174,25 @@ class PatientRowProcessor
         string $historicalDiseases = '',
         string $isPregnantInput = '',
         string $rt = '',
-        string $rw = ''
+        string $rw = '',
+        string $umur = '',
+        string $umurBulan = ''
     ): Patient {
-        $existing = $this->findExistingPatient($hasValidNik, $nikClean, $nama, $birthDate);
+        // Resolve birth date from age/umur if missing (crucial for Lansia sheets)
+        $resolvedBirthDate = $birthDate;
+        if (! $resolvedBirthDate) {
+            $umurVal = $this->parseDecimal($umur);
+            $umurBulanVal = $this->parseDecimal($umurBulan);
+            if ($umurVal !== null && $umurVal > 0) {
+                $resolvedBirthDate = now()->subYears((int) $umurVal)->startOfYear();
+            } elseif ($umurBulanVal !== null && $umurBulanVal > 0) {
+                $resolvedBirthDate = now()->subMonths((int) $umurBulanVal)->startOfMonth();
+            } else {
+                $resolvedBirthDate = now()->subYears(30)->startOfYear(); // Safe default
+            }
+        }
+
+        $existing = $this->findExistingPatient($hasValidNik, $nikClean, $nama, $resolvedBirthDate);
 
         // Normalize pregnant status
         $isPregnant = false;
@@ -183,7 +201,7 @@ class PatientRowProcessor
         }
 
         // Determine category
-        $category = $this->normalizeCategory($categoryInput, $birthDate, $isPregnant);
+        $category = $this->normalizeCategory($categoryInput, $resolvedBirthDate, $isPregnant);
 
         if ($existing) {
             $updateData = [
@@ -194,6 +212,7 @@ class PatientRowProcessor
                 'gender' => $gender ?? $existing->gender,
                 'category' => $category,
                 'is_pregnant' => $isPregnant ?: $existing->is_pregnant,
+                'birth_date' => $resolvedBirthDate, // Sync birth date if it was resolved
             ];
 
             if ($husbandName !== '') {
@@ -239,7 +258,7 @@ class PatientRowProcessor
             'posyandu_id' => $this->posyanduId,
             'id_number' => $nikClean,
             'full_name' => $nama,
-            'birth_date' => $birthDate,
+            'birth_date' => $resolvedBirthDate,
             'gender' => $gender,
             'category' => $category,
             'parent_name' => $namaOrtu,

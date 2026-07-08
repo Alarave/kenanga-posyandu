@@ -1,4 +1,17 @@
 <div class="space-y-6" wire:key="medical-records-root">
+    @if (session()->has('import_errors') && count(session('import_errors')) > 0)
+    <div class="bg-amber-50 border border-amber-200 p-6 rounded-[2.5rem] shadow-sm space-y-3 animate-in slide-in-from-top-4 duration-300">
+        <div class="flex items-center gap-3 text-amber-800">
+            <span class="material-symbols-outlined text-[24px]">warning</span>
+            <h4 class="font-black text-base">Beberapa baris dalam file dilewati karena ketidaksesuaian data:</h4>
+        </div>
+        <ul class="list-disc list-inside text-xs text-amber-700 space-y-1 font-bold pl-2 max-h-48 overflow-y-auto">
+            @foreach(session('import_errors') as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
     {{-- Header Section (Replicated style) --}}
     <div class="relative mb-10">
         {{-- Decorative Background Element --}}
