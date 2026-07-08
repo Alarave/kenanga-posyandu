@@ -221,6 +221,13 @@ class ArticleService
                     }
                     if (str_contains($src, 'youtube.com/embed') || str_contains($src, 'drive.google.com')) {
                         $html .= '<div class="article-video"><iframe src="'.e($src).'" allowfullscreen frameborder="0" class="w-full h-full"></iframe></div>';
+                        if (str_contains($src, 'youtube.com/embed')) {
+                            preg_match('/youtube\.com\/embed\/([^?&\s]+)/', $src, $matches);
+                            if (!empty($matches[1])) {
+                                $videoId = $matches[1];
+                                $html .= '<p class="article-caption" style="margin-top:-2rem; margin-bottom:2.5rem; text-align:center;">Video tidak tampil? <a href="https://www.youtube.com/watch?v='.$videoId.'" target="_blank" class="text-indigo-600 hover:underline font-bold inline-flex items-center gap-1" style="color:#4f46e5;">Tonton langsung di YouTube <span class="material-symbols-outlined text-[14px]">open_in_new</span></a></p>';
+                            }
+                        }
                     } else {
                         $html .= '<video controls class="w-full rounded-xl my-6"><source src="'.e($src).'"></video>';
                     }

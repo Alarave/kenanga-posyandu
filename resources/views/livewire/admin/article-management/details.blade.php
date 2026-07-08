@@ -1,8 +1,146 @@
 <div class="min-h-screen bg-[#f8f8f7]">
 <style>
-    .prose p, .prose span, .prose li {
-        text-align: justify !important;
-    }
+/* ─── Block Content Styles ─── */
+
+.article-content p, 
+.article-content span, 
+.article-content li {
+    text-align: justify;
+}
+
+/* GAMBAR: responsif, tidak fixed size */
+.article-content .article-figure {
+    margin: 2.5rem 0;
+    width: 100%;
+}
+.article-content .article-image {
+    width: 100%;
+    height: auto;
+    max-width: 100%;
+    border-radius: 1.5rem;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+    object-fit: cover;
+    display: block;
+}
+
+/* HEADINGS */
+.article-content .article-h1 {
+    font-family: 'Georgia', serif;
+    font-size: 2rem;
+    font-weight: 900;
+    color: #0f172a;
+    margin: 2.5rem 0 0.75rem;
+    line-height: 1.25;
+}
+.article-content .article-h2 {
+    font-family: 'Georgia', serif;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: #0f172a;
+    margin: 2rem 0 0.5rem;
+    line-height: 1.35;
+}
+.article-content .article-h3 {
+    font-family: 'Georgia', serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 1.75rem 0 0.5rem;
+    line-height: 1.4;
+}
+
+/* QUOTE */
+.article-content .article-quote {
+    border-left: 4px solid #0f172a;
+    margin: 2rem 0;
+    padding: 0.5rem 0 0.5rem 1.5rem;
+}
+.article-content .article-quote p {
+    font-family: 'Georgia', serif;
+    font-size: 1.2rem;
+    font-style: italic;
+    color: #475569;
+    line-height: 1.9;
+    margin: 0;
+}
+
+/* CALLOUT */
+.article-content .article-callout {
+    display: flex;
+    gap: 0.75rem;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 0.75rem;
+    padding: 1rem 1.25rem;
+    margin: 1.5rem 0;
+    font-size: 1.05rem;
+    line-height: 1.8;
+    color: #78350f;
+}
+.article-content .article-callout-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+}
+
+/* LISTS — merge adjacent items visually */
+.article-content .article-list {
+    padding-left: 1.5rem;
+    margin: 0.25rem 0;
+    font-family: 'Georgia', serif;
+    font-size: 1.15rem;
+    line-height: 1.9;
+    color: #374151;
+}
+.article-content .article-list + .article-list {
+    margin-top: -0.5rem;
+}
+.article-content .article-list--numbered {
+    list-style: decimal;
+}
+
+/* PARAGRAPH */
+.article-content .article-paragraph {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-size: 1.25rem;
+    line-height: 1.9;
+    color: #374151;
+    margin-bottom: 1.75rem;
+    text-align: justify;
+}
+
+/* VIDEO */
+.article-content .article-video {
+    position: relative;
+    margin: 3rem 0;
+    border-radius: 1.5rem;
+    overflow: hidden;
+    aspect-ratio: 16/9;
+    background: #0f172a;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+}
+
+/* DIVIDER */
+.article-content .article-divider {
+    border: none;
+    border-top: 1px solid #e5e7eb;
+    margin: 3rem 0;
+}
+
+/* CAPTION */
+.article-content .article-caption {
+    text-align: center;
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    font-style: italic;
+}
+
+/* Inline formatting dari contenteditable */
+.article-content strong, .article-content b { font-weight: 800; color: #0f172a; }
+.article-content em, .article-content i     { font-style: italic; }
+.article-content u                           { text-decoration: underline; }
+.article-content s                           { text-decoration: line-through; color: #94a3b8; }
 </style>
 
     {{-- ── Top Nav ── --}}
@@ -90,7 +228,7 @@
         @endif
 
         {{-- Body --}}
-        <div class="prose prose-lg max-w-none
+        <div class="prose prose-lg max-w-none article-content
                     prose-headings:font-black prose-headings:text-slate-900
                     prose-p:text-slate-700 prose-p:leading-relaxed prose-p:text-justify
                     prose-blockquote:border-slate-300 prose-blockquote:text-slate-600">

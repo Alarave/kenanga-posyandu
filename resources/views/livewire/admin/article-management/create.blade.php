@@ -148,12 +148,8 @@
                         </button>
                     </div>
                     <div :id="'block-' + block.id" contenteditable="true"
-<<<<<<< HEAD
                          autocapitalize="sentences"
-                         x-init="$el.innerHTML = block.content || ''"
-=======
                          x-init="if ($el.innerHTML !== (block.content || '')) $el.innerHTML = block.content || ''"
->>>>>>> d517822bfbcfd3d1ff85773298a3729c1c05bf88
                          @keydown="handleKeydown($event, index)"
                          @focus="focusedIndex = index; activeBlockId = block.id"
                          @blur="handleBlur(index)"
@@ -175,12 +171,8 @@
                         </button>
                     </div>
                     <div :id="'block-' + block.id" contenteditable="true"
-<<<<<<< HEAD
                          autocapitalize="sentences"
-                         x-init="$el.innerHTML = block.content || ''"
-=======
                          x-init="if ($el.innerHTML !== (block.content || '')) $el.innerHTML = block.content || ''"
->>>>>>> d517822bfbcfd3d1ff85773298a3729c1c05bf88
                          @keydown="handleKeydown($event, index)"
                          @focus="focusedIndex = index; activeBlockId = block.id"
                          @blur="handleBlur(index)"
@@ -202,12 +194,8 @@
                         </button>
                     </div>
                     <div :id="'block-' + block.id" contenteditable="true"
-<<<<<<< HEAD
                          autocapitalize="sentences"
-                         x-init="$el.innerHTML = block.content || ''"
-=======
                          x-init="if ($el.innerHTML !== (block.content || '')) $el.innerHTML = block.content || ''"
->>>>>>> d517822bfbcfd3d1ff85773298a3729c1c05bf88
                          @keydown="handleKeydown($event, index)"
                          @focus="focusedIndex = index; activeBlockId = block.id"
                          @blur="handleBlur(index)"
@@ -229,12 +217,8 @@
                         </button>
                     </div>
                     <div :id="'block-' + block.id" contenteditable="true"
-<<<<<<< HEAD
                          autocapitalize="sentences"
-                         x-init="$el.innerHTML = block.content || ''"
-=======
                          x-init="if ($el.innerHTML !== (block.content || '')) $el.innerHTML = block.content || ''"
->>>>>>> d517822bfbcfd3d1ff85773298a3729c1c05bf88
                          @keydown="handleKeydown($event, index)"
                          @focus="focusedIndex = index; activeBlockId = block.id"
                          @blur="handleBlur(index)"
@@ -258,12 +242,8 @@
                     <div class="flex-1 flex gap-3">
                         <div class="w-1 rounded-lg bg-inverse-surface flex-shrink-0 self-stretch"></div>
                         <div :id="'block-' + block.id" contenteditable="true"
-<<<<<<< HEAD
                              autocapitalize="sentences"
-                             x-init="$el.innerHTML = block.content || ''"
-=======
                              x-init="if ($el.innerHTML !== (block.content || '')) $el.innerHTML = block.content || ''"
->>>>>>> d517822bfbcfd3d1ff85773298a3729c1c05bf88
                              @keydown="handleKeydown($event, index)"
                              @focus="focusedIndex = index; activeBlockId = block.id"
                              @blur="handleBlur(index)"
@@ -288,12 +268,8 @@
                     <div class="flex-1 bg-gradient-to-r from-amber-50 to-orange-50 border-l-4 border-amber-500 rounded-2xl px-5 py-4 shadow-sm hover:shadow-md transition-all">
                         <span class="material-symbols-outlined text-amber-600">tips_and_updates</span>
                         <div :id="'block-' + block.id" contenteditable="true"
-<<<<<<< HEAD
                              autocapitalize="sentences"
-                             x-init="$el.innerHTML = block.content || ''"
-=======
                              x-init="if ($el.innerHTML !== (block.content || '')) $el.innerHTML = block.content || ''"
->>>>>>> d517822bfbcfd3d1ff85773298a3729c1c05bf88
                              @keydown="handleKeydown($event, index)"
                              @focus="focusedIndex = index; activeBlockId = block.id"
                              @blur="handleBlur(index)"
@@ -318,12 +294,8 @@
                     <div class="flex-1 flex items-start gap-2 py-0.5">
                         <span class="w-1.5 h-1.5 rounded-lg bg-slate-700 flex-shrink-0 mt-3"></span>
                         <div :id="'block-' + block.id" contenteditable="true"
-<<<<<<< HEAD
                              autocapitalize="sentences"
-                             x-init="$el.innerHTML = block.content || ''"
-=======
                              x-init="if ($el.innerHTML !== (block.content || '')) $el.innerHTML = block.content || ''"
->>>>>>> d517822bfbcfd3d1ff85773298a3729c1c05bf88
                              @keydown="handleKeydown($event, index)"
                              @focus="focusedIndex = index; activeBlockId = block.id"
                              @blur="handleBlur(index)"
@@ -348,12 +320,8 @@
                     <div class="flex-1 flex items-start gap-2 py-0.5">
                         <span class="text-sm font-bold text-outline flex-shrink-0 w-5 text-right mt-1.5" x-text="getNumberedIndex(index) + '.'"></span>
                         <div :id="'block-' + block.id" contenteditable="true"
-<<<<<<< HEAD
                              autocapitalize="sentences"
-                             x-init="$el.innerHTML = block.content || ''"
-=======
                              x-init="if ($el.innerHTML !== (block.content || '')) $el.innerHTML = block.content || ''"
->>>>>>> d517822bfbcfd3d1ff85773298a3729c1c05bf88
                              @keydown="handleKeydown($event, index)"
                              @focus="focusedIndex = index; activeBlockId = block.id"
                              @blur="handleBlur(index)"
@@ -463,6 +431,9 @@
                                 <span class="material-symbols-outlined text-[14px]">delete</span>
                             </button>
                         </div>
+                        <div x-show="block.embedSrc && block.embedSrc.includes('youtube.com')" class="mt-2 text-xs text-slate-500 text-center">
+                            Video tidak tampil? <a :href="'https://www.youtube.com/watch?v=' + (block.embedSrc.match(/\/embed\/([^?&]+)/)?.[1] || '')" target="_blank" class="text-teal-600 hover:underline font-bold inline-flex items-center gap-1">Tonton langsung di YouTube <span class="material-symbols-outlined text-[12px]">open_in_new</span></a>
+                        </div>
                     </div>
 
                     {{-- Preview video lokal --}}
@@ -489,11 +460,7 @@
                         isDirty = true;
                         $nextTick(() => {
                             setTimeout(() => {
-<<<<<<< HEAD
-                                const el = getBlockEl(nb.id);
-=======
                                 const el = this.getBlockEl(nb.id);
->>>>>>> d517822bfbcfd3d1ff85773298a3729c1c05bf88
                                 if (el) el.focus();
                             }, 100);
                         });
@@ -876,28 +843,6 @@ function articleEditor() {
                 const el = this.getBlockEl(block.id);
                 const isEmpty = !el || el.innerText.trim() === '';
                 const sel = window.getSelection();
-<<<<<<< HEAD
-                const atStart = sel && sel.anchorOffset === 0 && sel.focusOffset === 0;
-
-                if (atStart && index > 0) {
-                    event.preventDefault();
-                    const prevBlock = this.blocks[index - 1];
-                    const textTypes = ['paragraph', 'h1', 'h2', 'h3', 'quote', 'callout', 'bullet', 'numbered'];
-                    if (textTypes.includes(prevBlock.type) && textTypes.includes(block.type)) {
-                        const prevEl = this.getBlockEl(prevBlock.id);
-                        const currentEl = this.getBlockEl(block.id);
-                        prevBlock.content = (prevEl ? prevEl.innerHTML : prevBlock.content) + (currentEl ? currentEl.innerHTML : block.content);
-                        this.blocks.splice(index, 1);
-                        this.isDirty = true;
-                        this.$nextTick(() => {
-                            setTimeout(() => {
-                                const el = this.getBlockEl(prevBlock.id);
-                                if (el) { el.innerHTML = prevBlock.content; placeCaretAtEnd(el); }
-                            }, 50);
-                        });
-                        return;
-                    }
-=======
                 
                 // Only consider caret at the start of block if the selection is collapsed (no text selected)
                 // and there is no text content before the caret in the contenteditable block.
@@ -908,7 +853,6 @@ function articleEditor() {
                     preCaretRange.selectNodeContents(el);
                     preCaretRange.setEnd(range.startContainer, range.startOffset);
                     atStart = preCaretRange.toString().length === 0;
->>>>>>> d517822bfbcfd3d1ff85773298a3729c1c05bf88
                 }
 
                 // 1. Jika blok bertipe khusus (heading/quote/callout/list dll) dan kosong, ubah kembali ke paragraf biasa dahulu
@@ -918,15 +862,10 @@ function articleEditor() {
                     this.blocks[index] = { ...block, type: 'paragraph', content: '' };
                     this.isDirty = true;
                     this.$nextTick(() => {
-<<<<<<< HEAD
                         setTimeout(() => {
                             const el = this.getBlockEl(block.id);
                             if (el) { el.focus(); placeCaretAtEnd(el); }
                         }, 50);
-=======
-                        const el = this.getBlockEl(block.id);
-                        if (el) { el.focus(); placeCaretAtEnd(el); }
->>>>>>> d517822bfbcfd3d1ff85773298a3729c1c05bf88
                     });
                     return;
                 }
@@ -957,15 +896,10 @@ function articleEditor() {
                     this.blocks.splice(index, 1);
                     this.isDirty = true;
                     this.$nextTick(() => {
-<<<<<<< HEAD
                         setTimeout(() => {
                             const el = this.getBlockEl(prevBlock.id);
                             if (el) { el.focus(); placeCaretAtEnd(el); }
                         }, 50);
-=======
-                        const el = this.getBlockEl(prevBlock.id);
-                        if (el) { el.focus(); placeCaretAtEnd(el); }
->>>>>>> d517822bfbcfd3d1ff85773298a3729c1c05bf88
                     });
                 }
                 return;
@@ -1158,7 +1092,13 @@ function articleEditor() {
 
         getNumberedIndex(index) {
             let count = 0;
-            for (let i = 0; i <= index; i++) { if (this.blocks[i]?.type === 'numbered') count++; }
+            for (let i = index; i >= 0; i--) {
+                if (this.blocks[i]?.type === 'numbered') {
+                    count++;
+                } else {
+                    break;
+                }
+            }
             return count;
         },
 
