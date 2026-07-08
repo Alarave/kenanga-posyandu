@@ -31,7 +31,7 @@
     class="sticky top-0 z-40 flex items-center justify-between h-16 px-4 md:px-6
            bg-white/95 backdrop-blur-md border-b border-slate-100 shadow-[0_1px_3px_0_rgb(0,0,0,.04)]
            transition-shadow duration-200"
-    style="font-family:'Public Sans','Inter',sans-serif;">
+    style="font-family:'Public Sans', 'Public Sans Fallback', 'Inter', sans-serif;">
 
     {{-- ── LEFT: Mobile toggle + Page title ── --}}
     <div class="flex items-center gap-3 min-w-0">

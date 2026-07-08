@@ -49,7 +49,7 @@
 @endphp
 
 <div {{ $attributes->merge(['class' => 'w-full']) }}
-     style="font-family:'Public Sans',sans-serif;">
+     style="font-family:'Public Sans', 'Public Sans Fallback', sans-serif;">
 
     {{-- Label row --}}
     @if($label || $showPct)

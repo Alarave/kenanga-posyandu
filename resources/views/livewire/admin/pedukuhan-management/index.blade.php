@@ -86,8 +86,9 @@
                 </div>
                 @if($search)
                 <button wire:click="$set('search', '')"
-                   class="h-9 px-3 flex items-center bg-white border border-slate-200 rounded-lg text-slate-400 hover:text-red-500 transition-colors">
-                    <span class="material-symbols-outlined text-[16px]">restart_alt</span>
+                    class="h-11 px-4 flex items-center gap-2 text-red-500 font-semibold text-sm hover:bg-red-50 rounded-xl transition-all">
+                    <span class="material-symbols-outlined text-[18px]">restart_alt</span>
+                    Reset
                 </button>
                 @endif
             </div>

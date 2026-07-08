@@ -165,8 +165,8 @@
 
             @if ($search || $status || $posyandu_id)
                 <button wire:click="resetFilters"
-                    class="h-11 px-4 bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-600 rounded-xl text-xs font-black uppercase tracking-widest flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer shrink-0">
-                    <span class="material-symbols-outlined text-[18px]">filter_alt_off</span>
+                    class="h-11 px-4 flex items-center gap-2 text-red-500 font-semibold text-sm hover:bg-red-50 rounded-xl transition-all">
+                    <span class="material-symbols-outlined text-[18px]">restart_alt</span>
                     Reset
                 </button>
             @endif
@@ -185,8 +185,8 @@
                         Waktu & Lokasi</th>
                     <th class="px-8 py-4.5 text-center text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
                         Status</th>
-                    <th class="px-8 py-4.5 text-right text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
-                        Tindakan</th>
+                    <th class="px-8 py-4.5 text-center text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                        Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60">
@@ -247,26 +247,26 @@
                                 {{ $schedule->status }}
                             </span>
                         </td>
-                        <td class="px-8 py-5 text-right">
-                            <div class="flex items-center justify-end gap-2">
+                        <td class="px-5 py-4 text-center">
+                            <div class="flex items-center justify-center gap-2">
                                 <a href="{{ route('admin.schedules.show', $schedule->id) }}"
-                                    class="w-9 h-9 flex items-center justify-center rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200/30 dark:border-slate-700/50 text-slate-500 hover:bg-teal-600 hover:text-white hover:border-teal-600 hover:shadow-md hover:shadow-teal-600/10 transition-all duration-200"
+                                    class="w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-teal-600 hover:text-white transition-all shadow-sm hover:shadow-teal-500/20 group/btn"
                                     title="Lihat Detail">
-                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                    <span class="material-symbols-outlined text-[22px]">visibility</span>
                                 </a>
                                 @can('update', $schedule)
                                     <a href="{{ route('admin.schedules.edit', $schedule->id) }}"
-                                        class="w-9 h-9 flex items-center justify-center rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200/30 dark:border-slate-700/50 text-slate-500 hover:bg-amber-600 hover:text-white hover:border-amber-600 hover:shadow-md hover:shadow-amber-600/10 transition-all duration-200"
+                                        class="w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-indigo-600 hover:text-white transition-all shadow-sm hover:shadow-indigo-500/20 group/btn"
                                         title="Edit Jadwal">
-                                        <span class="material-symbols-outlined text-[18px]">edit</span>
+                                        <span class="material-symbols-outlined text-[22px]">edit</span>
                                     </a>
                                 @endcan
                                 @can('delete', $schedule)
                                     <button wire:click="deleteSchedule({{ $schedule->id }})"
-                                        wire:confirm="Hapus jadwal ini secara permanen?"
-                                        class="w-9 h-9 min-w-0 min-h-0 flex items-center justify-center rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200/30 dark:border-slate-700/50 text-slate-500 dark:text-slate-400 hover:bg-rose-600 hover:text-white hover:border-rose-600 hover:shadow-md hover:shadow-rose-600/10 transition-all duration-200 cursor-pointer"
+                                        wire:confirm="Apakah Anda yakin ingin menghapus jadwal ini? Tindakan ini tidak dapat dibatalkan."
+                                        class="w-11 h-11 min-w-0 min-h-0 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-red-600 hover:text-white transition-all shadow-sm hover:shadow-red-500/20 group/btn cursor-pointer"
                                         title="Hapus Jadwal">
-                                        <span class="material-symbols-outlined text-[18px]">delete</span>
+                                        <span class="material-symbols-outlined text-[22px]">delete</span>
                                     </button>
                                 @endcan
                             </div>

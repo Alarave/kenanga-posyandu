@@ -316,8 +316,8 @@
                 {{-- Tombol Aksi --}}
                 <div class="flex gap-3 w-full xl:w-auto shrink-0">
                     <button wire:click="resetFilters"
-                        class="flex-1 xl:flex-none h-11 px-5 inline-flex items-center justify-center gap-2 bg-white hover:bg-slate-50 text-slate-700 font-bold text-xs uppercase tracking-wider rounded-xl border border-slate-300 hover:border-slate-400 shadow-xs transition-all cursor-pointer focus:outline-none">
-                        <span class="material-symbols-outlined text-[18px]">filter_alt_off</span>
+                        class="flex-1 xl:flex-none h-11 px-4 flex items-center justify-center gap-2 text-red-500 font-semibold text-sm hover:bg-red-50 rounded-xl transition-all">
+                        <span class="material-symbols-outlined text-[18px]">restart_alt</span>
                         Reset
                     </button>
                     <button wire:click="refreshStats"

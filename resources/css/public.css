@@ -379,7 +379,7 @@
 }
 
 .features-description {
-    font-family: 'Public Sans', sans-serif;
+    font-family: 'Public Sans', 'Public Sans Fallback', sans-serif;
     font-size: 14px;
     color: #64748b;
     text-align: center;
@@ -468,7 +468,7 @@
 }
 
 .features-card-description {
-    font-family: 'Public Sans', sans-serif;
+    font-family: 'Public Sans', 'Public Sans Fallback', sans-serif;
     font-size: 14px;
     color: #64748b;
     margin-top: 12px;

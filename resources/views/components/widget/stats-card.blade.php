@@ -65,7 +65,7 @@
                     hover:shadow-md transition-shadow flex flex-col gap-4'
         . ($href ? ' cursor-pointer hover:border-primary/30' : '')
     ]) }}
-    style="font-family:'Public Sans',sans-serif;"
+    style="font-family:'Public Sans', 'Public Sans Fallback', sans-serif;"
 >
     @if($loading)
         {{-- Skeleton --}}

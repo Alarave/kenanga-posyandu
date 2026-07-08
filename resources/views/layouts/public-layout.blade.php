@@ -28,7 +28,7 @@
     @stack('head')
 </head>
 
-<body class="antialiased overflow-x-hidden min-h-screen flex flex-col" style="font-family:'Public Sans',sans-serif;">
+<body class="antialiased overflow-x-hidden min-h-screen flex flex-col" style="font-family:'Public Sans', 'Public Sans Fallback', sans-serif;">
 
     {{-- Komponen Navbar Modular --}}
     <x-layouts.public.navbar />

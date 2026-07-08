@@ -64,7 +64,7 @@
 <div {{ $attributes->merge([
     'class' => 'bg-surface-container-lowest rounded-2xl border border-outline-variant shadow-sm overflow-hidden'
 ]) }}
-     style="font-family:'Public Sans',sans-serif;">
+     style="font-family:'Public Sans', 'Public Sans Fallback', sans-serif;">
 
     {{-- Header --}}
     @if($title || isset($action))

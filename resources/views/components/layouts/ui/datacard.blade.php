@@ -40,7 +40,7 @@
 <div {{ $attributes->merge([
     'class' => 'bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm p-5 flex items-start gap-4'
 ]) }}
-     style="font-family:'Public Sans',sans-serif;">
+     style="font-family:'Public Sans', 'Public Sans Fallback', sans-serif;">
 
     {{-- Icon badge --}}
     <div class="w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 ring-1

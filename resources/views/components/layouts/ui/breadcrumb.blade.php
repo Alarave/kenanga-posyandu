@@ -16,7 +16,7 @@
     'items' => [],
 ])
 
-<nav aria-label="Breadcrumb" style="font-family:'Public Sans',sans-serif;">
+<nav aria-label="Breadcrumb" style="font-family:'Public Sans', 'Public Sans Fallback', sans-serif;">
     <ol class="flex items-center flex-wrap gap-1 text-[12px] font-medium">
 
         {{-- Home icon always first --}}

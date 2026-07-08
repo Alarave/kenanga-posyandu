@@ -1,7 +1,7 @@
 {{-- ── Navbar Shell ── --}}
 <header id="topNavbar"
     class="glass-header sticky top-0 z-30 flex items-center justify-between h-16 px-4 md:px-6 transition-transform duration-300"
-    style="font-family:'Public Sans','Inter',sans-serif;">
+    style="font-family:'Public Sans', 'Public Sans Fallback', 'Inter', sans-serif;">
 
     {{-- ── LEFT: Mobile toggle + Search ── --}}
     <div class="flex items-center gap-3 flex-1 min-w-0">

@@ -233,9 +233,9 @@
             </div>
 
             <!-- Reset -->
-            <div class="w-full md:w-auto">
+            <div class="w-full md:w-auto flex items-end">
                 <button wire:click="resetFilters"
-                    class="w-full md:w-auto h-10.5 px-5 rounded-xl font-medium text-sm text-slate-600 bg-slate-100 hover:bg-slate-200 transition flex items-center justify-center gap-2">
+                    class="h-11 px-4 flex items-center gap-2 text-red-500 font-semibold text-sm hover:bg-red-50 rounded-xl transition-all w-full md:w-auto justify-center">
                     <span class="material-symbols-outlined text-[18px]">restart_alt</span>
                     Reset
                 </button>

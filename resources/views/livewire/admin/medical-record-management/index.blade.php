@@ -68,9 +68,9 @@
             
             @if($search || $posyandu_id)
                 <button wire:click="$set('search', ''); $set('posyandu_id', '');"
-                        class="text-[10px] font-black text-red-500 uppercase tracking-[0.2em] hover:text-red-600 transition-colors px-4 flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[16px]">restart_alt</span>
-                    Reset Filter
+                    class="h-11 px-4 flex items-center gap-2 text-red-500 font-semibold text-sm hover:bg-red-50 rounded-xl transition-all">
+                    <span class="material-symbols-outlined text-[18px]">restart_alt</span>
+                    Reset
                 </button>
             @endif
         </div>
@@ -217,25 +217,29 @@
                                 <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-1">Kader</span>
                             </div>
                         </td>
-                        <td class="px-8 py-6 text-center">
-                            <div class="flex items-center justify-center gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-1 group-hover:translate-y-0">
-                                <a href="{{ route('admin.medical-records.show', $record->id) }}" 
-                                   class="w-10 h-10 flex items-center justify-center rounded-2xl bg-white border border-slate-100 text-slate-400 hover:text-teal-600 hover:border-teal-200 hover:shadow-lg transition-all">
-                                    <span class="material-symbols-outlined text-[20px]">visibility</span>
+                        <td class="px-5 py-4 text-center">
+                            <div class="flex items-center justify-center gap-2">
+                                <a href="{{ route('admin.medical-records.show', $record->id) }}"
+                                    class="w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-teal-600 hover:text-white transition-all shadow-sm hover:shadow-teal-500/20 group/btn"
+                                    title="Lihat Detail">
+                                    <span class="material-symbols-outlined text-[22px]">visibility</span>
                                 </a>
                                 @can('update', $record)
-                                <a href="{{ route('admin.medical-records.edit', $record->id) }}" 
-                                   class="w-10 h-10 flex items-center justify-center rounded-2xl bg-white border border-slate-100 text-slate-400 hover:text-indigo-600 hover:border-indigo-200 hover:shadow-lg transition-all">
-                                    <span class="material-symbols-outlined text-[20px]">edit</span>
+                                <a href="{{ route('admin.medical-records.edit', $record->id) }}"
+                                    class="w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-indigo-600 hover:text-white transition-all shadow-sm hover:shadow-indigo-500/20 group/btn"
+                                    title="Edit Rekam Medis">
+                                    <span class="material-symbols-outlined text-[22px]">edit</span>
                                 </a>
                                 @endcan
                                 
                                 @can('delete', $record)
-                                <form action="{{ route('admin.medical-records.destroy', $record->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus rekam medis ini?')" class="inline">
+                                <form action="{{ route('admin.medical-records.destroy', $record->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus rekam medis ini? Tindakan ini tidak dapat dibatalkan.')" class="inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="w-10 h-10 flex items-center justify-center rounded-2xl bg-white border border-slate-100 text-slate-400 hover:text-red-600 hover:border-red-200 hover:shadow-lg transition-all">
-                                        <span class="material-symbols-outlined text-[20px]">delete</span>
+                                    <button type="submit"
+                                        class="w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-red-600 hover:text-white transition-all shadow-sm hover:shadow-red-500/20 group/btn"
+                                        title="Hapus Rekam Medis">
+                                        <span class="material-symbols-outlined text-[22px]">delete</span>
                                     </button>
                                 </form>
                                 @endcan

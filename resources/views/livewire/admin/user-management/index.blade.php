@@ -94,7 +94,7 @@
 
             @if ($search || $role || $status)
                 <button wire:click="$set('search', ''); $set('role', ''); $set('status', '');"
-                    class="h-12 px-4 flex items-center gap-2 text-red-500 font-bold text-xs uppercase tracking-widest hover:bg-red-50 rounded-2xl transition-all">
+                    class="h-11 px-4 flex items-center gap-2 text-red-500 font-semibold text-sm hover:bg-red-50 rounded-xl transition-all">
                     <span class="material-symbols-outlined text-[18px]">restart_alt</span>
                     Reset
                 </button>

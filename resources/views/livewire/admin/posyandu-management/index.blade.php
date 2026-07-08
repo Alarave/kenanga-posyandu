@@ -111,8 +111,8 @@
                         <th class="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-left">
                             Distribusi Warga
                         </th>
-                        <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">
-                            Tindakan
+                        <th class="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">
+                            Aksi
                         </th>
                     </tr>
                 </thead>
@@ -192,23 +192,23 @@
                                 </div>
                             </td>
 
-                            {{-- Tindakan --}}
-                            <td class="px-8 py-5 text-right">
-                                <div class="flex items-center justify-end gap-2">
+                            {{-- Aksi --}}
+                            <td class="px-5 py-4 text-center">
+                                <div class="flex items-center justify-center gap-2">
                                     <a href="{{ route('admin.posyandu.show', $posyandu->id) }}"
-                                        class="w-9 h-9 flex items-center justify-center rounded-2xl bg-slate-50 border border-slate-200/30 text-slate-500 hover:bg-teal-600 hover:text-white hover:border-teal-600 hover:shadow-md hover:shadow-teal-600/10 transition-all duration-200"
+                                        class="w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-teal-600 hover:text-white transition-all shadow-sm hover:shadow-teal-500/20 group/btn"
                                         title="Lihat Detail">
-                                        <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                        <span class="material-symbols-outlined text-[22px]">visibility</span>
                                     </a>
                                     <a href="{{ route('admin.posyandu.edit', $posyandu->id) }}"
-                                        class="w-9 h-9 flex items-center justify-center rounded-2xl bg-slate-50 border border-slate-200/30 text-slate-500 hover:bg-amber-600 hover:text-white hover:border-amber-600 hover:shadow-md hover:shadow-amber-600/10 transition-all duration-200"
-                                        title="Edit Data">
-                                        <span class="material-symbols-outlined text-[18px]">edit</span>
+                                        class="w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-indigo-600 hover:text-white transition-all shadow-sm hover:shadow-indigo-500/20 group/btn"
+                                        title="Edit Unit">
+                                        <span class="material-symbols-outlined text-[22px]">edit</span>
                                     </a>
                                     <button wire:click="confirmDelete({{ $posyandu->id }})"
-                                        class="w-9 h-9 min-w-0 min-h-0 flex items-center justify-center rounded-2xl bg-slate-50 border border-slate-200/30 text-slate-500 hover:bg-rose-600 hover:text-white hover:border-rose-600 hover:shadow-md hover:shadow-rose-600/10 transition-all duration-200 cursor-pointer"
+                                        class="w-11 h-11 min-w-0 min-h-0 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-red-600 hover:text-white transition-all shadow-sm hover:shadow-red-500/20 group/btn cursor-pointer"
                                         title="Hapus Unit">
-                                        <span class="material-symbols-outlined text-[18px]">delete</span>
+                                        <span class="material-symbols-outlined text-[22px]">delete</span>
                                     </button>
                                 </div>
                             </td>

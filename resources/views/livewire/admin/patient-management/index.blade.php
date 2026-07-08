@@ -238,7 +238,7 @@
                         Kategori</th>
                     <th class="px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider text-left">
                         Posyandu</th>
-                    <th class="px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">
+                    <th class="px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider text-center">
                         Aksi</th>
                 </tr>
             </thead>
@@ -290,31 +290,26 @@
                             </div>
                             <div class="text-xs text-slate-400 mt-0.5">{{ $patient->age }}</div>
                         </td>
-                        <td class="px-5 py-3.5 text-right">
-                            <div class="flex items-center justify-end gap-1.5">
-                                {{-- View Detail --}}
+                        <td class="px-5 py-4 text-center">
+                            <div class="flex items-center justify-center gap-2">
                                 <a href="{{ route('admin.patients.show', $patient->id) }}"
-                                    class="w-9 h-9 flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-400 hover:bg-teal-500 hover:text-white hover:border-teal-500 transition-all flex-shrink-0"
+                                    class="w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-teal-600 hover:text-white transition-all shadow-sm hover:shadow-teal-500/20 group/btn"
                                     title="Lihat Detail">
-                                    <span class="material-symbols-outlined text-[17px]">visibility</span>
+                                    <span class="material-symbols-outlined text-[22px]">visibility</span>
                                 </a>
-
-                                {{-- Edit Record --}}
                                 @can('update', $patient)
                                     <a href="{{ route('admin.patients.edit', $patient->id) }}"
-                                        class="w-9 h-9 flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-400 hover:bg-amber-500 hover:text-white hover:border-amber-500 transition-all flex-shrink-0"
+                                        class="w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-indigo-600 hover:text-white transition-all shadow-sm hover:shadow-indigo-500/20 group/btn"
                                         title="Edit Data">
-                                        <span class="material-symbols-outlined text-[17px]">edit</span>
+                                        <span class="material-symbols-outlined text-[22px]">edit</span>
                                     </a>
                                 @endcan
-
-                                {{-- Delete --}}
                                 @can('delete', $patient)
                                     <button wire:click="confirmDelete({{ $patient->id }})"
                                         type="button"
-                                        class="w-9 h-9 flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all flex-shrink-0"
+                                        class="w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-red-600 hover:text-white transition-all shadow-sm hover:shadow-red-500/20 group/btn cursor-pointer"
                                         title="Hapus Data">
-                                        <span class="material-symbols-outlined text-[17px]">delete</span>
+                                        <span class="material-symbols-outlined text-[22px]">delete</span>
                                     </button>
                                 @endcan
                             </div>

@@ -66,7 +66,7 @@
     $paddingInput = $icon ? 'pl-10 pr-4' : 'px-4';
 @endphp
 
-<div class="w-full space-y-1.5" style="font-family:'Public Sans',sans-serif;">
+<div class="w-full space-y-1.5" style="font-family:'Public Sans', 'Public Sans Fallback', sans-serif;">
 
     {{-- Label --}}
     @if($label)
