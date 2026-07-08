@@ -445,7 +445,7 @@
         @media (min-width: 1024px) {
             .feature-grid {
                 grid-template-columns: repeat(3, 1fr);
-                grid-template-rows: repeat(2, 260px);
+                grid-template-rows: repeat(2, 340px);
             }
         }
 
@@ -467,10 +467,10 @@
             .feature-card.card-large {
                 grid-column: span 2;
                 grid-row: span 2;
-                flex-direction: row;
-                align-items: center;
-                gap: 40px;
-                padding: 36px;
+                flex-direction: column;
+                align-items: stretch;
+                gap: 24px;
+                padding: 36px 36px 0;
             }
         }
 
@@ -483,27 +483,75 @@
         }
 
         .card-large-text {
-            flex: 1;
+            flex: 0 0 auto;
             display: flex;
             flex-direction: column;
-            height: 100%;
-            justify-content: space-between;
+            gap: 16px;
+            width: 100%;
         }
 
         .feature-card-visual {
+            flex: 1 1 0;
             width: 100%;
-            max-width: 240px;
-            height: 160px;
-            background: linear-gradient(135deg, #f0fdf9 0%, #ccfbf1 100%);
-            border-radius: 18px;
+            min-height: 200px;
+            background: linear-gradient(145deg, #f0fdf9 0%, #ccfbf1 60%, #99f6e4 100%);
+            border-radius: 20px 20px 0 0;
             display: flex;
             align-items: flex-end;
             justify-content: center;
-            padding: 16px;
+            padding: 24px 28px 0;
             position: relative;
             overflow: hidden;
-            box-shadow: inset 0 2px 8px rgba(13, 148, 136, 0.05);
-            flex-shrink: 0;
+            box-shadow:
+                inset 0 2px 12px rgba(13, 148, 136, 0.06),
+                0 4px 24px rgba(13, 148, 136, 0.1);
+            border: 1px solid rgba(13, 148, 136, 0.12);
+            border-bottom: none;
+        }
+
+        /* Subtle grid background on chart visual */
+        .feature-card-visual::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(13, 148, 136, 0.06) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(13, 148, 136, 0.06) 1px, transparent 1px);
+            background-size: 24px 24px;
+            pointer-events: none;
+        }
+
+        /* Floating stat badge */
+        .chart-stat {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: rgba(255,255,255,0.92);
+            border: 1px solid rgba(13, 148, 136, 0.18);
+            border-radius: 10px;
+            padding: 5px 10px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #0d9488;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 2px 8px rgba(13, 148, 136, 0.12);
+            z-index: 2;
+        }
+
+        .chart-stat-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: stat-blink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes stat-blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
         }
 
         @media (max-width: 1023px) {
@@ -516,42 +564,55 @@
         .mini-chart {
             display: flex;
             align-items: flex-end;
-            gap: 8px;
+            gap: 10px;
             width: 100%;
             height: 100%;
+            position: relative;
+            z-index: 1;
+        }
+
+        .chart-bar-wrap {
+            flex: 1;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            position: relative;
+        }
+
+        .chart-bar-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2px solid #0d9488;
+            box-shadow: 0 0 6px rgba(13, 148, 136, 0.5);
+            margin-bottom: 4px;
+            opacity: 0;
+            transition: opacity 350ms ease;
+            flex-shrink: 0;
+        }
+
+        .feature-card:hover .chart-bar-dot {
+            opacity: 1;
         }
 
         .chart-bar {
-            flex: 1;
-            background: linear-gradient(to top, #0d9488, #006c49);
-            border-radius: 6px 6px 0 0;
-            opacity: 0.85;
+            width: 100%;
+            background: linear-gradient(to top, #0d9488, #34d399);
+            border-radius: 7px 7px 0 0;
+            opacity: 0.88;
             transition: all 500ms cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 -2px 10px rgba(13, 148, 136, 0.2);
         }
 
-        .feature-card:hover .chart-bar:nth-child(1) {
-            height: 25% !important;
-        }
-
-        .feature-card:hover .chart-bar:nth-child(2) {
-            height: 50% !important;
-        }
-
-        .feature-card:hover .chart-bar:nth-child(3) {
-            height: 35% !important;
-        }
-
-        .feature-card:hover .chart-bar:nth-child(4) {
-            height: 75% !important;
-        }
-
-        .feature-card:hover .chart-bar:nth-child(5) {
-            height: 60% !important;
-        }
-
-        .feature-card:hover .chart-bar:nth-child(6) {
-            height: 95% !important;
-        }
+        .feature-card:hover .chart-bar-wrap:nth-child(1) .chart-bar { height: 25% !important; }
+        .feature-card:hover .chart-bar-wrap:nth-child(2) .chart-bar { height: 50% !important; }
+        .feature-card:hover .chart-bar-wrap:nth-child(3) .chart-bar { height: 35% !important; }
+        .feature-card:hover .chart-bar-wrap:nth-child(4) .chart-bar { height: 75% !important; }
+        .feature-card:hover .chart-bar-wrap:nth-child(5) .chart-bar { height: 60% !important; }
+        .feature-card:hover .chart-bar-wrap:nth-child(6) .chart-bar { height: 95% !important; }
 
         .feature-icon {
             position: relative;
@@ -570,14 +631,44 @@
             font-size: 26px;
         }
 
+        /* Large card icon — hero treatment */
+        .card-large .feature-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 22px;
+        }
+
+        .card-large .feature-icon .material-symbols-outlined {
+            font-size: 42px;
+        }
+
+        /* Pulse ring animation for the large card icon */
+        @keyframes icon-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.35), 0 8px 32px rgba(13, 148, 136, 0.3); }
+            70% { box-shadow: 0 0 0 16px rgba(13, 148, 136, 0), 0 8px 32px rgba(13, 148, 136, 0.15); }
+            100% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0), 0 8px 32px rgba(13, 148, 136, 0.3); }
+        }
+
         .feature-icon.teal {
             background: #f0fdf9;
             color: #0d9488;
         }
 
+        .card-large .feature-icon.teal {
+            background: linear-gradient(135deg, #0d9488 0%, #047857 100%);
+            color: #ffffff;
+            box-shadow: 0 8px 32px rgba(13, 148, 136, 0.3);
+            animation: icon-pulse 2.8s ease-in-out infinite;
+        }
+
         .feature-card:hover .feature-icon.teal {
             background: #0d9488;
             color: #ffffff;
+        }
+
+        .card-large:hover .feature-icon.teal {
+            background: linear-gradient(135deg, #0d9488 0%, #065f46 100%);
+            box-shadow: 0 12px 40px rgba(13, 148, 136, 0.45);
         }
 
         .feature-icon.blue {
@@ -1256,7 +1347,7 @@
                 <div class="feature-card card-large">
                     <div class="card-large-text">
                         <div class="feature-icon teal">
-                            <span class="material-symbols-outlined">monitoring</span>
+                            <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">monitoring</span>
                         </div>
                         <div class="feature-card-content">
                             <h4 class="feature-card-title">Monitoring Digital</h4>
@@ -1266,13 +1357,17 @@
                         </div>
                     </div>
                     <div class="feature-card-visual">
+                        <div class="chart-stat">
+                            <span class="chart-stat-dot"></span>
+                            Live Data
+                        </div>
                         <div class="mini-chart">
-                            <div class="chart-bar" style="height: 15%;"></div>
-                            <div class="chart-bar" style="height: 35%;"></div>
-                            <div class="chart-bar" style="height: 25%;"></div>
-                            <div class="chart-bar" style="height: 55%;"></div>
-                            <div class="chart-bar" style="height: 45%;"></div>
-                            <div class="chart-bar" style="height: 75%;"></div>
+                            <div class="chart-bar-wrap"><div class="chart-bar-dot"></div><div class="chart-bar" style="height: 15%;"></div></div>
+                            <div class="chart-bar-wrap"><div class="chart-bar-dot"></div><div class="chart-bar" style="height: 35%;"></div></div>
+                            <div class="chart-bar-wrap"><div class="chart-bar-dot"></div><div class="chart-bar" style="height: 25%;"></div></div>
+                            <div class="chart-bar-wrap"><div class="chart-bar-dot"></div><div class="chart-bar" style="height: 55%;"></div></div>
+                            <div class="chart-bar-wrap"><div class="chart-bar-dot"></div><div class="chart-bar" style="height: 45%;"></div></div>
+                            <div class="chart-bar-wrap"><div class="chart-bar-dot"></div><div class="chart-bar" style="height: 75%;"></div></div>
                         </div>
                     </div>
                 </div>
