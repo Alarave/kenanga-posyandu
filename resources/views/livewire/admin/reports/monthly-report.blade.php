@@ -221,6 +221,19 @@
                            class="w-full pl-10 pr-4 h-11 rounded-2xl border-2 border-slate-100 bg-slate-50/50 text-[13px] font-semibold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-0 transition-all shadow-sm">
                 </div>
 
+                {{-- Filter Posyandu (Hanya untuk Superadmin) --}}
+                @if(auth()->user()->isSuperAdmin())
+                <div class="w-full md:w-48">
+                    <select wire:model.live="selectedPosyanduId" 
+                            class="w-full h-11 px-4 rounded-2xl border-2 border-slate-100 bg-slate-50/50 text-[13px] font-semibold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-0 transition-all shadow-sm">
+                        <option value="">Semua Posyandu</option>
+                        @foreach($posyandus as $pos)
+                            <option value="{{ $pos->id }}">{{ $pos->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                @endif
+
                 {{-- Filter Bulan --}}
                 <div class="w-full md:w-48">
                     <select wire:model.live="filterMonth" 
