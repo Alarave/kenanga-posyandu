@@ -17,7 +17,8 @@ ENV PORT=8080
 RUN sed -i "s/Listen 80/Listen \${PORT}/g" /etc/apache2/ports.conf
 RUN sed -i "s/<VirtualHost \*:80>/<VirtualHost *:\${PORT}>/g" /etc/apache2/sites-available/000-default.conf
 
-RUN a2enmod rewrite headers
+RUN a2enmod rewrite headers && \
+    echo "ServerName localhost" >> /etc/apache2/apache2.conf
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -42,5 +43,5 @@ RUN npm install && npm run build
 # Expose port 8080
 EXPOSE 8080
 
-# Run migrations and start the server using Apache
-CMD ["bash", "-c", "rm -rf public/storage && php artisan storage:link && php artisan migrate --force && apache2-foreground"]
+# Reconfigure Apache port from Railway's $PORT env var at runtime, then start
+CMD ["bash", "-c", "PORT=${PORT:-8080} && sed -i \"s/Listen 8080/Listen $PORT/g\" /etc/apache2/ports.conf && sed -i \"s/*:8080>/*:$PORT>/g\" /etc/apache2/sites-available/000-default.conf && rm -rf public/storage && php artisan storage:link && php artisan migrate --force && apache2-foreground"]

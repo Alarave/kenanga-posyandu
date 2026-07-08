@@ -1,0 +1,3 @@
+# Memberitahu Railway bahwa layanan ini mendengarkan di port 8080
+[variables]
+PORT = "8080"
