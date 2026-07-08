@@ -72,8 +72,9 @@
         <textarea
             x-ref="titleInput"
             x-model="titleValue"
-            @input="isDirty = true; autoResize($el)"
+            @input="isDirty = true; autoResize($el); capitalizeTextarea($el)"
             @keydown.enter.prevent="focusFirstBlock()"
+            wire:ignore
             placeholder="Judul artikel..."
             rows="1"
             x-init="$nextTick(() => autoResize($el))"
@@ -141,7 +142,7 @@
                             <span class="material-symbols-outlined text-[20px]" style="font-weight: 900; line-height: 1;">add</span>
                         </button>
                     </div>
-                    <div :id="'block-' + block.id" contenteditable="true"
+                    <div :id="'block-' + block.id" contenteditable="true" autocapitalize="sentences"
                          x-init="$el.innerHTML = block.content || ''"
                          @keydown="handleKeydown($event, index)"
                          @focus="focusedIndex = index; activeBlockId = block.id"
@@ -163,7 +164,7 @@
                             <span class="material-symbols-outlined text-[20px]" style="font-weight: 900; line-height: 1;">add</span>
                         </button>
                     </div>
-                    <div :id="'block-' + block.id" contenteditable="true"
+                    <div :id="'block-' + block.id" contenteditable="true" autocapitalize="sentences"
                          x-init="$el.innerHTML = block.content || ''"
                          @keydown="handleKeydown($event, index)"
                          @focus="focusedIndex = index; activeBlockId = block.id"
@@ -185,7 +186,7 @@
                             <span class="material-symbols-outlined text-[20px]" style="font-weight: 900; line-height: 1;">add</span>
                         </button>
                     </div>
-                    <div :id="'block-' + block.id" contenteditable="true"
+                    <div :id="'block-' + block.id" contenteditable="true" autocapitalize="sentences"
                          x-init="$el.innerHTML = block.content || ''"
                          @keydown="handleKeydown($event, index)"
                          @focus="focusedIndex = index; activeBlockId = block.id"
@@ -207,7 +208,7 @@
                             <span class="material-symbols-outlined text-[20px]" style="font-weight: 900; line-height: 1;">add</span>
                         </button>
                     </div>
-                    <div :id="'block-' + block.id" contenteditable="true"
+                    <div :id="'block-' + block.id" contenteditable="true" autocapitalize="sentences"
                          x-init="$el.innerHTML = block.content || ''"
                          @keydown="handleKeydown($event, index)"
                          @focus="focusedIndex = index; activeBlockId = block.id"
@@ -231,7 +232,7 @@
                     </div>
                     <div class="flex-1 flex gap-3">
                         <div class="w-1 rounded-lg bg-inverse-surface flex-shrink-0 self-stretch"></div>
-                        <div :id="'block-' + block.id" contenteditable="true"
+                        <div :id="'block-' + block.id" contenteditable="true" autocapitalize="sentences"
                              x-init="$el.innerHTML = block.content || ''"
                              @keydown="handleKeydown($event, index)"
                              @focus="focusedIndex = index; activeBlockId = block.id"
@@ -256,7 +257,7 @@
                     </div>
                     <div class="flex-1 bg-gradient-to-r from-amber-50 to-orange-50 border-l-4 border-amber-500 rounded-2xl px-5 py-4 shadow-sm hover:shadow-md transition-all">
                         <span class="material-symbols-outlined text-amber-600">tips_and_updates</span>
-                        <div :id="'block-' + block.id" contenteditable="true"
+                        <div :id="'block-' + block.id" contenteditable="true" autocapitalize="sentences"
                              x-init="$el.innerHTML = block.content || ''"
                              @keydown="handleKeydown($event, index)"
                              @focus="focusedIndex = index; activeBlockId = block.id"
@@ -281,7 +282,7 @@
                     </div>
                     <div class="flex-1 flex items-start gap-2 py-0.5">
                         <span class="w-1.5 h-1.5 rounded-lg bg-slate-700 flex-shrink-0 mt-3"></span>
-                        <div :id="'block-' + block.id" contenteditable="true"
+                        <div :id="'block-' + block.id" contenteditable="true" autocapitalize="sentences"
                              x-init="$el.innerHTML = block.content || ''"
                              @keydown="handleKeydown($event, index)"
                              @focus="focusedIndex = index; activeBlockId = block.id"
@@ -306,7 +307,7 @@
                     </div>
                     <div class="flex-1 flex items-start gap-2 py-0.5">
                         <span class="text-sm font-bold text-outline flex-shrink-0 w-5 text-right mt-1.5" x-text="getNumberedIndex(index) + '.'"></span>
-                        <div :id="'block-' + block.id" contenteditable="true"
+                        <div :id="'block-' + block.id" contenteditable="true" autocapitalize="sentences"
                              x-init="$el.innerHTML = block.content || ''"
                              @keydown="handleKeydown($event, index)"
                              @focus="focusedIndex = index; activeBlockId = block.id"
@@ -443,7 +444,7 @@
                         isDirty = true;
                         $nextTick(() => {
                             setTimeout(() => {
-                                const el = document.getElementById('block-' + nb.id);
+                                const el = getBlockEl(nb.id);
                                 if (el) el.focus();
                             }, 50);
                         });
@@ -710,7 +711,9 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
                         const blockId = parseInt(blockIdMatch[1], 10);
                         const block = this.blocks.find(b => b.id === blockId);
                         if (block) {
-                            block.content = target.innerHTML;
+                            const capitalized = capitalizeSentences(target.innerHTML);
+                            target.innerHTML = capitalized;
+                            block.content = capitalized;
                         }
                     }
                 }
@@ -720,6 +723,7 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
                 const target = e.target;
                 if (target && target.getAttribute('contenteditable') === 'true') {
                     this.isDirty = true;
+                    autoCapitalize(target);
                 }
             });
 
@@ -770,9 +774,17 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
             el.style.height = el.scrollHeight + 'px';
         },
 
+        getBlockEl(id) {
+            const els = document.querySelectorAll('[id="block-' + id + '"]');
+            for (const el of els) {
+                if (el.offsetParent !== null) return el;
+            }
+            return els[0] || null;
+        },
+
         focusFirstBlock() {
             this.$nextTick(() => {
-                const el = document.getElementById('block-' + this.blocks[0]?.id);
+                const el = this.getBlockEl(this.blocks[0]?.id);
                 if (el) { el.focus(); placeCaretAtEnd(el); }
             });
         },
@@ -790,7 +802,7 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
                 this.isDirty = true;
                 this.$nextTick(() => {
                     setTimeout(() => {
-                        const el = document.getElementById('block-' + nb.id);
+                        const el = this.getBlockEl(nb.id);
                         if (el) {
                             el.focus();
                             placeCaretAtEnd(el);
@@ -801,7 +813,7 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
             }
 
             if (event.key === 'Backspace') {
-                const el = document.getElementById('block-' + block.id);
+                const el = this.getBlockEl(block.id);
                 const isEmpty = !el || el.innerText.trim() === '';
                 const sel = window.getSelection();
                 const atStart = sel && sel.anchorOffset === 0 && sel.focusOffset === 0;
@@ -813,8 +825,8 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
                     const textTypes = ['paragraph', 'h1', 'h2', 'h3', 'quote', 'callout', 'bullet', 'numbered'];
 
                     if (textTypes.includes(prevBlock.type) && textTypes.includes(block.type)) {
-                        const prevEl = document.getElementById('block-' + prevBlock.id);
-                        const currentEl = document.getElementById('block-' + block.id);
+                        const prevEl = this.getBlockEl(prevBlock.id);
+                        const currentEl = this.getBlockEl(block.id);
                         const prevContent = prevEl ? prevEl.innerHTML : prevBlock.content;
                         const currentContent = currentEl ? currentEl.innerHTML : block.content;
                         prevBlock.content = prevContent + currentContent;
@@ -822,7 +834,7 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
                         this.isDirty = true;
                         this.$nextTick(() => {
                             setTimeout(() => {
-                                const el = document.getElementById('block-' + prevBlock.id);
+                                const el = this.getBlockEl(prevBlock.id);
                                 if (el) {
                                     el.innerHTML = prevBlock.content;
                                     placeCaretAtEnd(el);
@@ -842,7 +854,7 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
                         this.isDirty = true;
                         this.$nextTick(() => {
                             setTimeout(() => {
-                                const el = document.getElementById('block-' + block.id);
+                                const el = this.getBlockEl(block.id);
                                 if (el) {
                                     el.focus();
                                     placeCaretAtEnd(el);
@@ -861,7 +873,7 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
                     this.isDirty = true;
                     this.$nextTick(() => {
                         setTimeout(() => {
-                            const el = document.getElementById('block-' + prevBlock.id);
+                            const el = this.getBlockEl(prevBlock.id);
                             if (el) {
                                 el.focus();
                                 placeCaretAtEnd(el);
@@ -873,7 +885,7 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
             }
 
             if (event.key === 'Delete') {
-                const el = document.getElementById('block-' + block.id);
+                const el = this.getBlockEl(block.id);
                 const isEmpty = !el || el.innerText.trim() === '';
                 if (isEmpty && this.blocks.length > 1) {
                     event.preventDefault();
@@ -882,7 +894,7 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
                     this.$nextTick(() => {
                         const next = this.blocks[Math.min(this.blocks.length - 1, index)];
                         if (next) {
-                            const nel = document.getElementById('block-' + next.id);
+                            const nel = this.getBlockEl(next.id);
                             if (nel) nel.focus();
                         }
                     });
@@ -968,12 +980,12 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
         changeBlockType(index, type) {
             const block = this.blocks[index];
             if (!block) return;
-            const el = document.getElementById('block-' + block.id);
+            const el = this.getBlockEl(block.id);
             const content = el ? el.innerHTML : block.content;
             this.blocks[index] = { ...block, type, content };
             this.isDirty = true;
             this.$nextTick(() => {
-                const newEl = document.getElementById('block-' + block.id);
+                const newEl = this.getBlockEl(block.id);
                 if (newEl) { newEl.focus(); placeCaretAtEnd(newEl); }
             });
         },
@@ -990,7 +1002,7 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
                 this.blocks.splice(afterIndex + 2, 0, nb);
                 this.isDirty = true;
                 this.$nextTick(() => {
-                    const el = document.getElementById('block-' + nb.id);
+                    const el = this.getBlockEl(nb.id);
                     if (el) el.focus();
                 });
             };
@@ -1080,7 +1092,7 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
         serializeContent() {
             return JSON.stringify(this.blocks.map(b => {
                 if (['paragraph','h1','h2','h3','quote','callout','bullet','numbered'].includes(b.type)) {
-                    const el = document.getElementById('block-' + b.id);
+                    const el = this.getBlockEl(b.id);
                     return { type: b.type, content: el ? el.innerHTML : (b.content || '') };
                 }
                 if (b.type === 'image')   return { type: 'image', src: b.src, caption: b.caption || '' };
@@ -1105,12 +1117,12 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
             const hasContent = this.blocks.some(b => {
                 const textTypes = ['paragraph','h1','h2','h3','quote','callout','bullet','numbered'];
                 if (!textTypes.includes(b.type)) return true;
-                const el = document.getElementById('block-' + b.id);
+                const el = this.getBlockEl(b.id);
                 return el ? el.innerText.trim().length > 0 : (b.content || '').trim().length > 0;
             });
             if (!hasContent) {
                 this.showContentError = true;
-                const el = document.getElementById('block-' + this.blocks[0]?.id);
+                const el = this.getBlockEl(this.blocks[0]?.id);
                 if (el) el.focus();
                 valid = false;
             } else {
@@ -1124,7 +1136,7 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
             this.blocks.forEach(b => {
                 const textTypes = ['paragraph','h1','h2','h3','quote','callout','bullet','numbered'];
                 if (textTypes.includes(b.type)) {
-                    const el = document.getElementById('block-' + b.id);
+                    const el = this.getBlockEl(b.id);
                     if (el) b.content = el.innerHTML;
                 }
             });
@@ -1167,6 +1179,101 @@ function placeCaretAtEnd(el) {
     const sel = window.getSelection();
     sel.removeAllRanges();
     sel.addRange(range);
+}
+
+function capitalizeTextarea(el) {
+    const val = el.value;
+    const start = el.selectionStart;
+    const end = el.selectionEnd;
+    
+    let newVal = '';
+    let capitalizeNext = true;
+    for (let i = 0; i < val.length; i++) {
+        const char = val[i];
+        if (capitalizeNext && /[a-z]/i.test(char)) {
+            newVal += char.toUpperCase();
+            capitalizeNext = false;
+        } else {
+            newVal += char;
+            if (char === '.' || char === '!' || char === '?') {
+                capitalizeNext = true;
+            }
+        }
+    }
+    
+    if (val !== newVal) {
+        el.value = newVal;
+        el.setSelectionRange(start, end);
+    }
+}
+
+function autoCapitalize(el) {
+    const sel = window.getSelection();
+    if (!sel || sel.rangeCount === 0 || !sel.isCollapsed) return;
+    const range = sel.getRangeAt(0);
+    if (range.startContainer.nodeType !== Node.TEXT_NODE) return;
+
+    const preRange = document.createRange();
+    preRange.selectNodeContents(el);
+    preRange.setEnd(range.startContainer, range.startOffset);
+    const before = preRange.toString();
+    if (!before) return;
+
+    const lastChar = before[before.length - 1];
+    if (!/[a-z]/.test(lastChar)) return;
+
+    const beforeThat = before.slice(0, -1);
+    const isStart = beforeThat.trim() === '';
+    const trimmedEnd = beforeThat.replace(/\s+$/, '');
+    const endsWithPunct = /[.!?]$/.test(trimmedEnd) && /\s$/.test(beforeThat);
+    if (!isStart && !endsWithPunct) return;
+
+    const node = range.startContainer;
+    const offset = range.startOffset;
+    const idx = offset - 1;
+    const text = node.textContent;
+    node.textContent = text.slice(0, idx) + text[idx].toUpperCase() + text.slice(idx + 1);
+
+    const newRange = document.createRange();
+    newRange.setStart(node, offset);
+    newRange.collapse(true);
+    sel.removeAllRanges();
+    sel.addRange(newRange);
+}
+
+function capitalizeSentences(html) {
+    if (!html) return html;
+    let inTag = false;
+    let result = '';
+    let capitalizeNext = true;
+
+    for (let i = 0; i < html.length; i++) {
+        let char = html[i];
+        
+        if (char === '<') {
+            inTag = true;
+            result += char;
+            if (html.slice(i, i + 4).toLowerCase() === '<br>') {
+                capitalizeNext = true;
+            }
+        } else if (char === '>') {
+            inTag = false;
+            result += char;
+        } else if (inTag) {
+            result += char;
+        } else {
+            if (capitalizeNext && /[a-zA-Z]/.test(char)) {
+                result += char.toUpperCase();
+                capitalizeNext = false;
+            } else {
+                result += char;
+                if (char === '.' || char === '!' || char === '?') {
+                    capitalizeNext = true;
+                }
+            }
+        }
+    }
+    return result;
 }
 </script>
 

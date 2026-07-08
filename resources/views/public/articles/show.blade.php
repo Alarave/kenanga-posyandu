@@ -9,7 +9,7 @@
     <nav class="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-12">
         <a href="{{ route('public.articles.index') }}" class="hover:text-indigo-600 transition-colors">Artikel</a>
         <span class="material-symbols-outlined text-[14px]">chevron_right</span>
-        <span class="text-slate-300 truncate max-w-[200px]">{{ $article->title }}</span>
+        <span class="text-slate-300 truncate max-w-[150px] md:max-w-2xl">{{ $article->title }}</span>
     </nav>
 
     {{-- ── Header ── --}}
@@ -55,7 +55,7 @@
 
     {{-- ── Hero Cover Image (selalu tampil) ── --}}
     @if($article->thumbnail)
-    <div class="w-full aspect-[21/9] rounded-[3rem] overflow-hidden mb-20 shadow-2xl relative group">
+    <div class="max-w-4xl mx-auto aspect-[21/9] rounded-[3rem] overflow-hidden mb-20 shadow-2xl relative group">
         <img src="{{ asset('storage/' . $article->thumbnail) }}"
              alt="{{ $article->title }}"
              fetchpriority="high"
