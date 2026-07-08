@@ -202,7 +202,7 @@
                     </div>
                     <div class="space-y-2">
                         <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">No HP / WhatsApp</label>
-                        <input type="text" name="phone_number" placeholder="08..." value="{{ old('phone_number', $record->patient->phone_number) }}"
+                        <input type="text" name="phone_number" placeholder="08..." value="{{ old('phone_number', $record->patient->phone_number) }}" maxlength="13"
                                class="w-full h-12 px-4 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all">
                     </div>
                     <div class="space-y-2">
@@ -614,7 +614,7 @@
                     </div>
                     <div class="space-y-2">
                         <label class="text-xs font-bold text-slate-600">Nomor HP / WhatsApp</label>
-                        <input type="text" name="phone_number" placeholder="08xx-xxxx-xxxx" value="{{ old('phone_number', $record->patient->phone_number) }}"
+                        <input type="text" name="phone_number" placeholder="08xx-xxxx-xxxx" value="{{ old('phone_number', $record->patient->phone_number) }}" maxlength="13"
                                class="w-full h-[44px] px-4 border border-[#D9D9D9] rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:border-[#006C49] focus:ring-4 focus:ring-[#006C49]/5 transition-all bg-white">
                     </div>
                 </div>
