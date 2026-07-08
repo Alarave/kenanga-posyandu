@@ -304,7 +304,7 @@
                 'link' => route('admin.patients.index', ['category' => 'balita']),
             ],
             [
-                'label' => 'Total Pemeriksaan (YTD)',
+                'label' => 'Total Pemeriksaan',
                 'value' => $totalPemeriksaan,
                 'icon' => 'medical_services',
                 'bg' => '#ecfdf5',
@@ -313,7 +313,7 @@
                 'link' => route('admin.medical-records.index'),
             ],
             [
-                'label' => 'Total Imunisasi (YTD)',
+                'label' => 'Total Imunisasi',
                 'value' => $totalImunisasi,
                 'icon' => 'vaccines',
                 'bg' => '#f0fdfa',
