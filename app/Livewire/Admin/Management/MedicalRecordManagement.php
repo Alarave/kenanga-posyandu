@@ -4,6 +4,7 @@ namespace App\Livewire\Admin\Management;
 
 use App\Livewire\Shared\BaseAdminComponent;
 use App\Models\MedicalRecord;
+use App\Models\Patient;
 use Livewire\Attributes\Layout;
 
 #[Layout('layouts.admin-layout')]
