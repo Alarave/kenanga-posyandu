@@ -717,7 +717,7 @@ CREATE TABLE `posyandus` (
 
 LOCK TABLES `posyandus` WRITE;
 /*!40000 ALTER TABLE `posyandus` DISABLE KEYS */;
-INSERT INTO `posyandus` VALUES (1,2,'KENANGA 1','Aren Jaya, RW 11, Bekasi Timur','PSY003',NULL,'2026-06-30 04:29:57','2026-06-30 04:29:57'),(2,2,'KENANGA 2','Aren Jaya, RW 12, Bekasi Timur','PSY002',NULL,'2026-06-30 04:29:57','2026-06-30 04:29:57');
+INSERT INTO `posyandus` VALUES (1,2,'Posyandu Kenanga 1','Aren Jaya, RW 11, Bekasi Timur','PSY003',NULL,'2026-06-30 04:29:57','2026-06-30 04:29:57'),(2,2,'Posyandu Kenanga 2','Aren Jaya, RW 12, Bekasi Timur','PSY002',NULL,'2026-06-30 04:29:57','2026-06-30 04:29:57');
 /*!40000 ALTER TABLE `posyandus` ENABLE KEYS */;
 UNLOCK TABLES;
 

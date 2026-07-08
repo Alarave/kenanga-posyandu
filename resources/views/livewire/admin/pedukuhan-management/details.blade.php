@@ -75,7 +75,7 @@
                 <div class="space-y-4">
                     <div class="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-100">
                         <div class="flex items-center gap-3">
-                            <span class="material-symbols-outlined text-blue-500">house_medical</span>
+                            <span class="material-symbols-outlined text-blue-500">home_health</span>
                             <span class="text-xs font-bold text-gray-600">Unit Posyandu</span>
                         </div>
                         <span class="font-black text-gray-900">{{ $pedukuhan->posyandus()->count() }}</span>
@@ -134,7 +134,7 @@
             </table>
             @else
             <div class="px-6 py-16 text-center">
-                <span class="material-symbols-outlined text-gray-200 block mb-2" style="font-size:48px;">house_medical_off</span>
+                <span class="material-symbols-outlined text-gray-200 block mb-2" style="font-size:48px;">domain_disabled</span>
                 <p class="text-sm font-semibold text-gray-400">Belum ada unit posyandu yang terdaftar di wilayah ini.</p>
             </div>
             @endif
