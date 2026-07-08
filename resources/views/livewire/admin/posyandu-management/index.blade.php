@@ -229,12 +229,11 @@
         </div>
 
         {{-- Pagination --}}
-        <div class="px-8 py-5 bg-white border-t border-slate-100 flex items-center justify-between">
-            <div class="text-[10px] font-black text-slate-455 uppercase tracking-widest">
-                {{ $posyandus->total() }} Total Unit
-            </div>
-            {{ $posyandus->links() }}
+        @if ($posyandus->hasPages())
+        <div class="px-6 py-4 bg-white border-t border-slate-100">
+            <x-layouts.ui.pagination :paginator="$posyandus" />
         </div>
+        @endif
     </div>
 
     {{-- ── Delete Confirmation Modal ── --}}

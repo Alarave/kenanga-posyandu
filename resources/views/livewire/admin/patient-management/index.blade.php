@@ -229,7 +229,7 @@
 
     {{-- ── Data Table ── --}}
     <div class="section-card overflow-hidden">
-        <x-table>
+        <x-table no-border>
             <thead style="background:#f9fafb; border-bottom:1px solid rgba(0,0,0,0.06);">
                 <tr>
                     <th class="px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider text-left">
@@ -286,7 +286,7 @@
                             </span>
                         </td>
                         <td class="px-5 py-3.5">
-                            <div class="text-sm font-medium text-slate-700">{{ $patient->posyandu->name ?? '—' }}
+                            <div class= "text-sm font-medium text-slate-700">{{ $patient->posyandu->name ?? '—' }}
                             </div>
                             <div class="text-xs text-slate-400 mt-0.5">{{ $patient->age }}</div>
                         </td>
@@ -328,11 +328,13 @@
                 @endforelse
             </tbody>
         </x-table>
-    </div>
-
-    {{-- ── Pagination ── --}}
-    <div class="px-6 py-4 bg-white border-t border-slate-100">
-        <x-layouts.ui.pagination :paginator="$patients" />
+        
+        {{-- ── Pagination ── --}}
+        @if($patients->hasPages())
+        <div class="px-6 py-4 bg-white border-t border-slate-100">
+            <x-layouts.ui.pagination :paginator="$patients" />
+        </div>
+        @endif
     </div>
 
     {{-- ── Delete Confirmation Modal ── --}}

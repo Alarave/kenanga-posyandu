@@ -289,8 +289,8 @@
         </div>
 
         @if ($schedules->hasPages())
-            <div class="px-8 py-5 border-t border-slate-100 dark:border-slate-800/80 bg-white dark:bg-slate-900">
-                {{ $schedules->links() }}
+            <div class="px-6 py-4 border-t border-slate-100 dark:border-slate-800/80 bg-white dark:bg-slate-900">
+                <x-layouts.ui.pagination :paginator="$schedules" />
             </div>
         @endif
     </div>

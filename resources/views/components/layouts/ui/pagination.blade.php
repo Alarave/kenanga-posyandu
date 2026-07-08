@@ -46,12 +46,12 @@
         @if($paginator->onFirstPage())
             <span class="flex items-center justify-center w-9 sm:w-auto h-9 sm:h-10 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 px-0 sm:px-4 text-slate-400 dark:text-slate-600 text-xs sm:text-sm font-semibold cursor-not-allowed select-none transition-all">
                 <span class="material-symbols-outlined text-[20px] sm:mr-1.5">chevron_left</span>
-                <span class="hidden sm:inline">Previous</span>
+                <span class="hidden sm:inline">Sebelumnya</span>
             </span>
         @else
             <button wire:click="previousPage" rel="prev" aria-label="Previous Page" class="flex items-center justify-center w-9 sm:w-auto h-9 sm:h-10 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-0 sm:px-4 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/80 active:scale-95 shadow-sm text-xs sm:text-sm font-semibold transition-all cursor-pointer">
                 <span class="material-symbols-outlined text-[20px] sm:mr-1.5">chevron_left</span>
-                <span class="hidden sm:inline">Previous</span>
+                <span class="hidden sm:inline">Sebelumnya</span>
             </button>
         @endif
 
@@ -96,12 +96,12 @@
         {{-- Next Page Button --}}
         @if($paginator->hasMorePages())
             <button wire:click="nextPage" rel="next" aria-label="Next Page" class="flex items-center justify-center w-9 sm:w-auto h-9 sm:h-10 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-0 sm:px-4 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/80 active:scale-95 shadow-sm text-xs sm:text-sm font-semibold transition-all cursor-pointer">
-                <span class="hidden sm:inline">Next</span>
+                <span class="hidden sm:inline">Selanjutnya</span>
                 <span class="material-symbols-outlined text-[20px] sm:ml-1.5">chevron_right</span>
             </button>
         @else
             <span class="flex items-center justify-center w-9 sm:w-auto h-9 sm:h-10 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 px-0 sm:px-4 text-slate-400 dark:text-slate-600 text-xs sm:text-sm font-semibold cursor-not-allowed select-none transition-all">
-                <span class="hidden sm:inline">Next</span>
+                <span class="hidden sm:inline">Selanjutnya</span>
                 <span class="material-symbols-outlined text-[20px] sm:ml-1.5">chevron_right</span>
             </span>
         @endif

@@ -282,7 +282,7 @@
             </div>
 
             {{-- Sort Options Row --}}
-            <div class="flex items-center gap-3 overflow-x-auto hide-scrollbar w-full pb-1">
+            <div class="flex items-center gap-3 overflow-x-auto hide-scrollbar w-full pb-1 mt-5 pt-4 border-t border-slate-100">
                 <span class="text-[10px] font-black text-slate-450 uppercase tracking-widest whitespace-nowrap shrink-0">Urutkan:</span>
             
                 {{-- Sort by Patient Name --}}

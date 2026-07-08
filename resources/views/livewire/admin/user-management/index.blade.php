@@ -104,7 +104,7 @@
 
     {{-- ── Data Table ── --}}
     <div class="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
-        <x-table>
+        <x-table no-border>
             <thead class="bg-slate-50/80 border-b border-slate-100">
                 <tr>
                     <th class="px-5 py-3 text-[10px] font-black text-slate-900 uppercase tracking-widest text-center">
@@ -213,10 +213,12 @@
                 @endforelse
             </tbody>
         </x-table>
-    </div>
-
-    {{-- ── Pagination ── --}}
-    <div class="px-6 py-4 bg-slate-50 border-t border-slate-100">
-        {{ $users->links() }}
+        
+        {{-- ── Pagination ── --}}
+        @if($users->hasPages())
+        <div class="px-6 py-4 bg-white border-t border-slate-100">
+            <x-layouts.ui.pagination :paginator="$users" />
+        </div>
+        @endif
     </div>
 </div>
