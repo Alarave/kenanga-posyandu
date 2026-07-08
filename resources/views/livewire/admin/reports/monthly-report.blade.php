@@ -210,9 +210,9 @@
 
         {{-- Search & Sort Section --}}
         <div class="px-6 lg:px-8 py-5 border-b border-slate-100 bg-white">
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
+            <div class="flex flex-col lg:flex-row lg:items-center gap-4 w-full">
                 {{-- Search Input --}}
-                <div class="relative group @if(auth()->user()->isSuperAdmin()) md:col-span-5 @else md:col-span-8 @endif">
+                <div class="relative w-full lg:max-w-xs xl:max-w-sm group">
                     <div class="absolute inset-y-0 left-0 w-10 flex items-center justify-center pointer-events-none">
                         <span class="material-symbols-outlined text-slate-350 group-focus-within:text-teal-500 transition-colors text-[20px]">search</span>
                     </div>
@@ -223,7 +223,7 @@
 
                 {{-- Filter Posyandu (Hanya untuk Superadmin) --}}
                 @if(auth()->user()->isSuperAdmin())
-                <div class="md:col-span-3">
+                <div class="w-full lg:w-48 shrink-0">
                     <div class="relative">
                         <select wire:model.live="selectedPosyanduId" 
                                 class="w-full h-11 pl-4 pr-10 rounded-2xl border border-slate-200 bg-slate-50/50 text-[13px] font-bold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all appearance-none shadow-sm">
@@ -240,7 +240,7 @@
                 @endif
 
                 {{-- Filter Bulan --}}
-                <div class="md:col-span-2">
+                <div class="w-full lg:w-44 shrink-0">
                     <div class="relative">
                         <select wire:model.live="filterMonth" 
                                 class="w-full h-11 pl-4 pr-10 rounded-2xl border border-slate-200 bg-slate-50/50 text-[13px] font-bold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all appearance-none shadow-sm">
@@ -265,7 +265,7 @@
                 </div>
 
                 {{-- Filter Kategori --}}
-                <div class="md:col-span-2">
+                <div class="w-full lg:w-44 shrink-0">
                     <div class="relative">
                         <select wire:model.live="filterCategory" 
                                 class="w-full h-11 pl-4 pr-10 rounded-2xl border border-slate-200 bg-slate-50/50 text-[13px] font-bold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all appearance-none shadow-sm">
