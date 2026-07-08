@@ -93,7 +93,8 @@
                         </a>
                     </li>
                     <li>
-                        <a href="mailto:posyanduilp_kenanga1@gmail.com" 
+                        <a href="https://mail.google.com/mail/u/0/?fs=1&to=posyanduilp_kenanga1@gmail.com&tf=cm" 
+                           target="_blank" rel="noopener noreferrer"
                            class="text-slate-600 hover:text-slate-900 transition-colors duration-300 flex items-start group">
                             <span class="material-symbols-outlined text-[18px] text-slate-400 mr-2.5 mt-0.5 group-hover:text-emerald-600 shrink-0">mail</span>
                             <span class="break-all">posyanduilp_kenanga1@gmail.com</span>
@@ -104,15 +105,10 @@
 
         </div>
 
-        {{-- Bottom Section --}}
         <div class="mt-20 pt-8 border-t border-slate-200/80 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
             <p class="text-slate-500 text-xs font-semibold">
                 &copy; {{ date('Y') }} Posyandu Kenanga Bekasi Timur. All rights reserved.
             </p>
-            <div class="flex gap-6 text-xs font-semibold text-slate-400">
-                <a href="#" class="hover:text-slate-600 transition-colors">Privacy Policy</a>
-                <a href="#" class="hover:text-slate-600 transition-colors">Terms of Service</a>
-            </div>
         </div>
 
     </div>

@@ -108,8 +108,14 @@
         $posyanduName = $user->posyandu?->name ?? 'Posyandu';
     @endphp
 
+    {{-- Laporan Print Header --}}
+    <div class="hidden print:block mb-8 text-center border-b pb-4">
+        <h1 class="text-2xl font-black text-slate-800 uppercase tracking-wide">Laporan Ringkasan Dashboard</h1>
+        <p class="text-xs font-bold text-slate-500 mt-1">Sistem Informasi Posyandu Kenanga | {{ now()->format('d F Y H:i') }}</p>
+    </div>
+
     {{-- ── Hero Section ── --}}
-    <section class="relative rounded-2xl overflow-hidden" style="background:#0f172a;">
+    <section class="relative rounded-2xl overflow-hidden no-print" style="background:#0f172a;">
         {{-- Background layers --}}
         <div class="absolute inset-0 hero-gradient"></div>
         <div class="absolute top-0 left-1/4 w-72 h-72 hero-orb-1 rounded-full filter blur-[60px] animate-pulse"></div>
@@ -176,7 +182,7 @@
     </section>
 
     {{-- ── Global Filter Bar ── --}}
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 relative z-20">
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 relative z-20 no-print">
         <div class="flex flex-col md:flex-row gap-4 items-end">
             <!-- Filter Periode -->
             <div class="w-full md:w-1/4">
