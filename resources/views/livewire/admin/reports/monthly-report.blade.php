@@ -209,14 +209,47 @@
 
         {{-- Search & Sort Section --}}
         <div class="px-6 lg:px-8 py-5 border-b border-slate-100 flex flex-col gap-4 bg-white">
-            {{-- Search Input --}}
-            <div class="relative w-full max-w-100 shrink-0 group">
-                <div class="absolute inset-y-0 left-0 w-10 flex items-center justify-center pointer-events-none">
-                    <span class="material-symbols-outlined text-slate-350 group-focus-within:text-teal-500 transition-colors text-[20px]">search</span>
+            <div class="flex flex-col md:flex-row md:items-center gap-4">
+                {{-- Search Input --}}
+                <div class="relative w-full max-w-100 shrink-0 group">
+                    <div class="absolute inset-y-0 left-0 w-10 flex items-center justify-center pointer-events-none">
+                        <span class="material-symbols-outlined text-slate-350 group-focus-within:text-teal-500 transition-colors text-[20px]">search</span>
+                    </div>
+                    <input type="text" wire:model.live.debounce.300ms="search" 
+                           placeholder="Cari Nama/NIK..."
+                           class="w-full pl-10 pr-4 h-11 rounded-2xl border-2 border-slate-100 bg-slate-50/50 text-[13px] font-semibold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-0 transition-all shadow-sm">
                 </div>
-                <input type="text" wire:model.live.debounce.300ms="search" 
-                       placeholder="Cari Nama/NIK..."
-                       class="w-full pl-10 pr-4 h-11 rounded-2xl border-2 border-slate-100 bg-slate-50/50 text-[13px] font-semibold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-0 transition-all shadow-sm">
+
+                {{-- Category Filter --}}
+                <div class="flex items-center gap-3 overflow-x-auto hide-scrollbar w-full pb-1 md:pb-0 md:w-auto">
+                    <span class="text-[10px] font-black text-slate-450 uppercase tracking-widest whitespace-nowrap shrink-0">Kategori:</span>
+                    <div class="flex bg-slate-100/80 p-1 rounded-xl">
+                        <button wire:click="$set('categoryFilter', 'all')"
+                                @class(['px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap flex items-center gap-1', 
+                                        'bg-white text-teal-600 shadow-sm border border-slate-100/10' => $categoryFilter === 'all',
+                                        'text-slate-500 hover:text-slate-800' => $categoryFilter !== 'all'])>
+                            Semua
+                        </button>
+                        <button wire:click="$set('categoryFilter', 'balita')"
+                                @class(['px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap flex items-center gap-1', 
+                                        'bg-white text-teal-600 shadow-sm border border-slate-100/10' => $categoryFilter === 'balita',
+                                        'text-slate-500 hover:text-slate-800' => $categoryFilter !== 'balita'])>
+                            Balita
+                        </button>
+                        <button wire:click="$set('categoryFilter', 'ibu_hamil')"
+                                @class(['px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap flex items-center gap-1', 
+                                        'bg-white text-teal-600 shadow-sm border border-slate-100/10' => $categoryFilter === 'ibu_hamil',
+                                        'text-slate-500 hover:text-slate-800' => $categoryFilter !== 'ibu_hamil'])>
+                            Ibu Hamil
+                        </button>
+                        <button wire:click="$set('categoryFilter', 'lansia')"
+                                @class(['px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap flex items-center gap-1', 
+                                        'bg-white text-teal-600 shadow-sm border border-slate-100/10' => $categoryFilter === 'lansia',
+                                        'text-slate-500 hover:text-slate-800' => $categoryFilter !== 'lansia'])>
+                            Lansia
+                        </button>
+                    </div>
+                </div>
             </div>
 
             {{-- Sort Options Row --}}

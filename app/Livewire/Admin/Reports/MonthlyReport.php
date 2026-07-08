@@ -33,6 +33,8 @@ class MonthlyReport extends BaseAdminComponent
 
     public string $search = '';
 
+    public string $categoryFilter = 'all';
+
     // Stats
     public int $totalKunjungan = 0;
 
@@ -85,6 +87,11 @@ class MonthlyReport extends BaseAdminComponent
             $this->endYear = (int) $year;
             $this->endMonth = (int) $month;
         }
+    }
+
+    public function updatedCategoryFilter(): void
+    {
+        $this->resetPage();
     }
 
     public function generateReport(): void
@@ -241,6 +248,15 @@ class MonthlyReport extends BaseAdminComponent
                 $query->whereHas('patient', fn ($q) => $q->where('full_name', 'like', '%'.$this->search.'%')
                     ->orWhere('id_number', 'like', '%'.$this->search.'%')
                 );
+            }
+
+            // Apply category filter
+            if ($this->categoryFilter !== 'all') {
+                if ($this->categoryFilter === 'balita') {
+                    $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['bayi', 'baduta', 'balita', 'anak_sekolah']));
+                } else {
+                    $query->whereHas('patient', fn ($q) => $q->where('category', $this->categoryFilter));
+                }
             }
 
             // Apply sorting

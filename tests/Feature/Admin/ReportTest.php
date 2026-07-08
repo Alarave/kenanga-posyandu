@@ -6,6 +6,7 @@ use App\Models\Posyandu;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
+use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
 
@@ -215,3 +216,61 @@ describe('laporan individu ibu hamil', function () {
         $response->assertSee('Visualisasi Grafik Pemantauan Ibu Hamil');
     });
 });
+
+describe('monthly report livewire component', function () {
+    it('can filter records by category', function () {
+        $this->actingAs($this->admin);
+
+        // Create patients of other categories
+        $ibuHamilPatient = Patient::factory()->create([
+            'posyandu_id' => $this->posyandu1->id,
+            'category' => 'ibu_hamil',
+            'full_name' => 'Ibu Test',
+        ]);
+
+        $lansiaPatient = Patient::factory()->create([
+            'posyandu_id' => $this->posyandu1->id,
+            'category' => 'lansia',
+            'full_name' => 'Mbah Test',
+        ]);
+
+        // Create records
+        MedicalRecord::factory()->create([
+            'patient_id' => $ibuHamilPatient->id,
+            'user_id' => $this->admin->id,
+            'visit_date' => now(),
+            'weight' => 60.0,
+            'height' => 155.0,
+        ]);
+
+        MedicalRecord::factory()->create([
+            'patient_id' => $lansiaPatient->id,
+            'user_id' => $this->admin->id,
+            'visit_date' => now(),
+            'weight' => 50.0,
+            'height' => 150.0,
+        ]);
+
+        // Test component default (all categories)
+        Livewire::test(App\Livewire\Admin\Reports\MonthlyReport::class)
+            ->assertSee($this->patient->full_name)
+            ->assertSee($ibuHamilPatient->full_name)
+            ->assertSee($lansiaPatient->full_name)
+            // Filter to balita
+            ->set('categoryFilter', 'balita')
+            ->assertSee($this->patient->full_name)
+            ->assertDontSee($ibuHamilPatient->full_name)
+            ->assertDontSee($lansiaPatient->full_name)
+            // Filter to ibu hamil
+            ->set('categoryFilter', 'ibu_hamil')
+            ->assertDontSee($this->patient->full_name)
+            ->assertSee($ibuHamilPatient->full_name)
+            ->assertDontSee($lansiaPatient->full_name)
+            // Filter to lansia
+            ->set('categoryFilter', 'lansia')
+            ->assertDontSee($this->patient->full_name)
+            ->assertDontSee($ibuHamilPatient->full_name)
+            ->assertSee($lansiaPatient->full_name);
+    });
+});
+
