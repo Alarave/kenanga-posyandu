@@ -1,12 +1,12 @@
 <div>
     @section('admin-title')
-        <div class="flex items-center gap-3">
-            <div class="w-9 h-9 rounded-xl bg-teal-50 flex items-center justify-center text-teal-600 border border-teal-100">
-                <span class="material-symbols-outlined text-[20px]">monitor_weight</span>
+        <div class="flex items-center gap-4 py-1">
+            <div class="w-14 h-14 rounded-2xl bg-teal-50 flex items-center justify-center text-teal-650 border border-teal-100 shadow-sm shrink-0">
+                <span class="material-symbols-outlined text-[28px]">monitor_weight</span>
             </div>
             <div>
-                <h1 class="text-base font-black text-slate-900 leading-tight">Penimbangan Massal</h1>
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Bulan Penimbangan Balita</p>
+                <h1 class="text-xl md:text-2xl font-black text-slate-900 leading-tight">Penimbangan Massal</h1>
+                <p class="text-xs font-extrabold text-slate-400 uppercase tracking-widest mt-1.5">Bulan Penimbangan Balita</p>
             </div>
         </div>
     @endsection
