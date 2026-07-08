@@ -40,12 +40,14 @@ class UserManagement extends BaseAdminComponent
 
         $totalUsers = User::count();
         $inactiveUsers = User::where('is_active', false)->count();
+        $activeKaders = User::where('role', 'kader')->where('is_active', true)->count();
 
         return view('livewire.admin.user-management.index', [
             'users' => $query->paginate(10),
             'totalUsers' => $totalUsers,
             'totalPosyandu' => Posyandu::count(),
             'inactiveUsers' => $inactiveUsers,
+            'activeKaders' => $activeKaders,
         ]);
     }
 

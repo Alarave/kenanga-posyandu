@@ -1,7 +1,7 @@
 {{-- ── Navbar Shell ── --}}
 <header id="topNavbar"
     class="glass-header sticky top-0 z-30 flex items-center justify-between h-16 px-4 md:px-6 transition-transform duration-300"
-    style="font-family:'Public Sans','Inter',sans-serif;">
+    style="font-family:'Public Sans', 'Public Sans Fallback', 'Inter', sans-serif;">
 
     {{-- ── LEFT: Mobile toggle + Search ── --}}
     <div class="flex items-center gap-3 flex-1 min-w-0">
@@ -160,7 +160,7 @@
     // Smart sticky navbar - bind to window since layout overflow has been fixed
     const navbar = document.getElementById('topNavbar');
     if (navbar) {
-        let lastScroll = window.scrollY || document.documentElement.scrollTop;
+        let lastScroll = 0; // Initialize to 0 to avoid forced synchronous layout reflow on page load
         window.addEventListener('scroll', () => {
             const currentScroll = window.scrollY || document.documentElement.scrollTop;
             if (currentScroll > lastScroll && currentScroll > 64) {

@@ -20,9 +20,9 @@
         </x-table>
 --}}
 
-<div class="w-full overflow-x-auto rounded-xl border border-outline-variant"
-     style="font-family:'Public Sans',sans-serif;">
-    <table {{ $attributes->merge([
+<div class="w-full overflow-x-auto {{ $attributes->has('no-border') ? '' : 'rounded-xl border border-outline-variant' }}"
+     style="font-family:'Public Sans', 'Public Sans Fallback', sans-serif;">
+    <table {{ $attributes->except('no-border')->merge([
         'class' => 'w-full text-[13px] text-on-surface border-collapse'
     ]) }}>
 

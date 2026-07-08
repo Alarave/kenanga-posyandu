@@ -38,6 +38,6 @@
 <div {{ $attributes->merge([
     'class' => "bg-surface-container-lowest rounded-xl $paddingClass $shadowClass $borderClass"
 ]) }}
-     style="font-family:'Public Sans',sans-serif;">
+     style="font-family:'Public Sans', 'Public Sans Fallback', sans-serif;">
     {{ $slot }}
 </div>

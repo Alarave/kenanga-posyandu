@@ -1,6 +1,6 @@
 @extends('layouts.public-layout')
 
-@section('title', $article->title . ' - Posyandu Digital')
+@section('title', $article->title . ' - Posyandu Kenanga')
 
 @section('content')
 <article class="max-w-screen-xl mx-auto px-6 md:px-12 py-12 md:py-20">

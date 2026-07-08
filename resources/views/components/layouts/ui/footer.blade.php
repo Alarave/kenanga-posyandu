@@ -1,6 +1,6 @@
 {{-- Posyandu Admin Footer --}}
 <footer class="border-t border-outline-variant py-5 mt-auto"
-        style="background:var(--color-surface-container-low, #f0f5f2); font-family:'Public Sans',sans-serif;">
+        style="background:var(--color-surface-container-low, #f0f5f2); font-family:'Public Sans', 'Public Sans Fallback', sans-serif;">
     <div class="px-6 md:px-8 flex flex-col sm:flex-row justify-between items-center gap-3">
 
         <p class="text-[12px] font-medium text-on-surface-variant">

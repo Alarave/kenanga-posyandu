@@ -182,4 +182,9 @@
 
 </div>
 
+@if(in_array($patient->computed_category, ['bayi', 'baduta', 'balita']))
+    @push('scripts')
+        @vite(['resources/js/charts.js'])
+    @endpush
+@endif
 @endsection

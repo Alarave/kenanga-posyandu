@@ -1,6 +1,6 @@
 @extends('layouts.public-layout')
 
-@section('title', 'Beranda - Posyandu Digital')
+@section('title', 'Beranda - Posyandu Kenanga')
 
 @push('head')
     <!-- Preload Critical LCP Hero Image -->
@@ -1245,7 +1245,7 @@
         {{-- ══ FITUR UTAMA ══ --}}
         <section class="section" id="fitur-section">
             <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:48px;" id="fitur-header">
-                <h2 class="section-heading">Fitur Unggulan <em>Posyandu Digital.</em></h2>
+                <h2 class="section-heading">Fitur Unggulan <em>Posyandu Kenanga.</em></h2>
                 <p style="font-size:15px;color:#64748b;line-height:1.7;max-width:520px;margin:8px 0 0;">
                     Kepraktisan pencatatan data balita, jadwal pemeriksaan real-time, dan grafik perkembangan kesehatan.
                 </p>

@@ -4,7 +4,9 @@ namespace App\Livewire\Admin\Management;
 
 use App\Livewire\Shared\BaseAdminComponent;
 use App\Models\Pedukuhan;
+use Livewire\Attributes\Layout;
 
+#[Layout('layouts.admin-layout')]
 class PedukuhanManagement extends BaseAdminComponent
 {
     public string $search = '';
@@ -16,14 +18,20 @@ class PedukuhanManagement extends BaseAdminComponent
     public function render()
     {
         $query = Pedukuhan::query()
+            ->withCount(['posyandus', 'patients'])
             ->when($this->search, function ($q) {
                 $q->where('name', 'like', '%'.$this->search.'%')
                     ->orWhere('description', 'like', '%'.$this->search.'%');
             })
             ->latest();
 
+        $totalPosyandu = \App\Models\Posyandu::count();
+        $totalWarga = \App\Models\Patient::count();
+
         return view('livewire.admin.pedukuhan-management.index', [
             'pedukuhans' => $query->paginate(10),
+            'totalPosyandu' => $totalPosyandu,
+            'totalWarga' => $totalWarga,
         ]);
     }
 }

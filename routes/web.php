@@ -111,8 +111,12 @@ Route::middleware(['auth'])->group(function () {
     // 6. MEDICAL RECORDS
     Route::get('admin/medical-records', MedicalRecordManagement::class)->name('admin.medical-records.index');
     Route::get('admin/medical-records/bulk', \App\Livewire\Admin\MedicalRecord\BulkMeasurementEntry::class)->name('admin.medical-records.bulk');
+    Route::get('admin/medical-records/import', [MedicalRecordController::class, 'importForm'])->name('admin.medical-records.import');
+    Route::post('admin/medical-records/import', [MedicalRecordController::class, 'import'])->name('admin.medical-records.import.store');
+    Route::get('admin/medical-records/template', [MedicalRecordController::class, 'downloadTemplate'])->name('admin.medical-records.template');
     Route::get('admin/medical-records/create', [MedicalRecordController::class, 'create'])->name('admin.medical-records.create');
     Route::post('admin/medical-records', [MedicalRecordController::class, 'store'])->name('admin.medical-records.store');
+
     Route::get('admin/medical-records/{medicalRecord}', [MedicalRecordController::class, 'show'])->name('admin.medical-records.show');
     Route::get('admin/medical-records/{medicalRecord}/edit', [MedicalRecordController::class, 'edit'])->name('admin.medical-records.edit');
     Route::put('admin/medical-records/{medicalRecord}', [MedicalRecordController::class, 'update'])->name('admin.medical-records.update');

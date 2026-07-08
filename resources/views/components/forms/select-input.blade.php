@@ -13,14 +13,14 @@
     $id = $id ?? $name;
     $error = $error || ($name && isset($errors) && $errors->has($name));
     
-    $baseClasses = 'h-11 w-full appearance-none rounded-xl border px-4 py-2.5 pr-11 text-sm shadow-xs focus:outline-none focus:ring-4 transition-all duration-300 cursor-pointer';
+    $baseClasses = 'h-11 w-full appearance-none rounded-xl border px-4 py-2.5 pr-11 text-sm shadow-xs focus:outline-none focus:ring-3 transition-all duration-300 cursor-pointer';
     
     if ($disabled) {
-        $stateClasses = 'bg-slate-50 text-slate-400 border-slate-200 cursor-not-allowed dark:bg-slate-800 dark:text-slate-500 dark:border-slate-700';
+        $stateClasses = 'bg-slate-50 text-slate-400 border-outline-variant cursor-not-allowed dark:bg-slate-800 dark:text-slate-500 dark:border-slate-700';
     } elseif ($error) {
         $stateClasses = 'bg-red-50/10 text-red-900 border-red-400 focus:border-red-500 focus:ring-red-500/10 dark:bg-red-950/10 dark:text-red-400 dark:border-red-500/50';
     } else {
-        $stateClasses = 'bg-white text-slate-800 border-slate-200 focus:border-primary focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-900 dark:text-white/90';
+        $stateClasses = 'bg-white text-slate-800 border-outline-variant focus:border-primary focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-900 dark:text-white/90';
     }
 
     $hasWireModel = false;

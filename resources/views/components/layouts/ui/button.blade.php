@@ -150,7 +150,7 @@
         href="{{ $disabled ? '#' : $href }}"
         {{ $attributes->merge(['class' => $allClasses]) }}
         @if($disabled) aria-disabled="true" tabindex="-1" @endif
-        style="font-family:'Public Sans',sans-serif;"
+        style="font-family:'Public Sans', 'Public Sans Fallback', sans-serif;"
     >
         @if($icon && $iconPos === 'left')
             {!! $iconHtml !!}
@@ -168,7 +168,7 @@
         type="{{ $type }}"
         {{ $attributes->merge(['class' => $allClasses]) }}
         @if($disabled) disabled aria-disabled="true" @endif
-        style="font-family:'Public Sans',sans-serif;"
+        style="font-family:'Public Sans', 'Public Sans Fallback', sans-serif;"
     >
         @if($icon && $iconPos === 'left')
             {!! $iconHtml !!}

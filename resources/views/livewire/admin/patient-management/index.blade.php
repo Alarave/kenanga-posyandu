@@ -65,104 +65,104 @@
         {{-- Bayi --}}
         <div class="stat-card flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style="background:#eff6ff; color:#2563eb;">
+                 style="background:#eff6ff; color:#2563eb;">
                 <span class="material-symbols-outlined text-[20px]">baby_changing_station</span>
             </div>
             <div>
                 <p class="text-xs font-semibold text-slate-500 leading-none mb-1">Bayi (0-11 bln)</p>
                 <p class="text-xl font-bold text-slate-900 leading-none" style="font-variant-numeric:tabular-nums;">
-                    {{ App\Models\Patient::where('category', 'bayi')->orWhere(fn($q) => $q->where('category', 'balita')->where('birth_date', '>=', now()->subMonths(12)))->count() }}</p>
+                    {{ $stats['bayi'] }}</p>
             </div>
         </div>
 
         {{-- Baduta --}}
         <div class="stat-card flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style="background:#dbeafe; color:#1d4ed8;">
+                 style="background:#dbeafe; color:#1d4ed8;">
                 <span class="material-symbols-outlined text-[20px]">child_friendly</span>
             </div>
             <div>
                 <p class="text-xs font-semibold text-slate-500 leading-none mb-1">Baduta (12-23 bln)</p>
                 <p class="text-xl font-bold text-slate-900 leading-none" style="font-variant-numeric:tabular-nums;">
-                    {{ App\Models\Patient::where('category', 'baduta')->orWhere(fn($q) => $q->where('category', 'balita')->where('birth_date', '<', now()->subMonths(12))->where('birth_date', '>=', now()->subMonths(24)))->count() }}</p>
+                    {{ $stats['baduta'] }}</p>
             </div>
         </div>
 
         {{-- Balita --}}
         <div class="stat-card flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style="background:#f0fdfa; color:#0f766e;">
+                 style="background:#f0fdfa; color:#0f766e;">
                 <span class="material-symbols-outlined text-[20px]">child_care</span>
             </div>
             <div>
                 <p class="text-xs font-semibold text-slate-500 leading-none mb-1">Balita (24-59 bln)</p>
                 <p class="text-xl font-bold text-slate-900 leading-none" style="font-variant-numeric:tabular-nums;">
-                    {{ App\Models\Patient::where('category', 'balita')->where(fn($q) => $q->whereNull('birth_date')->orWhere('birth_date', '<', now()->subMonths(24)))->count() }}</p>
+                    {{ $stats['balita'] }}</p>
             </div>
         </div>
 
         {{-- Anak Sekolah --}}
         <div class="stat-card flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style="background:#eef2ff; color:#4338ca;">
+                 style="background:#eef2ff; color:#4338ca;">
                 <span class="material-symbols-outlined text-[20px]">school</span>
             </div>
             <div>
                 <p class="text-xs font-semibold text-slate-500 leading-none mb-1">Anak Sekolah</p>
                 <p class="text-xl font-bold text-slate-900 leading-none" style="font-variant-numeric:tabular-nums;">
-                    {{ App\Models\Patient::where('category', 'anak_sekolah')->count() }}</p>
+                    {{ $stats['anak_sekolah'] }}</p>
             </div>
         </div>
 
         {{-- Ibu Hamil --}}
         <div class="stat-card flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style="background:#fdf2f8; color:#be185d;">
+                 style="background:#fdf2f8; color:#be185d;">
                 <span class="material-symbols-outlined text-[20px]">pregnant_woman</span>
             </div>
             <div>
                 <p class="text-xs font-semibold text-slate-500 leading-none mb-1">Ibu Hamil</p>
                 <p class="text-xl font-bold text-slate-900 leading-none" style="font-variant-numeric:tabular-nums;">
-                    {{ App\Models\Patient::where('category', 'ibu_hamil')->count() }}</p>
+                    {{ $stats['ibu_hamil'] }}</p>
             </div>
         </div>
 
         {{-- Remaja --}}
         <div class="stat-card flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style="background:#f5f3ff; color:#7c3aed;">
+                 style="background:#f5f3ff; color:#7c3aed;">
                 <span class="material-symbols-outlined text-[20px]">emoji_people</span>
             </div>
             <div>
                 <p class="text-xs font-semibold text-slate-500 leading-none mb-1">Remaja</p>
                 <p class="text-xl font-bold text-slate-900 leading-none" style="font-variant-numeric:tabular-nums;">
-                    {{ App\Models\Patient::where('category', 'remaja')->count() }}</p>
+                    {{ $stats['remaja'] }}</p>
             </div>
         </div>
 
         {{-- Lansia --}}
         <div class="stat-card flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style="background:#fff7ed; color:#c2410c;">
+                 style="background:#fff7ed; color:#c2410c;">
                 <span class="material-symbols-outlined text-[20px]">elderly</span>
             </div>
             <div>
                 <p class="text-xs font-semibold text-slate-500 leading-none mb-1">Lansia</p>
                 <p class="text-xl font-bold text-slate-900 leading-none" style="font-variant-numeric:tabular-nums;">
-                    {{ App\Models\Patient::where('category', 'lansia')->count() }}</p>
+                    {{ $stats['lansia'] }}</p>
             </div>
         </div>
 
         {{-- Umum / Lainnya --}}
         <div class="stat-card flex items-center gap-3">
             <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style="background:#f8fafc; color:#475569;">
+                 style="background:#f8fafc; color:#475569;">
                 <span class="material-symbols-outlined text-[20px]">groups</span>
             </div>
             <div>
                 <p class="text-xs font-semibold text-slate-500 leading-none mb-1">Umum / Lainnya</p>
                 <p class="text-xl font-bold text-slate-900 leading-none" style="font-variant-numeric:tabular-nums;">
-                    {{ App\Models\Patient::where('category', 'umum')->count() }}</p>
+                    {{ $stats['umum'] }}</p>
             </div>
         </div>
     </div>
@@ -229,7 +229,7 @@
 
     {{-- ── Data Table ── --}}
     <div class="section-card overflow-hidden">
-        <x-table>
+        <x-table no-border>
             <thead style="background:#f9fafb; border-bottom:1px solid rgba(0,0,0,0.06);">
                 <tr>
                     <th class="px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider text-left">
@@ -238,7 +238,7 @@
                         Kategori</th>
                     <th class="px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider text-left">
                         Posyandu</th>
-                    <th class="px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider text-right">
+                    <th class="px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider text-center">
                         Aksi</th>
                 </tr>
             </thead>
@@ -286,35 +286,30 @@
                             </span>
                         </td>
                         <td class="px-5 py-3.5">
-                            <div class="text-sm font-medium text-slate-700">{{ $patient->posyandu->name ?? '—' }}
+                            <div class= "text-sm font-medium text-slate-700">{{ $patient->posyandu->name ?? '—' }}
                             </div>
                             <div class="text-xs text-slate-400 mt-0.5">{{ $patient->age }}</div>
                         </td>
-                        <td class="px-5 py-3.5 text-right">
-                            <div class="flex items-center justify-end gap-1.5">
-                                {{-- View Detail --}}
+                        <td class="px-5 py-4 text-center">
+                            <div class="flex items-center justify-center gap-2">
                                 <a href="{{ route('admin.patients.show', $patient->id) }}"
-                                    class="w-9 h-9 flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-400 hover:bg-teal-500 hover:text-white hover:border-teal-500 transition-all flex-shrink-0"
+                                    class="w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-teal-600 hover:text-white transition-all shadow-sm hover:shadow-teal-500/20 group/btn"
                                     title="Lihat Detail">
-                                    <span class="material-symbols-outlined text-[17px]">visibility</span>
+                                    <span class="material-symbols-outlined text-[22px]">visibility</span>
                                 </a>
-
-                                {{-- Edit Record --}}
                                 @can('update', $patient)
                                     <a href="{{ route('admin.patients.edit', $patient->id) }}"
-                                        class="w-9 h-9 flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-400 hover:bg-amber-500 hover:text-white hover:border-amber-500 transition-all flex-shrink-0"
+                                        class="w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-indigo-600 hover:text-white transition-all shadow-sm hover:shadow-indigo-500/20 group/btn"
                                         title="Edit Data">
-                                        <span class="material-symbols-outlined text-[17px]">edit</span>
+                                        <span class="material-symbols-outlined text-[22px]">edit</span>
                                     </a>
                                 @endcan
-
-                                {{-- Delete --}}
                                 @can('delete', $patient)
                                     <button wire:click="confirmDelete({{ $patient->id }})"
                                         type="button"
-                                        class="w-9 h-9 flex items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-red-400 hover:bg-red-500 hover:text-white hover:border-red-500 transition-all flex-shrink-0"
+                                        class="w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-red-600 hover:text-white transition-all shadow-sm hover:shadow-red-500/20 group/btn cursor-pointer"
                                         title="Hapus Data">
-                                        <span class="material-symbols-outlined text-[17px]">delete</span>
+                                        <span class="material-symbols-outlined text-[22px]">delete</span>
                                     </button>
                                 @endcan
                             </div>
@@ -333,11 +328,13 @@
                 @endforelse
             </tbody>
         </x-table>
-    </div>
-
-    {{-- ── Pagination ── --}}
-    <div class="px-6 py-4 bg-white border-t border-slate-100">
-        <x-layouts.ui.pagination :paginator="$patients" />
+        
+        {{-- ── Pagination ── --}}
+        @if($patients->hasPages())
+        <div class="px-6 py-4 bg-white border-t border-slate-100">
+            <x-layouts.ui.pagination :paginator="$patients" />
+        </div>
+        @endif
     </div>
 
     {{-- ── Delete Confirmation Modal ── --}}

@@ -17,7 +17,7 @@
                 <p class="text-xs font-semibold text-slate-500 mt-3 leading-relaxed">Lansia dengan tekanan darah &ge; 140/90 mmHg</p>
             </div>
             <div class="mt-6 pt-4 border-t border-slate-105 text-[10px] font-black text-slate-400 uppercase tracking-wide">
-                *Terdeteksi otomatis rekam medis
+                Terdeteksi otomatis rekam medis
             </div>
         </div>
 
@@ -37,7 +37,7 @@
                 <p class="text-xs font-semibold text-slate-500 mt-3 leading-relaxed">Lansia dengan kadar GDS/Gula Darah &ge; 200 mg/dL</p>
             </div>
             <div class="mt-6 pt-4 border-t border-slate-105 text-[10px] font-black text-slate-400 uppercase tracking-wide">
-                *Kasus hiperglikemia aktif
+                Kasus hiperglikemia aktif
             </div>
         </div>
 
@@ -57,7 +57,7 @@
                 <p class="text-xs font-semibold text-slate-500 mt-3 leading-relaxed">Lansia dengan kadar Kolesterol &ge; 200 mg/dL</p>
             </div>
             <div class="mt-6 pt-4 border-t border-slate-105 text-[10px] font-black text-slate-400 uppercase tracking-wide">
-                *Pemeriksaan berkala
+                Pemeriksaan berkala
             </div>
         </div>
 
@@ -77,7 +77,7 @@
                 <p class="text-xs font-semibold text-slate-500 mt-3 leading-relaxed">Lansia dengan kadar Asam Urat &ge; 7.0 mg/dL</p>
             </div>
             <div class="mt-6 pt-4 border-t border-slate-105 text-[10px] font-black text-slate-400 uppercase tracking-wide">
-                *Deteksi pencegahan gout
+                Deteksi pencegahan gout
             </div>
         </div>
     </div>

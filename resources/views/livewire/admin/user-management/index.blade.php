@@ -49,7 +49,7 @@
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
             <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Kader Aktif</div>
             <div class="text-2xl font-black text-slate-900">
-                {{ App\Models\User::where('role', 'kader')->where('is_active', true)->count() }}</div>
+                {{ $activeKaders }}</div>
         </div>
         <div class="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm">
             <div class="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">Unit Terdaftar</div>
@@ -94,7 +94,7 @@
 
             @if ($search || $role || $status)
                 <button wire:click="$set('search', ''); $set('role', ''); $set('status', '');"
-                    class="h-12 px-4 flex items-center gap-2 text-red-500 font-bold text-xs uppercase tracking-widest hover:bg-red-50 rounded-2xl transition-all">
+                    class="h-11 px-4 flex items-center gap-2 text-red-500 font-semibold text-sm hover:bg-red-50 rounded-xl transition-all">
                     <span class="material-symbols-outlined text-[18px]">restart_alt</span>
                     Reset
                 </button>
@@ -104,7 +104,7 @@
 
     {{-- ── Data Table ── --}}
     <div class="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
-        <x-table>
+        <x-table no-border>
             <thead class="bg-slate-50/80 border-b border-slate-100">
                 <tr>
                     <th class="px-5 py-3 text-[10px] font-black text-slate-900 uppercase tracking-widest text-center">
@@ -213,10 +213,12 @@
                 @endforelse
             </tbody>
         </x-table>
-    </div>
-
-    {{-- ── Pagination ── --}}
-    <div class="px-6 py-4 bg-slate-50 border-t border-slate-100">
-        {{ $users->links() }}
+        
+        {{-- ── Pagination ── --}}
+        @if($users->hasPages())
+        <div class="px-6 py-4 bg-white border-t border-slate-100">
+            <x-layouts.ui.pagination :paginator="$users" />
+        </div>
+        @endif
     </div>
 </div>

@@ -1,9 +1,7 @@
 @extends('layouts.admin-layout')
 
 @section('admin-content')
-<div class="max-w-3xl mx-auto space-y-8 pb-20">
-    {{-- Breadcrumb & Date --}}
-    <x-breadcrumb />
+<div class="max-w-3xl mx-auto space-y-8 pt-6 pb-20">
 
     {{-- Header --}}
     <div class="relative pl-6 mb-8">
@@ -21,10 +19,16 @@
                 <!-- Cover Photo Upload (Optional) -->
                 <div>
                     <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Foto Sampul Folder <span class="text-red-500">*</span></label>
-                    <div class="flex flex-col items-center p-8 bg-slate-50 border-3 border-dashed border-slate-200 rounded-[2rem] hover:border-teal-500 hover:bg-slate-50/50 transition-all group relative cursor-pointer" style="min-height: 180px;">
+                    <div id="dropZone" 
+                         class="flex flex-col items-center p-8 bg-slate-50 border-3 border-dashed border-slate-200 rounded-[2rem] hover:border-teal-500 hover:bg-slate-50/50 transition-all group relative cursor-pointer" 
+                         style="min-height: 200px;"
+                         onclick="triggerFileInput(event)">
                         
-                        <div id="imagePreview" class="hidden mb-4 max-w-full">
-                            <img src="" alt="Preview" class="h-40 rounded-2xl shadow-md border-4 border-white object-cover mx-auto">
+                        <div id="imagePreview" class="hidden relative max-w-full group/preview">
+                            <img src="" alt="Preview" class="h-44 rounded-2xl shadow-lg border-4 border-white object-cover mx-auto transition-transform duration-500 group-hover/preview:scale-[1.02]">
+                            <button type="button" onclick="clearPreview(event)" class="absolute -top-2 -right-2 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-lg transition-all active:scale-90 z-20" title="Hapus Foto Sampul">
+                                <span class="material-symbols-outlined text-[16px]">close</span>
+                            </button>
                         </div>
 
                         <div id="placeholder" class="flex flex-col items-center text-center">
@@ -35,7 +39,7 @@
                             <p class="text-xs text-slate-400 mt-1 font-bold uppercase tracking-wider">Format: JPG, PNG, WEBP (Maks. 10MB)</p>
                         </div>
 
-                        <input type="file" name="cover_photo" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id="coverUpload" accept="image/*" onchange="previewFile(event)">
+                        <input type="file" name="cover_photo" class="hidden" id="coverUpload" accept="image/*" onchange="previewFile(event)">
                     </div>
                     @error('cover_photo') 
                         <p class="mt-3 text-xs text-red-500 font-bold flex items-center gap-1">
@@ -48,20 +52,20 @@
                 <div class="space-y-6">
                     <div>
                         <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Nama Folder / Kegiatan</label>
-                        <input type="text" name="name" value="{{ old('name') }}" placeholder="Contoh: Imunisasi Bulan April 2026" class="w-full h-12 bg-slate-50 border-transparent focus:bg-white rounded-2xl px-5 text-sm font-semibold text-slate-700 focus:ring-0 focus:border-teal-500 transition-all border-2 border-slate-100" required>
+                        <input type="text" name="name" value="{{ old('name') }}" placeholder="Contoh: Imunisasi Bulan April 2026" class="w-full h-12 bg-slate-50 border-transparent focus:bg-white focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 rounded-2xl px-5 text-sm font-semibold text-slate-700 transition-all border-2 border-slate-100" required>
                         @error('name') <p class="text-xs text-red-500 font-bold mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     <div>
                         <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Deskripsi Singkat Folder</label>
-                        <textarea name="description" rows="3" placeholder="Ceritakan singkat mengenai tujuan dokumentasi di folder ini..." class="w-full bg-slate-50 border-transparent focus:bg-white rounded-2xl px-5 py-4 text-sm font-semibold text-slate-700 focus:ring-0 focus:border-teal-500 transition-all border-2 border-slate-100">{{ old('description') }}</textarea>
+                        <textarea name="description" rows="3" placeholder="Ceritakan singkat mengenai tujuan dokumentasi di folder ini..." class="w-full bg-slate-50 border-transparent focus:bg-white focus:ring-2 focus:ring-teal-500/20 focus:border-teal-500 rounded-2xl px-5 py-4 text-sm font-semibold text-slate-700 transition-all border-2 border-slate-100">{{ old('description') }}</textarea>
                         @error('description') <p class="text-xs text-red-500 font-bold mt-1">{{ $message }}</p> @enderror
                     </div>
 
                     @if(auth()->user()->isSuperAdmin())
                         <div>
                             <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Unit Posyandu <span class="text-red-500">*</span></label>
-                            <x-forms.select-input name="posyandu_id" placeholder="Pilih Unit Posyandu" :placeholderDisabled="true" value="{{ old('posyandu_id') }}" class="!bg-slate-50 !border-slate-100 !rounded-2xl !h-12 focus:!ring-0 focus:!border-teal-500 focus:!bg-white !shadow-none !border-2">
+                            <x-forms.select-input name="posyandu_id" placeholder="Pilih Unit Posyandu" :placeholderDisabled="true" value="{{ old('posyandu_id') }}" class="!bg-slate-50 !border-slate-100 !rounded-2xl !h-12 focus:!ring-2 focus:!ring-teal-500/20 focus:!border-teal-500 focus:!bg-white !shadow-none !border-2">
                                 <option value="">Semua Posyandu (Global)</option>
                                 @foreach($posyandus as $posyandu)
                                     <option value="{{ $posyandu->id }}" {{ old('posyandu_id') == $posyandu->id ? 'selected' : '' }}>{{ $posyandu->name }}</option>
@@ -85,6 +89,14 @@
 </div>
 
 <script>
+    function triggerFileInput(event) {
+        // Prevent trigger if clicking the clear button or the image itself
+        if (event.target.closest('button') || event.target.closest('#imagePreview img')) {
+            return;
+        }
+        document.getElementById('coverUpload').click();
+    }
+
     function previewFile(event) {
         const input = event.target;
         const reader = new FileReader();
@@ -101,5 +113,47 @@
             reader.readAsDataURL(input.files[0]);
         }
     }
+
+    function clearPreview(event) {
+        event.stopPropagation();
+        event.preventDefault();
+        const input = document.getElementById('coverUpload');
+        input.value = '';
+        document.getElementById('imagePreview').classList.add('hidden');
+        document.getElementById('placeholder').classList.remove('hidden');
+        document.getElementById('imagePreview').querySelector('img').src = '';
+    }
+
+    // Setup Drag and Drop
+    document.addEventListener('DOMContentLoaded', () => {
+        const dropZone = document.getElementById('dropZone');
+        if (dropZone) {
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropZone.classList.add('border-teal-500', 'bg-teal-50/30');
+                }, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropZone.classList.remove('border-teal-500', 'bg-teal-50/30');
+                }, false);
+            });
+
+            dropZone.addEventListener('drop', e => {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                if (files && files.length > 0) {
+                    const input = document.getElementById('coverUpload');
+                    input.files = files;
+                    previewFile({ target: input });
+                }
+            }, false);
+        }
+    });
 </script>
 @endsection

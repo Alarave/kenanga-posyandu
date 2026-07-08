@@ -137,41 +137,40 @@
 
     {{-- ── Filters ── --}}
     <div
-        class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800/80 p-4 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div class="flex flex-col md:flex-row md:items-center gap-3 flex-1 w-full">
-            <div class="relative w-full md:flex-1 md:min-w-[400px] lg:min-w-[480px] group">
-                <span
-                    class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-teal-600 transition-colors pointer-events-none text-[20px]">search</span>
-                <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari agenda atau lokasi..."
-                    class="search-input-premium w-full">
-            </div>
-
-            <div class="flex flex-row gap-3 w-full md:w-auto">
-                <x-forms.select-input wire:model.live="status" placeholder="Semua Status" :placeholderDisabled="false"
-                    value="{{ $status }}" class="flex-1 md:flex-initial md:min-w-[150px]">
-                    <option value="upcoming">Mendatang</option>
-                    <option value="ongoing">Berlangsung</option>
-                    <option value="completed">Selesai</option>
-                    <option value="cancelled">Dibatalkan</option>
-                </x-forms.select-input>
-
-                @if (auth()->user()->isSuperAdmin())
-                    <x-forms.select-input wire:model.live="posyandu_id" placeholder="Seluruh Unit" :placeholderDisabled="false"
-                        value="{{ $posyandu_id }}" class="flex-1 md:flex-initial md:min-w-[150px]">
-                        @foreach ($posyandus as $p)
-                            <option value="{{ $p->id }}">{{ $p->name }}</option>
-                        @endforeach
-                    </x-forms.select-input>
-                @endif
-            </div>
+        class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-100 dark:border-slate-800/80 p-4 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4 w-full">
+        <div class="relative w-full lg:flex-grow min-w-0 lg:min-w-[280px] group">
+            <span
+                class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-teal-600 transition-colors pointer-events-none text-[20px]">search</span>
+            <input type="text" wire:model.live.debounce.300ms="search" placeholder="Cari agenda atau lokasi..."
+                class="search-input-premium w-full">
         </div>
 
-        @if ($search || $status || $posyandu_id)
-            <button wire:click="$set('search', ''); $set('status', ''); $set('posyandu_id', '');"
-                class="w-full md:w-auto text-[10px] font-black text-red-500 uppercase tracking-[0.2em] hover:text-red-600 transition-colors py-2 px-4 text-center md:text-left">
-                Reset Filter
-            </button>
-        @endif
+        <div class="flex flex-row items-center gap-3 w-full lg:w-auto shrink-0">
+            <x-forms.select-input wire:model.live="status" placeholder="Semua Status" :placeholderDisabled="false"
+                value="{{ $status }}" class="flex-1 lg:flex-initial lg:w-[140px]">
+                <option value="upcoming">Mendatang</option>
+                <option value="ongoing">Berlangsung</option>
+                <option value="completed">Selesai</option>
+                <option value="cancelled">Dibatalkan</option>
+            </x-forms.select-input>
+
+            @if (auth()->user()->isSuperAdmin())
+                <x-forms.select-input wire:model.live="posyandu_id" placeholder="Seluruh Unit" :placeholderDisabled="false"
+                    value="{{ $posyandu_id }}" class="flex-1 lg:flex-initial lg:w-[150px]">
+                    @foreach ($posyandus as $p)
+                        <option value="{{ $p->id }}">{{ $p->name }}</option>
+                    @endforeach
+                </x-forms.select-input>
+            @endif
+
+            @if ($search || $status || $posyandu_id)
+                <button wire:click="resetFilters"
+                    class="h-11 px-4 flex items-center gap-2 text-red-500 font-semibold text-sm hover:bg-red-50 rounded-xl transition-all">
+                    <span class="material-symbols-outlined text-[18px]">restart_alt</span>
+                    Reset
+                </button>
+            @endif
+        </div>
     </div>
 
     {{-- ── Data Table ── --}}
@@ -186,8 +185,8 @@
                         Waktu & Lokasi</th>
                     <th class="px-8 py-4.5 text-center text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
                         Status</th>
-                    <th class="px-8 py-4.5 text-right text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
-                        Tindakan</th>
+                    <th class="px-8 py-4.5 text-center text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                        Aksi</th>
                 </tr>
             </thead>
             <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60">
@@ -248,26 +247,26 @@
                                 {{ $schedule->status }}
                             </span>
                         </td>
-                        <td class="px-8 py-5 text-right">
-                            <div class="flex items-center justify-end gap-2">
+                        <td class="px-5 py-4 text-center">
+                            <div class="flex items-center justify-center gap-2">
                                 <a href="{{ route('admin.schedules.show', $schedule->id) }}"
-                                    class="w-9 h-9 flex items-center justify-center rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200/30 dark:border-slate-700/50 text-slate-500 hover:bg-teal-600 hover:text-white hover:border-teal-600 hover:shadow-md hover:shadow-teal-600/10 transition-all duration-200"
+                                    class="w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-teal-600 hover:text-white transition-all shadow-sm hover:shadow-teal-500/20 group/btn"
                                     title="Lihat Detail">
-                                    <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                    <span class="material-symbols-outlined text-[22px]">visibility</span>
                                 </a>
                                 @can('update', $schedule)
                                     <a href="{{ route('admin.schedules.edit', $schedule->id) }}"
-                                        class="w-9 h-9 flex items-center justify-center rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200/30 dark:border-slate-700/50 text-slate-500 hover:bg-amber-600 hover:text-white hover:border-amber-600 hover:shadow-md hover:shadow-amber-600/10 transition-all duration-200"
+                                        class="w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-indigo-600 hover:text-white transition-all shadow-sm hover:shadow-indigo-500/20 group/btn"
                                         title="Edit Jadwal">
-                                        <span class="material-symbols-outlined text-[18px]">edit</span>
+                                        <span class="material-symbols-outlined text-[22px]">edit</span>
                                     </a>
                                 @endcan
                                 @can('delete', $schedule)
                                     <button wire:click="deleteSchedule({{ $schedule->id }})"
-                                        wire:confirm="Hapus jadwal ini secara permanen?"
-                                        class="w-9 h-9 min-w-0 min-h-0 flex items-center justify-center rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200/30 dark:border-slate-700/50 text-slate-500 dark:text-slate-400 hover:bg-rose-600 hover:text-white hover:border-rose-600 hover:shadow-md hover:shadow-rose-600/10 transition-all duration-200 cursor-pointer"
+                                        wire:confirm="Apakah Anda yakin ingin menghapus jadwal ini? Tindakan ini tidak dapat dibatalkan."
+                                        class="w-11 h-11 min-w-0 min-h-0 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-red-600 hover:text-white transition-all shadow-sm hover:shadow-red-500/20 group/btn cursor-pointer"
                                         title="Hapus Jadwal">
-                                        <span class="material-symbols-outlined text-[18px]">delete</span>
+                                        <span class="material-symbols-outlined text-[22px]">delete</span>
                                     </button>
                                 @endcan
                             </div>
@@ -290,8 +289,8 @@
         </div>
 
         @if ($schedules->hasPages())
-            <div class="px-8 py-5 border-t border-slate-100 dark:border-slate-800/80 bg-white dark:bg-slate-900">
-                {{ $schedules->links() }}
+            <div class="px-6 py-4 border-t border-slate-100 dark:border-slate-800/80 bg-white dark:bg-slate-900">
+                <x-layouts.ui.pagination :paginator="$schedules" />
             </div>
         @endif
     </div>

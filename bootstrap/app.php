@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // Tambahkan SecurityHeaders sebagai global middleware untuk semua request web
         $middleware->web(append: [
             SecurityHeaders::class,
+            \App\Http\Middleware\CompressResponse::class,
         ]);
 
         $middleware->alias([

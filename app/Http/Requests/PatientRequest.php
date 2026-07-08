@@ -40,13 +40,17 @@ class PatientRequest extends FormRequest
 
     public function rules()
     {
-        $patientId = $this->route('patient') ? $this->route('patient')->id : null;
+        $patient = $this->route('patient');
+        $patientId = is_object($patient) ? $patient->id : $patient;
 
         return [
             'full_name' => 'required|string|max:255',
             'head_of_family_name' => 'nullable|string|max:255',
             'id_number' => 'required|digits:16',
-            'id_number_hash' => 'required|unique:patients,id_number_hash,'.$patientId,
+            'id_number_hash' => [
+                'required',
+                \Illuminate\Validation\Rule::unique('patients', 'id_number_hash')->ignore($patientId),
+            ],
             'category' => 'required|string|in:bayi,baduta,balita,anak_sekolah,ibu_hamil,remaja,lansia,umum',
             'parent_name' => 'nullable|string|max:255',
             'mother_nik' => 'nullable|digits:16',

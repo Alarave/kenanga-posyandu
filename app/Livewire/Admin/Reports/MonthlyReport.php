@@ -33,6 +33,10 @@ class MonthlyReport extends BaseAdminComponent
 
     public string $search = '';
 
+    public ?string $filterCategory = '';
+
+    public ?int $filterMonth = null;
+
     // Stats
     public int $totalKunjungan = 0;
 
@@ -87,6 +91,22 @@ class MonthlyReport extends BaseAdminComponent
         }
     }
 
+    public function updatedFilterCategory(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedFilterMonth(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedSelectedPosyanduId(): void
+    {
+        $this->resetPage();
+        $this->loadStats();
+    }
+
     public function generateReport(): void
     {
         $this->resetPage();
@@ -97,13 +117,14 @@ class MonthlyReport extends BaseAdminComponent
     protected function loadStats(): void
     {
         $posyanduId = $this->getEffectivePosyanduId();
-        if (! $posyanduId) {
-            return;
-        }
 
-        // Gunakan applyPosyanduScope (disesuaikan untuk spesifik Posyandu ID yang dipilih)
-        $basePatientQuery = Patient::where('posyandu_id', $posyanduId);
-        $baseRecordQuery = MedicalRecord::whereHas('patient', fn ($q) => $q->where('posyandu_id', $posyanduId));
+        $basePatientQuery = Patient::query();
+        $baseRecordQuery = MedicalRecord::query();
+
+        if ($posyanduId) {
+            $basePatientQuery->where('posyandu_id', $posyanduId);
+            $baseRecordQuery->whereHas('patient', fn ($q) => $q->where('posyandu_id', $posyanduId));
+        }
 
         // Get date range
         $startDate = sprintf('%04d-%02d-01', $this->startYear, $this->startMonth);
@@ -228,19 +249,37 @@ class MonthlyReport extends BaseAdminComponent
         $records = collect();
         $total = 0;
 
-        if ($this->reportGenerated && $posyanduId) {
+        if ($this->reportGenerated) {
             $startDate = sprintf('%04d-%02d-01', $this->startYear, $this->startMonth);
             $endDate = date('Y-m-t', strtotime(sprintf('%04d-%02d-01', $this->endYear, $this->endMonth)));
 
-            $query = MedicalRecord::with(['patient', 'user'])
-                ->whereHas('patient', fn ($q) => $q->where('posyandu_id', $posyanduId))
+            $query = MedicalRecord::with(['patient', 'user', 'patient.posyandu'])
+                ->whereHas('patient', fn ($q) => $q->whereIn('category', ['bayi', 'baduta', 'balita', 'ibu_hamil', 'lansia']))
                 ->whereBetween('visit_date', [$startDate, $endDate]);
+
+            if ($posyanduId) {
+                $query->whereHas('patient', fn ($q) => $q->where('posyandu_id', $posyanduId));
+            }
 
             // Apply search filter
             if ($this->search) {
                 $query->whereHas('patient', fn ($q) => $q->where('full_name', 'like', '%'.$this->search.'%')
                     ->orWhere('id_number', 'like', '%'.$this->search.'%')
                 );
+            }
+
+            // Apply category filter
+            if ($this->filterCategory) {
+                if ($this->filterCategory === 'balita') {
+                    $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['bayi', 'baduta', 'balita']));
+                } else {
+                    $query->whereHas('patient', fn ($q) => $q->where('category', $this->filterCategory));
+                }
+            }
+
+            // Apply month filter
+            if ($this->filterMonth) {
+                $query->whereMonth('visit_date', $this->filterMonth);
             }
 
             // Apply sorting

@@ -49,7 +49,7 @@
     x-transition:leave-start="opacity-100"
     x-transition:leave-end="opacity-0"
     class="fixed inset-0 z-50 flex items-center justify-center p-4"
-    style="display:none; font-family:'Public Sans',sans-serif;"
+    style="display:none; font-family:'Public Sans', 'Public Sans Fallback', sans-serif;"
     role="dialog"
     aria-modal="true"
     @if($title) aria-labelledby="{{ $id }}-title" @endif

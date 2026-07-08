@@ -58,7 +58,7 @@
     {{ $attributes->merge([
         'class' => "flex items-start gap-3 p-4 rounded-xl border-l-4 {$config['bg']} {$config['border']} {$config['text']}"
     ]) }}
-    style="font-family:'Public Sans',sans-serif;"
+    style="font-family:'Public Sans', 'Public Sans Fallback', sans-serif;"
     @if($dismissible) x-data="{ show: true }" x-show="show" @endif
 >
     {{-- Icon --}}

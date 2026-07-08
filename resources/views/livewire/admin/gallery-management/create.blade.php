@@ -1,9 +1,7 @@
 @extends('layouts.admin-layout')
 
 @section('admin-content')
-<div class="max-w-3xl mx-auto space-y-8 pb-20">
-    {{-- Breadcrumb & Date --}}
-    <x-breadcrumb />
+<div class="max-w-3xl mx-auto space-y-8 pt-6 pb-20">
 
     {{-- Header --}}
     <div class="relative pl-6 mb-8">
@@ -26,7 +24,9 @@
                 <!-- Upload Area (Drag & Drop Zone Premium) -->
                 <div>
                     <label class="block text-xs font-black text-slate-400 uppercase tracking-widest mb-3">Pilih File Media</label>
-                    <div class="flex flex-col items-center p-10 bg-slate-50 border-3 border-dashed border-slate-200 rounded-[2rem] hover:border-teal-500 hover:bg-slate-50/50 transition-all group relative cursor-pointer">
+                    <div id="dropZone" 
+                         class="flex flex-col items-center p-10 bg-slate-50 border-3 border-dashed border-slate-200 rounded-[2rem] hover:border-teal-500 hover:bg-slate-50/50 transition-all group relative cursor-pointer"
+                         onclick="triggerFileInput(event)">
                         
                         {{-- Bulk Media Previews Grid --}}
                         <div id="mediaPreviewsGrid" class="hidden grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 w-full mb-6 max-h-[360px] overflow-y-auto p-4 bg-white rounded-2xl border border-slate-100 shadow-inner">
@@ -41,7 +41,7 @@
                             <p class="text-xs text-slate-400 mt-2 font-bold uppercase tracking-wider">Bisa pilih sekaligus banyak file | Maks. 1GB per file</p>
                         </div>
 
-                        <input type="file" name="photos[]" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" id="imageUpload" accept="image/*,video/*" multiple onchange="previewFiles(event)">
+                        <input type="file" name="photos[]" class="hidden" id="imageUpload" accept="image/*,video/*" multiple onchange="previewFiles(event)">
                     </div>
                     @error('photos') 
                         <p class="mt-3 text-xs text-red-500 font-bold flex items-center gap-1">
@@ -80,6 +80,44 @@
 <script>
     let selectedFiles = [];
 
+    // Setup Drag and Drop listeners
+    document.addEventListener('DOMContentLoaded', () => {
+        const dropZone = document.getElementById('dropZone');
+        if (dropZone) {
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropZone.classList.add('border-teal-500', 'bg-teal-50/30');
+                }, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropZone.classList.remove('border-teal-500', 'bg-teal-50/30');
+                }, false);
+            });
+
+            dropZone.addEventListener('drop', e => {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                if (files && files.length > 0) {
+                    handleNewFiles(files);
+                }
+            }, false);
+        }
+    });
+
+    function triggerFileInput(event) {
+        // Prevent opening file explorer if clicking on a button or inside preview card controls
+        if (event.target.closest('button') || event.target.closest('.preview-card-control')) {
+            return;
+        }
+        document.getElementById('imageUpload').click();
+    }
+
     function handleFormSubmit(event) {
         if (selectedFiles.length === 0) {
             event.preventDefault();
@@ -109,22 +147,23 @@
         }
     }
 
+    function handleNewFiles(files) {
+        Array.from(files).forEach(file => {
+            const isDuplicate = selectedFiles.some(f => f.name === file.name && f.size === file.size);
+            if (!isDuplicate) {
+                selectedFiles.push(file);
+            }
+        });
+        renderPreviews();
+    }
+
     function previewFiles(event) {
         const input = event.target;
-        
         if (input.files && input.files.length > 0) {
-            Array.from(input.files).forEach(file => {
-                const isDuplicate = selectedFiles.some(f => f.name === file.name && f.size === file.size);
-                if (!isDuplicate) {
-                    selectedFiles.push(file);
-                }
-            });
+            handleNewFiles(input.files);
         }
-        
-        // Reset the value so the input's onchange fires even if selecting the same file
+        // Reset input value so it will trigger change event on same file
         input.value = '';
-        
-        renderPreviews();
     }
 
     function renderPreviews() {
@@ -139,7 +178,7 @@
             
             selectedFiles.forEach((file, index) => {
                 const reader = new FileReader();
-                const isVideo = file.type.startsWith('video/');
+                const isVideo = file.type.startsWith('video/') || file.name.match(/\.(mp4|mov|avi|webm|mkv)$/i);
                 
                 reader.onload = function(e) {
                     const card = document.createElement('div');
@@ -170,10 +209,10 @@
                         card.appendChild(img);
                     }
                     
-                    // Delete Button
+                    // Delete Button (Add preview-card-control class to exclude click propagation)
                     const deleteBtn = document.createElement('button');
                     deleteBtn.type = 'button';
-                    deleteBtn.className = 'absolute top-1.5 right-1.5 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-md transition-all opacity-90 hover:scale-110 z-20';
+                    deleteBtn.className = 'preview-card-control absolute top-1.5 right-1.5 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-md transition-all opacity-90 hover:scale-110 z-20';
                     deleteBtn.innerHTML = '<span class="material-symbols-outlined text-[14px] font-bold">close</span>';
                     deleteBtn.onclick = function(e) {
                         e.stopPropagation();
@@ -187,6 +226,20 @@
                 
                 reader.readAsDataURL(file);
             });
+
+            // Append Add More "+" Card at the end of the previews
+            const plusCard = document.createElement('div');
+            plusCard.className = 'preview-card-control relative aspect-square rounded-xl overflow-hidden border-2 border-dashed border-slate-200 bg-slate-50 flex flex-col items-center justify-center group/plus cursor-pointer hover:border-teal-500 hover:bg-slate-100/50 transition-all duration-200';
+            plusCard.innerHTML = `
+                <span class="material-symbols-outlined text-[24px] text-slate-400 group-hover/plus:text-teal-600 transition-colors">add</span>
+                <span class="text-[9px] font-black text-slate-450 uppercase tracking-widest mt-1 group-hover/plus:text-teal-700 transition-colors">Tambah</span>
+            `;
+            plusCard.onclick = function(e) {
+                e.stopPropagation();
+                document.getElementById('imageUpload').click();
+            };
+            previewsGrid.appendChild(plusCard);
+            
         } else {
             previewsGrid.classList.add('hidden');
             placeholder.classList.remove('hidden');

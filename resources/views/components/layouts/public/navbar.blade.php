@@ -98,12 +98,19 @@
 
         if (progress) {
             const doc = document.documentElement;
-            const pct = (doc.scrollTop) / (doc.scrollHeight - doc.clientHeight) * 100;
-            progress.style.width = Math.min(pct, 100) + '%';
+            const scrollT = doc.scrollTop;
+            if (scrollT === 0) {
+                progress.style.width = '0%';
+            } else {
+                const pct = scrollT / (doc.scrollHeight - doc.clientHeight) * 100;
+                progress.style.width = Math.min(pct, 100) + '%';
+            }
         }
     }
     window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
+    requestAnimationFrame(() => {
+        onScroll();
+    });
 
     if (hamburger && mobileMenu) {
         hamburger.addEventListener('click', function () {

@@ -1,3 +1,7 @@
+@push('scripts')
+    @vite(['resources/js/charts.js'])
+@endpush
+
 <div class="space-y-6">
     {{-- Dashboard-specific styles --}}
     @push('styles')
@@ -81,6 +85,11 @@
 
             .animate-ping-slow {
                 animation: ping-slow 2s ease-in-out infinite;
+            }
+
+            .off-screen-widget {
+                content-visibility: auto;
+                contain-intrinsic-size: auto 300px;
             }
         </style>
     @endpush
@@ -224,9 +233,9 @@
             </div>
 
             <!-- Reset -->
-            <div class="w-full md:w-auto">
+            <div class="w-full md:w-auto flex items-end">
                 <button wire:click="resetFilters"
-                    class="w-full md:w-auto h-10.5 px-5 rounded-xl font-medium text-sm text-slate-600 bg-slate-100 hover:bg-slate-200 transition flex items-center justify-center gap-2">
+                    class="h-11 px-4 flex items-center gap-2 text-red-500 font-semibold text-sm hover:bg-red-50 rounded-xl transition-all w-full md:w-auto justify-center">
                     <span class="material-symbols-outlined text-[18px]">restart_alt</span>
                     Reset
                 </button>
@@ -352,7 +361,7 @@
     <div class="lg:col-span-8 space-y-6">
 
         {{-- Stunting Alert Table --}}
-        <div class="widget-card">
+        <div class="widget-card off-screen-widget">
             <div class="widget-header">
                 <div class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-xl bg-red-50 text-red-500 flex items-center justify-center shrink-0">
@@ -454,7 +463,7 @@
         </div>
 
         {{-- Bumil Risiko Tinggi Alert Table --}}
-        <div class="widget-card">
+        <div class="widget-card off-screen-widget">
             <div class="widget-header">
                 <div class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-xl bg-rose-50 text-rose-500 flex items-center justify-center shrink-0">
@@ -528,7 +537,7 @@
         </div>
 
         {{-- Recent Activity --}}
-        <div class="widget-card">
+        <div class="widget-card off-screen-widget">
             <div class="widget-header">
                 <div class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center shrink-0">
@@ -597,7 +606,7 @@
         </div>
 
         {{-- Recent Immunizations --}}
-        <div class="widget-card">
+        <div class="widget-card off-screen-widget">
             <div class="widget-header">
                 <div class="flex items-center gap-3">
                     <div
@@ -670,7 +679,7 @@
     <div class="lg:col-span-4 flex flex-col gap-5">
 
         {{-- Upcoming Schedule Widget --}}
-        <div class="widget-card p-5 relative overflow-hidden">
+        <div class="widget-card p-5 relative overflow-hidden off-screen-widget">
             <div class="absolute -right-8 -top-8 w-32 h-32 bg-teal-50 rounded-full blur-3xl pointer-events-none">
             </div>
             <div class="relative z-10">
@@ -763,7 +772,7 @@
         </div>
 
         {{-- Missing Immunizations Widget --}}
-        <div class="widget-card p-5 relative overflow-hidden">
+        <div class="widget-card p-5 relative overflow-hidden off-screen-widget">
             <div class="absolute -right-8 -top-8 w-32 h-32 bg-red-50 rounded-full blur-3xl pointer-events-none">
             </div>
             <div class="relative z-10">
@@ -814,7 +823,7 @@
         </div>
 
         {{-- Kehadiran Balita Widget --}}
-        <div class="widget-card p-5 relative overflow-hidden">
+        <div class="widget-card p-5 relative overflow-hidden off-screen-widget">
             <div class="absolute -right-8 -top-8 w-32 h-32 bg-emerald-50 rounded-full blur-3xl pointer-events-none">
             </div>
             <div class="relative z-10">
@@ -843,7 +852,7 @@
         </div>
 
         {{-- Ibu Hamil Trimester Widget --}}
-        <div class="widget-card p-5 relative overflow-hidden">
+        <div class="widget-card p-5 relative overflow-hidden off-screen-widget">
             <div class="absolute -right-8 -top-8 w-32 h-32 bg-pink-50 rounded-full blur-3xl pointer-events-none"></div>
             <div class="relative z-10">
                 <div class="flex items-center justify-between mb-4">
@@ -926,7 +935,7 @@
         </div>
 
         {{-- Demografi Lansia Widget --}}
-        <div class="widget-card p-5 relative overflow-hidden">
+        <div class="widget-card p-5 relative overflow-hidden off-screen-widget">
             <div class="absolute -right-8 -top-8 w-32 h-32 bg-orange-50 rounded-full blur-3xl pointer-events-none"></div>
             <div class="relative z-10">
                 @php
@@ -1043,7 +1052,7 @@
         </div>
 
         {{-- Nutrition Status Widget --}}
-        <div class="widget-card p-5 relative overflow-hidden">
+        <div class="widget-card p-5 relative overflow-hidden off-screen-widget">
             <div class="absolute -right-8 -top-8 w-32 h-32 bg-indigo-50 rounded-full blur-3xl pointer-events-none">
             </div>
             <div class="relative z-10">
@@ -1196,7 +1205,7 @@
 </div>
 
 {{-- ── Trend Analysis Section ── --}}
-<section class="widget-card p-6 md:p-8">
+<section class="widget-card p-6 md:p-8 off-screen-widget">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
         <div>
             <div

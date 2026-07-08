@@ -20,6 +20,12 @@
 @endsection
 
 @section('admin-content')
+@php
+    $balitaCount = $posyandu->patients()->where('category', 'balita')->count();
+    $ibuHamilCount = $posyandu->patients()->where('category', 'ibu_hamil')->count();
+    $lansiaCount = $posyandu->patients()->where('category', 'lansia')->count();
+    $totalCount = $posyandu->patients()->count();
+@endphp
 <div class="space-y-6">
     {{-- Main Info Section --}}
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -28,7 +34,7 @@
         <div class="lg:col-span-2 bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
             <div class="px-6 py-5 border-b border-gray-100 flex items-center justify-between" style="background:#F8FAFC;">
                 <h3 class="font-bold text-gray-900 flex items-center gap-2" style="font-size:16px;">
-                    <span class="material-symbols-outlined text-teal-600">house_medical</span>
+                    <span class="material-symbols-outlined text-teal-600">home_health</span>
                     Informasi Unit Posyandu
                 </h3>
                 <span class="px-2.5 py-1 bg-teal-50 text-teal-700 rounded-full text-xs font-bold">
@@ -67,11 +73,60 @@
                                 </p>
                             </div>
                             <div>
-                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Total Pasien Terdaftar</p>
+                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Kode Unik Posyandu</p>
                                 <p class="text-sm font-bold text-gray-900 flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-emerald-500" style="font-size:18px;">groups</span>
-                                    {{ $posyandu->patients()->count() }} Jiwa
+                                    <span class="material-symbols-outlined text-teal-600" style="font-size:18px;">fingerprint</span>
+                                    {{ $posyandu->unique_code ?: '—' }}
                                 </p>
+                            </div>
+                        </div>
+
+                        <div class="pt-6 border-t border-gray-50">
+                            <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Distribusi Pasien Terdaftar</p>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                {{-- Balita --}}
+                                <div class="bg-blue-50/50 border border-blue-100/50 rounded-2xl p-4 flex flex-col justify-between group hover:shadow-xs transition-all duration-300">
+                                    <div class="w-8 h-8 rounded-lg bg-blue-500 text-white flex items-center justify-center shadow-sm">
+                                        <span class="material-symbols-outlined text-[18px]">child_care</span>
+                                    </div>
+                                    <div class="mt-3">
+                                        <span class="text-[9px] font-bold text-blue-600 uppercase tracking-wider block mb-0.5">Balita</span>
+                                        <p class="text-2xl font-black text-slate-800 tracking-tight">{{ $balitaCount }} <span class="text-xs font-normal text-slate-400">anak</span></p>
+                                    </div>
+                                </div>
+
+                                {{-- Ibu Hamil --}}
+                                <div class="bg-pink-50/50 border border-pink-100/50 rounded-2xl p-4 flex flex-col justify-between group hover:shadow-xs transition-all duration-300">
+                                    <div class="w-8 h-8 rounded-lg bg-pink-500 text-white flex items-center justify-center shadow-sm">
+                                        <span class="material-symbols-outlined text-[18px]">pregnant_woman</span>
+                                    </div>
+                                    <div class="mt-3">
+                                        <span class="text-[9px] font-bold text-pink-600 uppercase tracking-wider block mb-0.5">Ibu Hamil</span>
+                                        <p class="text-2xl font-black text-slate-800 tracking-tight">{{ $ibuHamilCount }} <span class="text-xs font-normal text-slate-400">bumil</span></p>
+                                    </div>
+                                </div>
+
+                                {{-- Lansia --}}
+                                <div class="bg-orange-50/50 border border-orange-100/50 rounded-2xl p-4 flex flex-col justify-between group hover:shadow-xs transition-all duration-300">
+                                    <div class="w-8 h-8 rounded-lg bg-orange-500 text-white flex items-center justify-center shadow-sm">
+                                        <span class="material-symbols-outlined text-[18px]">elderly</span>
+                                    </div>
+                                    <div class="mt-3">
+                                        <span class="text-[9px] font-bold text-orange-600 uppercase tracking-wider block mb-0.5">Lansia</span>
+                                        <p class="text-2xl font-black text-slate-800 tracking-tight">{{ $lansiaCount }} <span class="text-xs font-normal text-slate-400">jiwa</span></p>
+                                    </div>
+                                </div>
+
+                                {{-- Total Warga --}}
+                                <div class="bg-emerald-50/50 border border-emerald-100/50 rounded-2xl p-4 flex flex-col justify-between group hover:shadow-xs transition-all duration-300">
+                                    <div class="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center shadow-sm">
+                                        <span class="material-symbols-outlined text-[18px]">groups</span>
+                                    </div>
+                                    <div class="mt-3">
+                                        <span class="text-[9px] font-bold text-emerald-600 uppercase tracking-wider block mb-0.5">Total Warga</span>
+                                        <p class="text-2xl font-black text-slate-800 tracking-tight">{{ $totalCount }} <span class="text-xs font-normal text-slate-400">jiwa</span></p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

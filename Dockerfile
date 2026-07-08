@@ -1,33 +1,61 @@
-FROM php:8.3-cli
+FROM php:8.3-apache
 
-# Copy the php-extension-installer script from the official image
+# ── 1. PHP Extensions ─────────────────────────────────────────────────────────
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
-
-# Install system dependencies and PHP extensions
 RUN install-php-extensions gd pdo_pgsql pgsql zip mbstring exif pcntl bcmath xml
 
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Install Node.js & npm (latest LTS node version 22)
+# ── 2. Node.js (must run before Apache config to avoid re-enabling MPMs) ──────
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
     && apt-get install -y nodejs \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Set working directory
-WORKDIR /var/www
+# ── 3. Apache Configuration ───────────────────────────────────────────────────
+# Allow .htaccess overrides
+RUN sed -i '/\<Directory \/var\/www\/\>/,/\<\/Directory\>/ s/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 
-# Copy all project files
+# Suppress FQDN warning
+RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+
+# Set document root to Laravel's public folder
+ENV APACHE_DOCUMENT_ROOT /var/www/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
+# Enable required modules
+RUN a2enmod rewrite headers
+
+# ── 4. Fix Apache MPM (AFTER all apt installs) ────────────────────────────────
+# Directly remove event/worker symlinks — more reliable than a2dismod.
+# This runs LAST so no subsequent apt-get can re-enable conflicting MPMs.
+RUN rm -f /etc/apache2/mods-enabled/mpm_event.load \
+          /etc/apache2/mods-enabled/mpm_event.conf \
+          /etc/apache2/mods-enabled/mpm_worker.load \
+          /etc/apache2/mods-enabled/mpm_worker.conf && \
+    ln -sf /etc/apache2/mods-available/mpm_prefork.load /etc/apache2/mods-enabled/mpm_prefork.load && \
+    ln -sf /etc/apache2/mods-available/mpm_prefork.conf /etc/apache2/mods-enabled/mpm_prefork.conf
+
+# ── 5. Composer & Application ─────────────────────────────────────────────────
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www
 COPY . /var/www
 
-# Install Composer dependencies (including production optimization)
 RUN composer install --no-interaction --optimize-autoloader --no-dev
-
-# Install npm dependencies and build assets for production
 RUN npm install && npm run build
 
-# Expose port 8080
+# Set correct permissions for Laravel storage & cache dirs
+RUN mkdir -p /var/www/storage/framework/views \
+             /var/www/storage/framework/cache \
+             /var/www/storage/framework/sessions \
+             /var/www/storage/logs \
+             /var/www/bootstrap/cache && \
+    chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache && \
+    chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+
+# Make entrypoint executable
+RUN chmod +x /var/www/docker-entrypoint.sh
+
 EXPOSE 8080
 
-# Run migrations and start the server using Laravel's artisan serve
-CMD ["bash", "-c", "php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT:-8080}"]
+# Use dedicated startup script (handles port + MPM + Laravel setup)
+CMD ["/var/www/docker-entrypoint.sh"]

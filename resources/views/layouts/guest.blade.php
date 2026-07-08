@@ -8,8 +8,9 @@
     <title>{{ config('app.name', 'Posyandu') }} | @yield('title')</title>
 
     <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}">
     <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}">
-    <link class="apple-touch-icon" rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -20,6 +21,10 @@
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"></noscript>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
+    <style>
+        @view-transition { navigation: auto; }
+    </style>
 </head>
 
 <body class="antialiased text-slate-800">
@@ -41,7 +46,7 @@
                     <span class="material-symbols-outlined text-[48px]">health_and_safety</span>
                 </div>
                 <h1 class="text-5xl font-black text-white mb-6 font-jakarta tracking-tight leading-tight">
-                    Sistem Layanan <br> <span class="text-teal-400 italic">Posyandu Digital.</span>
+                    Posyandu <br> <span class="text-teal-400 italic">Kenanga.</span>
                 </h1>
                 <p class="text-teal-100 text-xl font-medium max-w-md mx-auto opacity-80 leading-relaxed italic">
                     Memudahkan pencatatan dan pemantauan kesehatan seluruh warga dalam satu genggaman.
@@ -61,7 +66,7 @@
                             <span class="material-symbols-outlined text-[32px]">health_and_safety</span>
                         </div>
                         <h2 class="text-2xl font-black text-teal-900 font-jakarta uppercase tracking-tighter">Posyandu
-                            Digital</h2>
+                            Kenanga</h2>
                     </div>
                 </div>
 
@@ -92,7 +97,7 @@
                 {{-- Copyright --}}
                 <div class="mt-12 text-center">
                     <p class="text-sm font-bold text-slate-400 uppercase tracking-widest leading-loose">
-                        &copy; {{ date('Y') }} POSYANDU DIGITAL <br> BEKASI TIMUR
+                        &copy; {{ date('Y') }} POSYANDU KENANGA <br> BEKASI TIMUR
                     </p>
                 </div>
 
@@ -100,6 +105,16 @@
         </div>
 
     </div>
+    
+    <!-- Speculation Rules API for instant prerendering on hover -->
+    <script type="speculationrules">
+    {
+      "prerender": [{
+        "where": { "href_matches": "/*" },
+        "eagerness": "moderate"
+      }]
+    }
+    </script>
 </body>
 
 </html>

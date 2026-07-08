@@ -1,7 +1,7 @@
 @extends('layouts.admin-layout')
 
 @section('admin-content')
-<div class="space-y-8 p-6 md:p-8 pt-0 md:pt-0" 
+<div class="space-y-8 p-6 md:p-8 pt-6 sm:pt-8" 
      x-data="{ 
          mediaFilter: 'all', 
          lightboxOpen: false, 
@@ -24,8 +24,7 @@
          }
      }">
     
-    {{-- Breadcrumb & Date --}}
-    <x-breadcrumb />
+
 
     {{-- ── Modern Header with Hero Mesh Banner (Dark Slate Blue theme for Album view) ── --}}
     <div class="relative rounded-[2rem] p-8 md:p-10 overflow-hidden text-white shadow-2xl shadow-emerald-100"
@@ -34,7 +33,7 @@
         <div class="absolute -right-20 -top-20 w-80 h-80 bg-white/10 rounded-full blur-[100px] animate-pulse"></div>
         <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-5"></div>
         
-        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-12">
+        <div class="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6 sm:gap-12">
             <div class="space-y-4">
                 <div class="flex items-center gap-2">
                     <a href="{{ route('admin.gallery.index') }}" class="text-teal-400 hover:text-teal-300 flex items-center gap-1.5 text-xs font-black uppercase tracking-wider transition-colors">
@@ -119,11 +118,20 @@
                     {{-- Media Card Container --}}
                     <div class="aspect-square relative overflow-hidden bg-slate-100 flex items-center justify-center w-full h-full">
                         @if($isVideo)
-                            <video x-ref="vid" src="{{ asset('storage/' . $gallery->photo) }}#t=0.5" 
-                                   preload="metadata"
-                                   muted loop playsinline class="w-full h-full object-cover transition-all duration-500"
-                                   @mouseenter="$refs.vid.play(); playing = true" 
-                                   @mouseleave="$refs.vid.pause(); $refs.vid.currentTime = 0.5; playing = false"></video>
+                            <div class="w-full h-full relative bg-slate-950 flex items-center justify-center overflow-hidden" x-data="{ videoSrc: '' }">
+                                {{-- Placeholder Poster/Icon shown before hover to save network and CPU --}}
+                                <div x-show="!videoSrc" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 text-white/50 z-10 transition-opacity duration-300">
+                                    <span class="material-symbols-outlined text-[40px] text-indigo-400/80" style="font-variation-settings: 'FILL' 1;">play_circle</span>
+                                    <span class="text-[7px] font-black uppercase tracking-[0.25em] text-indigo-300/60 mt-1.5">Sorot untuk memutar</span>
+                                </div>
+                                
+                                <video x-ref="vid" :src="videoSrc" 
+                                       preload="none"
+                                       muted loop playsinline class="w-full h-full object-cover transition-all duration-500"
+                                       x-show="videoSrc"
+                                       @mouseenter="videoSrc = '{{ asset('storage/' . $gallery->photo) }}'; $nextTick(() => { $refs.vid.play(); playing = true; })" 
+                                       @mouseleave="$refs.vid.pause(); videoSrc = ''; playing = false"></video>
+                            </div>
                             
                             {{-- Video Indicator Badge (Always Visible) --}}
                             <div class="absolute top-4 right-4 z-20 transition-opacity duration-300" :class="playing ? 'opacity-0' : 'opacity-100'">

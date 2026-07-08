@@ -1,6 +1,6 @@
 @extends('layouts.public-layout')
 
-@section('title', 'Artikel Kesehatan - Posyandu Digital Bekasi Timur')
+@section('title', 'Artikel Kesehatan - Posyandu Kenanga Bekasi Timur')
 
 @section('content')
 <div class="max-w-screen-xl mx-auto px-6 md:px-12 py-16">

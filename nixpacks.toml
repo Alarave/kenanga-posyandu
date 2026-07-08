@@ -1,5 +1,7 @@
 [phases.release]
 cmds = [
+  "rm -rf public/storage",
+  "php artisan storage:link",
   "php artisan migrate --force",
   "php artisan optimize:clear",
   "php artisan optimize"
