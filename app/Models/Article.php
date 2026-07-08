@@ -51,12 +51,31 @@ class Article extends Model
     }
 
     /**
+     * Cache untuk plaintext konten artikel agar menghindari redundant JSON parsing.
+     *
+     * @var string|null
+     */
+    protected ?string $plainTextCache = null;
+
+    /**
+     * Dapatkan plaintext lengkap dari konten artikel (block-based JSON).
+     */
+    public function getPlainText(): string
+    {
+        if ($this->plainTextCache === null) {
+            $this->plainTextCache = \App\Services\ArticleService::getExcerpt($this->content ?? '', 999999);
+        }
+
+        return $this->plainTextCache;
+    }
+
+    /**
      * Hitung waktu baca artikel (perkiraan membaca per menit)
      * Rata-rata 200 kata per menit untuk pembaca dalam bahasa Indonesia
      */
     public function getReadingTimeAttribute(): string
     {
-        $text = \App\Services\ArticleService::getExcerpt($this->content ?? '', 99999);
+        $text = $this->getPlainText();
         $wordCount = str_word_count($text);
         $readingTime = max(1, (int) ceil($wordCount / 200));
 
@@ -68,9 +87,10 @@ class Article extends Model
      */
     public function getExcerptAttribute(): string
     {
-        $text = \App\Services\ArticleService::getExcerpt($this->content ?? '', 160);
+        $text = $this->getPlainText();
+        $limited = \Illuminate\Support\Str::limit($text, 160);
 
-        return $text ?: 'Tidak ada ringkasan tersedia.';
+        return $limited ?: 'Tidak ada ringkasan tersedia.';
     }
 
     /**
