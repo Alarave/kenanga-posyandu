@@ -5,10 +5,10 @@
             <div class="absolute left-0 top-1 bottom-1 w-1.5 bg-gradient-to-b from-teal-500 via-emerald-400 to-transparent rounded-full"></div>
             <div class="flex flex-col gap-4">
                 <div>
-                    <h1 class="text-4xl font-extrabold tracking-tight leading-none text-slate-900">
+                    <h1 class="text-4xl font-black tracking-tight leading-none text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">
                         Unit Posyandu
                     </h1>
-                    <p class="text-xs font-semibold text-slate-500 mt-2.5">Kelola data unit posyandu dan distribusi warga per kategori secara terpusat.</p>
+                    <p class="text-sm font-bold text-slate-900 mt-2">Kelola data unit posyandu dan distribusi warga per kategori secara terpusat.</p>
                 </div>
             </div>
         </div>

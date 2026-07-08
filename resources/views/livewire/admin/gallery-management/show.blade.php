@@ -160,14 +160,21 @@
                                 </div>
                             </div>
                         @endif
+                        {{-- Action Buttons on Hover --}}
+                        <div class="absolute top-4 left-4 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-2">
+                            <!-- Edit Button --> 
+                            <button type="button" @click.stop="openLightbox('{{ $gallery->id }}', '{{ asset('storage/' . $gallery->photo) }}', '{{ $gallery->type }}', {{ \Illuminate\Support\Js::from($gallery->title) }}, {{ \Illuminate\Support\Js::from($gallery->description ?? '') }}, '{{ \Carbon\Carbon::parse($gallery->created_at)->translatedFormat('d M Y, H:i') }}'); isEditing = true"
+                                    class="w-8 h-8 bg-indigo-600 hover:bg-indigo-750 text-white rounded-xl flex items-center justify-center shadow-lg transition-all active:scale-90"
+                                    title="Edit Media">
+                                <span class="material-symbols-outlined text-[16px]">edit</span>
+                            </button>
 
-                        {{-- Top-Left Delete Button (Separated from FOTO/VIDEO Badge) --}}
-                        <div class="absolute top-4 left-4 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <!-- Delete Button -->
                             <form action="{{ route('admin.gallery.media.destroy', [$folder->id, $gallery->id]) }}" method="POST" 
                                   onsubmit="return confirm('Yakin ingin menghapus item media ini?');">
                                 @csrf @method('DELETE')
                                 <button type="submit" @click.stop
-                                        class="w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-xl flex items-center justify-center shadow-lg transition-all active:scale-90"
+                                        class="w-8 h-8 bg-red-500 hover:bg-red-650 text-white rounded-xl flex items-center justify-center shadow-lg transition-all active:scale-90"
                                         title="Hapus Media">
                                     <span class="material-symbols-outlined text-[16px]">delete</span>
                                 </button>

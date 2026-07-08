@@ -41,7 +41,7 @@
                             <select wire:model="posyandu_id"
                                 class="w-full h-12 pl-4 pr-10 appearance-none rounded-xl border @error('posyandu_id') bg-red-50/10 text-red-900 border-red-400 focus:border-red-500 focus:ring-red-500/10 @else border-slate-200 bg-slate-50/50 text-slate-800 focus:border-teal-500 focus:bg-white focus:ring-4 focus:ring-teal-500/5 @enderror text-sm font-semibold transition-all cursor-pointer">
                                 @if(Auth::user()->isSuperAdmin())
-                                    <option value="" disabled selected>Pilih Unit Posyandu</option>
+                                    <option value="">Pilih Unit Posyandu</option>
                                 @endif
                                 @foreach ($posyandus as $p)
                                     <option value="{{ $p->id }}" {{ $posyandu_id == $p->id ? 'selected' : '' }}>{{ $p->name }}</option>

@@ -3,15 +3,15 @@
 <div class="max-w-[1280px] mx-auto space-y-6">
 
     {{-- ── Page Header ── --}}
-    <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
-        <div>
-            <nav class="flex text-xs text-slate-400 mb-1.5 gap-1.5 items-center">
-                <a href="{{ route('dashboard') }}" class="hover:text-teal-600 transition-colors">Beranda</a>
-                <span class="material-symbols-outlined text-[12px]">chevron_right</span>
-                <span class="text-teal-600 font-semibold">Manajemen Wilayah</span>
-            </nav>
-            <h1 class="text-2xl font-bold text-slate-900">Manajemen Wilayah Pedukuhan</h1>
-            <p class="text-sm text-slate-500 mt-0.5">Data wilayah kerja Posyandu di Kecamatan Bekasi Timur.</p>
+    <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8">
+        <div class="relative pl-6">
+            <div class="absolute left-0 top-1 bottom-1 w-1.5 bg-gradient-to-b from-teal-500 via-emerald-400 to-transparent rounded-full"></div>
+            <div>
+                <h1 class="text-4xl font-black tracking-tight leading-none text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">
+                    Manajemen Wilayah Pedukuhan
+                </h1>
+                <p class="text-sm font-bold text-slate-900 mt-2">Data wilayah kerja Posyandu di Kecamatan Bekasi Timur.</p>
+            </div>
         </div>
         <a href="{{ route('admin.pedukuhans.create') }}"
            class="h-11 px-5 flex items-center gap-2 bg-teal-600 text-white rounded-xl text-sm font-bold hover:bg-teal-700 active:scale-95 transition-all shadow-sm">

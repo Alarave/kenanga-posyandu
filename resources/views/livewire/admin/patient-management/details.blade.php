@@ -85,19 +85,7 @@
     {{-- ── Premium Header & Actions ── --}}
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 px-2">
         <div class="space-y-2">
-            {{-- Breadcrumbs --}}
-            <nav class="flex items-center gap-2 group/nav">
-                <div class="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-slate-100 shadow-sm transition-all {{ $theme['border-hover'] }}">
-                    <a href="{{ route('dashboard') }}" class="flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-teal-600 transition-colors">
-                        <span class="material-symbols-outlined text-[14px]">home</span>
-                        Beranda
-                    </a>
-                    <span class="material-symbols-outlined text-[14px] text-slate-300">chevron_right</span>
-                    <a href="{{ route('admin.patients.index') }}" class="text-[10px] font-black uppercase tracking-widest text-slate-400 {{ $theme['text-hover'] }} transition-colors">Data Warga</a>
-                    <span class="material-symbols-outlined text-[14px] text-slate-300">chevron_right</span>
-                    <span class="text-[10px] font-black uppercase tracking-widest {{ $theme['text'] }}">Profil Detail</span>
-                </div>
-            </nav>
+
             <h1 class="text-3xl font-black tracking-tight leading-none">
                 <span class="text-transparent bg-clip-text bg-linear-to-r {{ $theme['gradient'] }}">{{ $patient->full_name }}</span>
             </h1>

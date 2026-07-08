@@ -36,8 +36,8 @@
                     </a>
 
                     <a href="{{ route('admin.patients.create') }}"
-                        class="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-br from-teal-600 to-emerald-500 text-slate-900 text-xs font-black uppercase tracking-widest shadow-xl shadow-teal-200 hover:shadow-teal-300 hover:-translate-y-0.5 transition-all group/add">
-                        <span class="material-symbols-outlined text-[20px] text-slate-900">person_add</span>
+                        class="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-teal-600 text-white text-xs font-black uppercase tracking-widest shadow-xl shadow-teal-600/10 hover:bg-teal-700 hover:shadow-teal-600/20 hover:-translate-y-0.5 transition-all group/add">
+                        <span class="material-symbols-outlined text-[20px] text-white">person_add</span>
                         Tambah Warga
                     </a>
                 @endcan

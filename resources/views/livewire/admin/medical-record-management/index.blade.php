@@ -24,7 +24,7 @@
                 <div class="flex items-start gap-4">
                     <div class="w-1.5 h-12 bg-gradient-to-b from-teal-500 to-emerald-400 rounded-full mt-1 hidden sm:block"></div>
                     <div>
-                        <h1 class="text-3xl font-black tracking-tight leading-none text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">
+                        <h1 class="text-4xl font-black tracking-tight leading-none text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">
                             Manajemen Rekam Medis
                         </h1>
                         <p class="text-sm font-bold text-slate-900 mt-2 flex items-center gap-2">

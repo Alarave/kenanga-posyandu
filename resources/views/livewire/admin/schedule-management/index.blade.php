@@ -13,8 +13,7 @@
                         class="text-4xl font-black tracking-tight leading-none text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">
                         Jadwal & Kegiatan
                     </h1>
-                    <p class="text-sm font-bold text-slate-500 dark:text-slate-400 mt-3">Atur jadwal kegiatan posyandu dan imunisasi secara
-                        efisien.</p>
+                    <p class="text-sm font-bold text-slate-900 mt-2">Atur jadwal kegiatan posyandu dan imunisasi secara efisien.</p>
                 </div>
             </div>
         </div>

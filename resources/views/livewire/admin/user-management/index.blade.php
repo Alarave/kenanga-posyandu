@@ -10,7 +10,7 @@
             <div class="flex flex-col gap-4">
                 <div>
                     <h1
-                        class="text-3xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">
+                        class="text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-emerald-500">
                         Manajemen Akses & Pengguna</h1>
                     <p class="text-sm font-bold text-slate-900 mt-2">Kelola hak akses dan akun kader posyandu.</p>
                 </div>
@@ -18,7 +18,7 @@
         </div>
 
         <div class="flex flex-wrap gap-3 items-center">
-            <x-button href="{{ route('admin.users.create') }}" variant="secondary" icon="person_add">
+            <x-button href="{{ route('admin.users.create') }}" variant="primary" icon="person_add">
                 Tambah Pengguna
             </x-button>
         </div>
