@@ -462,10 +462,11 @@ class Analytics extends BaseAdminComponent
 
         // ANA-15: apply search when set
         if ($this->tableSearch) {
-            $searchTerm = '%'.$this->tableSearch.'%';
-            $medicalRecordQuery->whereHas('patient', function ($q) use ($searchTerm) {
-                $q->where('full_name', 'like', $searchTerm)
-                    ->orWhere('id_number', 'like', $searchTerm);
+            $searchTerm = '%'.strtolower($this->tableSearch).'%';
+            $blindIndex = \App\Models\Patient::generateBlindIndex($this->tableSearch);
+            $medicalRecordQuery->whereHas('patient', function ($q) use ($searchTerm, $blindIndex) {
+                $q->whereRaw('LOWER(full_name) LIKE ?', [$searchTerm])
+                    ->orWhere('id_number_hash', $blindIndex);
             });
         }
 

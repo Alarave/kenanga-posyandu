@@ -19,26 +19,30 @@ class GlobalSearch extends Component
         ];
 
         if (strlen($this->search) >= 2) {
-            $results['patients'] = \App\Models\Patient::where('full_name', 'like', '%'.$this->search.'%')
-                ->orWhere('id_number', 'like', '%'.$this->search.'%')
+            $searchTerm = '%'.strtolower($this->search).'%';
+            $blindIndex = \App\Models\Patient::generateBlindIndex($this->search);
+
+            $results['patients'] = \App\Models\Patient::whereRaw('LOWER(full_name) LIKE ?', [$searchTerm])
+                ->orWhere('id_number_hash', $blindIndex)
                 ->limit(5)->get();
 
-            $results['schedules'] = \App\Models\Schedule::where('title', 'like', '%'.$this->search.'%')
-                ->orWhere('location', 'like', '%'.$this->search.'%')
+            $results['schedules'] = \App\Models\Schedule::whereRaw('LOWER(title) LIKE ?', [$searchTerm])
+                ->orWhereRaw('LOWER(location) LIKE ?', [$searchTerm])
                 ->limit(3)->get();
 
-            $results['articles'] = \App\Models\Article::where('title', 'like', '%'.$this->search.'%')
+            $results['articles'] = \App\Models\Article::whereRaw('LOWER(title) LIKE ?', [$searchTerm])
                 ->limit(3)->get();
 
-            $results['records'] = \App\Models\MedicalRecord::whereHas('patient', function ($q) {
-                $q->where('full_name', 'like', '%'.$this->search.'%');
+            $results['records'] = \App\Models\MedicalRecord::whereHas('patient', function ($q) use ($searchTerm, $blindIndex) {
+                $q->whereRaw('LOWER(full_name) LIKE ?', [$searchTerm])
+                  ->orWhere('id_number_hash', $blindIndex);
             })
                 ->with('patient')
                 ->latest()
                 ->limit(3)->get();
 
-            $results['users'] = \App\Models\User::where('name', 'like', '%'.$this->search.'%')
-                ->orWhere('email', 'like', '%'.$this->search.'%')
+            $results['users'] = \App\Models\User::whereRaw('LOWER(name) LIKE ?', [$searchTerm])
+                ->orWhereRaw('LOWER(email) LIKE ?', [$searchTerm])
                 ->limit(3)->get();
         }
 
