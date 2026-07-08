@@ -58,6 +58,20 @@ describe('login behavior', function () {
         $this->assertAuthenticated();
     });
 
+    it('dapat login dengan remember token jika remember dicentang', function () {
+        $response = $this->post('/login', [
+            'email' => 'test@example.com',
+            'password' => 'password123',
+            'remember' => 'on',
+        ]);
+
+        $response->assertRedirect('/dashboard');
+        $this->assertAuthenticated();
+        
+        $this->user->refresh();
+        $this->assertNotNull($this->user->remember_token);
+    });
+
     it('menolak login dengan email yang tidak valid', function () {
         $response = $this->post('/login', [
             'email' => 'wrong@example.com',

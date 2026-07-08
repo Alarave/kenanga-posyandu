@@ -72,7 +72,7 @@ it('displays the correct dynamic metrics on the about page', function () {
     // Kader: 12 active (10 seeded from migration + 2 created in beforeEach)
     // Warga: 4 patients total
     // Posyandu: 2 posyandu units total
-    $expectedKaderCount = User::whereIn('role', ['admin', 'kader'])->where('is_active', true)->count(); // should be 12
+    $expectedKaderCount = User::whereIn('role', ['superadmin', 'admin', 'kader'])->where('is_active', true)->count(); // should be 12
     $expectedWargaCount = Patient::count(); // should be 4
     $expectedPosyanduCount = Posyandu::count(); // should be 2
 

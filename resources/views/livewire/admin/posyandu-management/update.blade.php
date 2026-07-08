@@ -65,28 +65,6 @@
                 @enderror
             </div>
 
-            {{-- Pedukuhan --}}
-            <div>
-                <label class="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-1.5">
-                    Pedukuhan <span class="text-red-500">*</span>
-                </label>
-                <div class="relative">
-                    <span class="absolute left-3 top-1/2 -translate-y-1/2 material-symbols-outlined text-slate-400 text-[18px]">location_city</span>
-                    <x-forms.select-input name="pedukuhan_id" placeholder="Pilih Pedukuhan" :placeholderDisabled="true" value="{{ old('pedukuhan_id', $posyandu->pedukuhan_id) }}" class="!pl-10 !h-11 !rounded-xl !border-slate-300 focus:!border-teal-500 focus:!ring-teal-500/20 !shadow-none" :error="$errors->has('pedukuhan_id')">
-                        @foreach($pedukuhans as $ped)
-                            <option value="{{ $ped->id }}" {{ old('pedukuhan_id', $posyandu->pedukuhan_id) == $ped->id ? 'selected' : '' }}>
-                                {{ $ped->name }}
-                            </option>
-                        @endforeach
-                    </x-forms.select-input>
-                </div>
-                @error('pedukuhan_id')
-                    <p class="mt-1 text-xs text-red-600 flex items-center gap-1">
-                        <span class="material-symbols-outlined text-[13px]">error</span>{{ $message }}
-                    </p>
-                @enderror
-            </div>
-
             {{-- Kode Unik & Logo --}}
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>

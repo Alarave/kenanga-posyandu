@@ -22,11 +22,13 @@ class LoginController extends Controller
         $request->validate([
             'email' => 'required|string',
             'password' => 'required|string',
+            'remember' => 'nullable',
         ]);
 
         $loginField = filter_var($request->email, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        $remember = $request->boolean('remember');
 
-        if (Auth::attempt([$loginField => $request->email, 'password' => $request->password])) {
+        if (Auth::attempt([$loginField => $request->email, 'password' => $request->password], $remember)) {
             return redirect()->route('dashboard')->with('success', 'Berhasil masuk ke sistem.');
         }
 

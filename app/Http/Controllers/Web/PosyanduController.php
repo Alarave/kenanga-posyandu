@@ -26,9 +26,7 @@ class PosyanduController extends Controller
 
     public function create()
     {
-        $pedukuhans = \App\Models\Pedukuhan::orderBy('name')->get();
-
-        return view('livewire.admin.posyandu-management.create', compact('pedukuhans'));
+        return view('livewire.admin.posyandu-management.create');
     }
 
     public function store(PosyanduRequest $request, \App\Services\PosyanduService $posyanduService)
@@ -48,9 +46,7 @@ class PosyanduController extends Controller
 
     public function edit(Posyandu $posyandu)
     {
-        $pedukuhans = \App\Models\Pedukuhan::orderBy('name')->get();
-
-        return view('livewire.admin.posyandu-management.update', compact('posyandu', 'pedukuhans'));
+        return view('livewire.admin.posyandu-management.update', compact('posyandu'));
     }
 
     public function update(PosyanduRequest $request, Posyandu $posyandu, \App\Services\PosyanduService $posyanduService)

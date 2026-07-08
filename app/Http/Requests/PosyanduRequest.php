@@ -15,7 +15,7 @@ class PosyanduRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'pedukuhan_id' => 'required|exists:pedukuhans,id',
+            'pedukuhan_id' => 'nullable|exists:pedukuhans,id',
             'address' => 'required|string|max:500',
             'unique_code' => 'nullable|string|max:100',
             'logo_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
