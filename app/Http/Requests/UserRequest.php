@@ -14,12 +14,22 @@ class UserRequest extends FormRequest
 
     public function rules()
     {
-        $userId = $this->route('user') ? $this->route('user')->id : null;
+        $userRouteParam = $this->route('user');
+        $userId = is_object($userRouteParam) ? $userRouteParam->id : $userRouteParam;
 
         return [
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,'.$userId,
-            'username' => 'required|string|max:255|unique:users,username,'.$userId,
+            'email' => [
+                'required',
+                'email',
+                \Illuminate\Validation\Rule::unique('users', 'email')->ignore($userId),
+            ],
+            'username' => [
+                'required',
+                'string',
+                'max:255',
+                \Illuminate\Validation\Rule::unique('users', 'username')->ignore($userId),
+            ],
             'password' => $userId
                 ? ['nullable', 'confirmed', Password::min(8)->letters()->mixedCase()->numbers()]
                 : ['required', 'confirmed', Password::min(8)->letters()->mixedCase()->numbers()],
