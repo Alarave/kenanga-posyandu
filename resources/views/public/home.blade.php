@@ -645,7 +645,7 @@
 
         @media (min-width: 768px) {
             .schedule-grid {
-                grid-template-columns: repeat(12, 1fr);
+                grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
             }
         }
 
@@ -661,16 +661,6 @@
             justify-content: space-between;
             transition: all 450ms cubic-bezier(0.16, 1, 0.3, 1);
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.01);
-        }
-
-        @media (min-width: 768px) {
-            .schedule-card:first-child {
-                grid-column: span 7;
-            }
-
-            .schedule-card:not(:first-child) {
-                grid-column: span 5;
-            }
         }
 
         .schedule-card:hover {
