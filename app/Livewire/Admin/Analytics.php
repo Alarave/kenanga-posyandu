@@ -197,7 +197,7 @@ class Analytics extends BaseAdminComponent
     // ── ANA-15: Search filter updates ──
     public function updatedTableSearch(): void
     {
-        // Triggers re-render — filtering happens in blade via @php
+        $this->loadData();
     }
 
     // ── ANA-16: Gender filter ──
