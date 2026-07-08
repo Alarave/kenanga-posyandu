@@ -512,13 +512,15 @@ class AdminDashboard extends BaseAdminComponent
         })->selectRaw("$dateFormat as month_year")->selectRaw('COUNT(*) as total')->groupByRaw($dateFormat)->get()->pluck('total', 'month_year');
         $labels = [];
         $data = [];
+        $periods = [];
         for ($i = 11; $i >= 0; $i--) {
             $carbon = now()->subMonths($i);
             $labels[] = $carbon->translatedFormat('M Y');
             $data[] = $trends->get($carbon->format('m Y'), 0);
+            $periods[] = $carbon->format('Y-m');
         }
 
-        return ['labels' => $labels, 'data' => $data];
+        return ['labels' => $labels, 'data' => $data, 'periods' => $periods];
     }
 
     protected function loadNamesForWidgets()
