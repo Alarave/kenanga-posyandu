@@ -30,6 +30,14 @@
                     Bulan Penimbangan
                 </a>
                 @endcan
+
+                @can('create', App\Models\MedicalRecord::class)
+                <a href="{{ route('admin.medical-records.import') }}" 
+                   class="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-white border border-slate-100 text-xs font-black uppercase tracking-widest text-slate-600 hover:text-indigo-600 hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-500/5 transition-all group/btn">
+                    <span class="material-symbols-outlined text-[20px] text-slate-400 group-hover/btn:text-indigo-500 transition-colors">upload_file</span>
+                    Import Data
+                </a>
+                @endcan
                 
                 @can('create', App\Models\MedicalRecord::class)
                 <a href="{{ route('admin.medical-records.create') }}" 
@@ -39,6 +47,7 @@
                 </a>
                 @endcan
             </div>
+
         </div>
     </div>
 
