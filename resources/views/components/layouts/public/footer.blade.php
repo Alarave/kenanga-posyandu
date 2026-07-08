@@ -93,7 +93,8 @@
                         </a>
                     </li>
                     <li>
-                        <a href="mailto:posyanduilp_kenanga1@gmail.com" 
+                        <a href="https://mail.google.com/mail/u/0/?fs=1&to=posyanduilp_kenanga1@gmail.com&tf=cm" 
+                           target="_blank" rel="noopener noreferrer"
                            class="text-slate-600 hover:text-slate-900 transition-colors duration-300 flex items-start group">
                             <span class="material-symbols-outlined text-[18px] text-slate-400 mr-2.5 mt-0.5 group-hover:text-emerald-600 shrink-0">mail</span>
                             <span class="break-all">posyanduilp_kenanga1@gmail.com</span>
