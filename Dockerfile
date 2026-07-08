@@ -43,6 +43,15 @@ COPY . /var/www
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 RUN npm install && npm run build
 
+# Set correct permissions for Laravel storage & cache dirs
+RUN mkdir -p /var/www/storage/framework/views \
+             /var/www/storage/framework/cache \
+             /var/www/storage/framework/sessions \
+             /var/www/storage/logs \
+             /var/www/bootstrap/cache && \
+    chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache && \
+    chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+
 # Make entrypoint executable
 RUN chmod +x /var/www/docker-entrypoint.sh
 

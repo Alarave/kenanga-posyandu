@@ -26,7 +26,22 @@ rm -f /etc/apache2/mods-enabled/mpm_event.load \
 
 echo "==> Apache MPM: mpm_prefork enabled, event/worker removed"
 
-# ── 3. Laravel Setup ─────────────────────────────────────────────────────────
+# ── 3. Laravel Storage Permissions ──────────────────────────────────────────
+echo "==> Fixing storage permissions..."
+mkdir -p /var/www/storage/framework/views \
+         /var/www/storage/framework/cache \
+         /var/www/storage/framework/sessions \
+         /var/www/storage/logs \
+         /var/www/bootstrap/cache
+chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+
+# Clear cached/compiled views to prevent stale tempnam issues
+php artisan view:clear
+php artisan cache:clear
+php artisan config:clear
+
+# ── 4. Laravel Setup ─────────────────────────────────────────────────────────
 echo "==> Creating storage symlink..."
 rm -rf /var/www/public/storage
 php artisan storage:link
