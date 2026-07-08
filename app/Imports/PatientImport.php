@@ -8,6 +8,7 @@ use App\Imports\Parsers\XlsxFileParser;
 use App\Imports\Processors\PatientRowProcessor;
 use App\Imports\Resolvers\HeaderResolver;
 use Illuminate\Http\UploadedFile;
+use Carbon\Carbon;
 
 /**
  * PatientImport — Orchestrator (Clean Code, OOP, SRP).
@@ -79,11 +80,82 @@ class PatientImport
             return;
         }
 
-        [$dataRows, $colMap] = $this->resolveHeaders($rows);
-
-        $this->rowProcessor->processRows($dataRows, $colMap);
+        $this->processStackedRows($rows);
 
         $this->syncCounters();
+    }
+
+    private function processStackedRows(array $rows): void
+    {
+        $currentColMap = null;
+        $currentVisitDate = null;
+
+        foreach ($rows as $index => $row) {
+            $rowNum = $index + 1;
+            
+            // Clean up row cells
+            $rowCleaned = array_map(function ($val) {
+                return trim((string) $val);
+            }, $row);
+
+            // Skip empty rows
+            if (count(array_filter($rowCleaned, fn($v) => $v !== '')) === 0) {
+                continue;
+            }
+
+            // 1. Check if the row contains a date declaration (e.g. "Tanggal: 05 Jan 2026")
+            $rowDate = null;
+            foreach ($rowCleaned as $cell) {
+                if (preg_match('/tanggals*(?:pelaksanaan|ukur|periksa)?s*:s*(.+)/i', $cell, $matches)) {
+                    $dateStr = trim($matches[1]);
+                    $rowDate = $this->parseReportDate($dateStr);
+                    if ($rowDate) {
+                        $currentVisitDate = $rowDate;
+                        break;
+                    }
+                }
+            }
+
+            // 2. Check if the row is a header row
+            $isHeader = false;
+            foreach ($rowCleaned as $cell) {
+                $cellLower = strtolower($cell);
+                if (in_array($cellLower, ['nama', 'nama_anak', 'nama anak', 'nama_balita', 'nama balita', 'nik', 'full_name'])) {
+                    $isHeader = true;
+                    break;
+                }
+            }
+
+            if ($isHeader) {
+                $normalizedHeaders = $this->headerResolver->normalizeHeaders($rowCleaned);
+                $currentColMap = $this->headerResolver->buildColumnMap($normalizedHeaders);
+                $this->debugHeaders = $rowCleaned;
+                continue; // Skip header row itself
+            }
+
+            // 3. If we have a header map, process the row as a data row
+            if ($currentColMap) {
+                $get = function (string $key) use ($rowCleaned, $currentColMap): string {
+                    $idx = $currentColMap[$key] ?? null;
+                    return $idx !== null ? ($rowCleaned[$idx] ?? '') : '';
+                };
+
+                $nama = $get('nama_anak');
+                $nik = $get('nik');
+
+                // Skip header duplicates or noise rows
+                if (in_array(strtolower($nama), ['nama', 'nama balita', 'nama anak', 'nama warga', 'full name'])) {
+                    continue;
+                }
+
+                if ($nama === '' && $nik === '') {
+                    continue;
+                }
+
+                // Process the single row
+                $this->rowProcessor->processSingleRow($rowCleaned, $currentColMap, $rowNum, $currentVisitDate);
+            }
+        }
     }
 
     // ── Private helpers ───────────────────────────────────────────────
@@ -123,6 +195,53 @@ class PatientImport
         $dataRows = array_slice($rows, $headerRowIndex + 1);
 
         return [$dataRows, $colMap];
+    }
+
+    /**
+     * Parse report date string supporting both English and Indonesian months.
+     */
+    private function parseReportDate(string $str): ?Carbon
+    {
+        $months = [
+            'jan' => 1, 'januari' => 1,
+            'feb' => 2, 'februari' => 2,
+            'mar' => 3, 'maret' => 3,
+            'apr' => 4, 'april' => 4,
+            'mei' => 5,
+            'jun' => 6, 'juni' => 6,
+            'jul' => 7, 'juli' => 7,
+            'agu' => 8, 'agustus' => 8, 'agt' => 8,
+            'sep' => 9, 'september' => 9,
+            'okt' => 10, 'oktober' => 10,
+            'nov' => 11, 'november' => 11,
+            'des' => 12, 'desember' => 12,
+        ];
+
+        // 1. DD Month YYYY (e.g. "1 Apr 2026")
+        if (preg_match('/^(\d{1,2})\s+(\w+)\s+(\d{4})$/i', $str, $matches)) {
+            $day = (int) $matches[1];
+            $monthStr = strtolower($matches[2]);
+            $year = (int) $matches[3];
+            if (isset($months[$monthStr])) {
+                return Carbon::createFromDate($year, $months[$monthStr], $day)->startOfDay();
+            }
+        }
+
+        // 2. Month YYYY (e.g. "April 2026")
+        if (preg_match('/^(\w+)\s+(\d{4})$/i', $str, $matches)) {
+            $monthStr = strtolower($matches[1]);
+            $year = (int) $matches[2];
+            if (isset($months[$monthStr])) {
+                return Carbon::createFromDate($year, $months[$monthStr], 1)->startOfDay();
+            }
+        }
+
+        // 3. Try standard Carbon parsing
+        try {
+            return Carbon::parse($str)->startOfDay();
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     /**

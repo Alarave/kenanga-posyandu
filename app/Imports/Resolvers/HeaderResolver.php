@@ -20,7 +20,7 @@ class HeaderResolver
         'nama_anak' => ['nama', 'full_name', 'nama_lengkap', 'nama_balita', 'nama_bayi', 'nama_anak'],
         'nik' => ['nomor_nik', 'no_nik', 'nik_balita', 'nomor_induk_kependudukan', 'id_number', 'nik_16_digit'],
         'tgl_lahir' => ['tanggal_lahir', 'birth_date', 'tgl_lahir_anak'],
-        'jk' => ['jenis_kelamin', 'gender', 'kelamin', 'l_p', 'lp'],
+        'jk' => ['jenis_kelamin', 'gender', 'kelamin', 'l_p', 'lp', 'p_l', 'pl'],
         'nm_ortu' => ['nama_ortu', 'parent_name', 'orang_tua', 'nama_orang_tua'],
         'tanggal_ukur' => ['tgl_ukur', 'tanggalukur', 'tanggal_periksa', 'tgl_periksa'],
         'berat' => ['berat_badan', 'bb', 'weight', 'bb_kg', 'bb_dalam_kg'],

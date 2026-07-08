@@ -56,7 +56,12 @@ class PatientRowProcessor
 
     // ── Row processing ────────────────────────────────────────────────
 
-    private function processRow(array $row, array $colMap, int $rowNum): void
+    public function processSingleRow(array $row, array $colMap, int $rowNum, ?Carbon $customVisitDate = null): void
+    {
+        $this->processRow($row, $colMap, $rowNum, $customVisitDate);
+    }
+
+    private function processRow(array $row, array $colMap, int $rowNum, ?Carbon $customVisitDate = null): void
     {
         $get = $this->makeGetter($row, $colMap);
 
@@ -87,6 +92,7 @@ class PatientRowProcessor
         $lingkarKepala = $get('lingkar_kepala');
         $vitamin = $get('vitamin');
         $imunisasi = $get('imunisasi');
+        $tensi = $get('tensi');
 
         // Validate required fields
         if ($nama === '' && $nik === '') {
@@ -135,8 +141,8 @@ class PatientRowProcessor
                 $historicalDiseases, $isPregnantInput, $rt, $rw
             );
 
-            if ($berat !== '' || $tinggi !== '') {
-                $this->saveMedicalRecord($patient, $berat, $tinggi, $lingkarKepala, $vitamin, $imunisasi, $birthDate, $tglUkur, $gender, $rowNum);
+            if ($berat !== '' || $tinggi !== '' || $tensi !== '') {
+                $this->saveMedicalRecord($patient, $berat, $tinggi, $lingkarKepala, $vitamin, $imunisasi, $birthDate, $tglUkur, $gender, $rowNum, $customVisitDate, $tensi);
             }
         } catch (\Exception $e) {
             $this->errors[] = "Baris {$rowNum}: Gagal menyimpan '{$nama}' — ".$e->getMessage();
@@ -311,17 +317,32 @@ class PatientRowProcessor
         ?Carbon $birthDate,
         string $tglUkur,
         ?string $gender,
-        int $rowNum
+        int $rowNum,
+        ?Carbon $customVisitDate = null,
+        string $tensi = ''
     ): void {
-        $visitDate = $this->parseDate($tglUkur);
+        $visitDate = $customVisitDate;
         if (! ($visitDate instanceof Carbon)) {
-            $visitDate = now();
+            $visitDate = $this->parseDate($tglUkur);
+            if (! ($visitDate instanceof Carbon)) {
+                $visitDate = $this->defaultVisitDate ?? now();
+            }
         }
 
         $weightVal = $this->parseDecimal($berat);
         $heightVal = $this->parseDecimal($tinggi);
         $lkVal = $this->parseDecimal($lingkarKepala);
         $vitaminA = $this->parseBool($vitamin);
+
+        $systolic = null;
+        $diastolic = null;
+        if ($tensi !== '') {
+            $parts = explode('/', $tensi);
+            if (count($parts) === 2) {
+                $systolic = is_numeric(trim($parts[0])) ? (int)trim($parts[0]) : null;
+                $diastolic = is_numeric(trim($parts[1])) ? (int)trim($parts[1]) : null;
+            }
+        }
 
         [$zScore, $nutritionStatus] = $this->calcNutrition($weightVal, $heightVal, $birthDate, $visitDate, $gender);
 
@@ -339,6 +360,8 @@ class PatientRowProcessor
                 'vitamin_a' => $vitaminA,
                 'z_score' => $zScore ?? $existingRecord->z_score,
                 'nutrition_status' => $nutritionStatus ?? $existingRecord->nutrition_status,
+                'systolic_bp' => $systolic ?? $existingRecord->systolic_bp,
+                'diastolic_bp' => $diastolic ?? $existingRecord->diastolic_bp,
             ]);
         } else {
             // Create a new medical record
@@ -354,6 +377,8 @@ class PatientRowProcessor
                 'pill_fe' => false,
                 'z_score' => $zScore,
                 'nutrition_status' => $nutritionStatus,
+                'systolic_bp' => $systolic,
+                'diastolic_bp' => $diastolic,
                 'complaint' => '—',
                 'diagnosis' => 'Sehat',
             ]);
