@@ -15,14 +15,14 @@ class PosyanduSeeder extends Seeder
         $posyandus = [
             [
                 'pedukuhan_id' => $arenJaya->id,
-                'name' => 'KENANGA 1',
+                'name' => 'Posyandu Kenanga 1',
                 'address' => 'Aren Jaya, RW 11, Bekasi Timur',
                 'unique_code' => 'PSY003',
                 'logo_photo' => null,
             ],
             [
                 'pedukuhan_id' => $arenJaya->id,
-                'name' => 'KENANGA 2',
+                'name' => 'Posyandu Kenanga 2',
                 'address' => 'Aren Jaya, RW 12, Bekasi Timur',
                 'unique_code' => 'PSY002',
                 'logo_photo' => null,
