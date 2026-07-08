@@ -1,12 +1,16 @@
 # Walkthrough
 
-We resolved six main issues in the Posyandu management system:
+We resolved ten main issues in the Posyandu management system:
 1. The blank content area on the article edit page (`/admin/articles/{id}/edit`).
 2. The non-functional "Ingat Perangkat" (Remember Me) checkbox on the login page.
 3. The search bar on both the Admin Article Management and Public Articles pages not correctly filtering results.
 4. Removed the "Pedukuhan" field when creating or editing a Posyandu.
 5. Inconsistency in active cadre/kader counts between the admin panel and public pages.
 6. Case-sensitivity issues on all search bars when running on PostgreSQL (production on Railway).
+7. Vertical text wrapping issue on the "Tulis Artikel Baru" button.
+8. Enhanced the custom block-based article editor to support copy-pasting multi-line text and using the Tab key for indentation.
+9. Optimized search inputs to update dynamically while typing without losing focus, and activated the mobile search bar in the public header.
+10. Fixed the article editor's auto-capitalization logic to ignore HTML entities, stopping `&nbsp;` from corrupting into `&Amp;Nbsp;`.
 
 ## Changes Made
 
@@ -39,17 +43,21 @@ We resolved six main issues in the Posyandu management system:
 - Created [UserManagementTest.php](file:///c:/Users/evaej/Downloads/posyandu-kenangaa/tests/Feature/Admin/UserManagementTest.php) to ensure the component calculates and displays the correct count of active cadres.
 
 ### 6. Make Search Bars Case-Insensitive (PostgreSQL Compatibility)
-- Because the production server on Railway uses **PostgreSQL**, search queries using `LIKE` were behaving case-sensitively, making the searches fail for various casings (e.g. typing lowercase `kenanga` would not match a Posyandu named `Kenanga`).
-- Updated all search queries across the codebase to use `LOWER(column) LIKE ?` with `strtolower($searchTerm)` for case-insensitive matching. Files modified:
-  - `app/Models/Article.php` (Public & Admin article filters)
-  - `app/Services/ArticleService.php` (Admin article searches)
-  - `app/Models/User.php` (User profile filters)
-  - `app/Models/Schedule.php` (Agenda search)
-  - `app/Http/Controllers/Web/ScheduleController.php` (Schedule management search)
-  - `app/Http/Controllers/Web/PosyanduController.php` (Posyandu select dropdown filters)
-  - `app/Livewire/Admin/Management/PosyanduManagement.php` (Posyandu management index search)
-  - `app/Livewire/Admin/Management/GalleryManagement.php` (Gallery/activities search)
-  - `app/Livewire/Admin/PatientManagement/Index.php` (Patient index name search)
-  - `app/Livewire/Admin/Management/MedicalRecordManagement.php` (Medical records search)
-  - `app/Livewire/Admin/MedicalRecord/BulkMeasurementEntry.php` (Bulk measurement entry search)
-  - `app/Livewire/Admin/Reports/MonthlyReport.php` (Monthly report search)
+- Because the production server on Railway uses **PostgreSQL**, search queries using `LIKE` were behaving case-sensitively, making the searches fail for various casings.
+- Updated all search queries across the codebase to use `LOWER(column) LIKE ?` with `strtolower($searchTerm)` for case-insensitive matching.
+
+### 7. Prevent "Tulis Artikel Baru" Button Text Wrapping
+- Modified [index.blade.php](file:///c:/Users/evaej/Downloads/posyandu-kenangaa/resources/views/livewire/admin/article-management/index.blade.php) to add the `whitespace-nowrap` and `shrink-0` classes to the "Tulis Artikel Baru" anchor button. This forces the button layout to stay horizontal on single-line and prevents vertical wrapping on smaller viewports.
+
+### 8. Enhance Custom Article Editor (Multi-line Paste & Tab Key Support)
+- Modified the editor javascript in both [create.blade.php](file:///c:/Users/evaej/Downloads/posyandu-kenangaa/resources/views/livewire/admin/article-management/create.blade.php) and [update.blade.php](file:///c:/Users/evaej/Downloads/posyandu-kenangaa/resources/views/livewire/admin/article-management/update.blade.php):
+  - **Multi-line Paste**: Intercepted the paste event listener. If the pasted content is multi-line, it splits the text by newlines, puts the first line at the cursor, and creates separate paragraph blocks for all subsequent lines (Notion/Medium block style). This resolves the bug where pasting multiple paragraphs merged everything into a single giant paragraph block.
+  - **Tab Key Indentation**: Handled the `Tab` key event inside `handleKeydown` to prevent default browser focus switching, and instead insert four non-breaking spaces (`&nbsp;&nbsp;&nbsp;&nbsp;`) for alignment/indentation of text.
+
+### 9. Optimize Live Search Update & Fix Mobile Search Bar
+- **Real Mobile Search Hook**: Modified [navbar.blade.php](file:///c:/Users/evaej/Downloads/posyandu-kenangaa/resources/views/components/layouts/ui/navbar.blade.php) to replace the static dummy mobile search input with the real `@livewire('global-search')` component so mobile search queries are fully functional.
+- **Retain Input Focus (Live Update)**: Added a unique `wire:key` attribute to all admin search input elements. In Livewire, when the DOM re-renders upon receiving a debounced input query, the input element could get re-created and lose focus (forcing users to press Enter or click the input again). Adding `wire:key` preserves focus, allowing users to type queries continuously while watching search results update live on their screen.
+
+### 10. Fix HTML Entity Capitalization Corruption
+- Modified the `capitalizeSentences` function in [create.blade.php](file:///c:/Users/evaej/Downloads/posyandu-kenangaa/resources/views/livewire/admin/article-management/create.blade.php) and [update.blade.php](file:///c:/Users/evaej/Downloads/posyandu-kenangaa/resources/views/livewire/admin/article-management/update.blade.php) to parse and skip HTML entities starting with `&` and ending with `;` (such as `&nbsp;`).
+- Previously, the function treated entities as normal letters and capitalized them (e.g. `&nbsp;` became `&Nbsp;` after a period). This caused the browser to double-encode the ampersand, corrupting it into the literal text `&Amp;Nbsp;` displayed inside the editor text area.
