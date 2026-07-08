@@ -328,8 +328,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $query->when($filters['search'] ?? false, function ($q, $search) {
             $q->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
+                $searchTerm = '%'.strtolower($search).'%';
+                $q->whereRaw('LOWER(name) LIKE ?', [$searchTerm])
+                    ->orWhereRaw('LOWER(email) LIKE ?', [$searchTerm]);
             });
         });
 

@@ -13,9 +13,10 @@ class PosyanduController extends Controller
     {
         $posyandus = Posyandu::with('pedukuhan')
             ->when($request->search, fn ($q, $s) => $q->where(function ($q) use ($s) {
-                $q->where('name', 'like', "%{$s}%")
-                    ->orWhere('unique_code', 'like', "%{$s}%")
-                    ->orWhere('address', 'like', "%{$s}%");
+                $searchTerm = '%'.strtolower($s).'%';
+                $q->whereRaw('LOWER(name) LIKE ?', [$searchTerm])
+                    ->orWhereRaw('LOWER(unique_code) LIKE ?', [$searchTerm])
+                    ->orWhereRaw('LOWER(address) LIKE ?', [$searchTerm]);
             }))
             ->orderBy('name')
             ->paginate(10)

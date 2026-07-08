@@ -103,14 +103,15 @@ class Article extends Model
     {
         $query->when($filters['search'] ?? false, function ($q, $search) {
             $q->where(function ($sub) use ($search) {
-                $sub->where('title', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%")
-                    ->orWhere('content', 'like', "%{$search}%")
-                    ->orWhereHas('category', function ($catQuery) use ($search) {
-                        $catQuery->where('name', 'like', "%{$search}%");
+                $searchTerm = '%'.strtolower($search).'%';
+                $sub->whereRaw('LOWER(title) LIKE ?', [$searchTerm])
+                    ->orWhereRaw('LOWER(description) LIKE ?', [$searchTerm])
+                    ->orWhereRaw('LOWER(content) LIKE ?', [$searchTerm])
+                    ->orWhereHas('category', function ($catQuery) use ($searchTerm) {
+                        $catQuery->whereRaw('LOWER(name) LIKE ?', [$searchTerm]);
                     })
-                    ->orWhereHas('user', function ($userQuery) use ($search) {
-                        $userQuery->where('name', 'like', "%{$search}%");
+                    ->orWhereHas('user', function ($userQuery) use ($searchTerm) {
+                        $userQuery->whereRaw('LOWER(name) LIKE ?', [$searchTerm]);
                     });
             });
         });

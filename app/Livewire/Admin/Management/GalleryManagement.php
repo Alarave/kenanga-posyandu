@@ -30,7 +30,8 @@ class GalleryManagement extends Component
             ->accessibleBy(auth()->user())
             ->withCount('galleries')
             ->when($this->search, function ($q) {
-                $q->where('name', 'like', '%'.$this->search.'%');
+                $searchTerm = '%'.strtolower($this->search).'%';
+                $q->whereRaw('LOWER(name) LIKE ?', [$searchTerm]);
             })
             ->latest();
 

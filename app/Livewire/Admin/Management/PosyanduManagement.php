@@ -57,9 +57,10 @@ class PosyanduManagement extends BaseAdminComponent
                 'patients as lansia_count'    => fn ($q) => $q->where('category', 'lansia'),
             ])
             ->when($this->search, function ($q) {
-                $q->where('name', 'like', '%'.$this->search.'%')
-                    ->orWhere('unique_code', 'like', '%'.$this->search.'%')
-                    ->orWhere('address', 'like', '%'.$this->search.'%');
+                $searchTerm = '%'.strtolower($this->search).'%';
+                $q->whereRaw('LOWER(name) LIKE ?', [$searchTerm])
+                    ->orWhereRaw('LOWER(unique_code) LIKE ?', [$searchTerm])
+                    ->orWhereRaw('LOWER(address) LIKE ?', [$searchTerm]);
             })
             ->latest()
             ->paginate(10);

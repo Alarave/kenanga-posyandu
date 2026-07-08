@@ -27,7 +27,8 @@ class MedicalRecordManagement extends BaseAdminComponent
         $query = $this->applyPosyanduScope(MedicalRecord::with(['patient.posyandu', 'user']))
             ->when($this->search, function ($q) {
                 $q->whereHas('patient', function ($sq) {
-                    $sq->where('full_name', 'like', '%'.$this->search.'%');
+                    $searchTerm = '%'.strtolower($this->search).'%';
+                    $sq->whereRaw('LOWER(full_name) LIKE ?', [$searchTerm]);
                 });
             })
             ->when($this->posyandu_id, function ($q) {

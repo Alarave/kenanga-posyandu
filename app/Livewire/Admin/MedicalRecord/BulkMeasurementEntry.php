@@ -58,8 +58,9 @@ class BulkMeasurementEntry extends Component
         }
 
         $this->searchResults = $query->where(function ($q) {
-            $q->where('full_name', 'like', '%'.$this->search.'%')
-                ->orWhere('id_number', 'like', '%'.$this->search.'%');
+            $searchTerm = '%'.strtolower($this->search).'%';
+            $q->whereRaw('LOWER(full_name) LIKE ?', [$searchTerm])
+                ->orWhereRaw('LOWER(id_number) LIKE ?', [$searchTerm]);
         })
             ->limit(5)
             ->get();

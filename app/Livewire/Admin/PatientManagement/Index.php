@@ -116,7 +116,8 @@ class Index extends BaseAdminComponent
         $query = $this->applyPosyanduScope(Patient::with('posyandu'))
             ->when($this->search, function ($q) {
                 $q->where(function ($q2) {
-                    $q2->where('full_name', 'like', '%'.$this->search.'%')
+                    $searchTerm = '%'.strtolower($this->search).'%';
+                    $q2->whereRaw('LOWER(full_name) LIKE ?', [$searchTerm])
                         ->orWhere('id_number_hash', Patient::generateBlindIndex($this->search));
                 });
             })

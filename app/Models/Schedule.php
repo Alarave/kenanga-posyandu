@@ -37,8 +37,9 @@ class Schedule extends Model
     public function scopeSearch($query, $search)
     {
         return $query->where(function ($q) use ($search) {
-            $q->where('title', 'like', "%{$search}%")
-                ->orWhere('location', 'like', "%{$search}%");
+            $searchTerm = '%'.strtolower($search).'%';
+            $q->whereRaw('LOWER(title) LIKE ?', [$searchTerm])
+                ->orWhereRaw('LOWER(location) LIKE ?', [$searchTerm]);
         });
     }
 

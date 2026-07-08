@@ -263,9 +263,11 @@ class MonthlyReport extends BaseAdminComponent
 
             // Apply search filter
             if ($this->search) {
-                $query->whereHas('patient', fn ($q) => $q->where('full_name', 'like', '%'.$this->search.'%')
-                    ->orWhere('id_number', 'like', '%'.$this->search.'%')
-                );
+                $query->whereHas('patient', function ($q) {
+                    $searchTerm = '%'.strtolower($this->search).'%';
+                    $q->whereRaw('LOWER(full_name) LIKE ?', [$searchTerm])
+                      ->orWhereRaw('LOWER(id_number) LIKE ?', [$searchTerm]);
+                });
             }
 
             // Apply category filter

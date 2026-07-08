@@ -16,8 +16,9 @@ class ScheduleController extends Controller
         $query = Schedule::with('posyandu')->accessibleBy($user)
             ->when($request->search, function ($q, $search) {
                 return $q->where(function ($q) use ($search) {
-                    $q->where('title', 'like', "%{$search}%")
-                        ->orWhere('location', 'like', "%{$search}%");
+                    $searchTerm = '%'.strtolower($search).'%';
+                    $q->whereRaw('LOWER(title) LIKE ?', [$searchTerm])
+                        ->orWhereRaw('LOWER(location) LIKE ?', [$searchTerm]);
                 });
             })
             ->when($request->status, function ($q, $status) {
