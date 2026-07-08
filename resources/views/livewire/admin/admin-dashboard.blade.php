@@ -1260,11 +1260,14 @@
                         fill: true,
                         backgroundColor: gradient,
                         tension: 0.4,
-                        pointRadius: 0,
-                        pointHoverRadius: 5,
+                        pointRadius: 5,
+                        pointBackgroundColor: '#006c49',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointHoverRadius: 8,
                         pointHoverBackgroundColor: '#006c49',
-                        pointHoverBorderColor: '#fff',
-                        pointHoverBorderWidth: 2
+                        pointHoverBorderColor: '#ffffff',
+                        pointHoverBorderWidth: 3
                     }]
                 },
                 options: {
