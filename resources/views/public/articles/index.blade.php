@@ -19,132 +19,145 @@
     /* ── FEATURED HERO ── */
     .featured-hero-wrap {
         position: relative;
-        background: #f8fafc;
-        border-radius: 28px;
+        background: #fff;
+        border-radius: 32px;
         overflow: hidden;
-        margin-bottom: 72px;
-        border: 1px solid rgba(15, 23, 42, 0.06);
-    }
-
-    /* Subtle teal glow accent top-right */
-    .featured-hero-wrap::before {
-        content: '';
-        position: absolute;
-        top: -60px;
-        right: -60px;
-        width: 300px;
-        height: 300px;
-        background: radial-gradient(circle, rgba(13,148,136,0.1) 0%, transparent 70%);
-        pointer-events: none;
+        margin-bottom: 80px;
+        border: 1px solid rgba(15, 23, 42, 0.08);
+        box-shadow: 0 8px 40px rgba(15, 23, 42, 0.06);
     }
 
     .featured-hero {
-        position: relative;
-        z-index: 2;
         display: grid;
         grid-template-columns: 1fr;
-        gap: 0;
         align-items: stretch;
     }
 
     @media (min-width: 1024px) {
         .featured-hero {
-            grid-template-columns: 1fr 420px;
+            grid-template-columns: 55% 45%;
+            min-height: 500px;
         }
     }
 
     /* Text side */
     .featured-hero-text {
-        padding: 52px 48px;
+        padding: 64px 60px;
         display: flex;
         flex-direction: column;
         justify-content: center;
+        position: relative;
+        z-index: 2;
+    }
+
+    .featured-hero-text::before {
+        content: '';
+        position: absolute;
+        top: -80px;
+        left: -80px;
+        width: 320px;
+        height: 320px;
+        background: radial-gradient(circle, rgba(13,148,136,0.06) 0%, transparent 70%);
+        pointer-events: none;
+        z-index: -1;
     }
 
     @media (max-width: 1023px) {
-        .featured-hero-text { padding: 40px 32px 32px; }
+        .featured-hero-text { padding: 48px 36px 36px; }
     }
 
     .featured-badge {
         display: inline-flex;
         align-items: center;
         gap: 8px;
-        padding: 6px 14px;
+        padding: 6px 16px;
         border-radius: 999px;
         background: rgba(13,148,136,0.08);
-        border: 1px solid rgba(13,148,136,0.2);
+        border: 1px solid rgba(13,148,136,0.25);
         color: #0d9488;
         font-family: 'Plus Jakarta Sans', sans-serif;
         font-size: 10px;
         font-weight: 800;
-        letter-spacing: 0.18em;
+        letter-spacing: 0.2em;
         text-transform: uppercase;
-        margin-bottom: 20px;
+        margin-bottom: 24px;
         width: fit-content;
     }
 
     .featured-badge-dot {
-        width: 6px;
-        height: 6px;
+        width: 7px;
+        height: 7px;
         border-radius: 50%;
         background: #0d9488;
         animation: featured-pulse 2s ease-in-out infinite;
+        flex-shrink: 0;
     }
 
     @keyframes featured-pulse {
         0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(13,148,136,0.5); }
-        50% { opacity: 0.5; box-shadow: 0 0 0 5px rgba(13,148,136,0); }
+        50% { opacity: 0.5; box-shadow: 0 0 0 6px rgba(13,148,136,0); }
+    }
+
+    .featured-title-bar {
+        display: block;
+        width: 48px;
+        height: 4px;
+        background: linear-gradient(90deg, #0d9488, #5eead4);
+        border-radius: 2px;
+        margin-bottom: 20px;
     }
 
     .featured-title {
         font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: clamp(1.8rem, 4vw, 3rem);
+        font-size: clamp(2rem, 4.5vw, 3.6rem);
         font-weight: 900;
         color: #0f172a;
-        line-height: 1.12;
-        letter-spacing: -0.03em;
-        margin: 0 0 16px;
+        line-height: 1.08;
+        letter-spacing: -0.04em;
+        margin: 0 0 20px;
     }
 
     .featured-excerpt {
         font-family: 'Public Sans', sans-serif;
-        font-size: 15px;
+        font-size: 16px;
         color: #64748b;
-        line-height: 1.75;
-        margin: 0 0 32px;
+        line-height: 1.8;
+        margin: 0 0 36px;
+        max-width: 480px;
     }
 
     .featured-actions {
         display: flex;
         align-items: center;
-        gap: 16px;
+        gap: 20px;
         flex-wrap: wrap;
+        margin-bottom: 32px;
     }
 
     .btn-featured-read {
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        height: 48px;
-        padding: 0 24px;
+        gap: 10px;
+        height: 52px;
+        padding: 0 28px;
         background: linear-gradient(135deg, #0d9488 0%, #006c49 100%);
         color: #fff;
-        border-radius: 14px;
+        border-radius: 16px;
         font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 12px;
+        font-size: 13px;
         font-weight: 800;
-        letter-spacing: 0.1em;
+        letter-spacing: 0.08em;
         text-transform: uppercase;
         text-decoration: none;
         transition: all 300ms cubic-bezier(0.16,1,0.3,1);
         white-space: nowrap;
-        box-shadow: 0 4px 16px rgba(13,148,136,0.3);
+        box-shadow: 0 6px 20px rgba(13,148,136,0.35);
     }
 
     .btn-featured-read:hover {
         background: linear-gradient(135deg, #0f766e 0%, #005a3c 100%);
         transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(13,148,136,0.4);
+        box-shadow: 0 12px 28px rgba(13,148,136,0.45);
     }
 
     .featured-meta {
@@ -159,24 +172,60 @@
         gap: 6px;
     }
 
+    .featured-author-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding-top: 24px;
+        border-top: 1px solid #f1f5f9;
+    }
+
+    .featured-author-avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #0d9488, #006c49);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 13px;
+        font-weight: 900;
+        flex-shrink: 0;
+        box-shadow: 0 2px 8px rgba(13,148,136,0.3);
+    }
+
+    .featured-author-name {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 13px;
+        font-weight: 800;
+        color: #1e293b;
+    }
+
+    .featured-author-meta {
+        font-family: 'Public Sans', sans-serif;
+        font-size: 11px;
+        color: #94a3b8;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
     /* Image side */
     .featured-img-wrap {
         position: relative;
         overflow: hidden;
-        min-height: 280px;
+        min-height: 320px;
     }
 
     @media (min-width: 1024px) {
-        .featured-img-wrap {
-            border-radius: 0 28px 28px 0;
-        }
+        .featured-img-wrap { border-radius: 0 32px 32px 0; min-height: unset; }
     }
 
     @media (max-width: 1023px) {
-        .featured-img-wrap {
-            border-radius: 0 0 28px 28px;
-            min-height: 240px;
-        }
+        .featured-img-wrap { border-radius: 0 0 32px 32px; }
     }
 
     .featured-img-wrap img {
@@ -184,60 +233,75 @@
         height: 100%;
         object-fit: cover;
         display: block;
-        transition: transform 3s ease;
+        transition: transform 4s ease;
         position: absolute;
         inset: 0;
     }
 
-    .featured-img-wrap:hover img {
-        transform: scale(1.05);
-    }
+    .featured-img-wrap:hover img { transform: scale(1.04); }
 
-    /* Gradient overlay on image */
     .featured-img-overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(to right, rgba(248,250,252,0.15) 0%, rgba(248,250,252,0) 100%);
+        background: linear-gradient(to right, rgba(255,255,255,0.1) 0%, transparent 40%);
         z-index: 1;
         pointer-events: none;
     }
 
-    /* Floating label on image */
+    .featured-img-cat {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        z-index: 3;
+        background: rgba(255,255,255,0.9);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(13,148,136,0.2);
+        color: #0d9488;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 10px;
+        font-weight: 800;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        padding: 6px 12px;
+        border-radius: 8px;
+    }
+
     .featured-img-label {
         position: absolute;
-        bottom: 16px;
-        left: 16px;
-        right: 16px;
-        background: rgba(255,255,255,0.92);
-        backdrop-filter: blur(12px);
-        border-radius: 14px;
-        padding: 12px 14px;
+        bottom: 20px;
+        left: 20px;
+        right: 20px;
+        background: rgba(255,255,255,0.94);
+        backdrop-filter: blur(16px);
+        border-radius: 16px;
+        padding: 14px 16px;
         display: flex;
         align-items: center;
-        gap: 10px;
-        border: 1px solid rgba(15,23,42,0.08);
-        box-shadow: 0 4px 16px rgba(15,23,42,0.08);
+        gap: 12px;
+        border: 1px solid rgba(15,23,42,0.07);
+        box-shadow: 0 8px 24px rgba(15,23,42,0.1);
         z-index: 2;
     }
 
     .featured-img-label-icon {
-        width: 34px;
-        height: 34px;
-        border-radius: 10px;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
         background: linear-gradient(135deg, #0d9488 0%, #006c49 100%);
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
         color: #fff;
+        box-shadow: 0 4px 12px rgba(13,148,136,0.3);
     }
 
     .featured-img-label-text {
         font-family: 'Plus Jakarta Sans', sans-serif;
-        font-size: 12px;
+        font-size: 13px;
         font-weight: 700;
         color: #0f172a;
-        line-height: 1.3;
+        line-height: 1.35;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
@@ -249,9 +313,9 @@
         font-size: 10px;
         color: #0d9488;
         font-weight: 700;
-        margin-top: 2px;
+        margin-top: 3px;
         text-transform: uppercase;
-        letter-spacing: 0.1em;
+        letter-spacing: 0.12em;
     }
 
     /* ── MAIN LAYOUT ── */
@@ -955,6 +1019,11 @@
 
     {{-- ── FEATURED HERO ── --}}
     @if($featured)
+    @php
+        $featuredAuthor = $featured->user->name ?? 'Tim Redaksi';
+        $featuredInitial = strtoupper(substr($featuredAuthor, 0, 1));
+        $featuredReadTime = ceil(str_word_count(\App\Services\ArticleService::getExcerpt($featured->content, 999999)) / 200);
+    @endphp
     <div class="featured-hero-wrap">
         <div class="featured-hero">
             <div class="featured-hero-text">
@@ -962,17 +1031,29 @@
                     <span class="featured-badge-dot"></span>
                     Artikel Terpopuler
                 </div>
+                <span class="featured-title-bar"></span>
                 <h1 class="featured-title">{{ $featured->title }}</h1>
-                <p class="featured-excerpt">{{ \App\Services\ArticleService::getExcerpt($featured->content, 180) }}</p>
+                <p class="featured-excerpt">{{ \App\Services\ArticleService::getExcerpt($featured->content, 200) }}</p>
                 <div class="featured-actions">
                     <a href="{{ route('public.articles.show', $featured->slug) }}" class="btn-featured-read">
                         Mulai Membaca
-                        <span class="material-symbols-outlined" style="font-size:16px;">arrow_forward</span>
+                        <span class="material-symbols-outlined" style="font-size:18px;">arrow_forward</span>
                     </a>
                     <span class="featured-meta">
                         <span class="material-symbols-outlined" style="font-size:14px;">schedule</span>
-                        {{ ceil(str_word_count(\App\Services\ArticleService::getExcerpt($featured->content, 999999)) / 200) }} mnt baca
+                        {{ $featuredReadTime }} mnt baca
                     </span>
+                </div>
+                <div class="featured-author-row">
+                    <div class="featured-author-avatar">{{ $featuredInitial }}</div>
+                    <div>
+                        <div class="featured-author-name">{{ $featuredAuthor }}</div>
+                        <div class="featured-author-meta">
+                            <span>{{ $featured->category->name ?? 'Kesehatan' }}</span>
+                            <span style="color:#cbd5e1;">·</span>
+                            <span>{{ $featured->published_at ? \Carbon\Carbon::parse($featured->published_at)->translatedFormat('d M Y') : $featured->created_at->translatedFormat('d M Y') }}</span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="featured-img-wrap">
@@ -980,13 +1061,14 @@
                 <img src="{{ $featured->thumbnail ? asset('storage/'.$featured->thumbnail) : 'https://images.unsplash.com/photo-1576091160550-217359f4ecf8?q=80&w=1200&auto=format&fit=crop' }}"
                      alt="{{ $featured->title }}"
                      fetchpriority="high" loading="eager" decoding="sync">
+                <div class="featured-img-cat">{{ $featured->category->name ?? 'Artikel Pilihan' }}</div>
                 <div class="featured-img-label">
                     <div class="featured-img-label-icon">
-                        <span class="material-symbols-outlined" style="font-size:18px;">auto_stories</span>
+                        <span class="material-symbols-outlined" style="font-size:20px;">auto_stories</span>
                     </div>
                     <div>
                         <div class="featured-img-label-text">{{ $featured->title }}</div>
-                        <div class="featured-img-label-sub">{{ $featured->category->name ?? 'Artikel Pilihan' }}</div>
+                        <div class="featured-img-label-sub">{{ $featuredReadTime }} menit baca</div>
                     </div>
                 </div>
             </div>
