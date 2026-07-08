@@ -330,8 +330,6 @@
                         <th class="px-6 py-4 text-[10px] font-black text-outline-variant uppercase tracking-widest">Usia</th>
                         <th class="px-6 py-4 text-[10px] font-black text-outline-variant uppercase tracking-widest">Kunjungan</th>
                         <th class="px-6 py-4 text-[10px] font-black text-outline-variant uppercase tracking-widest">Pengukuran</th>
-                        <th class="px-6 py-4 text-[10px] font-black text-outline-variant uppercase tracking-widest">Status Gizi</th>
-                        <th class="px-6 py-4 text-[10px] font-black text-outline-variant uppercase tracking-widest text-center">Tindakan</th>
                         <th class="px-8 py-4 text-[10px] font-black text-outline-variant uppercase tracking-widest text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -430,60 +428,6 @@
                                 </div>
                             </div>
                         </td>
-                        <td class="px-6 py-5">
-                            @php
-                                $status = $record->nutrition_status ?? null;
-                                $badgeStyle = match($status ? strtolower(trim($status)) : null) {
-                                    'normal', 'gizi baik', 'baik' => 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20',
-                                    'gizi kurang', 'kurang' => 'bg-amber-50 text-amber-700 ring-1 ring-amber-600/20',
-                                    'gizi lebih', 'lebih', 'berisiko gizi lebih', 'obesitas' => 'bg-orange-50 text-orange-700 ring-1 ring-orange-600/20',
-                                    'gizi buruk/stunting', 'gizi buruk', 'buruk', 'stunting' => 'bg-error-container text-rose-700 ring-1 ring-rose-600/20',
-                                    default => 'bg-surface-container text-outline ring-1 ring-slate-400/20',
-                                };
-                                $icon = match($status ? strtolower(trim($status)) : null) {
-                                    'gizi buruk/stunting', 'gizi buruk', 'buruk', 'stunting' => 'trending_down',
-                                    'gizi kurang', 'kurang' => 'trending_down',
-                                    'gizi lebih', 'lebih', 'berisiko gizi lebih', 'obesitas' => 'trending_up',
-                                    'normal', 'gizi baik', 'baik' => 'check_circle',
-                                    default => 'horizontal_rule',
-                                };
-                            @endphp
-                            @if($status)
-                            <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-bold {{ $badgeStyle }}">
-                                <span class="material-symbols-outlined text-[14px]" style="font-variation-settings:'FILL' 1;">{{ $icon }}</span>
-                                {{ $status }}
-                            </span>
-                            @else
-                            <span class="text-xs text-outline-variant">-</span>
-                            @endif
-                        </td>
-                        <td class="px-6 py-5">
-                            <div class="flex items-center justify-center gap-2.5">
-                                @if($record->vitamin_a)
-                                    <span class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-black border border-emerald-100/80">
-                                        <span class="material-symbols-outlined text-[13px] font-black">check</span>
-                                        Vit A
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-slate-50 text-slate-400 text-[10px] font-black border border-slate-100">
-                                        <span class="material-symbols-outlined text-[13px]">close</span>
-                                        Vit A
-                                    </span>
-                                @endif
-
-                                @if($record->pill_fe)
-                                    <span class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-indigo-50 text-indigo-700 text-[10px] font-black border border-indigo-100/80">
-                                        <span class="material-symbols-outlined text-[13px] font-black">check</span>
-                                        Pil FE
-                                    </span>
-                                @else
-                                    <span class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-slate-50 text-slate-400 text-[10px] font-black border border-slate-100">
-                                        <span class="material-symbols-outlined text-[13px]">close</span>
-                                        Pil FE
-                                    </span>
-                                @endif
-                            </div>
-                        </td>
                         <td class="px-8 py-5 text-center">
                             <a href="{{ route('admin.reports.individual', ['patient' => $record->patient_id, 'start_month' => $startMonth, 'start_year' => $startYear, 'end_month' => $endMonth, 'end_year' => $endYear]) }}"
                                class="inline-flex items-center justify-center rounded-xl bg-white border border-slate-200 shadow-sm px-4 py-2.5 text-xs font-black text-slate-650 hover:bg-teal-50 hover:text-teal-700 hover:border-teal-300 active:scale-95 transition-all">
@@ -494,7 +438,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="9" class="px-8 py-20 text-center">
+                        <td colspan="7" class="px-8 py-20 text-center">
                             <div class="flex flex-col items-center gap-4 text-outline-variant">
                                 <div class="w-20 h-20 rounded-2xl bg-surface-container-low flex items-center justify-center border border-slate-100">
                                     <span class="material-symbols-outlined text-[40px] text-slate-300">search_off</span>
