@@ -1336,6 +1336,7 @@ function autoCapitalize(el) {
 function capitalizeSentences(html) {
     if (!html) return html;
     let inTag = false;
+    let inEntity = false;
     let result = '';
     let capitalizeNext = true;
 
@@ -1353,6 +1354,14 @@ function capitalizeSentences(html) {
             result += char;
         } else if (inTag) {
             result += char;
+        } else if (char === '&') {
+            inEntity = true;
+            result += char;
+        } else if (inEntity) {
+            result += char;
+            if (char === ';') {
+                inEntity = false;
+            }
         } else {
             if (capitalizeNext && /[a-zA-Z]/.test(char)) {
                 result += char.toUpperCase();
