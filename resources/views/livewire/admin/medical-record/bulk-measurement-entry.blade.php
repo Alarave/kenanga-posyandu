@@ -13,8 +13,8 @@
 
     @section('admin-actions')
         <a href="{{ route('admin.medical-records.index') }}"
-           class="inline-flex items-center gap-1.5 text-xs font-black text-slate-500 uppercase tracking-widest hover:text-teal-600 transition-colors">
-            <span class="material-symbols-outlined text-[16px]">arrow_back</span>
+           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-650 hover:text-teal-600 shadow-xs hover:shadow transition-all duration-200 active:scale-95 group">
+            <span class="material-symbols-outlined text-[18px] group-hover:-translate-x-1 transition-transform">arrow_back</span>
             Kembali
         </a>
     @endsection

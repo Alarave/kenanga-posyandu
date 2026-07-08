@@ -4,9 +4,17 @@
 <div class="w-full pt-1 sm:pt-4 pb-8">
     <!-- Admin Header -->
     @hasSection('admin-title')
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 mb-6 w-full">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 w-full pb-4 border-b border-slate-100">
             <div class="flex-1 min-w-0 w-full">
-                <h1 class="text-lg font-black text-slate-800 truncate">@yield('admin-title')</h1>
+                @php
+                    $title = View::getSection('admin-title');
+                    $isHtml = strip_tags($title) !== $title;
+                @endphp
+                @if($isHtml)
+                    @yield('admin-title')
+                @else
+                    <h1 class="text-xl font-black text-slate-800 tracking-tight">@yield('admin-title')</h1>
+                @endif
             </div>
             
             @hasSection('admin-actions')
