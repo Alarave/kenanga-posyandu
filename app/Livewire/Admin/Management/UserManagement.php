@@ -30,12 +30,19 @@ class UserManagement extends BaseAdminComponent
         $query = User::with('posyandu')
             ->when($this->search, function ($q) {
                 $q->where(function ($sq) {
-                    $sq->where('name', 'like', '%'.$this->search.'%')
-                        ->orWhere('email', 'like', '%'.$this->search.'%');
+                    $searchTerm = '%'.strtolower($this->search).'%';
+                    $sq->whereRaw('LOWER(name) LIKE ?', [$searchTerm])
+                        ->orWhereRaw('LOWER(email) LIKE ?', [$searchTerm]);
                 });
             })
             ->when($this->role, fn ($q) => $q->where('role', $this->role))
-            ->when($this->status, fn ($q) => $q->where('is_active', $this->status === 'active'))
+            ->when($this->status !== '', function ($q) {
+                if ($this->status === 'active') {
+                    $q->where('is_active', true);
+                } elseif ($this->status === 'inactive') {
+                    $q->where('is_active', false);
+                }
+            })
             ->latest();
 
         $totalUsers = User::count();
