@@ -59,7 +59,7 @@ class PatientRequest extends FormRequest
             'birth_date' => 'required|date|before_or_equal:today',
             'place_of_birth' => 'nullable|string|max:255',
             'address' => 'required|string|max:500',
-            'phone_number' => 'required|string|max:13',
+            'phone_number' => 'nullable|string|max:13',
             'posyandu_id' => 'nullable|exists:posyandus,id',
             'profile_photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'weight_at_birth' => 'nullable|numeric|min:0.5|max:10',

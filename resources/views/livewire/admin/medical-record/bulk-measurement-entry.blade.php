@@ -83,8 +83,8 @@
                         <span class="material-symbols-outlined text-[15px] text-slate-400">calendar_month</span>
                         Tanggal Kunjungan
                     </label>
-                    <input type="date" wire:model.live="visit_date"
-                        class="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-sm font-bold text-slate-800 focus:ring-teal-500 focus:border-teal-500 transition-all">
+                    <input type="date" wire:model.live="visit_date" value="{{ $visit_date }}"
+                        class="w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-sm font-bold text-slate-800 focus:ring-teal-500 focus:border-teal-500 transition-all @if(!empty($visit_date)) has-value @endif">
                 </div>
 
                 {{-- Posyandu --}}

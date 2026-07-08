@@ -390,8 +390,7 @@ class Analytics extends BaseAdminComponent
             } else {
                 // Fallback to legacy computation if no snapshot exists
                 $data = $this->fetchAnalyticsData();
-                $this->lastUpdated = 'Live';
-
+                $this->lastUpdated = now()->format('d M Y H:i');
 
                 // Dispatch job to create snapshot for next time
                 ComputeAnalyticsSnapshot::dispatch($posyanduId, $this->selectedYear, $this->selectedMonth);
@@ -399,7 +398,7 @@ class Analytics extends BaseAdminComponent
         } else {
             // Live calculation for custom filters
             $data = $this->fetchAnalyticsData();
-            $this->lastUpdated = 'Live (Custom Filter)';
+            $this->lastUpdated = now()->format('d M Y H:i');
         }
 
         foreach ($data as $k => $value) {

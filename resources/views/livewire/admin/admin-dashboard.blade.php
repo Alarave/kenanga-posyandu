@@ -197,12 +197,12 @@
                 <div class="w-full md:w-1/4 flex gap-2">
                     <div class="w-1/2">
                         <label class="block text-xs font-semibold text-slate-500 mb-1.5">Dari Tanggal</label>
-                        <input type="date" wire:model.live="filterCustomStartDate"
+                        <input type="date" wire:model.live="filterCustomStartDate" value="{{ $filterCustomStartDate }}"
                             class="w-full rounded-xl border-slate-200 text-sm focus:ring-teal-500 bg-slate-50/50">
                     </div>
                     <div class="w-1/2">
                         <label class="block text-xs font-semibold text-slate-500 mb-1.5">Sampai</label>
-                        <input type="date" wire:model.live="filterCustomEndDate"
+                        <input type="date" wire:model.live="filterCustomEndDate" value="{{ $filterCustomEndDate }}"
                             class="w-full rounded-xl border-slate-200 text-sm focus:ring-teal-500 bg-slate-50/50">
                     </div>
                 </div>

@@ -210,20 +210,46 @@
                 });
             }
 
-            // Listen to input changes
-            document.body.addEventListener('input', function (e) {
-                if (e.target && (e.target.type === 'date' || e.target.type === 'datetime-local')) {
-                    updateDateInputClass(e.target);
-                }
+            // Listen to input and change events
+            ['input', 'change'].forEach(function (event) {
+                document.body.addEventListener(event, function (e) {
+                    if (e.target && (e.target.type === 'date' || e.target.type === 'datetime-local')) {
+                        updateDateInputClass(e.target);
+                    }
+                });
             });
 
             // Initialize existing inputs
             document.querySelectorAll('input[type="date"], input[type="datetime-local"]').forEach(updateDateInputClass);
 
-            // High-performance Livewire hook to initialize dynamic date inputs without blocking the main thread
+            // MutationObserver to automatically apply class to morphed/added date inputs (essential for Livewire v3)
+            const observer = new MutationObserver(function (mutations) {
+                mutations.forEach(function (mutation) {
+                    if (mutation.addedNodes.length) {
+                        mutation.addedNodes.forEach(function (node) {
+                            if (node.nodeType === 1) {
+                                if (node.type === 'date' || node.type === 'datetime-local') {
+                                    updateDateInputClass(node);
+                                }
+                                node.querySelectorAll('input[type="date"], input[type="datetime-local"]').forEach(updateDateInputClass);
+                            }
+                        });
+                    }
+                });
+            });
+            observer.observe(document.body, { childList: true, subtree: true });
+
+            // High-performance Livewire hook fallback
             document.addEventListener('livewire:init', function () {
                 Livewire.hook('request.respond', function () {
                     document.querySelectorAll('input[type="date"], input[type="datetime-local"]').forEach(updateDateInputClass);
+                });
+                Livewire.hook('commit', ({ component, commit, respond, succeed, fail }) => {
+                    succeed(function () {
+                        queueMicrotask(function () {
+                            document.querySelectorAll('input[type="date"], input[type="datetime-local"]').forEach(updateDateInputClass);
+                        });
+                    });
                 });
             });
         });
