@@ -1011,6 +1011,7 @@ window.vaccineChart = null;
 window.growthChart = null;
 window.pregnancyRiskChart = null;
 window.lansiaMetabolicChart = null;
+window.isDrillingDown = false;
 
 // ── ANA-30: Download Chart as Image ──
 window.downloadChart = function(chartInstance, fileName) {
@@ -1257,6 +1258,9 @@ function initCharts(data = null) {
                     maintainAspectRatio: false,
                     onClick: (event, activeElements) => {
                         if (activeElements.length > 0) {
+                            if (window.isDrillingDown) return;
+                            window.isDrillingDown = true;
+
                             const firstPoint = activeElements[0];
                             const index = firstPoint.index;
                             const datasetIndex = firstPoint.datasetIndex;
@@ -1265,14 +1269,33 @@ function initCharts(data = null) {
 
                             let type = 'balita';
                             let dsLabel = '';
+                            let targetMonth = month;
+                            let targetYear = null;
+
                             if (viewMode === 'yearly' || (compareMode && trendLabelsPrevious.length > 0)) {
                                 if (viewMode === 'yearly') {
                                     dsLabel = 'Semua Kunjungan';
-                                    type = 'balita'; // fallback
+                                    type = 'all';
+                                    targetMonth = month;
+                                    if (datasetIndex === 1) {
+                                        targetYear = parseInt($wire.selectedYear) - 1;
+                                    }
                                 } else {
                                     const catName = trendLabelsPrevious[index];
                                     dsLabel = catName;
                                     type = catName === 'Balita' ? 'balita' : (catName === 'Ibu Hamil' ? 'ibu_hamil' : 'lansia');
+                                    
+                                    const currentMonth = parseInt($wire.selectedMonth);
+                                    if (datasetIndex === 0) {
+                                        targetMonth = currentMonth;
+                                    } else {
+                                        if (currentMonth === 1) {
+                                            targetMonth = 12;
+                                            targetYear = parseInt($wire.selectedYear) - 1;
+                                        } else {
+                                            targetMonth = currentMonth - 1;
+                                        }
+                                    }
                                 }
                             } else {
                                 const datasetLabel = chartDatasets[datasetIndex].label;
@@ -1281,7 +1304,9 @@ function initCharts(data = null) {
                                 else if (datasetLabel.includes('Lansia')) type = 'lansia';
                             }
 
-                            $wire.call('drillDown', `${dsLabel} - ${label}`, type, month);
+                            $wire.call('drillDown', `${dsLabel} - ${label}`, type, targetMonth, null, targetYear)
+                                .then(() => { window.isDrillingDown = false; })
+                                .catch(() => { window.isDrillingDown = false; });
                         }
                     },
                     scales: {
@@ -1352,6 +1377,9 @@ function initCharts(data = null) {
                     interaction: { mode: 'index', intersect: false },
                     onClick: (event, activeElements) => {
                         if (activeElements.length > 0) {
+                            if (window.isDrillingDown) return;
+                            window.isDrillingDown = true;
+
                             const firstPoint = activeElements[0];
                             const index = firstPoint.index;
                             const datasetIndex = firstPoint.datasetIndex;
@@ -1363,7 +1391,9 @@ function initCharts(data = null) {
                             if (datasetLabel.includes('Stunting')) type = 'stunting';
                             else if (datasetLabel.includes('Risiko')) type = 'gizi_buruk';
 
-                            $wire.call('drillDown', `Balita (${datasetLabel}) - ${label}`, type, month);
+                            $wire.call('drillDown', `Balita (${datasetLabel}) - ${label}`, type, month)
+                                .then(() => { window.isDrillingDown = false; })
+                                .catch(() => { window.isDrillingDown = false; });
                         }
                     },
                     scales: {
@@ -1422,11 +1452,16 @@ function initCharts(data = null) {
                     cutout: '75%',
                     onClick: (event, activeElements) => {
                         if (activeElements.length > 0) {
+                            if (window.isDrillingDown) return;
+                            window.isDrillingDown = true;
+
                             const firstPoint = activeElements[0];
                             const index = firstPoint.index;
                             const label = String(nutLabels[index]);
                             
-                            $wire.call('drillDown', `Balita (${label})`, 'nutrition_status', null, label);
+                            $wire.call('drillDown', `Balita (${label})`, 'nutrition_status', null, label)
+                                .then(() => { window.isDrillingDown = false; })
+                                .catch(() => { window.isDrillingDown = false; });
                         }
                     },
                     plugins: { legend: { display: false } }
@@ -1473,9 +1508,14 @@ function initCharts(data = null) {
                     maintainAspectRatio: false,
                     onClick: (event, activeElements) => {
                         if (activeElements.length > 0) {
+                            if (window.isDrillingDown) return;
+                            window.isDrillingDown = true;
+
                             const index = activeElements[0].index;
                             const vaccineName = vaxLabels[index];
-                            $wire.call('drillDown', `Imunisasi: ${vaccineName}`, 'balita');
+                            $wire.call('drillDown', `Imunisasi: ${vaccineName}`, 'balita')
+                                .then(() => { window.isDrillingDown = false; })
+                                .catch(() => { window.isDrillingDown = false; });
                         }
                     },
                     plugins: {
@@ -1649,12 +1689,17 @@ function initCharts(data = null) {
                     maintainAspectRatio: false,
                     onClick: (event, activeElements) => {
                         if (activeElements.length > 0) {
+                            if (window.isDrillingDown) return;
+                            window.isDrillingDown = true;
+
                             const firstPoint = activeElements[0];
                             const index = firstPoint.index;
                             const label = labels[index];
                             const month = index + 1;
                             
-                            $wire.call('drillDown', `Ibu Hamil - ${label}`, 'ibu_hamil', month);
+                            $wire.call('drillDown', `Ibu Hamil - ${label}`, 'ibu_hamil', month)
+                                .then(() => { window.isDrillingDown = false; })
+                                .catch(() => { window.isDrillingDown = false; });
                         }
                     },
                     scales: {
@@ -1710,6 +1755,9 @@ function initCharts(data = null) {
                     maintainAspectRatio: false,
                     onClick: (event, activeElements) => {
                         if (activeElements.length > 0) {
+                            if (window.isDrillingDown) return;
+                            window.isDrillingDown = true;
+
                             const firstPoint = activeElements[0];
                             const index = firstPoint.index;
                             const label = labels[index];
@@ -1732,7 +1780,9 @@ function initCharts(data = null) {
                             const type = types[datasetIndex] || 'lansia';
                             const datasetLabel = datasetLabels[datasetIndex] || '';
 
-                            $wire.call('drillDown', `Lansia - ${datasetLabel} (${label})`, type, month);
+                            $wire.call('drillDown', `Lansia - ${datasetLabel} (${label})`, type, month)
+                                .then(() => { window.isDrillingDown = false; })
+                                .catch(() => { window.isDrillingDown = false; });
                         }
                     },
                     scales: {

@@ -229,3 +229,46 @@ test('analytics component can drill down on lansia metabolic risks', function ()
         ->assertDontSee('Mbah Sugeng Hipertensi')
         ->assertSee('GDS: 250 mg/dL');
 });
+
+test('analytics component can drill down on all categories (yearly/YoY mode fallback) and support custom year parameter', function () {
+    $pedukuhan = Pedukuhan::factory()->create();
+    $posyandu = Posyandu::factory()->create(['pedukuhan_id' => $pedukuhan->id]);
+
+    $admin = User::factory()->create([
+        'role' => 'admin',
+        'posyandu_id' => $posyandu->id,
+    ]);
+
+    // Create a Balita and a Lansia patient with records in July 2025 (previous year)
+    $balita = Patient::factory()->create([
+        'posyandu_id' => $posyandu->id,
+        'category' => 'balita',
+        'full_name' => 'Balita Tahun Lalu',
+    ]);
+    MedicalRecord::factory()->create([
+        'patient_id' => $balita->id,
+        'visit_date' => '2025-07-15',
+        'nutrition_status' => 'Gizi Baik',
+    ]);
+
+    $lansia = Patient::factory()->create([
+        'posyandu_id' => $posyandu->id,
+        'category' => 'lansia',
+        'full_name' => 'Lansia Tahun Lalu',
+    ]);
+    MedicalRecord::factory()->create([
+        'patient_id' => $lansia->id,
+        'visit_date' => '2025-07-15',
+    ]);
+
+    $this->actingAs($admin);
+
+    // Call drillDown for all categories ('all') for July 2025 (month 7, year 2025)
+    Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->call('drillDown', 'Semua Kunjungan - Jul', 'all', 7, null, 2025)
+        ->assertSee('Balita Tahun Lalu')
+        ->assertSee('Lansia Tahun Lalu')
+        ->assertSee('Gizi Baik')
+        ->assertSee('Lansia');
+});
+

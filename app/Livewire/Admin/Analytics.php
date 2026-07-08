@@ -207,10 +207,12 @@ class Analytics extends BaseAdminComponent
     }
 
     // ── ANA-22: Chart click drill-down ──
-    public function drillDown(string $label, string $type, ?int $month = null, ?string $statusFilter = null): void
+    public function drillDown(string $label, string $type, ?int $month = null, ?string $statusFilter = null, ?int $year = null): void
     {
         $this->showDrillDown = true;
         $this->drillDownTitle = "Detail: {$label}";
+
+        $targetYear = $year ?? $this->selectedYear;
 
         if (str_starts_with($type, 'lansia_age_')) {
             $patients = $this->applyPosyanduScope(Patient::query(), $this->selectedPosyandu)
@@ -249,8 +251,8 @@ class Analytics extends BaseAdminComponent
                 ->whereHas('patient', function ($q) {
                     $q->where('category', 'lansia')->where('status_mutasi', 'aktif');
                 })
-                ->whereYear('visit_date', $this->selectedYear)
-                ->when($this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $this->selectedMonth))
+                ->whereYear('visit_date', $targetYear)
+                ->when($month ?? $this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $month ?? $this->selectedMonth))
                 ->orderBy('visit_date', 'desc')
                 ->orderBy('id', 'desc');
 
@@ -285,7 +287,7 @@ class Analytics extends BaseAdminComponent
 
         $query = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
             ->with(['patient.posyandu'])
-            ->whereYear('visit_date', $this->selectedYear);
+            ->whereYear('visit_date', $targetYear);
 
         if ($month) {
             $query->whereMonth('visit_date', $month);
@@ -294,6 +296,7 @@ class Analytics extends BaseAdminComponent
         }
 
         match ($type) {
+            'all', 'semua' => null,
             'stunting' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
                 ->where(fn ($q) => $q->where('nutrition_status', 'like', '%Stunting%')
                     ->orWhere('nutrition_status', 'like', '%Pendek%')
@@ -326,7 +329,13 @@ class Analytics extends BaseAdminComponent
                 'lansia_hiperglikemia' => 'GDS: '.($r->blood_sugar ?: '-').' mg/dL',
                 'lansia_hiperkolesterolemia' => 'Kolesterol: '.($r->cholesterol ?: '-').' mg/dL',
                 'lansia_hiperurisemia' => 'Asam Urat: '.($r->uric_acid ?: '-').' mg/dL',
-                default => $r->nutrition_status ?? '-',
+                default => $r->nutrition_status ?: (
+                    $r->patient?->category === 'lansia' ? 'Lansia' : (
+                        $r->patient?->category === 'ibu_hamil' ? 'Ibu Hamil' : (
+                            in_array($r->patient?->category, ['balita', 'bayi', 'baduta']) ? 'Balita' : 'Umum'
+                        )
+                    )
+                ),
             },
             'visit_date' => $r->visit_date?->format('d M Y') ?? '-',
             'patient_id' => $r->patient_id,
