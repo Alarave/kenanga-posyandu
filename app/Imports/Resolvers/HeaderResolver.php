@@ -39,6 +39,9 @@ class HeaderResolver
         'rt_rw' => ['rt_rw', 'rt/rw', 'rtrw'],
         'historical_diseases' => ['historical_diseases', 'riwayat_penyakit', 'penyakit', 'riwayat_kesehatan'],
         'is_pregnant' => ['is_pregnant', 'apakah_hamil', 'hamil', 'status_kehamilan'],
+        'blood_sugar' => ['gds', 'gula_darah', 'gula_darah_sewaktu', 'blood_sugar', 'gula'],
+        'uric_acid' => ['asam_urat', 'uric_acid', 'asamurat'],
+        'cholesterol' => ['kolesterol', 'cholesterol', 'chol'],
     ];
 
     /** Keywords used to detect which row is the header. */

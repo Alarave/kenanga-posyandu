@@ -93,6 +93,9 @@ class PatientRowProcessor
         $vitamin = $get('vitamin');
         $imunisasi = $get('imunisasi');
         $tensi = $get('tensi');
+        $gds = $get('blood_sugar');
+        $asamUrat = $get('uric_acid');
+        $kolesterol = $get('cholesterol');
 
         // Validate required fields
         if ($nama === '' && $nik === '') {
@@ -141,8 +144,8 @@ class PatientRowProcessor
                 $historicalDiseases, $isPregnantInput, $rt, $rw
             );
 
-            if ($berat !== '' || $tinggi !== '' || $tensi !== '') {
-                $this->saveMedicalRecord($patient, $berat, $tinggi, $lingkarKepala, $vitamin, $imunisasi, $birthDate, $tglUkur, $gender, $rowNum, $customVisitDate, $tensi);
+            if ($berat !== '' || $tinggi !== '' || $tensi !== '' || $gds !== '' || $asamUrat !== '' || $kolesterol !== '') {
+                $this->saveMedicalRecord($patient, $berat, $tinggi, $lingkarKepala, $vitamin, $imunisasi, $birthDate, $tglUkur, $gender, $rowNum, $customVisitDate, $tensi, $gds, $asamUrat, $kolesterol);
             }
         } catch (\Exception $e) {
             $this->errors[] = "Baris {$rowNum}: Gagal menyimpan '{$nama}' — ".$e->getMessage();
@@ -319,7 +322,10 @@ class PatientRowProcessor
         ?string $gender,
         int $rowNum,
         ?Carbon $customVisitDate = null,
-        string $tensi = ''
+        string $tensi = '',
+        string $gds = '',
+        string $asamUrat = '',
+        string $kolesterol = ''
     ): void {
         $visitDate = $customVisitDate;
         if (! ($visitDate instanceof Carbon)) {
@@ -344,6 +350,10 @@ class PatientRowProcessor
             }
         }
 
+        $gdsVal = $this->parseDecimal($gds);
+        $asamUratVal = $this->parseDecimal($asamUrat);
+        $kolesterolVal = $this->parseDecimal($kolesterol);
+
         [$zScore, $nutritionStatus] = $this->calcNutrition($weightVal, $heightVal, $birthDate, $visitDate, $gender);
 
         $existingRecord = MedicalRecord::where('patient_id', $patient->id)
@@ -362,6 +372,9 @@ class PatientRowProcessor
                 'nutrition_status' => $nutritionStatus ?? $existingRecord->nutrition_status,
                 'systolic_bp' => $systolic ?? $existingRecord->systolic_bp,
                 'diastolic_bp' => $diastolic ?? $existingRecord->diastolic_bp,
+                'blood_sugar' => $gdsVal ?? $existingRecord->blood_sugar,
+                'uric_acid' => $asamUratVal ?? $existingRecord->uric_acid,
+                'cholesterol' => $kolesterolVal ?? $existingRecord->cholesterol,
             ]);
         } else {
             // Create a new medical record
@@ -379,6 +392,9 @@ class PatientRowProcessor
                 'nutrition_status' => $nutritionStatus,
                 'systolic_bp' => $systolic,
                 'diastolic_bp' => $diastolic,
+                'blood_sugar' => $gdsVal,
+                'uric_acid' => $asamUratVal,
+                'cholesterol' => $kolesterolVal,
                 'complaint' => '—',
                 'diagnosis' => 'Sehat',
             ]);
