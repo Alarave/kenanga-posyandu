@@ -406,18 +406,9 @@
                         <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Tren Kunjungan Bulanan Gabungan</h3>
                         <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Perbandingan tren frekuensi kunjungan pasien per kategori di posyandu (Dapat diklik untuk detail)</p>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <button wire:click="exportChartDataExcel('tren_kunjungan')" wire:loading.attr="disabled" wire:target="exportChartDataExcel('tren_kunjungan')" class="p-2.5 text-emerald-600 hover:text-emerald-800 rounded-xl bg-emerald-50 border border-emerald-200 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Data Excel">
-                            <span wire:loading.remove wire:target="exportChartDataExcel('tren_kunjungan')" class="material-symbols-outlined text-[20px]">description</span>
-                            <svg wire:loading wire:target="exportChartDataExcel('tren_kunjungan')" class="animate-spin h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                            </svg>
-                        </button>
-                        <button onclick="downloadChart(visitsTrendChart, 'tren_kunjungan')" class="p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
-                            <span class="material-symbols-outlined text-[20px]">download</span>
-                        </button>
-                    </div>
+                    <button onclick="downloadChart(visitsTrendChart, 'tren_kunjungan')" class="p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                        <span class="material-symbols-outlined text-[20px]">download</span>
+                    </button>
                 </div>
                 <div class="relative h-96">
                     <canvas id="visitsTrendChart" wire:ignore></canvas>
@@ -468,18 +459,9 @@
                         <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Prevalensi Pertumbuhan Balita</h3>
                         <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Tren bulanan persentase status gizi balita: Normal, Risiko, dan Stunting/Gizi Buruk</p>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <button wire:click="exportChartDataExcel('tren_status_gizi_balita')" wire:loading.attr="disabled" wire:target="exportChartDataExcel('tren_status_gizi_balita')" class="shrink-0 p-2.5 text-emerald-600 hover:text-emerald-800 rounded-xl bg-emerald-50 border border-emerald-200 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Data Excel">
-                            <span wire:loading.remove wire:target="exportChartDataExcel('tren_status_gizi_balita')" class="material-symbols-outlined text-[20px]">description</span>
-                            <svg wire:loading wire:target="exportChartDataExcel('tren_status_gizi_balita')" class="animate-spin h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                            </svg>
-                        </button>
-                        <button onclick="downloadChart(nutritionTrendChart, 'tren_status_gizi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
-                            <span class="material-symbols-outlined text-[20px]">download</span>
-                        </button>
-                    </div>
+                    <button onclick="downloadChart(nutritionTrendChart, 'tren_status_gizi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                        <span class="material-symbols-outlined text-[20px]">download</span>
+                    </button>
                 </div>
 
                 {{-- Legend badges --}}
@@ -515,18 +497,9 @@
                         <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Status Gizi Balita (Pemeriksaan Terbaru)</h3>
                         <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Distribusi persentase status gizi balita berdasarkan hasil pemeriksaan status gizi terbaru</p>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <button wire:click="exportChartDataExcel('distribusi_status_gizi_balita')" wire:loading.attr="disabled" wire:target="exportChartDataExcel('distribusi_status_gizi_balita')" class="shrink-0 p-2.5 text-emerald-600 hover:text-emerald-800 rounded-xl bg-emerald-50 border border-emerald-200 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Data Excel">
-                            <span wire:loading.remove wire:target="exportChartDataExcel('distribusi_status_gizi_balita')" class="material-symbols-outlined text-[20px]">description</span>
-                            <svg wire:loading wire:target="exportChartDataExcel('distribusi_status_gizi_balita')" class="animate-spin h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                            </svg>
-                        </button>
-                        <button onclick="downloadChart(nutritionDonutChart, 'distribusi_status_gizi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
-                            <span class="material-symbols-outlined text-[20px]">download</span>
-                        </button>
-                    </div>
+                    <button onclick="downloadChart(nutritionDonutChart, 'distribusi_status_gizi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                        <span class="material-symbols-outlined text-[20px]">download</span>
+                    </button>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
@@ -593,18 +566,9 @@
                         <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Capaian Imunisasi Per Jenis Vaksin</h3>
                         <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Jumlah balita yang menerima setiap jenis imunisasi dasar pada periode yang dipilih</p>
                     </div>
-                    <div class="flex items-center gap-2">
-                        <button wire:click="exportChartDataExcel('capaian_imunisasi_balita')" wire:loading.attr="disabled" wire:target="exportChartDataExcel('capaian_imunisasi_balita')" class="shrink-0 p-2.5 text-emerald-600 hover:text-emerald-800 rounded-xl bg-emerald-50 border border-emerald-200 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Data Excel">
-                            <span wire:loading.remove wire:target="exportChartDataExcel('capaian_imunisasi_balita')" class="material-symbols-outlined text-[20px]">description</span>
-                            <svg wire:loading wire:target="exportChartDataExcel('capaian_imunisasi_balita')" class="animate-spin h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                            </svg>
-                        </button>
-                        <button onclick="downloadChart(vaccineChart, 'capaian_imunisasi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
-                            <span class="material-symbols-outlined text-[20px]">download</span>
-                        </button>
-                    </div>
+                    <button onclick="downloadChart(vaccineChart, 'capaian_imunisasi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                        <span class="material-symbols-outlined text-[20px]">download</span>
+                    </button>
                 </div>
 
                 {{-- Cakupan badge --}}
@@ -1044,22 +1008,9 @@ window.isDrillingDown = false;
 window.downloadChart = function(chartInstance, fileName) {
     if (!chartInstance) return;
     
-    // 1. Download Gambar PNG dengan Background Putih Solid agar informasinya jelas
+    // 1. Download Gambar PNG
     try {
-        const sourceCanvas = chartInstance.canvas;
-        const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = sourceCanvas.width;
-        tempCanvas.height = sourceCanvas.height;
-        const tempCtx = tempCanvas.getContext('2d');
-        
-        // Isi background dengan warna putih solid
-        tempCtx.fillStyle = '#ffffff';
-        tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
-        
-        // Gambar chart di atas background putih
-        tempCtx.drawImage(sourceCanvas, 0, 0);
-        
-        const url = tempCanvas.toDataURL('image/png');
+        const url = chartInstance.toBase64Image();
         const a = document.createElement('a');
         a.href = url;
         a.download = fileName + '.png';
@@ -1080,16 +1031,16 @@ window.downloadChart = function(chartInstance, fileName) {
         // Header
         let header = "Label/Bulan";
         datasets.forEach(ds => {
-            header += ',"' + ds.label.replace(/"/g, '""') + '"';
+            header += ";" + ds.label;
         });
         csvString += header + "\r\n";
         
         // Rows
         labels.forEach((label, index) => {
-            let row = '"' + label.toString().replace(/"/g, '""') + '"';
+            let row = label;
             datasets.forEach(ds => {
                 let val = ds.data[index] !== undefined && ds.data[index] !== null ? ds.data[index] : 0;
-                row += "," + val;
+                row += ";" + val;
             });
             csvString += row + "\r\n";
         });
@@ -1160,20 +1111,10 @@ function initCharts(data = null) {
         if (fromData && fromData[wireProp] !== undefined) {
             val = fromData[wireProp];
         } else {
-            val = $wire.get(wireProp);
+            val = typeof $wire.get === 'function' ? $wire.get(wireProp) : $wire[wireProp];
         }
         try {
-            // Livewire 3 wraps arrays in proxies, but we need plain arrays for Chart.js
-            // If it's already an array, JSON.stringify handles it.
-            // If it's a proxy, $wire.get() usually returns a plain array/object we can stringify.
-            if (!val) return [];
-            
-            // Convert objects that are array-like (from PHP associative arrays) to plain arrays
-            let parsed = JSON.parse(JSON.stringify(val));
-            if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-                return Object.values(parsed);
-            }
-            return Array.isArray(parsed) ? parsed : [];
+            return JSON.parse(JSON.stringify(val || []));
         } catch(e) {
             return [];
         }
@@ -1187,8 +1128,8 @@ function initCharts(data = null) {
     const visitsIbuHamil = getArr(data, 'trendVisitsIbuHamil');
     const visitsLansia = getArr(data, 'trendVisitsLansia');
 
-    const viewMode = data ? data.viewMode : $wire.get('viewMode');
-    const compareMode = data ? data.compareMode : $wire.get('compareMode');
+    const viewMode = data ? data.viewMode : $wire.viewMode;
+    const compareMode = data ? data.compareMode : $wire.compareMode;
     const trendCompareCurrent = getArr(data, 'trendCompareCurrent');
     const trendComparePrevious = getArr(data, 'trendComparePrevious');
     const trendLabelsPrevious = getArr(data, 'trendLabelsPrevious');
@@ -1850,7 +1791,32 @@ function initCharts(data = null) {
 }
 
 // Initial load
-initCharts();
+initCharts({
+    trendLabels: @json($trendLabels),
+    trendVisitsBalita: @json($trendVisitsBalita),
+    trendVisitsIbuHamil: @json($trendVisitsIbuHamil),
+    trendVisitsLansia: @json($trendVisitsLansia),
+    trendNormal: @json($trendNormal),
+    trendStunting: @json($trendStunting),
+    trendRisk: @json($trendRisk),
+    nutritionLabels: @json($nutritionLabels),
+    nutritionData: @json($nutritionData),
+    vaccineLabels: @json($vaccineLabels),
+    vaccineData: @json($vaccineData),
+    trendPregnancyHypertension: @json($trendPregnancyHypertension),
+    trendPregnancyFe: @json($trendPregnancyFe),
+    trendCompareCurrent: @json($trendCompareCurrent),
+    trendComparePrevious: @json($trendComparePrevious),
+    trendLabelsPrevious: @json($trendLabelsPrevious),
+    viewMode: @json($viewMode),
+    compareMode: @json($compareMode),
+    trendAvgWeight: @json($trendAvgWeight),
+    trendAvgHeight: @json($trendAvgHeight),
+    trendLansiaHypertension: @json($trendLansiaHypertension),
+    trendLansiaHyperglycemia: @json($trendLansiaHyperglycemia),
+    trendLansiaHypercholesterolemia: @json($trendLansiaHypercholesterolemia),
+    trendLansiaHyperuricemia: @json($trendLansiaHyperuricemia)
+});
 
 // Listen for Livewire updates
 $wire.on('charts-updated', (event) => {
