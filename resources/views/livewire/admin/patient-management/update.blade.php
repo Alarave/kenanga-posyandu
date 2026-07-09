@@ -14,7 +14,7 @@
         init() {
             this.$watch('category', value => {
                 if (value === 'ibu_hamil') {
-                    this.gender = 'F';
+                    this.gender = 'P';
                 }
             });
         }
@@ -155,14 +155,14 @@
                                 <div class="w-full h-16 px-6 bg-slate-100 border border-slate-200 rounded-2xl flex items-center text-sm font-bold text-slate-500">
                                     Perempuan
                                 </div>
-                                <input type="hidden" name="gender" value="F" x-bind:disabled="category !== 'ibu_hamil'">
+                                <input type="hidden" name="gender" value="P" x-bind:disabled="category !== 'ibu_hamil'">
                             </div>
                             
                             <!-- Dropdown pilihan jenis kelamin untuk kategori lain -->
                             <div x-show="category !== 'ibu_hamil'">
                                 <x-forms.select-input name="gender" placeholder="Pilih Jenis Kelamin" :placeholderDisabled="true" value="{{ old('gender', $patient->gender) }}" required x-model="gender" x-bind:disabled="category === 'ibu_hamil'">
-                                    <option value="M" {{ old('gender', $patient->gender) == 'M' ? 'selected' : '' }}>Laki-laki</option>
-                                    <option value="F" {{ old('gender', $patient->gender) == 'F' ? 'selected' : '' }}>Perempuan</option>
+                                    <option value="L" {{ (old('gender', $patient->gender) == 'L' || old('gender', $patient->gender) == 'M') ? 'selected' : '' }}>Laki-laki</option>
+                                    <option value="P" {{ (old('gender', $patient->gender) == 'P' || old('gender', $patient->gender) == 'F') ? 'selected' : '' }}>Perempuan</option>
                                 </x-forms.select-input>
                             </div>
                         </div>

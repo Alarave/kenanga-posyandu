@@ -32,7 +32,7 @@ class PatientRequest extends FormRequest
             if ($validator->errors()->has('id_number_hash')) {
                 $validator->errors()->add('id_number', 'NIK sudah terdaftar dalam sistem.');
             }
-            if ($this->input('category') === 'ibu_hamil' && $this->input('gender') !== 'F') {
+            if ($this->input('category') === 'ibu_hamil' && $this->input('gender') !== 'P') {
                 $validator->errors()->add('gender', 'Kategori Ibu Hamil harus berjenis kelamin Perempuan.');
             }
         });
@@ -55,7 +55,7 @@ class PatientRequest extends FormRequest
             'parent_name' => 'nullable|string|max:255',
             'mother_nik' => 'nullable|digits:16',
             'kia_book_ownership' => 'nullable|boolean',
-            'gender' => 'required|string|in:M,F',
+            'gender' => 'required|string|in:L,P',
             'birth_date' => 'required|date|before_or_equal:today',
             'place_of_birth' => 'nullable|string|max:255',
             'address' => 'required|string|max:500',
