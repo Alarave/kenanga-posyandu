@@ -4,12 +4,12 @@
 
 @section('admin-content')
 <div class="w-full space-y-10 pb-24">
-    <div class="flex items-center justify-between px-4">
-        <div class="bg-white/80 backdrop-blur-md px-8 py-4 rounded-[2rem] border border-white shadow-sm flex items-center gap-4">
-            <div class="w-2 h-2 bg-primary rounded-full animate-pulse"></div>
-            <h2 class="text-xl font-black text-slate-800 tracking-tight">Pemeriksaan Baru</h2>
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-4">
+        <div class="bg-white/80 backdrop-blur-md px-6 sm:px-8 py-4 rounded-[2rem] border border-white shadow-sm flex items-center justify-center sm:justify-start gap-4">
+            <div class="w-2 h-2 bg-primary rounded-full animate-pulse shrink-0"></div>
+            <h2 class="text-lg sm:text-xl font-black text-slate-800 tracking-tight whitespace-nowrap">Pemeriksaan Baru</h2>
         </div>
-        <x-button href="{{ route('admin.medical-records.index') }}" variant="ghost" class="!bg-white border border-slate-200 !rounded-2xl !px-6 h-14 font-black">
+        <x-button href="{{ route('admin.medical-records.index') }}" variant="ghost" class="!bg-white border border-slate-200 !rounded-2xl !px-6 h-14 font-black whitespace-nowrap shrink-0 flex items-center justify-center w-full sm:w-auto">
             <span class="material-symbols-outlined mr-2 text-[24px]">arrow_back</span> Kembali
         </x-button>
     </div>

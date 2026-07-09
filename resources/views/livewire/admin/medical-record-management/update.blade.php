@@ -552,9 +552,9 @@
 
             {{-- Submit Actions --}}
             <div class="flex flex-col md:flex-row gap-4 pt-4">
-                <button type="submit" class="flex-1 h-16 bg-teal-600 text-white rounded-2xl font-black text-sm uppercase tracking-[0.2em] hover:bg-teal-700 transition-all shadow-lg flex items-center justify-center gap-3 group">
-                    <span>Simpan Perubahan Rekam Medis</span>
-                    <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">save</span>
+                <button type="submit" class="flex-1 min-h-[4rem] h-auto md:h-16 py-3 px-4 bg-teal-600 text-white rounded-2xl font-black text-xs md:text-sm uppercase tracking-wider md:tracking-[0.2em] hover:bg-teal-700 transition-all shadow-lg flex items-center justify-center gap-2 md:gap-3 group">
+                    <span class="text-center leading-snug">Simpan Perubahan Rekam Medis</span>
+                    <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform shrink-0">save</span>
                 </button>
                 <a href="{{ route('admin.medical-records.index') }}" class="w-full md:w-56 h-16 bg-white text-slate-400 border border-slate-200 rounded-2xl font-bold text-sm flex items-center justify-center hover:bg-slate-50 transition-all text-center uppercase tracking-widest hover:text-red-500 hover:bg-red-50 hover:border-red-200 transition-all duration-300">
                     Batalkan
@@ -817,11 +817,11 @@
 
             {{-- Submit Actions --}}
             <div class="flex flex-col md:flex-row gap-4 pt-4">
-                <button type="submit" class="flex-1 h-16 bg-[#006C49] text-white rounded-2xl font-black text-sm uppercase tracking-[0.2em] hover:bg-[#005439] transition-all shadow-lg flex items-center justify-center gap-3 group">
-                    <span>Simpan Perubahan Rekam Medis</span>
-                    <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">save</span>
+                <button type="submit" class="flex-1 min-h-[4rem] h-auto md:h-16 py-3 px-4 bg-[#006C49] text-white rounded-[2rem] font-black text-xs md:text-sm uppercase tracking-wider md:tracking-[0.2em] hover:bg-[#005439] transition-all shadow-lg flex items-center justify-center gap-2 md:gap-3 group">
+                    <span class="text-center leading-snug">Simpan Perubahan Rekam Medis</span>
+                    <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform shrink-0">save</span>
                 </button>
-                <a href="{{ route('admin.medical-records.index') }}" class="w-full md:w-56 h-16 bg-white text-slate-400 border border-slate-200 rounded-2xl font-bold text-sm flex items-center justify-center hover:bg-slate-50 transition-all text-center uppercase tracking-widest hover:text-red-500 hover:bg-red-50 hover:border-red-200 transition-all duration-300">
+                <a href="{{ route('admin.medical-records.index') }}" class="w-full md:w-56 h-16 bg-white text-slate-400 border border-slate-200 rounded-[2rem] font-bold text-sm flex items-center justify-center hover:bg-slate-50 transition-all text-center uppercase tracking-widest hover:text-red-500 hover:bg-red-50 hover:border-red-200 transition-all duration-300">
                     Batalkan
                 </a>
             </div>
@@ -1250,11 +1250,11 @@
 
             {{-- Submit Actions --}}
             <div class="flex flex-col md:flex-row gap-4 pt-8">
-                <button type="submit" class="flex-1 h-20 bg-primary text-white rounded-[2rem] font-black text-sm uppercase tracking-[0.2em] hover:bg-primary/90 transition-all shadow-2xl shadow-primary/20 flex items-center justify-center gap-3 group">
-                    <span>Simpan Perubahan Rekam Medis</span>
-                    <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">save</span>
+                <button type="submit" class="flex-1 min-h-[4rem] h-auto md:h-16 py-3 px-4 bg-primary text-white rounded-[2rem] font-black text-xs md:text-sm uppercase tracking-wider md:tracking-[0.2em] hover:bg-primary/90 transition-all shadow-2xl shadow-primary/20 flex items-center justify-center gap-2 md:gap-3 group">
+                    <span class="text-center leading-snug">Simpan Perubahan Rekam Medis</span>
+                    <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform shrink-0">save</span>
                 </button>
-                <a href="{{ route('admin.medical-records.index') }}" class="w-full md:w-56 h-20 bg-white text-slate-400 border border-slate-200 rounded-[2rem] font-bold text-sm flex items-center justify-center hover:bg-slate-50 transition-all text-center uppercase tracking-widest hover:text-red-500 hover:bg-red-50 hover:border-red-200 transition-all duration-300">
+                <a href="{{ route('admin.medical-records.index') }}" class="w-full md:w-56 h-16 bg-white text-slate-400 border border-slate-200 rounded-[2rem] font-bold text-sm flex items-center justify-center hover:bg-slate-50 transition-all text-center uppercase tracking-widest hover:text-red-500 hover:bg-red-50 hover:border-red-200 transition-all duration-300">
                     Batalkan
                 </a>
             </div>

@@ -104,62 +104,62 @@
             {{-- Sort by Patient Name --}}
             <div class="flex gap-1">
                 <button wire:click="$set('sortBy', 'patient_name_asc')"
-                        @class(['px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all', 
+                        @class(['p-2 md:px-3 md:py-1.5 rounded-xl md:rounded-lg text-[10px] md:text-[9px] font-black uppercase tracking-widest transition-all min-w-[44px] min-h-[44px] md:min-w-0 md:min-h-0 flex items-center justify-center', 
                                 'bg-teal-100 text-teal-600 ring-1 ring-teal-200' => $sortBy === 'patient_name_asc',
                                 'bg-slate-50 text-slate-600 hover:bg-slate-100' => $sortBy !== 'patient_name_asc'])
                         title="Nama A-Z">
-                    <span class="material-symbols-outlined text-[12px]">sort_by_alpha</span>
+                    <span class="material-symbols-outlined text-[16px] md:text-[12px]">sort_by_alpha</span>
                 </button>
                 <button wire:click="$set('sortBy', 'patient_name_desc')"
-                        @class(['px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all', 
+                        @class(['p-2 md:px-3 md:py-1.5 rounded-xl md:rounded-lg text-[10px] md:text-[9px] font-black uppercase tracking-widest transition-all min-w-[44px] min-h-[44px] md:min-w-0 md:min-h-0 flex items-center justify-center', 
                                 'bg-teal-100 text-teal-600 ring-1 ring-teal-200' => $sortBy === 'patient_name_desc',
                                 'bg-slate-50 text-slate-600 hover:bg-slate-100' => $sortBy !== 'patient_name_desc'])
                         title="Nama Z-A">
-                    <span class="material-symbols-outlined text-[12px]">sort_by_alpha</span><span class="text-[8px] ml-0.5">↓</span>
+                    <span class="material-symbols-outlined text-[16px] md:text-[12px]">sort_by_alpha</span><span class="text-[10px] md:text-[8px] ml-0.5">↓</span>
                 </button>
             </div>
 
             {{-- Sort by Visit Date --}}
-            <div class="flex gap-1">
+            <div class="flex gap-1 md:gap-2">
                 <button wire:click="$set('sortBy', 'visit_date_asc')"
-                        @class(['px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all', 
+                        @class(['p-2 md:px-3 md:py-1.5 rounded-xl md:rounded-lg text-[10px] md:text-[9px] font-black uppercase tracking-widest transition-all min-w-[44px] min-h-[44px] md:min-w-0 md:min-h-0 flex items-center justify-center', 
                                 'bg-teal-100 text-teal-600 ring-1 ring-teal-200' => $sortBy === 'visit_date_asc',
                                 'bg-slate-50 text-slate-600 hover:bg-slate-100' => $sortBy !== 'visit_date_asc'])
                         title="Tanggal Lama - Baru">
-                    <span class="material-symbols-outlined text-[12px]">calendar_month</span>
+                    <span class="material-symbols-outlined text-[16px] md:text-[12px]">calendar_month</span>
                 </button>
                 <button wire:click="$set('sortBy', 'visit_date_desc')"
-                        @class(['px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all', 
+                        @class(['p-2 md:px-3 md:py-1.5 rounded-xl md:rounded-lg text-[10px] md:text-[9px] font-black uppercase tracking-widest transition-all min-w-[44px] min-h-[44px] md:min-w-0 md:min-h-0 flex items-center justify-center', 
                                 'bg-teal-100 text-teal-600 ring-1 ring-teal-200' => $sortBy === 'visit_date_desc',
                                 'bg-slate-50 text-slate-600 hover:bg-slate-100' => $sortBy !== 'visit_date_desc'])
                         title="Tanggal Baru - Lama">
-                    <span class="material-symbols-outlined text-[12px]">calendar_month</span><span class="text-[8px] ml-0.5">↓</span>
+                    <span class="material-symbols-outlined text-[16px] md:text-[12px]">calendar_month</span><span class="text-[10px] md:text-[8px] ml-0.5">↓</span>
                 </button>
             </div>
 
             {{-- Sort by Updated Date --}}
-            <div class="flex gap-1">
+            <div class="flex gap-1 md:gap-2">
                 <button wire:click="$set('sortBy', 'updated_at_asc')"
-                        @class(['px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all', 
+                        @class(['p-2 md:px-3 md:py-1.5 rounded-xl md:rounded-lg text-[10px] md:text-[9px] font-black uppercase tracking-widest transition-all min-w-[44px] min-h-[44px] md:min-w-0 md:min-h-0 flex items-center justify-center', 
                                 'bg-teal-100 text-teal-600 ring-1 ring-teal-200' => $sortBy === 'updated_at_asc',
                                 'bg-slate-50 text-slate-600 hover:bg-slate-100' => $sortBy !== 'updated_at_asc'])
                         title="Edit Lama - Baru">
-                    <span class="material-symbols-outlined text-[12px]">update</span>
+                    <span class="material-symbols-outlined text-[16px] md:text-[12px]">update</span>
                 </button>
                 <button wire:click="$set('sortBy', 'updated_at_desc')"
-                        @class(['px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all', 
+                        @class(['p-2 md:px-3 md:py-1.5 rounded-xl md:rounded-lg text-[10px] md:text-[9px] font-black uppercase tracking-widest transition-all min-w-[44px] min-h-[44px] md:min-w-0 md:min-h-0 flex items-center justify-center', 
                                 'bg-teal-100 text-teal-600 ring-1 ring-teal-200' => $sortBy === 'updated_at_desc',
                                 'bg-slate-50 text-slate-600 hover:bg-slate-100' => $sortBy !== 'updated_at_desc'])
                         title="Edit Baru - Lama">
-                    <span class="material-symbols-outlined text-[12px]">update</span><span class="text-[8px] ml-0.5">↓</span>
+                    <span class="material-symbols-outlined text-[16px] md:text-[12px]">update</span><span class="text-[10px] md:text-[8px] ml-0.5">↓</span>
                 </button>
             </div>
         </div>
     </div>
 
     {{-- ── Data Table ── --}}
-    <div class="bg-white border border-slate-100 rounded-[2.5rem] shadow-sm overflow-hidden">
-        <div class="overflow-x-auto">
+    <div class="bg-white border border-slate-100 rounded-[2.5rem] shadow-sm relative z-10 flex flex-col">
+        <div class="overflow-x-auto rounded-t-[2.5rem] @if(!$medicalRecords->hasPages()) rounded-b-[2.5rem] @endif">
             <table class="w-full">
                 <thead>
                     <tr class="bg-slate-50/50 border-b border-slate-100">
@@ -286,7 +286,7 @@
 
         {{-- ── Pagination ── --}}
         @if($medicalRecords->hasPages())
-        <div class="px-6 py-4 bg-white border-t border-slate-100">
+        <div class="px-6 py-4 bg-white border-t border-slate-100 rounded-b-[2.5rem] relative z-20">
             <x-layouts.ui.pagination :paginator="$medicalRecords" />
         </div>
         @endif

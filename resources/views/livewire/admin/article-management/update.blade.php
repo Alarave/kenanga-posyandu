@@ -92,19 +92,23 @@
     </div>
 
     {{-- 2. FOTO SAMPUL --}}
-        <div class="mb-10">
-            <div class="relative w-full max-w-full aspect-video rounded-2xl overflow-hidden border-2 cursor-pointer transition-all group"
-             :class="coverPreview ? 'border-transparent shadow-xl' : 'border-dashed border-outline-variant bg-white hover:border-indigo-400 hover:bg-secondary-container/20'"
-             @click="$refs.lwCoverInput.click()">
+    <div class="mb-10">
+        <div class="relative w-full max-w-full aspect-video rounded-2xl border-2 cursor-pointer transition-all group"
+            :class="coverPreview ? 'border-transparent shadow-xl' : 'border-dashed border-outline-variant bg-white hover:border-indigo-400 hover:bg-secondary-container/20'"
+            style="transform: translateZ(0);"
+            @click="$refs.lwCoverInput.click()">
+
             <img x-show="coverPreview" :src="coverPreview"
-                 class="absolute inset-0 w-full h-full object-cover">
+                class="absolute inset-0 w-full h-full object-cover rounded-2xl">
+
             <div x-show="coverPreview"
-                 class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white text-sm font-bold">
+                class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white text-sm font-bold rounded-2xl">
                 <span class="material-symbols-outlined text-[22px]">photo_camera</span>
                 Ganti Foto Sampul
             </div>
+
             <div x-show="!coverPreview && !coverUploading"
-                 class="absolute inset-0 flex flex-col items-center justify-center gap-3 text-outline-variant">
+                class="absolute inset-0 flex flex-col items-center justify-center gap-3 text-outline-variant rounded-2xl">
                 <div class="w-14 h-14 rounded-xl bg-surface-container flex items-center justify-center">
                     <span class="material-symbols-outlined text-[26px]">image</span>
                 </div>
@@ -114,7 +118,7 @@
                 </div>
             </div>
             <div x-show="coverUploading"
-                 class="absolute inset-0 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center gap-3 z-10">
+                 class="absolute inset-0 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center gap-3 z-10 rounded-2xl">
                 <div class="w-8 h-8 border-[3px] border-indigo-600 border-t-transparent rounded-lg animate-spin"></div>
                 <p class="text-xs font-bold text-secondary uppercase tracking-widest">Mengunggah...</p>
             </div>
@@ -604,11 +608,11 @@
                           :class="open ? 'rotate-180' : ''" style="transition:transform 0.2s">expand_more</span>
                 </button>
                 <div x-show="open" @click.away="open = false" x-transition
-                     class="absolute top-[calc(100%+4px)] left-0 right-0 bg-white rounded-xl border border-outline-variant shadow-xl z-30 overflow-hidden max-h-52 overflow-y-auto">
-                    @foreach($categories as $cat)
+                     class="absolute top-[calc(100%+4px)] left-0 right-0 bg-white rounded-xl border border-outline-variant shadow-xl z-30 max-h-52 overflow-y-auto" style="transform: translateZ(0);">
+                    @foreach($categories as $loopIndex => $cat)
                         <button type="button"
                                 @click="selectedCategoryId = {{ $cat->id }}; selectedCategoryName = '{{ addslashes($cat->name) }}'; open = false; isDirty = true; showCategoryError = false"
-                                class="w-full text-left px-4 py-3 text-sm font-medium transition-colors border-b border-slate-50 last:border-0
+                                class="w-full text-left px-4 py-3 text-sm font-medium transition-colors border-b border-slate-50 last:border-0 {{ $loop->first ? 'rounded-t-xl' : '' }} {{ $loop->last ? 'rounded-b-xl' : '' }}
                                        {{ $article->category_id == $cat->id
                                            ? 'bg-secondary-container text-indigo-700 font-bold'
                                            : 'text-on-surface-variant hover:bg-secondary-container hover:text-indigo-700' }}">

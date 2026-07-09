@@ -228,7 +228,7 @@
     @endif
 
     {{-- ── Data Table ── --}}
-    <div class="section-card overflow-hidden">
+    <div class="section-card relative z-10 flex flex-col">
         <x-table no-border>
             <thead style="background:#f9fafb; border-bottom:1px solid rgba(0,0,0,0.06);">
                 <tr>
@@ -331,7 +331,7 @@
         
         {{-- ── Pagination ── --}}
         @if($patients->hasPages())
-        <div class="px-6 py-4 bg-white border-t border-slate-100">
+        <div class="px-6 py-4 bg-white border-t border-slate-100 rounded-b-[2rem] relative z-20">
             <x-layouts.ui.pagination :paginator="$patients" />
         </div>
         @endif

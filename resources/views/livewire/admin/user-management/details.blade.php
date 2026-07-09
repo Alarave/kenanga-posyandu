@@ -5,16 +5,16 @@
 @section('admin-content')
 <div class="max-w-5xl mx-auto">
     <!-- Header Section -->
-    <div class="mb-10 flex items-center justify-between">
+    <div class="mb-10 flex flex-col sm:flex-row sm:items-center justify-between gap-6">
         <div>
             <h2 class="text-3xl font-black text-slate-800 tracking-tight mb-2">Profil Pengguna</h2>
             <p class="text-slate-500 font-medium">Informasi mendalam mengenai akun <span class="text-indigo-600 font-bold">{{ $user->name }}</span>.</p>
         </div>
-        <div class="flex items-center space-x-3">
-            <a href="{{ route('admin.users.index') }}" class="w-12 h-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:border-indigo-100 hover:bg-indigo-50 transition-all shadow-sm">
+        <div class="flex items-center space-x-3 shrink-0">
+            <a href="{{ route('admin.users.index') }}" class="w-12 h-12 rounded-2xl bg-white border border-slate-200 flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:border-indigo-100 hover:bg-indigo-50 transition-all shadow-sm shrink-0">
                 <i class="fas fa-arrow-left text-sm"></i>
             </a>
-            <a href="{{ route('admin.users.edit', $user) }}" class="px-8 py-3.5 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-500/20 active:scale-95">
+            <a href="{{ route('admin.users.edit', $user) }}" class="flex items-center justify-center px-6 md:px-8 py-3.5 bg-indigo-600 text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-2xl hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-500/20 active:scale-95 whitespace-nowrap shrink-0">
                 <i class="fas fa-pencil-alt mr-2"></i> EDIT PROFIL
             </a>
         </div>

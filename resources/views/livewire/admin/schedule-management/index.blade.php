@@ -173,124 +173,130 @@
     </div>
 
     {{-- ── Data Table ── --}}
-    <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-[2.5rem] overflow-hidden shadow-xs">
-        <div class="overflow-x-auto w-full">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-[2.5rem] shadow-xs relative z-10 flex flex-col">
+        <div class="overflow-x-auto w-full rounded-t-[2.5rem] @if(!$schedules->hasPages()) rounded-b-[2.5rem] @endif">
             <table class="w-full text-left border-collapse min-w-[800px]">
-            <thead class="bg-slate-50/75 dark:bg-slate-950/20 border-b border-slate-100 dark:border-slate-800/80">
-                <tr>
-                    <th class="px-8 py-4.5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-left">
-                        Informasi Kegiatan</th>
-                    <th class="px-8 py-4.5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-left">
-                        Waktu & Lokasi</th>
-                    <th class="px-8 py-4.5 text-center text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
-                        Status</th>
-                    <th class="px-8 py-4.5 text-center text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
-                        Aksi</th>
-                </tr>
-            </thead>
-            <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60">
-                @forelse($schedules as $schedule)
-                    <tr class="group hover:bg-slate-50/50 dark:hover:bg-slate-800/10 transition-all duration-200" wire:key="schedule-{{ $schedule->id }}">
-                        <td class="px-8 py-5">
-                            <div class="flex items-center gap-4">
-                                <div
-                                    class="h-12 w-12 rounded-[1rem] bg-slate-50 dark:bg-slate-950 text-slate-400 dark:text-slate-500 flex items-center justify-center border border-slate-200/60 dark:border-slate-800/50 shadow-xs">
-                                    @php
-                                        $icon = 'event';
-                                        $title_lower = strtolower($schedule->title);
-                                        if (str_contains($title_lower, 'balita')) {
-                                            $icon = 'child_care';
-                                        } elseif (str_contains($title_lower, 'hamil')) {
-                                            $icon = 'pregnant_woman';
-                                        } elseif (str_contains($title_lower, 'lansia')) {
-                                            $icon = 'elderly';
-                                        }
-                                    @endphp
-                                    <span class="material-symbols-outlined text-[22px]">{{ $icon }}</span>
-                                </div>
-                                <div>
-                                    <div class="font-bold text-slate-900 dark:text-slate-100 text-[15px] leading-tight mb-1">{{ $schedule->title }}</div>
-                                    <div class="flex items-center gap-2">
-                                        <span
-                                            class="text-[10px] font-black text-teal-600 dark:text-teal-400 uppercase tracking-widest bg-teal-50 dark:bg-teal-950/40 px-2.5 py-1 rounded-lg border border-transparent dark:border-teal-900/30">{{ $schedule->posyandu->name ?? 'Semua Unit' }}</span>
+                <thead class="bg-slate-50/75 dark:bg-slate-950/20 border-b border-slate-100 dark:border-slate-800/80">
+                    <tr>
+                        <th class="px-8 py-4.5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-left">
+                            Informasi Kegiatan</th>
+                        <th class="px-8 py-4.5 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-left">
+                            Waktu & Lokasi</th>
+                        <th class="px-8 py-4.5 text-center text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                            Status</th>
+                        <th class="px-8 py-4.5 text-center text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                            Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60">
+                    @forelse($schedules as $schedule)
+                        <tr class="group hover:bg-slate-50/50 dark:hover:bg-slate-800/10 transition-all duration-200" wire:key="schedule-{{ $schedule->id }}">
+                            <td class="px-8 py-5">
+                                <div class="flex items-center gap-4">
+                                    <div
+                                        class="h-12 w-12 rounded-[1rem] bg-slate-50 dark:bg-slate-950 text-slate-400 dark:text-slate-500 flex items-center justify-center border border-slate-200/60 dark:border-slate-800/50 shadow-xs">
+                                        @php
+                                            $icon = 'event';
+                                            $title_lower = strtolower($schedule->title);
+                                            if (str_contains($title_lower, 'balita')) {
+                                                $icon = 'child_care';
+                                            } elseif (str_contains($title_lower, 'hamil')) {
+                                                $icon = 'pregnant_woman';
+                                            } elseif (str_contains($title_lower, 'lansia')) {
+                                                $icon = 'elderly';
+                                            }
+                                        @endphp
+                                        <span class="material-symbols-outlined text-[22px]">{{ $icon }}</span>
+                                    </div>
+                                    <div>
+                                        <div class="font-bold text-slate-900 dark:text-slate-100 text-[15px] leading-tight mb-1">{{ $schedule->title }}</div>
+                                        <div class="flex items-center gap-2">
+                                            <span
+                                                class="text-[10px] font-black text-teal-600 dark:text-teal-400 uppercase tracking-widest bg-teal-50 dark:bg-teal-950/40 px-2.5 py-1 rounded-lg border border-transparent dark:border-teal-900/30">{{ $schedule->posyandu->name ?? 'Semua Unit' }}</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        </td>
-                        <td class="px-8 py-5">
-                            <div class="flex flex-col gap-1">
-                                <div class="flex items-center gap-2 text-slate-700 dark:text-slate-200 font-bold text-sm">
-                                    <span
-                                        class="material-symbols-outlined text-[18px] text-slate-300 dark:text-slate-500">calendar_today</span>
-                                    {{ \Carbon\Carbon::parse($schedule->start_time)->translatedFormat('d M Y') }} —
-                                    {{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }}
+                            </td>
+                            <td class="px-8 py-5">
+                                <div class="flex flex-col gap-1">
+                                    <div class="flex items-center gap-2 text-slate-700 dark:text-slate-200 font-bold text-sm">
+                                        <span
+                                            class="material-symbols-outlined text-[18px] text-slate-300 dark:text-slate-500">calendar_today</span>
+                                        {{ \Carbon\Carbon::parse($schedule->start_time)->translatedFormat('d M Y') }} —
+                                        {{ \Carbon\Carbon::parse($schedule->start_time)->format('H:i') }}
+                                    </div>
+                                    <div class="flex items-center gap-2 text-slate-400 dark:text-slate-500 text-xs font-semibold">
+                                        <span
+                                            class="material-symbols-outlined text-[18px] text-slate-300 dark:text-slate-500">location_on</span>
+                                        {{ $schedule->location ?: '—' }}
+                                    </div>
                                 </div>
-                                <div class="flex items-center gap-2 text-slate-400 dark:text-slate-500 text-xs font-semibold">
-                                    <span
-                                        class="material-symbols-outlined text-[18px] text-slate-300 dark:text-slate-500">location_on</span>
-                                    {{ $schedule->location ?: '—' }}
-                                </div>
-                            </div>
-                        </td>
-                        <td class="px-8 py-5 text-center">
-                            @php
-                                $colors = [
-                                    'upcoming' => 'bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-900/30',
-                                    'ongoing' => 'bg-teal-50 text-teal-600 border-teal-100 dark:bg-teal-950/30 dark:text-teal-400 dark:border-teal-900/30',
-                                    'completed' => 'bg-green-50 text-green-600 border-green-100 dark:bg-green-950/30 dark:text-green-400 dark:border-green-900/30',
-                                    'cancelled' => 'bg-red-50 text-red-600 border-red-100 dark:bg-red-950/30 dark:text-red-400 dark:border-red-900/30',
-                                ];
-                            @endphp
-                            <span
-                                class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border {{ $colors[$schedule->status] ?? 'bg-slate-50' }}">
-                                {{ $schedule->status }}
-                            </span>
-                        </td>
-                        <td class="px-5 py-4 text-center">
-                            <div class="flex items-center justify-center gap-2">
-                                <a href="{{ route('admin.schedules.show', $schedule->id) }}"
-                                    class="w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-teal-600 hover:text-white transition-all shadow-sm hover:shadow-teal-500/20 group/btn"
-                                    title="Lihat Detail">
-                                    <span class="material-symbols-outlined text-[22px]">visibility</span>
-                                </a>
-                                @can('update', $schedule)
-                                    <a href="{{ route('admin.schedules.edit', $schedule->id) }}"
-                                        class="w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-indigo-600 hover:text-white transition-all shadow-sm hover:shadow-indigo-500/20 group/btn"
-                                        title="Edit Jadwal">
-                                        <span class="material-symbols-outlined text-[22px]">edit</span>
-                                    </a>
-                                @endcan
-                                @can('delete', $schedule)
-                                    <button wire:click="deleteSchedule({{ $schedule->id }})"
-                                        wire:confirm="Apakah Anda yakin ingin menghapus jadwal ini? Tindakan ini tidak dapat dibatalkan."
-                                        class="w-11 h-11 min-w-0 min-h-0 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-red-600 hover:text-white transition-all shadow-sm hover:shadow-red-500/20 group/btn cursor-pointer"
-                                        title="Hapus Jadwal">
-                                        <span class="material-symbols-outlined text-[22px]">delete</span>
-                                    </button>
-                                @endcan
-                            </div>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="4" class="px-8 py-32 text-center">
-                            <div class="max-w-xs mx-auto flex flex-col items-center text-slate-400 dark:text-slate-500">
+                            </td>
+                            <td class="px-8 py-5 text-center">
+                                @php
+                                    $colors = [
+                                        'upcoming' => 'bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-900/30',
+                                        'ongoing' => 'bg-teal-50 text-teal-600 border-teal-100 dark:bg-teal-950/30 dark:text-teal-400 dark:border-teal-900/30',
+                                        'completed' => 'bg-green-50 text-green-600 border-green-100 dark:bg-green-950/30 dark:text-green-400 dark:border-green-900/30',
+                                        'cancelled' => 'bg-red-50 text-red-600 border-red-100 dark:bg-red-950/30 dark:text-red-400 dark:border-red-900/30',
+                                    ];
+                                @endphp
                                 <span
-                                    class="material-symbols-outlined text-[64px] text-slate-200 dark:text-slate-800 mb-4">calendar_today</span>
-                                <p class="text-lg font-black text-slate-600 dark:text-slate-350">Belum ada agenda</p>
-                                <p class="text-sm mb-6">Mulai dengan menambahkan jadwal baru.</p>
-                            </div>
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+                                    class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border {{ $colors[$schedule->status] ?? 'bg-slate-50' }}">
+                                    {{ $schedule->status }}
+                                </span>
+                            </td>
+                            <td class="px-5 py-4 text-center">
+                                <div class="flex items-center justify-center gap-2">
+                                    <a href="{{ route('admin.schedules.show', $schedule->id) }}"
+                                        class="w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-teal-600 hover:text-white transition-all shadow-sm hover:shadow-teal-500/20 group/btn"
+                                        title="Lihat Detail">
+                                        <span class="material-symbols-outlined text-[22px]">visibility</span>
+                                    </a>
+                                    @can('update', $schedule)
+                                        <a href="{{ route('admin.schedules.edit', $schedule->id) }}"
+                                            class="w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-indigo-600 hover:text-white transition-all shadow-sm hover:shadow-indigo-500/20 group/btn"
+                                            title="Edit Jadwal">
+                                            <span class="material-symbols-outlined text-[22px]">edit</span>
+                                        </a>
+                                    @endcan
+                                    
+                                    @can('delete', $schedule)
+                                        <form action="{{ route('admin.schedules.destroy', $schedule->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus jadwal ini? Tindakan ini tidak dapat dibatalkan.')" class="inline">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit"
+                                                class="w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-red-600 hover:text-white transition-all shadow-sm hover:shadow-red-500/20 group/btn"
+                                                title="Hapus Jadwal">
+                                                <span class="material-symbols-outlined text-[22px]">delete</span>
+                                            </button>
+                                        </form>
+                                    @endcan
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="4" class="px-8 py-24 text-center">
+                                <div class="flex flex-col items-center justify-center">
+                                    <div class="w-20 h-20 rounded-full bg-slate-50 dark:bg-slate-900/50 flex items-center justify-center text-slate-300 dark:text-slate-600 mb-4">
+                                        <span class="material-symbols-outlined text-[40px]">event_busy</span>
+                                    </div>
+                                    <p class="text-sm font-bold text-slate-500 dark:text-slate-400">Tidak ada jadwal ditemukan</p>
+                                    <p class="text-xs text-slate-400 dark:text-slate-500 mt-1">Coba gunakan kata kunci pencarian atau filter yang berbeda.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
         </div>
 
-        @if ($schedules->hasPages())
-            <div class="px-6 py-4 border-t border-slate-100 dark:border-slate-800/80 bg-white dark:bg-slate-900">
-                <x-layouts.ui.pagination :paginator="$schedules" />
-            </div>
+        {{-- ── Pagination ── --}}
+        @if($schedules->hasPages())
+        <div class="px-6 py-4 bg-white dark:bg-slate-900 border-t border-slate-100 dark:border-slate-800/80 rounded-b-[2.5rem] relative z-20">
+            <x-layouts.ui.pagination :paginator="$schedules" />
+        </div>
         @endif
     </div>
 

@@ -147,13 +147,13 @@
                         <span class="material-symbols-outlined text-indigo-600 dark:text-indigo-400 text-[24px] mt-0.5">info</span>
                         <p class="text-xs font-bold text-indigo-800 dark:text-indigo-400 leading-relaxed uppercase tracking-wider">Perubahan jadwal ini akan otomatis diperbarui dan ditampilkan di halaman publik website Posyandu.</p>
                     </div>
-                    <div class="flex items-center gap-4 w-full sm:w-auto">
+                    <div class="flex flex-col-reverse sm:flex-row items-center gap-4 w-full sm:w-auto">
                         <a href="{{ route('admin.schedules.index') }}"
-                            class="flex-1 sm:flex-none h-16 px-10 flex items-center justify-center text-sm font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest hover:text-slate-750 dark:hover:text-slate-200 transition-colors">
+                            class="w-full sm:w-auto h-16 px-10 flex items-center justify-center text-sm font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest hover:text-slate-750 dark:hover:text-slate-200 transition-colors whitespace-nowrap">
                             Batalkan
                         </a>
                         <button type="submit" wire:loading.attr="disabled"
-                            class="flex-1 sm:flex-none h-16 px-12 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white rounded-2xl text-base font-black uppercase tracking-widest transition-all shadow-xl shadow-teal-600/20 flex items-center justify-center gap-3 active:scale-[0.98] cursor-pointer border-0">
+                            class="w-full sm:w-auto h-16 px-12 bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white rounded-2xl text-base font-black uppercase tracking-widest transition-all shadow-xl shadow-teal-600/20 flex items-center justify-center gap-3 active:scale-[0.98] cursor-pointer border-0 whitespace-nowrap">
                             <span wire:loading.remove class="material-symbols-outlined text-[24px]">sync</span>
                             <div wire:loading
                                 class="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>

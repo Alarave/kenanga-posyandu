@@ -71,8 +71,9 @@ class PatientRowProcessor
         $tglLahir = $get('tgl_lahir');
         $jk = $get('jk');
         $namaOrtu = $get('nm_ortu');
-        $rt = $get('rt');
-        $rw = $get('rw');
+        // rt and rw: try canonical key first, then fallback to direct key
+        $rt = $get('rt_domisili') ?: $get('rt');
+        $rw = $get('dusun_rt_rw') ?: $get('rw');
         $alamat = $get('alamat');
 
         // New fields
@@ -122,10 +123,14 @@ class PatientRowProcessor
 
         $gender = $this->normalizeGender($jk);
         if ($gender === null) {
-            $this->errors[] = "Baris {$rowNum}: Jenis kelamin '{$jk}' tidak valid atau kosong untuk '{$nama}'. Gunakan L atau P.";
-            $this->skipped++;
-
-            return;
+            // Gender tidak dikenali — gunakan fallback berdasarkan kategori
+            if (in_array(strtolower($categoryInput), ['ibu_hamil', 'hamil', 'pregnant'])) {
+                $gender = 'P'; // Ibu hamil pasti perempuan
+            } else {
+                $this->errors[] = "Baris {$rowNum}: Jenis kelamin '{$jk}' tidak dikenali untuk '{$nama}'. Baris dilewati. (Gunakan L, Laki-laki, MALE, P, Perempuan, FEMALE).";
+                $this->skipped++;
+                return;
+            }
         }
         $fullAddress = $this->buildAddress($alamat, $rt, $rw);
         $nikClean = preg_replace('/[^0-9]/', '', $nik); // Strip everything except digits
@@ -586,14 +591,34 @@ class PatientRowProcessor
 
     private function normalizeGender(string $jk): ?string
     {
+        $original = $jk;
         $jk = strtoupper(trim($jk));
-        $clean = str_replace([' ', '-', '.', '_'], '', $jk);
+        $clean = str_replace([' ', '-', '.', '_', '/', '\\', '|'], '', $jk);
 
-        if (in_array($clean, ['L', 'LAKI', 'LAKILAKI', 'MALE', 'M', 'PRIA', 'LAKI2', 'COWOK'], true)) {
+        // Exact matches - male
+        if (in_array($clean, ['L', 'LK', 'LAKI', 'LAKILAKI', 'MALE', 'M', 'PRIA', 'LAKI2', 'COWOK', 'LAKIILAKI'], true)) {
             return 'L';
         }
-        if (in_array($clean, ['P', 'PEREMPUAN', 'FEMALE', 'F', 'WANITA', 'CEWEK'], true)) {
+        // Exact matches - female
+        if (in_array($clean, ['P', 'PR', 'PEREMPUAN', 'FEMALE', 'F', 'WANITA', 'CEWEK', 'WAN', 'PRP'], true)) {
             return 'P';
+        }
+
+        // Substring / starts-with matching for longer values
+        if (str_starts_with($clean, 'LAKI') || str_starts_with($clean, 'MALE') || str_starts_with($clean, 'PRIA')) {
+            return 'L';
+        }
+        if (str_starts_with($clean, 'PEREMP') || str_starts_with($clean, 'FEMAL') || str_starts_with($clean, 'WANIT')) {
+            return 'P';
+        }
+
+        // Handle "L/P" or "P/L" type combined values — take the first character
+        if (strlen($clean) >= 1) {
+            $first = $clean[0];
+            if ($first === 'L') return 'L';
+            if ($first === 'P') return 'P';
+            if ($first === 'M') return 'L'; // M = Male
+            if ($first === 'F') return 'P'; // F = Female
         }
 
         return null;

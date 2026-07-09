@@ -150,7 +150,7 @@
 
                     <div class="flex-1 text-center md:text-left space-y-4">
                         <div>
-                            <span class="px-4 py-1.5 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest border border-primary/20">
+                            <div class="inline-block px-4 py-2 rounded-2xl bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest border border-primary/20 leading-relaxed text-center md:text-left max-w-full">
                                 @if($isChild)
                                     Balita ({{ ucfirst($category) }}) • {{ ($medicalRecord->patient->gender === 'L' || $medicalRecord->patient->gender === 'M') ? 'Laki-laki' : 'Perempuan' }} • {{ $medicalRecord->patient->age }}
                                 @elseif($isPregnancy)
@@ -160,7 +160,7 @@
                                 @else
                                     {{ ucfirst($category) }} • {{ ($medicalRecord->patient->gender === 'L' || $medicalRecord->patient->gender === 'M') ? 'Laki-laki' : 'Perempuan' }} • {{ $medicalRecord->patient->age }}
                                 @endif
-                            </span>
+                            </div>
                             <h1 class="text-4xl font-black text-slate-900 tracking-tight mt-4 leading-tight">
                                 {{ $medicalRecord->patient->full_name }}
                             </h1>

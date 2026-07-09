@@ -171,7 +171,7 @@
     </section>
 
     {{-- ── Tabel Detail Kunjungan (Redesigned) ── --}}
-    <section class="bg-white rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.015)] overflow-hidden flex flex-col">
+    <section class="bg-white rounded-3xl border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.015)] flex flex-col relative z-10">
 
         {{-- Header Tabel --}}
         <div class="px-8 py-6 border-b border-slate-100 bg-slate-50/50 flex flex-wrap justify-between items-center gap-6">
@@ -414,11 +414,11 @@
 
         {{-- Pagination --}}
         @if($records instanceof \Illuminate\Pagination\LengthAwarePaginator && $records->hasPages())
-        <div class="px-8 py-6 bg-slate-50 border-t border-slate-100">
+        <div class="px-8 py-6 bg-slate-50 border-t border-slate-100 rounded-b-3xl relative z-20">
             <x-layouts.ui.pagination :paginator="$records" label="data" />
         </div>
         @elseif($records->count() > 0)
-        <div class="p-4 border-t border-outline-variant">
+        <div class="p-4 border-t border-outline-variant rounded-b-3xl">
             <p class="text-sm font-medium text-outline">Menampilkan total <span class="font-bold text-on-surface-variant">{{ $total }}</span> data</p>
         </div>
         @endif

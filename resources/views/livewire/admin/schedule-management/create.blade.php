@@ -174,7 +174,7 @@
                         <button type="submit" wire:loading.attr="disabled"
                             class="w-full sm:w-auto h-14 px-8 bg-linear-to-r from-emerald-600 to-teal-600 hover:opacity-95 text-white rounded-2xl text-sm font-black uppercase tracking-widest transition-all shadow-lg shadow-emerald-600/10 flex items-center justify-center gap-2.5 active:scale-[0.98] cursor-pointer shrink-0">
                             <span wire:loading.remove class="material-symbols-outlined text-[20px]">save</span>
-                            <div wire:loading class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                            <div wire:loading.flex class="hidden w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
                             <span>Simpan Jadwal</span>
                         </button>
                     </div>

@@ -126,10 +126,10 @@
 
                         <div class="pt-6">
                             <button type="submit" id="submitBtn"
-                                    class="w-full h-20 bg-teal-600 text-white rounded-[2rem] text-xl font-black hover:bg-teal-700 active:scale-[0.97]
-                                           transition-all flex items-center justify-center gap-4 shadow-2xl shadow-teal-600/30 disabled:opacity-50 group">
-                                <span class="material-symbols-outlined text-[32px] group-hover:translate-y-[-2px] transition-transform">cloud_done</span>
-                                Simpan Data Rekam Medis
+                                    class="w-full h-20 bg-teal-600 text-white rounded-[2rem] text-sm sm:text-lg md:text-xl font-black hover:bg-teal-700 active:scale-[0.97]
+                                           transition-all flex items-center justify-center gap-2 md:gap-4 shadow-2xl shadow-teal-600/30 disabled:opacity-50 group px-4">
+                                <span class="material-symbols-outlined text-[24px] md:text-[32px] group-hover:translate-y-[-2px] transition-transform">cloud_done</span>
+                                <span class="whitespace-nowrap sm:whitespace-normal">Simpan Data Rekam Medis</span>
                             </button>
                         </div>
                     </form>
