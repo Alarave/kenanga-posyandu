@@ -135,19 +135,16 @@ class ArticleService
         }
 
         $html = '';
-        $numberedSeq = 0;
+        $len = count($blocks);
 
-        foreach ($blocks as $block) {
+        for ($i = 0; $i < $len; $i++) {
+            $block = $blocks[$i];
             $type = $block['type'] ?? 'paragraph';
             $blockContent = $block['content'] ?? '';
-            
+
             // Bersihkan inline style, class, dan id dari HTML untuk mencegah polusi layout (misal copy-paste dari Google Docs)
             if (is_string($blockContent)) {
-                $blockContent = preg_replace('/\s*(style|class|id)\s*=\s*(["\'])(.*?)\2/i', '', $blockContent);
-            }
-
-            if ($type !== 'numbered') {
-                $numberedSeq = 0;
+                $blockContent = preg_replace('/\s*(style|class|id)\s*=\s*("|\')(.*?)\2/i', '', $blockContent);
             }
 
             switch ($type) {
@@ -194,18 +191,43 @@ class ArticleService
                     break;
 
                 case 'bullet':
-                    if (trim(strip_tags($blockContent)) === '') {
-                        break;
+                    $items = [];
+                    while ($i < $len && ($blocks[$i]['type'] ?? '') === 'bullet') {
+                        $itemContent = $blocks[$i]['content'] ?? '';
+                        if (trim(strip_tags($itemContent)) !== '') {
+                            $items[] = preg_replace('/\s*(style|class|id)\s*=\s*("|\')(.*?)\2/i', '', $itemContent);
+                        }
+                        $i++;
                     }
-                    $html .= '<ul class="article-list"><li>'.$blockContent.'</li></ul>';
+                    $i--;
+
+                    if (! empty($items)) {
+                        $html .= '<ul class="article-list article-list--bulleted">';
+                        foreach ($items as $item) {
+                            $html .= '<li>'.$item.'</li>';
+                        }
+                        $html .= '</ul>';
+                    }
                     break;
 
                 case 'numbered':
-                    if (trim(strip_tags($blockContent)) === '') {
-                        break;
+                    $items = [];
+                    while ($i < $len && ($blocks[$i]['type'] ?? '') === 'numbered') {
+                        $itemContent = $blocks[$i]['content'] ?? '';
+                        if (trim(strip_tags($itemContent)) !== '') {
+                            $items[] = preg_replace('/\s*(style|class|id)\s*=\s*("|\')(.*?)\2/i', '', $itemContent);
+                        }
+                        $i++;
                     }
-                    $numberedSeq++;
-                    $html .= '<ol class="article-list article-list--numbered" start="'.$numberedSeq.'"><li>'.$blockContent.'</li></ol>';
+                    $i--;
+
+                    if (! empty($items)) {
+                        $html .= '<ol class="article-list article-list--numbered">';
+                        foreach ($items as $item) {
+                            $html .= '<li>'.$item.'</li>';
+                        }
+                        $html .= '</ol>';
+                    }
                     break;
 
                 case 'image':
