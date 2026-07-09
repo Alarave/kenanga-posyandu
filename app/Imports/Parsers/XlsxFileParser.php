@@ -9,6 +9,7 @@ use App\Contracts\FileParserInterface;
  *
  * Does NOT depend on PhpSpreadsheet — works with PHP's built-in extensions only.
  * Handles shared strings, inline strings, boolean cells, and sparse column layouts.
+ * Supports parsing all sheets in the workbook and merging them.
  */
 class XlsxFileParser implements FileParserInterface
 {
@@ -17,40 +18,48 @@ class XlsxFileParser implements FileParserInterface
      */
     public function parse(string $path): array
     {
-        [$sharedStrings, $sheetContent] = $this->extractZipContents($path);
-
-        $sheetXml = $this->cleanNamespaces($sheetContent);
-        $sheet = $this->parseXml($sheetXml);
-
-        $sheetData = $sheet->sheetData ?? $sheet->worksheet->sheetData ?? null;
-        if (! $sheetData) {
-            return [];
-        }
-
-        return $this->buildRows($sheetData, $sharedStrings);
-    }
-
-    // ── Private helpers ───────────────────────────────────────────────
-
-    /**
-     * Open the XLSX ZIP and extract shared strings + first sheet XML.
-     *
-     * @return array{0: array<int,string>, 1: string}
-     */
-    private function extractZipContents(string $path): array
-    {
         $zip = new \ZipArchive;
         if ($zip->open($path) !== true) {
             throw new \RuntimeException('Tidak dapat membuka file XLSX. Pastikan file tidak rusak.');
         }
 
         $sharedStrings = $this->readSharedStrings($zip);
-        $sheetContent = $this->readFirstSheet($zip);
+
+        // Find all sheets in the zip, sorted numerically by sheet index
+        $sheetFiles = [];
+        for ($i = 0; $i < $zip->numFiles; $i++) {
+            $name = $zip->getNameIndex($i);
+            if (preg_match('/^xl\/worksheets\/sheet(\d+)\.xml$/i', $name, $matches)) {
+                $sheetFiles[(int)$matches[1]] = $name;
+            }
+        }
+        ksort($sheetFiles);
+
+        if (empty($sheetFiles)) {
+            $zip->close();
+            throw new \RuntimeException('Sheet tidak ditemukan dalam file XLSX.');
+        }
+
+        $allRows = [];
+        foreach ($sheetFiles as $sheetFile) {
+            $sheetContent = $zip->getFromName($sheetFile);
+            if ($sheetContent) {
+                $sheetXml = $this->cleanNamespaces($sheetContent);
+                $sheet = $this->parseXml($sheetXml);
+                $sheetData = $sheet->sheetData ?? $sheet->worksheet->sheetData ?? null;
+                if ($sheetData) {
+                    $rows = $this->buildRows($sheetData, $sharedStrings);
+                    $allRows = array_merge($allRows, $rows);
+                }
+            }
+        }
 
         $zip->close();
 
-        return [$sharedStrings, $sheetContent];
+        return $allRows;
     }
+
+    // ── Private helpers ───────────────────────────────────────────────
 
     /**
      * @return array<int, string>
@@ -86,17 +95,6 @@ class XlsxFileParser implements FileParserInterface
         }
 
         return $strings;
-    }
-
-    private function readFirstSheet(\ZipArchive $zip): string
-    {
-        for ($i = 1; $i <= 10; $i++) {
-            $content = $zip->getFromName("xl/worksheets/sheet{$i}.xml");
-            if ($content !== false) {
-                return $content;
-            }
-        }
-        throw new \RuntimeException('Sheet tidak ditemukan dalam file XLSX.');
     }
 
     private function cleanNamespaces(string $xml): string
