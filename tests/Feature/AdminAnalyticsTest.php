@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\Admin\Analytics;
 use App\Models\MedicalRecord;
 use App\Models\Patient;
 use App\Models\Pedukuhan;
@@ -65,7 +66,7 @@ test('analytics component can switch tabs and retrieve correct clinical risk rat
 
     $this->actingAs($admin);
 
-    Livewire::test(\App\Livewire\Admin\Analytics::class)
+    Livewire::test(Analytics::class)
         ->assertSet('activeTab', 'overview')
         ->set('activeTab', 'pregnancy')
         ->assertSet('activeTab', 'pregnancy')
@@ -113,7 +114,7 @@ test('analytics component can drill down on specific nutrition status and displa
 
     $this->actingAs($admin);
 
-    Livewire::test(\App\Livewire\Admin\Analytics::class)
+    Livewire::test(Analytics::class)
         ->call('drillDown', 'Balita (Gizi Baik)', 'nutrition_status', null, 'Gizi Baik')
         ->assertSet('showDrillDown', true)
         ->assertSet('drillDownTitle', 'Detail: Balita (Gizi Baik)')
@@ -167,13 +168,13 @@ test('analytics component can drill down on lansia age group and imt stats', fun
     $this->actingAs($admin);
 
     // Test age group drill down
-    Livewire::test(\App\Livewire\Admin\Analytics::class)
+    Livewire::test(Analytics::class)
         ->call('drillDown', 'Lansia 60-69', 'lansia_age_lansia')
         ->assertSee('Mbah Sugeng 65')
         ->assertDontSee('Mbah Ngatiman 75');
 
     // Test IMT group drill down
-    Livewire::test(\App\Livewire\Admin\Analytics::class)
+    Livewire::test(Analytics::class)
         ->call('drillDown', 'IMT Obesitas', 'lansia_imt_obesitas')
         ->assertSee('Mbah Ngatiman 75')
         ->assertDontSee('Mbah Sugeng 65');
@@ -216,14 +217,14 @@ test('analytics component can drill down on lansia metabolic risks', function ()
     $this->actingAs($admin);
 
     // Test Hipertensi drill down
-    Livewire::test(\App\Livewire\Admin\Analytics::class)
+    Livewire::test(Analytics::class)
         ->call('drillDown', 'Lansia - Hipertensi', 'lansia_hipertensi', now()->month)
         ->assertSee('Mbah Sugeng Hipertensi')
         ->assertDontSee('Mbah Ngatiman Hiperglikemia')
         ->assertSee('TD: 145/95 mmHg');
 
     // Test Hiperglikemia drill down
-    Livewire::test(\App\Livewire\Admin\Analytics::class)
+    Livewire::test(Analytics::class)
         ->call('drillDown', 'Lansia - Hiperglikemia', 'lansia_hiperglikemia', now()->month)
         ->assertSee('Mbah Ngatiman Hiperglikemia')
         ->assertDontSee('Mbah Sugeng Hipertensi')
@@ -264,11 +265,10 @@ test('analytics component can drill down on all categories (yearly/YoY mode fall
     $this->actingAs($admin);
 
     // Call drillDown for all categories ('all') for July 2025 (month 7, year 2025)
-    Livewire::test(\App\Livewire\Admin\Analytics::class)
+    Livewire::test(Analytics::class)
         ->call('drillDown', 'Semua Kunjungan - Jul', 'all', 7, null, 2025)
         ->assertSee('Balita Tahun Lalu')
         ->assertSee('Lansia Tahun Lalu')
         ->assertSee('Gizi Baik')
         ->assertSee('Lansia');
 });
-

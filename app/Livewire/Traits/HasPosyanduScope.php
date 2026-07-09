@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Traits;
 
+use App\Models\MedicalRecord;
 use App\Models\Posyandu;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
@@ -30,7 +31,7 @@ trait HasPosyanduScope
         // Admin RW / Superadmin
         if ($user->isSuperAdmin()) {
             if ($selectedPosyanduId) {
-                if ($query->getModel() instanceof \App\Models\MedicalRecord) {
+                if ($query->getModel() instanceof MedicalRecord) {
                     return $query->whereHas('patient', fn ($q) => $q->where('posyandu_id', $selectedPosyanduId));
                 }
 
@@ -48,7 +49,7 @@ trait HasPosyanduScope
             $posyanduId = $user->posyandu_id;
         }
 
-        if ($query->getModel() instanceof \App\Models\MedicalRecord) {
+        if ($query->getModel() instanceof MedicalRecord) {
             return $query->whereHas('patient', fn ($q) => $q->where('posyandu_id', $posyanduId));
         }
 

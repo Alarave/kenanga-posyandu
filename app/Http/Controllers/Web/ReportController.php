@@ -7,6 +7,7 @@ use App\Models\Patient;
 use App\Models\Posyandu;
 use App\Services\ActivityLogService;
 use App\Services\ReportService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -26,7 +27,7 @@ class ReportController extends Controller
     public function exportExcel(Request $request, ReportService $reportService, ActivityLogService $activityLogService)
     {
         $data = $this->prepareExport($request, $reportService);
-        if ($data instanceof \Illuminate\Http\RedirectResponse) {
+        if ($data instanceof RedirectResponse) {
             return $data;
         }
 
@@ -48,7 +49,7 @@ class ReportController extends Controller
     public function exportPdf(Request $request, ReportService $reportService, ActivityLogService $activityLogService)
     {
         $data = $this->prepareExport($request, $reportService);
-        if ($data instanceof \Illuminate\Http\RedirectResponse) {
+        if ($data instanceof RedirectResponse) {
             return $data;
         }
 

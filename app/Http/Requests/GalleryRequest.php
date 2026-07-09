@@ -29,10 +29,10 @@ class GalleryRequest extends FormRequest
                 function ($attribute, $value, $fail) {
                     $extension = strtolower($value->getClientOriginalExtension());
                     $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'mp4', 'mov', 'avi', 'webm', 'mkv'];
-                    if (!in_array($extension, $allowedExtensions)) {
+                    if (! in_array($extension, $allowedExtensions)) {
                         $fail('Format file harus berupa gambar (jpg, jpeg, png, webp, gif) atau video (mp4, mov, avi, webm, mkv).');
                     }
-                }
+                },
             ];
         } else {
             $rules['photos'] = 'nullable|array';
@@ -43,10 +43,10 @@ class GalleryRequest extends FormRequest
                 function ($attribute, $value, $fail) {
                     $extension = strtolower($value->getClientOriginalExtension());
                     $allowedExtensions = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'mp4', 'mov', 'avi', 'webm', 'mkv'];
-                    if ($value && !in_array($extension, $allowedExtensions)) {
+                    if ($value && ! in_array($extension, $allowedExtensions)) {
                         $fail('Format file harus berupa gambar (jpg, jpeg, png, webp, gif) atau video (mp4, mov, avi, webm, mkv).');
                     }
-                }
+                },
             ];
         }
 

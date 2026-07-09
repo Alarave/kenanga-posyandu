@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Article;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -28,7 +29,7 @@ class ArticleService
             }
 
             // Handle cover/thumbnail upload
-            if (isset($data['thumbnail']) && $data['thumbnail'] instanceof \Illuminate\Http\UploadedFile) {
+            if (isset($data['thumbnail']) && $data['thumbnail'] instanceof UploadedFile) {
                 $disk = config('filesystems.cloud', 'public');
                 $data['thumbnail'] = $data['thumbnail']->store('articles', $disk);
             }
@@ -51,7 +52,7 @@ class ArticleService
                 $data['published_at'] = now();
             }
 
-            if (isset($data['thumbnail']) && $data['thumbnail'] instanceof \Illuminate\Http\UploadedFile) {
+            if (isset($data['thumbnail']) && $data['thumbnail'] instanceof UploadedFile) {
                 $disk = config('filesystems.cloud', 'public');
                 if ($article->thumbnail) {
                     Storage::disk($disk)->delete($article->thumbnail);
@@ -221,7 +222,7 @@ class ArticleService
                     $items = [];
                     while ($i < $len && ($blocks[$i]['type'] ?? '') === 'numbered') {
                         $itemContent = $blocks[$i]['content'] ?? '';
-                        if (!empty($blocks[$i]['restartNumbering'])) {
+                        if (! empty($blocks[$i]['restartNumbering'])) {
                             $numberedCount = 1;
                         } else {
                             $numberedCount++;
@@ -229,7 +230,7 @@ class ArticleService
                         if (trim(strip_tags($itemContent)) !== '') {
                             $items[] = [
                                 'content' => preg_replace('/\s*(style|class|id)\s*=\s*("|\')(.*?)\2/i', '', $itemContent),
-                                'value' => $numberedCount
+                                'value' => $numberedCount,
                             ];
                         }
                         $i++;
@@ -268,7 +269,7 @@ class ArticleService
                         $html .= '<div class="article-video"><iframe src="'.e($src).'" allowfullscreen frameborder="0" class="w-full h-full"></iframe></div>';
                         if (str_contains($src, 'youtube.com/embed')) {
                             preg_match('/youtube\.com\/embed\/([^?&\s]+)/', $src, $matches);
-                            if (!empty($matches[1])) {
+                            if (! empty($matches[1])) {
                                 $videoId = $matches[1];
                                 $html .= '<p class="article-caption" style="margin-top:-2rem; margin-bottom:2.5rem; text-align:center;">Video tidak tampil? <a href="https://www.youtube.com/watch?v='.$videoId.'" target="_blank" class="text-indigo-600 hover:underline font-bold inline-flex items-center gap-1" style="color:#4f46e5;">Tonton langsung di YouTube <span class="material-symbols-outlined text-[14px]">open_in_new</span></a></p>';
                             }

@@ -1,19 +1,24 @@
 <?php
 
+use App\Livewire\Admin\Analytics;
+use App\Models\User;
+use Illuminate\Contracts\Console\Kernel;
+use Illuminate\Support\Facades\Auth;
+
 require 'vendor/autoload.php';
 $app = require_once __DIR__.'/bootstrap/app.php';
-$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+$kernel = $app->make(Kernel::class);
 $kernel->bootstrap();
 
-$user = \App\Models\User::first();
-\Illuminate\Support\Facades\Auth::login($user);
+$user = User::first();
+Auth::login($user);
 
-$a = new \App\Livewire\Admin\Analytics;
+$a = new Analytics;
 $a->selectedYear = 2026;
 $a->selectedMonth = null;
 $a->selectedPosyandu = null;
 
-$method = new \ReflectionMethod($a, 'fetchAnalyticsData');
+$method = new ReflectionMethod($a, 'fetchAnalyticsData');
 $method->setAccessible(true);
 $data = $method->invoke($a);
 

@@ -9,16 +9,17 @@ use App\Models\Schedule;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
+use Tests\TestCase;
 
 uses(RefreshDatabase::class);
 
 test('admin dashboard displays correct statistics for superadmin', function () {
-    /** @var \Tests\TestCase $this */
+    /** @var TestCase $this */
     // Create test data
     $pedukuhan = Pedukuhan::factory()->create();
     $posyandu = Posyandu::factory()->create(['pedukuhan_id' => $pedukuhan->id]);
 
-    /** @var \App\Models\User $superadmin */
+    /** @var User $superadmin */
     $superadmin = User::factory()->create([
         'role' => 'superadmin',
         'posyandu_id' => null,
@@ -67,13 +68,13 @@ test('admin dashboard displays correct statistics for superadmin', function () {
 });
 
 test('admin dashboard displays scoped statistics for admin', function () {
-    /** @var \Tests\TestCase $this */
+    /** @var TestCase $this */
     // Create test data
     $pedukuhan = Pedukuhan::factory()->create();
     $posyandu1 = Posyandu::factory()->create(['pedukuhan_id' => $pedukuhan->id]);
     $posyandu2 = Posyandu::factory()->create(['pedukuhan_id' => $pedukuhan->id]);
 
-    /** @var \App\Models\User $admin */
+    /** @var User $admin */
     $admin = User::factory()->create([
         'role' => 'admin',
         'posyandu_id' => $posyandu1->id,
@@ -106,12 +107,12 @@ test('admin dashboard displays scoped statistics for admin', function () {
 });
 
 test('admin dashboard displays balita stunting warning', function () {
-    /** @var \Tests\TestCase $this */
+    /** @var TestCase $this */
     // Create test data
     $pedukuhan = Pedukuhan::factory()->create();
     $posyandu = Posyandu::factory()->create(['pedukuhan_id' => $pedukuhan->id]);
 
-    /** @var \App\Models\User $admin */
+    /** @var User $admin */
     $admin = User::factory()->create([
         'role' => 'admin',
         'posyandu_id' => $posyandu->id,
@@ -145,11 +146,11 @@ test('admin dashboard displays balita stunting warning', function () {
 });
 
 test('admin dashboard displays bumil trimester and lansia names', function () {
-    /** @var \Tests\TestCase $this */
+    /** @var TestCase $this */
     $pedukuhan = Pedukuhan::factory()->create();
     $posyandu = Posyandu::factory()->create(['pedukuhan_id' => $pedukuhan->id]);
 
-    /** @var \App\Models\User $admin */
+    /** @var User $admin */
     $admin = User::factory()->create([
         'role' => 'admin',
         'posyandu_id' => $posyandu->id,
@@ -191,7 +192,7 @@ test('admin dashboard displays bumil trimester and lansia names', function () {
 });
 
 test('admin dashboard allows selecting nutrition status and viewing balita list', function () {
-    /** @var \Tests\TestCase $this */
+    /** @var TestCase $this */
     $pedukuhan = Pedukuhan::factory()->create();
     $posyandu = Posyandu::factory()->create(['pedukuhan_id' => $pedukuhan->id]);
 

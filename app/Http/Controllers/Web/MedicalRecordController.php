@@ -4,10 +4,17 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MedicalRecordRequest;
+use App\Imports\PatientImport;
 use App\Models\MedicalRecord;
 use App\Models\Patient;
+use App\Models\Posyandu;
+use App\Services\ActivityLogService;
 use App\Services\MedicalRecordService;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
 
 /**
@@ -92,7 +99,7 @@ class MedicalRecordController extends Controller
                 ->route('admin.medical-records.index')
                 ->with('success', 'Rekam medis berhasil ditambahkan.');
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Gagal menyimpan rekam medis: '.$e->getMessage(), [
+            Log::error('Gagal menyimpan rekam medis: '.$e->getMessage(), [
                 'user_id' => auth()->id(),
                 'patient_id' => $request->patient_id,
                 'trace' => $e->getTraceAsString(),
@@ -154,7 +161,7 @@ class MedicalRecordController extends Controller
                 ->route('admin.medical-records.index')
                 ->with('success', 'Rekam medis berhasil diperbarui.');
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Gagal memperbarui rekam medis: '.$e->getMessage(), [
+            Log::error('Gagal memperbarui rekam medis: '.$e->getMessage(), [
                 'user_id' => auth()->id(),
                 'record_id' => $medicalRecord->id,
                 'trace' => $e->getTraceAsString(),
@@ -180,7 +187,7 @@ class MedicalRecordController extends Controller
                 ->route('admin.medical-records.index')
                 ->with('success', 'Rekam medis berhasil dihapus.');
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Gagal menghapus rekam medis: '.$e->getMessage(), [
+            Log::error('Gagal menghapus rekam medis: '.$e->getMessage(), [
                 'user_id' => auth()->id(),
                 'record_id' => $medicalRecord->id,
             ]);
@@ -194,7 +201,7 @@ class MedicalRecordController extends Controller
     /**
      * Dapatkan daftar pasien yang tersedia berdasarkan role user
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return Collection
      */
     private function getAvailablePatients()
     {
@@ -216,7 +223,7 @@ class MedicalRecordController extends Controller
     /**
      * Periksa peringatan duplikasi Vitamin A dan Pill FE
      *
-     * @param  \Illuminate\Support\Carbon|null  $visitDate
+     * @param  Carbon|null  $visitDate
      * @return mixed
      */
     private function checkDuplicateWarnings(
@@ -252,30 +259,30 @@ class MedicalRecordController extends Controller
     /**
      * Proses upload dan import file CSV/Excel rekam medis.
      */
-    public function import(\Illuminate\Http\Request $request): \Illuminate\Http\RedirectResponse
+    public function import(Request $request): RedirectResponse
     {
         $this->authorize('create', MedicalRecord::class);
 
         $request->validate([
-            'file'        => 'required|file|mimes:csv,xlsx,xls|max:5120',
+            'file' => 'required|file|mimes:csv,xlsx,xls|max:5120',
             'posyandu_id' => 'required|exists:posyandus,id',
         ], [
-            'file.required'        => 'File wajib diunggah.',
-            'file.mimes'           => 'Format file harus CSV, XLSX, atau XLS.',
-            'file.max'             => 'Ukuran file maksimal 5 MB.',
+            'file.required' => 'File wajib diunggah.',
+            'file.mimes' => 'Format file harus CSV, XLSX, atau XLS.',
+            'file.max' => 'Ukuran file maksimal 5 MB.',
             'posyandu_id.required' => 'Posyandu wajib dipilih.',
         ]);
 
-        $user       = auth()->user();
+        $user = auth()->user();
         $posyanduId = $user->isSuperAdmin() ? (int) $request->posyandu_id : $user->posyandu_id;
 
         try {
-            $import = new \App\Imports\PatientImport($posyanduId, $user->id);
+            $import = new PatientImport($posyanduId, $user->id);
             $import->import($request->file('file'));
 
             // Log activity
-            $posyandu = \App\Models\Posyandu::find($posyanduId);
-            app(\App\Services\ActivityLogService::class)->log(
+            $posyandu = Posyandu::find($posyanduId);
+            app(ActivityLogService::class)->log(
                 'create_medical_record',
                 "Import rekam medis: {$import->recordsImported} rekam medis tersimpan, {$import->imported} warga baru, {$import->skipped} dilewati — Posyandu {$posyandu?->name}",
                 $posyanduId,
@@ -297,30 +304,30 @@ class MedicalRecordController extends Controller
                 ->with('import_errors', $import->errors);
 
         } catch (\Exception $e) {
-            \Illuminate\Support\Facades\Log::error('Medical record import failed: ' . $e->getMessage());
+            Log::error('Medical record import failed: '.$e->getMessage());
 
             return redirect()
                 ->back()
-                ->with('error', 'Import gagal: ' . $e->getMessage());
+                ->with('error', 'Import gagal: '.$e->getMessage());
         }
     }
 
     /**
      * Download template CSV untuk import rekam medis.
      */
-    public function downloadTemplate(\Illuminate\Http\Request $request)
+    public function downloadTemplate(Request $request)
     {
         $category = $request->query('category', 'balita');
 
         $filename = match ($category) {
             'ibu_hamil' => 'template_import_rekam_medis_ibu_hamil.csv',
-            'lansia'    => 'template_import_rekam_medis_lansia.csv',
-            default     => 'template_import_rekam_medis_balita.csv',
+            'lansia' => 'template_import_rekam_medis_lansia.csv',
+            default => 'template_import_rekam_medis_balita.csv',
         };
 
         $headers = [
-            'Content-Type'        => 'text/csv; charset=UTF-8',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Content-Type' => 'text/csv; charset=UTF-8',
+            'Content-Disposition' => 'attachment; filename="'.$filename.'"',
         ];
 
         $rows = $this->getTemplateRowsForCategory($category);
@@ -343,8 +350,8 @@ class MedicalRecordController extends Controller
         $user = auth()->user();
 
         return $user->isSuperAdmin()
-            ? \App\Models\Posyandu::orderBy('name')->get()
-            : \App\Models\Posyandu::where('id', $user->posyandu_id)->get();
+            ? Posyandu::orderBy('name')->get()
+            : Posyandu::where('id', $user->posyandu_id)->get();
     }
 
     /**
@@ -376,4 +383,3 @@ class MedicalRecordController extends Controller
         ];
     }
 }
-

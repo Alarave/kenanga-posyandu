@@ -1,7 +1,10 @@
 <?php
+
+use Illuminate\Contracts\Console\Kernel;
+
 require 'vendor/autoload.php';
 $app = require_once 'bootstrap/app.php';
-$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+$kernel = $app->make(Kernel::class);
 $kernel->bootstrap();
 
 $logs = DB::table('activity_logs')->orderBy('id', 'desc')->limit(20)->get();

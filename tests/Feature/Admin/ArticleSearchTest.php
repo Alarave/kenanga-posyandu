@@ -1,16 +1,17 @@
 <?php
 
+use App\Livewire\Admin\Management\ArticleManagement;
 use App\Models\Article;
 use App\Models\Category;
 use App\Models\User;
+use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
-use App\Livewire\Admin\Management\ArticleManagement;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
-    $this->seed(\Database\Seeders\RolesAndPermissionsSeeder::class);
+    $this->seed(RolesAndPermissionsSeeder::class);
 
     $this->author1 = User::factory()->create([
         'name' => 'Dr. Arimbi',

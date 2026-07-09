@@ -5,6 +5,7 @@ namespace App\Livewire\Admin\PatientManagement;
 use App\Livewire\Shared\BaseAdminComponent;
 use App\Models\Patient;
 use App\Services\GrowthChartService;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Komponen Livewire untuk menampilkan grafik pertumbuhan anak (Buku KIA Digital).
@@ -38,7 +39,7 @@ class GrowthChart extends BaseAdminComponent
             return;
         }
 
-        \Illuminate\Support\Facades\Log::info('Switching chart to: '.$type);
+        Log::info('Switching chart to: '.$type);
         $this->activeChart = $type;
         $this->chartData = $this->getChartData(app(GrowthChartService::class));
         $this->dispatch('chart-updated', $this->chartData);

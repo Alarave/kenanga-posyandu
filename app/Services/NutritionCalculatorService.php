@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\DataTransferObjects\NutritionResult;
 use App\Models\WhoBmiForAge;
 use App\Models\WhoHeightForAge;
 use App\Models\WhoWeightForAge;
@@ -34,7 +35,7 @@ class NutritionCalculatorService
      * @param  int  $ageMonths  Usia dalam bulan (0–59)
      * @param  string  $gender  'L'/'M' atau 'P'/'F'
      */
-    public function calculateAll(float $weight, float $height, int $ageMonths, string $gender): \App\DataTransferObjects\NutritionResult
+    public function calculateAll(float $weight, float $height, int $ageMonths, string $gender): NutritionResult
     {
         $gender = $this->normalizeGender($gender);
 
@@ -43,7 +44,7 @@ class NutritionCalculatorService
         $zWfh = ($weight > 0 && $height > 0) ? $this->calculateWeightForHeight($weight, $height, $gender) : null;
         $zBfa = ($weight > 0 && $height > 0 && $height > 45) ? $this->calculateBmiForAge($weight, $height, $ageMonths, $gender) : null;
 
-        return new \App\DataTransferObjects\NutritionResult(
+        return new NutritionResult(
             $zWfa,
             $this->classifyNutritionStatus($zWfa),
             $zHfa,

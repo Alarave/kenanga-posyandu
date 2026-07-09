@@ -5,13 +5,14 @@ use App\Models\Patient;
 use App\Models\Posyandu;
 use App\Models\User;
 use App\Models\WhoWeightForAge;
+use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
     // Seed roles and permissions
-    $this->seed(\Database\Seeders\RolesAndPermissionsSeeder::class);
+    $this->seed(RolesAndPermissionsSeeder::class);
 
     // Create posyandu and users
     $this->posyandu = Posyandu::factory()->create();
@@ -776,7 +777,7 @@ describe('field opsional', function () {
         ]);
 
         $response->assertSessionDoesntHaveErrors();
-        $record = \App\Models\MedicalRecord::latest('id')->first();
+        $record = MedicalRecord::latest('id')->first();
         expect($record->diagnosis)->toBe('Sehat');
     });
 });

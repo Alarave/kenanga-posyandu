@@ -3,6 +3,7 @@
 namespace App\Livewire\Admin\Management;
 
 use App\Livewire\Shared\BaseAdminComponent;
+use App\Models\Patient;
 use App\Models\Posyandu;
 use Livewire\Attributes\Layout;
 
@@ -51,11 +52,11 @@ class PosyanduManagement extends BaseAdminComponent
     public function render()
     {
         $posyandus = Posyandu::withCount([
-                'patients',
-                'patients as balita_count'    => fn ($q) => $q->where('category', 'balita'),
-                'patients as ibu_hamil_count' => fn ($q) => $q->where('category', 'ibu_hamil'),
-                'patients as lansia_count'    => fn ($q) => $q->where('category', 'lansia'),
-            ])
+            'patients',
+            'patients as balita_count' => fn ($q) => $q->where('category', 'balita'),
+            'patients as ibu_hamil_count' => fn ($q) => $q->where('category', 'ibu_hamil'),
+            'patients as lansia_count' => fn ($q) => $q->where('category', 'lansia'),
+        ])
             ->when($this->search, function ($q) {
                 $searchTerm = '%'.strtolower($this->search).'%';
                 $q->whereRaw('LOWER(name) LIKE ?', [$searchTerm])
@@ -66,12 +67,12 @@ class PosyanduManagement extends BaseAdminComponent
             ->paginate(10);
 
         return view('livewire.admin.posyandu-management.index', [
-            'posyandus'      => $posyandus,
-            'totalPosyandu'  => $posyandus->total(),
-            'totalWarga'     => \App\Models\Patient::count(),
-            'totalBalita'    => \App\Models\Patient::where('category', 'balita')->count(),
-            'totalBumil'     => \App\Models\Patient::where('category', 'ibu_hamil')->count(),
-            'totalLansia'    => \App\Models\Patient::where('category', 'lansia')->count(),
+            'posyandus' => $posyandus,
+            'totalPosyandu' => $posyandus->total(),
+            'totalWarga' => Patient::count(),
+            'totalBalita' => Patient::where('category', 'balita')->count(),
+            'totalBumil' => Patient::where('category', 'ibu_hamil')->count(),
+            'totalLansia' => Patient::where('category', 'lansia')->count(),
         ]);
     }
 }

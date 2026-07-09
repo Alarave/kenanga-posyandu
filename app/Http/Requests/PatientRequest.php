@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Patient;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class PatientRequest extends FormRequest
 {
@@ -18,7 +21,7 @@ class PatientRequest extends FormRequest
     {
         if ($this->has('id_number') && ! empty($this->id_number)) {
             $this->merge([
-                'id_number_hash' => \App\Models\Patient::generateBlindIndex($this->id_number),
+                'id_number_hash' => Patient::generateBlindIndex($this->id_number),
             ]);
         }
     }
@@ -26,7 +29,7 @@ class PatientRequest extends FormRequest
     /**
      * Configure the validator instance.
      */
-    public function withValidator(\Illuminate\Validation\Validator $validator): void
+    public function withValidator(Validator $validator): void
     {
         $validator->after(function ($validator) {
             if ($validator->errors()->has('id_number_hash')) {
@@ -49,7 +52,7 @@ class PatientRequest extends FormRequest
             'id_number' => 'required|digits:16',
             'id_number_hash' => [
                 'required',
-                \Illuminate\Validation\Rule::unique('patients', 'id_number_hash')->ignore($patientId),
+                Rule::unique('patients', 'id_number_hash')->ignore($patientId),
             ],
             'category' => 'required|string|in:bayi,baduta,balita,anak_sekolah,ibu_hamil,remaja,lansia,umum',
             'parent_name' => 'nullable|string|max:255',

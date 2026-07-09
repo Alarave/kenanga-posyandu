@@ -6,10 +6,10 @@ use App\Models\Posyandu;
 use App\Models\Schedule;
 use App\Models\User;
 use App\Services\ScheduleService;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
-use Illuminate\Support\Carbon;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -77,7 +77,7 @@ class ScheduleCreate extends Component
 
         /** @var User $user */
         $user = Auth::user();
-        
+
         if ($this->is_recurring) {
             $start = Carbon::parse($this->start_time);
             $end = Carbon::parse($this->end_time);

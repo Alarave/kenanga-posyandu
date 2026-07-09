@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
+use App\Models\Posyandu;
 use App\Models\User;
+use App\Services\UserService;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -24,7 +26,7 @@ class UserController extends Controller
         $totalUsers = User::count();
         $totalRoles = User::distinct('role')->count('role');
         $inactiveUsers = User::where('is_active', false)->count();
-        $totalPosyandu = \App\Models\Posyandu::count();
+        $totalPosyandu = Posyandu::count();
 
         return view('livewire.admin.user-management.index', compact(
             'users', 'totalUsers', 'totalRoles', 'inactiveUsers', 'totalPosyandu'
@@ -36,13 +38,14 @@ class UserController extends Controller
         return view('livewire.admin.user-management.create');
     }
 
-    public function store(UserRequest $request, \App\Services\UserService $userService)
+    public function store(UserRequest $request, UserService $userService)
     {
         try {
             $userService->createUser($request->validated(), $request->has('is_active'));
+
             return redirect()->route('admin.users.index')->with('success', 'Pengguna berhasil ditambahkan.');
         } catch (\Exception $e) {
-            return redirect()->back()->withInput()->with('error', 'Gagal menambahkan pengguna: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Gagal menambahkan pengguna: '.$e->getMessage());
         }
     }
 
@@ -56,23 +59,25 @@ class UserController extends Controller
         return view('livewire.admin.user-management.update', compact('user'));
     }
 
-    public function update(UserRequest $request, User $user, \App\Services\UserService $userService)
+    public function update(UserRequest $request, User $user, UserService $userService)
     {
         try {
             $userService->updateUser($user, $request->validated(), $request->has('is_active'));
+
             return redirect()->route('admin.users.index')->with('success', 'Pengguna berhasil diperbarui.');
         } catch (\Exception $e) {
-            return redirect()->back()->withInput()->with('error', 'Gagal memperbarui pengguna: ' . $e->getMessage());
+            return redirect()->back()->withInput()->with('error', 'Gagal memperbarui pengguna: '.$e->getMessage());
         }
     }
 
-    public function destroy(User $user, \App\Services\UserService $userService)
+    public function destroy(User $user, UserService $userService)
     {
         try {
             $userService->deleteUser($user);
+
             return redirect()->route('admin.users.index')->with('success', 'Pengguna berhasil dihapus.');
         } catch (\Exception $e) {
-            return redirect()->route('admin.users.index')->with('error', 'Gagal menghapus pengguna: ' . $e->getMessage());
+            return redirect()->route('admin.users.index')->with('error', 'Gagal menghapus pengguna: '.$e->getMessage());
         }
     }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PedukuhanRequest;
 use App\Models\Pedukuhan;
+use App\Services\PedukuhanService;
 use Illuminate\Http\Request;
 
 class PedukuhanController extends Controller
@@ -25,7 +26,7 @@ class PedukuhanController extends Controller
         return view('livewire.admin.pedukuhan-management.create');
     }
 
-    public function store(PedukuhanRequest $request, \App\Services\PedukuhanService $pedukuhanService)
+    public function store(PedukuhanRequest $request, PedukuhanService $pedukuhanService)
     {
         // Menambah data Pedukuhan baru
         $pedukuhanService->createPedukuhan($request->validated());
@@ -45,7 +46,7 @@ class PedukuhanController extends Controller
         return view('livewire.admin.pedukuhan-management.update', compact('pedukuhan'));
     }
 
-    public function update(PedukuhanRequest $request, Pedukuhan $pedukuhan, \App\Services\PedukuhanService $pedukuhanService)
+    public function update(PedukuhanRequest $request, Pedukuhan $pedukuhan, PedukuhanService $pedukuhanService)
     {
         // Memperbarui data Pedukuhan
         $pedukuhanService->updatePedukuhan($pedukuhan, $request->validated());
@@ -53,7 +54,7 @@ class PedukuhanController extends Controller
         return redirect()->route('admin.pedukuhans.index')->with('success', 'Pedukuhan berhasil diperbarui.');
     }
 
-    public function destroy(Pedukuhan $pedukuhan, \App\Services\PedukuhanService $pedukuhanService)
+    public function destroy(Pedukuhan $pedukuhan, PedukuhanService $pedukuhanService)
     {
         // Menghapus data Pedukuhan
         $pedukuhanService->deletePedukuhan($pedukuhan);

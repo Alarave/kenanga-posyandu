@@ -30,7 +30,7 @@ class XlsxFileParser implements FileParserInterface
         for ($i = 0; $i < $zip->numFiles; $i++) {
             $name = $zip->getNameIndex($i);
             if (preg_match('/^xl\/worksheets\/sheet(\d+)\.xml$/i', $name, $matches)) {
-                $sheetFiles[(int)$matches[1]] = $name;
+                $sheetFiles[(int) $matches[1]] = $name;
             }
         }
         ksort($sheetFiles);

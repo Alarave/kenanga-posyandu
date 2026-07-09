@@ -4,10 +4,14 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PatientRequest;
+use App\Imports\PatientImport;
 use App\Models\Patient;
+use App\Models\Pedukuhan;
+use App\Models\Posyandu;
 use App\Services\ActivityLogService;
 use App\Services\PatientService;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class PatientController extends Controller
 {
@@ -27,7 +31,7 @@ class PatientController extends Controller
             return view('livewire.admin.patient-management.select-category');
         }
 
-        $pedukuhans = \App\Models\Pedukuhan::all();
+        $pedukuhans = Pedukuhan::all();
         $posyandus = $this->getAvailablePosyandus();
 
         return view('livewire.admin.patient-management.create', compact('pedukuhans', 'posyandus'));
@@ -44,14 +48,14 @@ class PatientController extends Controller
             $this->patientService->createPatient($request->validated(), auth()->user());
 
             return redirect()->route('admin.patients.index')->with('success', 'Data warga berhasil disimpan.');
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return redirect()->back()
                 ->withInput()
                 ->withErrors($e->errors());
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Gagal menyimpan data: ' . $e->getMessage());
+                ->with('error', 'Gagal menyimpan data: '.$e->getMessage());
         }
     }
 
@@ -93,7 +97,7 @@ class PatientController extends Controller
     {
         $this->authorize('update', $patient);
 
-        $pedukuhans = \App\Models\Pedukuhan::all();
+        $pedukuhans = Pedukuhan::all();
         $posyandus = $this->getAvailablePosyandus();
 
         return view('livewire.admin.patient-management.update', compact('patient', 'pedukuhans', 'posyandus'));
@@ -110,14 +114,14 @@ class PatientController extends Controller
             $this->patientService->updatePatient($patient, $request->validated(), auth()->user());
 
             return redirect()->route('admin.patients.index')->with('success', 'Data warga berhasil diperbarui.');
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return redirect()->back()
                 ->withInput()
                 ->withErrors($e->errors());
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Gagal memperbarui data: ' . $e->getMessage());
+                ->with('error', 'Gagal memperbarui data: '.$e->getMessage());
         }
     }
 
@@ -130,9 +134,10 @@ class PatientController extends Controller
 
         try {
             $this->patientService->deletePatient($patient);
+
             return redirect()->route('admin.patients.index')->with('success', 'Data warga berhasil dihapus.');
         } catch (\Exception $e) {
-            return redirect()->route('admin.patients.index')->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+            return redirect()->route('admin.patients.index')->with('error', 'Gagal menghapus data: '.$e->getMessage());
         }
     }
 
@@ -169,7 +174,7 @@ class PatientController extends Controller
         $posyanduId = $user->isSuperAdmin() ? (int) $request->posyandu_id : $user->posyandu_id;
 
         try {
-            $import = new \App\Imports\PatientImport($posyanduId, $user->id);
+            $import = new PatientImport($posyanduId, $user->id);
             $import->import($request->file('file'));
 
             $this->logImportActivity($import, $posyanduId);
@@ -221,8 +226,8 @@ class PatientController extends Controller
         $user = auth()->user();
 
         return $user->isSuperAdmin()
-            ? \App\Models\Posyandu::orderBy('name')->get()
-            : \App\Models\Posyandu::where('id', $user->posyandu_id)->get();
+            ? Posyandu::orderBy('name')->get()
+            : Posyandu::where('id', $user->posyandu_id)->get();
     }
 
     /**
@@ -230,7 +235,7 @@ class PatientController extends Controller
      */
     private function logImportActivity($import, int $posyanduId): void
     {
-        $posyandu = \App\Models\Posyandu::find($posyanduId);
+        $posyandu = Posyandu::find($posyanduId);
 
         $this->activityLogService->log(
             'create_patient',
