@@ -20,7 +20,14 @@ class HeaderResolver
         'nama_anak' => ['nama', 'full_name', 'nama_lengkap', 'nama_balita', 'nama_bayi', 'nama_anak'],
         'nik' => ['nomor_nik', 'no_nik', 'nik_balita', 'nomor_induk_kependudukan', 'id_number', 'nik_16_digit'],
         'tgl_lahir' => ['tanggal_lahir', 'birth_date', 'tgl_lahir_anak'],
-        'jk' => ['jenis_kelamin', 'gender', 'kelamin', 'l_p', 'lp', 'p_l', 'pl', 'sex', 'jns_kelamin', 'jns_kel', 'jnskel', 'lp', 'jeniskelamin'],
+        'jk' => [
+            'jenis_kelamin', 'gender', 'kelamin', 'l_p', 'lp', 'p_l', 'pl', 'sex', 
+            'jns_kelamin', 'jns_kel', 'jnskel', 'jeniskelamin', 'jk',
+            'jenis_kelamin_l_p', 'jenis_kelamin_laki_laki_perempuan',
+            'laki_perempuan', 'laki_laki_perempuan', 'l_p_laki_laki_perempuan',
+            'jns_kelamin_l_p', 'jns_kelamin_laki_laki_perempuan',
+            'jenis_kelamin_l_p_laki_laki_perempuan','l/p','p/l','m/f','f/m' 
+        ],
         'nm_ortu' => ['nama_ortu', 'parent_name', 'orang_tua', 'nama_orang_tua'],
         'tanggal_ukur' => ['tgl_ukur', 'tanggalukur', 'tanggal_periksa', 'tgl_periksa'],
         'berat' => ['berat_badan', 'bb', 'weight', 'bb_kg', 'bb_dalam_kg'],
@@ -111,6 +118,15 @@ class HeaderResolver
                         $map[$canonical] = $map[$alt];
                         break;
                     }
+                }
+            }
+        }
+        // Fallback for 'jk' (Jenis Kelamin) using substring match if not matched yet
+        if (! isset($map['jk'])) {
+            foreach ($normalizedHeaders as $idx => $hdr) {
+                if (str_contains($hdr, 'kelamin') || str_contains($hdr, 'gender') || str_contains($hdr, 'l_p') || $hdr === 'lp' || $hdr === 'pl' || $hdr === 'sex') {
+                    $map['jk'] = $idx;
+                    break;
                 }
             }
         }
