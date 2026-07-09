@@ -977,7 +977,13 @@
                                 </td>
                                 <td class="px-6 py-4 text-xs font-bold text-slate-700">{{ $row['posyandu'] }}</td>
                                 <td class="px-6 py-4">
-                                    <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold bg-teal-50 text-teal-700 border border-teal-100">
+                                    @php
+                                        $statusStr = strtolower(trim($row['nutrition_status'] ?? ''));
+                                        $tagClass = ($statusStr === 'gizi lebih' || $statusStr === 'lebih')
+                                            ? 'bg-orange-50 text-orange-700 border-orange-200'
+                                            : 'bg-teal-50 text-teal-700 border-teal-100';
+                                    @endphp
+                                    <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold border {{ $tagClass }}">
                                         {{ $row['nutrition_status'] }}
                                     </span>
                                 </td>
