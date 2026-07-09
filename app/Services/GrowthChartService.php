@@ -62,6 +62,7 @@ class GrowthChartService
             'weight' => $records->pluck('weight')->toArray(),
             'height' => $records->pluck('height')->toArray(),
             'nutrition_status' => $records->pluck('nutrition_status')->toArray(),
+            'nutrition_statuses' => $this->mapRecordsToAgeStatus($patient, $records, 'nutrition_status'),
         ];
     }
 
@@ -110,6 +111,7 @@ class GrowthChartService
                 $this->createReferenceDataset('-3 SD', $sd3Minus, '#000000', 1, 'solid'), // Black
                 $this->createChildDataset('Tinggi Badan Anak', $this->mapRecordsToAge($patient, $records, 'height'), '#ffffff'), // White
             ],
+            'stunting_statuses' => $this->mapRecordsToAgeStatus($patient, $records, 'stunting_status'),
         ];
     }
 
@@ -229,6 +231,22 @@ class GrowthChartService
             $ageMonths = (int) $patient->birth_date->diffInMonths($record->visit_date);
             if ($ageMonths <= 60) {
                 $data[$ageMonths] = (float) $record->$field;
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Memetakan status antropometri rekam medis ke index bulan usia untuk Chart.js.
+     */
+    private function mapRecordsToAgeStatus(Patient $patient, Collection $records, string $statusField): array
+    {
+        $data = array_fill(0, 61, null);
+        foreach ($records as $record) {
+            $ageMonths = (int) $patient->birth_date->diffInMonths($record->visit_date);
+            if ($ageMonths <= 60) {
+                $data[$ageMonths] = $record->$statusField;
             }
         }
 

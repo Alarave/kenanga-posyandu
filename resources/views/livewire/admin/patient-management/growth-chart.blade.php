@@ -235,12 +235,39 @@
                 if (childDataset) {
                     const isMaleGender = {{ $isMale ? 'true' : 'false' }};
                     const lineCol = isMaleGender ? '#0d9488' : '#be185d';
+                    
+                    const bgColors = [];
+                    const borderColors = [];
+                    const statuses = data.nutrition_statuses || data.stunting_statuses || [];
+                    
+                    for (let i = 0; i <= 60; i++) {
+                        const status = statuses[i];
+                        if (status) {
+                            if (status.includes('Buruk') || status.includes('Sangat Pendek')) {
+                                bgColors.push('#ef4444'); // Red
+                                borderColors.push('#ef4444');
+                            } else if (status.includes('Kurang') || status.includes('Pendek')) {
+                                bgColors.push('#f59e0b'); // Amber
+                                borderColors.push('#f59e0b');
+                            } else if (status.includes('Lebih') || status.includes('Tinggi') || status.includes('Obesitas') || status.includes('Berisiko')) {
+                                bgColors.push('#3b82f6'); // Blue
+                                borderColors.push('#3b82f6');
+                            } else {
+                                bgColors.push('#10b981'); // Green
+                                borderColors.push('#10b981');
+                            }
+                        } else {
+                            bgColors.push(lineCol);
+                            borderColors.push('#ffffff');
+                        }
+                    }
+
                     childDataset.borderColor = lineCol;
                     childDataset.borderWidth = 4;
                     childDataset.pointRadius = 6;
                     childDataset.pointHoverRadius = 9;
-                    childDataset.pointBackgroundColor = lineCol;
-                    childDataset.pointBorderColor = '#ffffff';
+                    childDataset.pointBackgroundColor = bgColors;
+                    childDataset.pointBorderColor = borderColors;
                     childDataset.pointBorderWidth = 2;
                     childDataset.fill = false;
                     childDataset.tension = 0.25;
