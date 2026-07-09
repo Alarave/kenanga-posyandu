@@ -179,26 +179,27 @@
 
 <script>
 (function () {
-    const KEY       = 'sidebar_v2_collapsed';
-    const sidebar   = document.getElementById('sidebar');
-    const btn       = document.getElementById('sidebarToggleBtn');
-    const mobileBtn = document.getElementById('mobileSidebarToggle');
-    const icon      = document.getElementById('toggleIcon');
-    const main      = document.getElementById('mainContent');
-    const overlay   = document.getElementById('sidebarOverlay');
-    const EXP = '260px', COL = '64px';
-
+    const KEY = 'sidebar_v2_collapsed';
     const desktopMedia = window.matchMedia('(min-width: 1024px)');
-    let collapsed = localStorage.getItem(KEY) === 'true';
-    
-    // Force collapsed on mobile by default to prevent blocking the screen
-    if (!desktopMedia.matches) {
-        collapsed = true;
-    }
 
-    function apply(animate) {
-        const isDesktop = desktopMedia.matches;
-        const width = isDesktop ? (collapsed ? COL : EXP) : (collapsed ? '0px' : EXP);
+    // Function to apply current state to the DOM elements dynamically
+    window.applySidebarState = function (animate) {
+        const sidebar = document.getElementById('sidebar');
+        if (!sidebar) return;
+
+        const icon = document.getElementById('toggleIcon');
+        const main = document.getElementById('mainContent');
+        const overlay = document.getElementById('sidebarOverlay');
+        const EXP = '260px', COL = '64px';
+
+        let collapsed = localStorage.getItem(KEY) === 'true';
+        if (!desktopMedia.matches) {
+            // Mobile defaults to collapsed (0px width) unless explicitly marked open
+            const isOpenOnMobile = sidebar.getAttribute('data-mobile-open') === 'true';
+            collapsed = !isOpenOnMobile;
+        }
+
+        const width = desktopMedia.matches ? (collapsed ? COL : EXP) : (collapsed ? '0px' : EXP);
 
         document.documentElement.style.setProperty('--sidebar-width', width);
         sidebar.style.width = width;
@@ -208,17 +209,18 @@
             if (main) main.style.transition = 'none';
         }
 
-        // Toggle root collapsed class for CSS transitions
         if (collapsed) {
             document.documentElement.classList.add('sidebar-collapsed');
         } else {
             document.documentElement.classList.remove('sidebar-collapsed');
         }
 
-        if (icon) icon.style.transform = collapsed ? 'rotate(180deg)' : 'rotate(0deg)';
+        if (icon) {
+            icon.style.transform = collapsed ? 'rotate(180deg)' : 'rotate(0deg)';
+        }
 
         if (overlay) {
-            overlay.classList.toggle('hidden', isDesktop || collapsed);
+            overlay.classList.toggle('hidden', desktopMedia.matches || collapsed);
         }
 
         if (!animate) {
@@ -227,30 +229,38 @@
                 if (main) main.style.transition = '';
             });
         }
-    }
+    };
 
-    function toggle() {
-        collapsed = !collapsed;
-        localStorage.setItem(KEY, collapsed);
-        apply(true);
-    }
-
+    // Apply state on initial load/render
     requestAnimationFrame(() => {
-        apply(false);
+        window.applySidebarState(false);
     });
 
-    document.addEventListener('click', (e) => {
-        if (e.target.closest('#sidebarToggleBtn') || e.target.closest('#mobileSidebarToggle') || e.target.closest('#sidebarOverlay')) {
-            toggle();
-        }
-    });
+    // Register click event listener ONCE globally on document
+    if (!window.sidebarToggleListenerAdded) {
+        window.sidebarToggleListenerAdded = true;
+        document.addEventListener('click', (e) => {
+            const sidebar = document.getElementById('sidebar');
+            if (!sidebar) return;
 
-    // Listen to screen size changes at 1024px breakpoint only (high performance)
-    desktopMedia.addEventListener('change', (e) => {
-        if (!e.matches) {
-            collapsed = true;
-        }
-        apply(false);
-    });
+            if (e.target.closest('#sidebarToggleBtn') || e.target.closest('#mobileSidebarToggle') || e.target.closest('#sidebarOverlay')) {
+                if (desktopMedia.matches) {
+                    // Desktop: toggle localStorage value
+                    let collapsed = localStorage.getItem(KEY) === 'true';
+                    localStorage.setItem(KEY, !collapsed);
+                } else {
+                    // Mobile: toggle data attribute on sidebar element
+                    const isOpenOnMobile = sidebar.getAttribute('data-mobile-open') === 'true';
+                    sidebar.setAttribute('data-mobile-open', isOpenOnMobile ? 'false' : 'true');
+                }
+                window.applySidebarState(true);
+            }
+        });
+
+        // Listen to screen size changes at 1024px breakpoint only (high performance)
+        desktopMedia.addEventListener('change', (e) => {
+            window.applySidebarState(false);
+        });
+    }
 })();
 </script>

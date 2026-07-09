@@ -147,21 +147,29 @@
 {{-- ── Navbar JS ── --}}
 <script>
 (function () {
-    const mobileSearchBtn = document.getElementById('mobileSearchBtn');
-    const mobileSearchBar = document.getElementById('mobileSearchBar');
-    if (mobileSearchBtn && mobileSearchBar) {
-        mobileSearchBtn.addEventListener('click', function () {
-            const isHidden = mobileSearchBar.classList.contains('hidden');
-            mobileSearchBar.classList.toggle('hidden', !isHidden);
-            if (isHidden) mobileSearchBar.querySelector('input')?.focus();
+    // 1. Mobile search panel toggle
+    if (!window.navbarSearchListenerAdded) {
+        window.navbarSearchListenerAdded = true;
+        document.addEventListener('click', (e) => {
+            const btn = e.target.closest('#mobileSearchBtn');
+            if (btn) {
+                const mobileSearchBar = document.getElementById('mobileSearchBar');
+                if (mobileSearchBar) {
+                    const isHidden = mobileSearchBar.classList.contains('hidden');
+                    mobileSearchBar.classList.toggle('hidden', !isHidden);
+                    if (isHidden) mobileSearchBar.querySelector('input')?.focus();
+                }
+            }
         });
     }
 
-    // Smart sticky navbar - bind to window since layout overflow has been fixed
-    const navbar = document.getElementById('topNavbar');
-    if (navbar) {
-        let lastScroll = 0; // Initialize to 0 to avoid forced synchronous layout reflow on page load
+    // 2. Smart sticky navbar scroll handler
+    if (!window.navbarScrollListenerAdded) {
+        window.navbarScrollListenerAdded = true;
+        let lastScroll = 0;
         window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('topNavbar');
+            if (!navbar) return;
             const currentScroll = window.scrollY || document.documentElement.scrollTop;
             if (currentScroll > lastScroll && currentScroll > 64) {
                 // Scrolling down -> hide navbar
