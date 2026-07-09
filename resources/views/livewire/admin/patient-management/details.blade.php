@@ -84,7 +84,13 @@
 
     {{-- ── Premium Header & Actions ── --}}
     <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-10 px-2">
-        <div class="space-y-2">
+        <div class="space-y-4">
+            
+            <a href="{{ route('admin.patients.index') }}" 
+               class="inline-flex items-center justify-center px-6 py-2.5 rounded-full border border-slate-200 bg-white text-sm font-bold text-slate-700 hover:bg-slate-50 hover:border-slate-300 transition-all shadow-sm w-max hover:-translate-x-1 group">
+                <span class="material-symbols-outlined text-[20px] mr-2 text-slate-900 group-hover:text-teal-600 transition-colors">arrow_back</span>
+                Kembali
+            </a>
 
             <h1 class="text-3xl font-black tracking-tight leading-none">
                 <span class="text-transparent bg-clip-text bg-linear-to-r {{ $theme['gradient'] }}">{{ $patient->full_name }}</span>
