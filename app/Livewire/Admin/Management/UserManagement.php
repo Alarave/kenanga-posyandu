@@ -24,16 +24,6 @@ class UserManagement extends BaseAdminComponent
         'status' => ['except' => ''],
     ];
 
-    public function updatedRole(): void
-    {
-        $this->resetPage();
-    }
-
-    public function updatedStatus(): void
-    {
-        $this->resetPage();
-    }
-
     public function render()
     {
         // Scope pengguna berdasarkan level akses (Opsional, di sini kita tampilkan semua untuk SuperAdmin/Admin)
@@ -57,7 +47,7 @@ class UserManagement extends BaseAdminComponent
 
         $totalUsers = User::count();
         $inactiveUsers = User::where('is_active', false)->count();
-        $activeKaders = User::where('is_active', true)->count();
+        $activeKaders = User::whereIn('role', [User::ROLE_ADMIN, User::ROLE_KADER])->where('is_active', true)->count();
 
         return view('livewire.admin.user-management.index', [
             'users' => $query->paginate(10),
