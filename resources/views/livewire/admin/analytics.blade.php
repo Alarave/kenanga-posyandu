@@ -1770,37 +1770,41 @@ function initCharts(data = null) {
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    onClick: (event, activeElements) => {
-                        if (activeElements.length > 0) {
-                            if (window.isDrillingDown) return;
-                            window.isDrillingDown = true;
+                    onClick: (event, activeElements, chart) => {
+                        if (window.isDrillingDown) return;
 
-                            const firstPoint = activeElements[0];
-                            const index = firstPoint.index;
-                            const label = labels[index];
-                            const month = index + 1;
-                            const datasetIndex = firstPoint.datasetIndex;
+                        const nearest = chart.getElementsAtEventForMode(
+                            event, 'nearest', { intersect: true }, false
+                        );
+                        if (nearest.length === 0) return;
 
-                            const types = [
-                                'lansia_hipertensi',
-                                'lansia_hiperglikemia',
-                                'lansia_hiperkolesterolemia',
-                                'lansia_hiperurisemia'
-                            ];
-                            const datasetLabels = [
-                                'Hipertensi',
-                                'Hiperglikemia',
-                                'Hiperkolesterolemia',
-                                'Hiperurisemia'
-                            ];
+                        window.isDrillingDown = true;
 
-                            const type = types[datasetIndex] || 'lansia';
-                            const datasetLabel = datasetLabels[datasetIndex] || '';
+                        const clicked = nearest[0];
+                        const index = clicked.index;
+                        const label = labels[index];
+                        const month = index + 1;
+                        const datasetIndex = clicked.datasetIndex;
 
-                            $wire.call('drillDown', `Lansia - ${datasetLabel} (${label})`, type, month)
-                                .then(() => { window.isDrillingDown = false; })
-                                .catch(() => { window.isDrillingDown = false; });
-                        }
+                        const types = [
+                            'lansia_hipertensi',
+                            'lansia_hiperglikemia',
+                            'lansia_hiperkolesterolemia',
+                            'lansia_hiperurisemia'
+                        ];
+                        const datasetLabels = [
+                            'Hipertensi',
+                            'Hiperglikemia',
+                            'Hiperkolesterolemia',
+                            'Hiperurisemia'
+                        ];
+
+                        const type = types[datasetIndex] || 'lansia';
+                        const datasetLabel = datasetLabels[datasetIndex] || '';
+
+                        $wire.call('drillDown', `Lansia - ${datasetLabel} (${label})`, type, month)
+                            .then(() => { window.isDrillingDown = false; })
+                            .catch(() => { window.isDrillingDown = false; });
                     },
                     scales: {
                         x: { grid: { display: false } },
