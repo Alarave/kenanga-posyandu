@@ -14,8 +14,6 @@
     
     <!-- Scripts & Styles -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    
-    @livewireStyles
 </head>
 <body class="font-sans antialiased text-slate-900">
     <div class="relative">
@@ -32,7 +30,6 @@
         </div>
     </div>
     
-    @livewireScripts
     @stack('scripts')
 </body>
 </html>

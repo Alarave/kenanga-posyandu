@@ -24,14 +24,12 @@
     <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"></noscript>
 
     <!-- Font Awesome: deferred to unblock main thread (icons are non-LCP) -->
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-solid-900.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
 
     <!-- Scripts & Styles (Vite) -->
     @vite(['resources/css/app.css', 'resources/js/admin.js'])
-
-    <!-- WAJIB: Livewire Styles -->
-    @livewireStyles
     
     <style>
         @view-transition { navigation: auto; }
@@ -161,9 +159,6 @@
             @include('components.layouts.ui.footer')
         </div>
     </div>
-
-    <!-- WAJIB: Livewire Scripts -->
-    @livewireScripts
     
     {{-- Session & Dynamic Notifications --}}
     <div id="toast-container" x-data="{ 

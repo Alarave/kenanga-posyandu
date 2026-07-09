@@ -30,6 +30,7 @@ class ArticleService
             // Handle cover/thumbnail upload
             if (isset($data['thumbnail']) && $data['thumbnail'] instanceof \Illuminate\Http\UploadedFile) {
                 $data['thumbnail'] = $data['thumbnail']->store('articles', 'public');
+                $this->resizeImage($data['thumbnail'], 600);
             }
 
             return Article::create($data);
@@ -55,6 +56,7 @@ class ArticleService
                     Storage::disk('public')->delete($article->thumbnail);
                 }
                 $data['thumbnail'] = $data['thumbnail']->store('articles', 'public');
+                $this->resizeImage($data['thumbnail'], 600);
             }
 
             $article->update($data);
@@ -296,5 +298,84 @@ class ArticleService
         }
 
         return $slug;
+    }
+
+    /**
+     * Resize image to a maximum width.
+     */
+    public function resizeImage(string $path, int $maxWidth = 600): void
+    {
+        $fullPath = Storage::disk('public')->path($path);
+        if (!file_exists($fullPath)) {
+            return;
+        }
+
+        $info = @getimagesize($fullPath);
+        if (!$info) {
+            return;
+        }
+
+        $width = $info[0];
+        $height = $info[1];
+        $mime = $info['mime'];
+
+        if ($width <= $maxWidth) {
+            return;
+        }
+
+        $newWidth = $maxWidth;
+        $newHeight = (int) (($height / $width) * $newWidth);
+
+        switch ($mime) {
+            case 'image/jpeg':
+            case 'image/jpg':
+                $src = @imagecreatefromjpeg($fullPath);
+                break;
+            case 'image/png':
+                $src = @imagecreatefrompng($fullPath);
+                break;
+            case 'image/gif':
+                $src = @imagecreatefromgif($fullPath);
+                break;
+            case 'image/webp':
+                $src = @imagecreatefromwebp($fullPath);
+                break;
+            default:
+                return;
+        }
+
+        if (!$src) {
+            return;
+        }
+
+        $dst = imagecreatetruecolor($newWidth, $newHeight);
+
+        if ($mime === 'image/png' || $mime === 'image/gif') {
+            imagealphablending($dst, false);
+            imagesavealpha($dst, true);
+            $transparent = imagecolorallocatealpha($dst, 255, 255, 255, 127);
+            imagefilledrectangle($dst, 0, 0, $newWidth, $newHeight, $transparent);
+        }
+
+        imagecopyresampled($dst, $src, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+
+        switch ($mime) {
+            case 'image/jpeg':
+            case 'image/jpg':
+                imagejpeg($dst, $fullPath, 85);
+                break;
+            case 'image/png':
+                imagepng($dst, $fullPath, 8);
+                break;
+            case 'image/gif':
+                imagegif($dst, $fullPath);
+                break;
+            case 'image/webp':
+                imagewebp($dst, $fullPath, 85);
+                break;
+        }
+
+        imagedestroy($src);
+        imagedestroy($dst);
     }
 }
