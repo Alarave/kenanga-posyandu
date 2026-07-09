@@ -85,14 +85,20 @@ class BalitaKenanga1Seeder extends Seeder
         foreach ($balitaData as $data) {
             [$nik, $nama, $tglLahir, $jenisKelamin, $namaOrtu, $alamat] = $data;
 
-            // Check if patient already exists using blind index
-            $exists = Patient::where('id_number_hash', Patient::generateBlindIndex($nik))
+            // Find existing patient using blind index to update info if already loaded
+            $existingPatient = Patient::where('id_number_hash', Patient::generateBlindIndex($nik))
                 ->where('posyandu_id', $posyandu->id)
-                ->exists();
+                ->first();
 
-            if ($exists) {
+            if ($existingPatient) {
+                $existingPatient->update([
+                    'gender' => $jenisKelamin,
+                    'full_name' => $nama,
+                    'birth_date' => Carbon::parse($tglLahir),
+                    'parent_name' => $namaOrtu,
+                    'address' => $alamat,
+                ]);
                 $skipped++;
-
                 continue;
             }
 
