@@ -185,17 +185,25 @@
 /* LISTS — merge adjacent items visually */
 .article-content .article-list {
     padding-left: 1.5rem;
-    margin: 0.25rem 0;
+    margin: 0.75rem 0;
     font-family: 'Georgia', serif;
     font-size: 1.15rem;
     line-height: 1.9;
     color: #374151;
+    list-style-position: outside;
+    list-style-type: disc;
 }
 .article-content .article-list + .article-list {
-    margin-top: -0.5rem; /* merge consecutive list items */
+    margin-top: 0.75rem;
+}
+.article-content .article-list--bulleted {
+    list-style-type: disc;
 }
 .article-content .article-list--numbered {
-    list-style: decimal;
+    list-style-type: decimal;
+}
+.article-content .article-list li {
+    margin-bottom: 0.75rem;
 }
 
 /* PARAGRAPH */
