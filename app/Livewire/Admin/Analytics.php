@@ -254,11 +254,22 @@ class Analytics extends BaseAdminComponent
             'lansia_hiperglikemia' => 'Hiperglikemia',
             'lansia_hiperkolesterolemia' => 'Hiperkolesterolemia',
             'lansia_hiperurisemia' => 'Hiperurisemia',
+            'pregnancy_high_risk' => 'Risiko Tinggi & 4T',
+            'pregnancy_anemia' => 'Kasus Anemia',
+            'pregnancy_tablet_fe' => 'Pemberian Tablet Fe',
+            'pregnancy_k1' => 'Kunjungan K1',
+            'pregnancy_k2' => 'Kunjungan K2',
+            'pregnancy_k3' => 'Kunjungan K3',
+            'pregnancy_k4' => 'Kunjungan K4',
+            'pregnancy_k5' => 'Kunjungan K5',
+            'pregnancy_k6' => 'Kunjungan K6',
             default => 'Data',
         };
 
         if (str_starts_with($newType, 'lansia_')) {
             $this->drillDownTitle = "Detail: Lansia - {$typeName} ({$labelMonth})";
+        } elseif (str_starts_with($newType, 'pregnancy_')) {
+            $this->drillDownTitle = "Detail: Ibu Hamil - {$typeName} ({$labelMonth})";
         } else {
             $this->drillDownTitle = "Detail: Balita {$typeName} — {$labelMonth}";
         }
@@ -344,6 +355,45 @@ class Analytics extends BaseAdminComponent
             return;
         }
 
+        if (in_array($type, ['pregnancy_k1', 'pregnancy_k2', 'pregnancy_k3', 'pregnancy_k4', 'pregnancy_k5', 'pregnancy_k6'])) {
+            $n = (int) substr($type, -1);
+            
+            $query = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
+                ->with(['patient.posyandu'])
+                ->whereYear('visit_date', $targetYear)
+                ->when($month ?? $this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $month ?? $this->selectedMonth))
+                ->whereHas('patient', function ($pQ) use ($n, $targetYear, $month) {
+                    $pQ->where('category', 'ibu_hamil')
+                       ->where('status_mutasi', 'aktif')
+                       ->whereHas('medicalRecords', function ($mrQ) use ($targetYear, $month) {
+                           $mrQ->whereYear('visit_date', $targetYear)
+                               ->when($month ?? $this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $month ?? $this->selectedMonth));
+                       }, '>=', $n);
+                })
+                ->orderBy('visit_date', 'desc')
+                ->orderBy('id', 'desc');
+
+            $records = $query->get()->unique('patient_id');
+
+            $this->drillDownData = $records->map(function ($r) use ($targetYear, $month) {
+                $totalVisits = $r->patient->medicalRecords()
+                    ->whereYear('visit_date', $targetYear)
+                    ->when($month ?? $this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $month ?? $this->selectedMonth))
+                    ->count();
+
+                return [
+                    'name' => $r->patient?->full_name ?? '-',
+                    'nik' => $r->patient?->id_number ?? '-',
+                    'posyandu' => $r->patient?->posyandu?->name ?? '-',
+                    'nutrition_status' => "Total Kunjungan: {$totalVisits} Kali",
+                    'visit_date' => $r->visit_date?->format('d M Y') ?? '-',
+                    'patient_id' => $r->patient_id,
+                ];
+            })->values()->toArray();
+
+            return;
+        }
+
         $query = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
             ->with(['patient.posyandu'])
             ->whereYear('visit_date', $targetYear);
@@ -413,6 +463,27 @@ class Analytics extends BaseAdminComponent
                 ->where('cholesterol', '>=', 200),
             'lansia_hiperurisemia' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
                 ->where('uric_acid', '>=', 7.0),
+            'pregnancy_high_risk' => $query->whereHas('patient', function ($q) {
+                    $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
+                })
+                ->where(fn ($q) => $q
+                    ->whereHas('patient', function ($pQuery) {
+                        $twentyYearsAgo = now()->subYears(20)->toDateString();
+                        $thirtyFiveYearsAgo = now()->subYears(35)->toDateString();
+                        $pQuery->where('birth_date', '>', $twentyYearsAgo)
+                               ->orWhere('birth_date', '<', $thirtyFiveYearsAgo);
+                    })
+                    ->orWhere('height', '<', 145)
+                ),
+            'pregnancy_anemia' => $query->whereHas('patient', function ($q) {
+                    $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
+                })
+                ->whereNotNull('hemoglobin')
+                ->where('hemoglobin', '<', 11),
+            'pregnancy_tablet_fe' => $query->whereHas('patient', function ($q) {
+                    $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
+                })
+                ->where('nakes_gives_fe_mms', 1),
             default => null,
         };
 
@@ -425,6 +496,19 @@ class Analytics extends BaseAdminComponent
                 'lansia_hiperglikemia' => 'GDS: '.($r->blood_sugar ?: '-').' mg/dL',
                 'lansia_hiperkolesterolemia' => 'Kolesterol: '.($r->cholesterol ?: '-').' mg/dL',
                 'lansia_hiperurisemia' => 'Asam Urat: '.($r->uric_acid ?: '-').' mg/dL',
+                'pregnancy_high_risk' => (function() use ($r) {
+                    $age = $r->patient?->birth_date?->age;
+                    $reasons = [];
+                    if ($age && ($age < 20 || $age > 35)) {
+                        $reasons[] = "Umur: {$age} Thn";
+                    }
+                    if ($r->height && $r->height < 145) {
+                        $reasons[] = "TB: {$r->height} cm";
+                    }
+                    return count($reasons) > 0 ? implode(' & ', $reasons) : 'Risiko Tinggi';
+                })(),
+                'pregnancy_anemia' => 'Hb: '.($r->hemoglobin ?: '-').' g/dL',
+                'pregnancy_tablet_fe' => $r->nakes_gives_fe_mms ? 'Tablet Fe: Menerima' : 'Tablet Fe: Belum Menerima',
                 default => $r->nutrition_status ?: (
                     $r->patient?->category === 'lansia' ? 'Lansia' : (
                         $r->patient?->category === 'ibu_hamil' ? 'Ibu Hamil' : (

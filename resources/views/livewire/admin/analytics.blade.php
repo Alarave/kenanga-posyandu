@@ -1006,6 +1006,47 @@
                 </div>
                 @endif
 
+                {{-- Ibu Hamil Category Tabs --}}
+                @if(in_array($drillDownType, ['pregnancy_high_risk', 'pregnancy_anemia', 'pregnancy_tablet_fe']))
+                <div class="flex flex-wrap gap-2 p-1.5 bg-slate-100 rounded-2xl w-fit">
+                    <button wire:click="switchDrillDownCategory('pregnancy_high_risk')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'pregnancy_high_risk' ? 'bg-white text-amber-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                        Risiko Tinggi &amp; 4T
+                    </button>
+                    <button wire:click="switchDrillDownCategory('pregnancy_anemia')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'pregnancy_anemia' ? 'bg-white text-rose-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                        Kasus Anemia
+                    </button>
+                    <button wire:click="switchDrillDownCategory('pregnancy_tablet_fe')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'pregnancy_tablet_fe' ? 'bg-white text-teal-650 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-teal-500"></span>
+                        Pemberian Tablet Fe
+                    </button>
+                </div>
+                @endif
+
+                {{-- Ibu Hamil ANC K1-K6 Category Tabs --}}
+                @if(in_array($drillDownType, ['pregnancy_k1', 'pregnancy_k2', 'pregnancy_k3', 'pregnancy_k4', 'pregnancy_k5', 'pregnancy_k6']))
+                <div class="flex flex-wrap gap-2 p-1.5 bg-slate-100 rounded-2xl w-fit">
+                    @foreach([
+                        'pregnancy_k1' => 'K1',
+                        'pregnancy_k2' => 'K2',
+                        'pregnancy_k3' => 'K3',
+                        'pregnancy_k4' => 'K4',
+                        'pregnancy_k5' => 'K5',
+                        'pregnancy_k6' => 'K6'
+                    ] as $key => $lbl)
+                    <button wire:click="switchDrillDownCategory('{{ $key }}')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 {{ $drillDownType === $key ? 'bg-white text-indigo-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full {{ $drillDownType === $key ? 'bg-indigo-500' : 'bg-slate-400' }}"></span>
+                        {{ $lbl }}
+                    </button>
+                    @endforeach
+                </div>
+                @endif
+
                 <div class="overflow-x-auto border border-slate-200 rounded-2xl">
                     <table class="w-full text-left">
                         <thead>

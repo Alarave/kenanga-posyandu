@@ -272,3 +272,143 @@ test('analytics component can drill down on all categories (yearly/YoY mode fall
         ->assertSee('Lansia');
 });
 
+test('analytics component can drill down on pregnancy risks', function () {
+    $pedukuhan = Pedukuhan::factory()->create();
+    $posyandu = Posyandu::factory()->create(['pedukuhan_id' => $pedukuhan->id]);
+
+    $admin = User::factory()->create([
+        'role' => 'admin',
+        'posyandu_id' => $posyandu->id,
+    ]);
+
+    $pregnant1 = Patient::factory()->create([
+        'posyandu_id' => $posyandu->id,
+        'category' => 'ibu_hamil',
+        'status_mutasi' => 'aktif',
+        'full_name' => 'Ibu Hamil Anemia',
+        'birth_date' => now()->subYears(28),
+    ]);
+    MedicalRecord::factory()->create([
+        'patient_id' => $pregnant1->id,
+        'visit_date' => now(),
+        'hemoglobin' => 10.0, // Anemia
+        'height' => 160,
+    ]);
+
+    $pregnant2 = Patient::factory()->create([
+        'posyandu_id' => $posyandu->id,
+        'category' => 'ibu_hamil',
+        'status_mutasi' => 'aktif',
+        'full_name' => 'Ibu Hamil Tinggi Badan Kurang',
+        'birth_date' => now()->subYears(28),
+    ]);
+    MedicalRecord::factory()->create([
+        'patient_id' => $pregnant2->id,
+        'visit_date' => now(),
+        'height' => 140, // High risk height
+    ]);
+
+    $pregnant3 = Patient::factory()->create([
+        'posyandu_id' => $posyandu->id,
+        'category' => 'ibu_hamil',
+        'status_mutasi' => 'aktif',
+        'full_name' => 'Ibu Hamil Menerima Fe',
+        'birth_date' => now()->subYears(28),
+    ]);
+    MedicalRecord::factory()->create([
+        'patient_id' => $pregnant3->id,
+        'visit_date' => now(),
+        'nakes_gives_fe_mms' => 1,
+        'height' => 160,
+    ]);
+
+    $this->actingAs($admin);
+
+    // Test Anemia drill down
+    Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->call('drillDown', 'Ibu Hamil - Kasus Anemia', 'pregnancy_anemia', now()->month)
+        ->assertSee('Ibu Hamil Anemia')
+        ->assertDontSee('Ibu Hamil Tinggi Badan Kurang')
+        ->assertSee('Hb: 10 g/dL');
+
+    // Test High Risk drill down
+    Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->call('drillDown', 'Ibu Hamil - Risiko Tinggi & 4T', 'pregnancy_high_risk', now()->month)
+        ->assertSee('Ibu Hamil Tinggi Badan Kurang')
+        ->assertDontSee('Ibu Hamil Anemia')
+        ->assertSee('TB: 140.00 cm');
+
+    // Test Tablet Fe drill down
+    Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->call('drillDown', 'Ibu Hamil - Pemberian Tablet Fe', 'pregnancy_tablet_fe', now()->month)
+        ->assertSee('Ibu Hamil Menerima Fe')
+        ->assertSee('Tablet Fe: Menerima');
+
+    // Test ANC K1 drill down
+    Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->call('drillDown', 'Ibu Hamil - Kunjungan K1', 'pregnancy_k1', now()->month)
+        ->assertSee('Ibu Hamil Anemia')
+        ->assertSee('Ibu Hamil Tinggi Badan Kurang')
+        ->assertSee('Ibu Hamil Menerima Fe')
+        ->assertSee('Total Kunjungan: 1 Kali');
+
+    // Test ANC K2 drill down
+    Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->call('drillDown', 'Ibu Hamil - Kunjungan K2', 'pregnancy_k2', now()->month)
+        ->assertDontSee('Ibu Hamil Anemia')
+        ->assertDontSee('Ibu Hamil Tinggi Badan Kurang');
+});
+
+test('ibu hamil analytics component computes correct health scorecards and coverage metrics', function () {
+    $pedukuhan = \App\Models\Pedukuhan::factory()->create();
+    $posyandu = \App\Models\Posyandu::factory()->create(['pedukuhan_id' => $pedukuhan->id]);
+
+    $admin = \App\Models\User::factory()->create([
+        'role' => 'admin',
+        'posyandu_id' => $posyandu->id,
+    ]);
+
+    // Patient 1: High risk (Age 18), Hb normal (12), Fe received (1)
+    $p1 = \App\Models\Patient::factory()->create([
+        'posyandu_id' => $posyandu->id,
+        'category' => 'ibu_hamil',
+        'status_mutasi' => 'aktif',
+        'birth_date' => now()->subYears(18),
+    ]);
+    \App\Models\MedicalRecord::factory()->create([
+        'patient_id' => $p1->id,
+        'visit_date' => now(),
+        'hemoglobin' => 12,
+        'nakes_gives_fe_mms' => 1,
+        'height' => 150,
+    ]);
+
+    // Patient 2: Normal risk (Age 25), Hb anemia (10), Fe not received (0)
+    $p2 = \App\Models\Patient::factory()->create([
+        'posyandu_id' => $posyandu->id,
+        'category' => 'ibu_hamil',
+        'status_mutasi' => 'aktif',
+        'birth_date' => now()->subYears(25),
+    ]);
+    \App\Models\MedicalRecord::factory()->create([
+        'patient_id' => $p2->id,
+        'visit_date' => now(),
+        'hemoglobin' => 10,
+        'nakes_gives_fe_mms' => 0,
+        'height' => 150,
+    ]);
+
+    $this->actingAs($admin);
+
+    Livewire::test(\App\Livewire\Admin\Analytics\IbuHamilAnalytics::class, [
+        'selectedYear' => now()->year,
+        'selectedMonth' => now()->month,
+        'selectedPosyandu' => $posyandu->id
+    ])
+    ->assertSeeHtml('RISIKO RENDAH')
+    ->assertSeeHtml('HEMOGLOBIN SEHAT')
+    ->assertSeeHtml('CAKUPAN TTD')
+    ->assertSeeHtml('50%'); // 1 out of 2 received Fe (50% coverage)
+});
+
+
