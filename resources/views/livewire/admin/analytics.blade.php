@@ -1389,15 +1389,19 @@ function initCharts(data = null) {
                             const firstPoint = activeElements[0];
                             const index = firstPoint.index;
                             const datasetIndex = firstPoint.datasetIndex;
-                            const label = labels[index];
-                            const month = index + 1;
-                            const datasetLabel = ['Normal', 'Risiko Gizi', 'Stunting / Gizi Buruk'][datasetIndex];
+                            const label = labels[index]; // e.g. "Jan 2026"
+                            const month = index + 1;     // bulan ke-1..12
 
-                            let type = 'balita';
-                            if (datasetLabel.includes('Stunting')) type = 'stunting';
-                            else if (datasetLabel.includes('Risiko')) type = 'gizi_buruk';
+                            // Map dataset → nama tampilan & type backend
+                            const datasetMap = [
+                                { name: 'Normal',                type: 'balita_normal' },
+                                { name: 'Risiko Gizi',           type: 'balita_risiko' },
+                                { name: 'Stunting / Gizi Buruk', type: 'balita_stunting_buruk' },
+                            ];
+                            const { name: datasetLabel, type } = datasetMap[datasetIndex] ?? { name: 'Balita', type: 'balita' };
 
-                            $wire.call('drillDown', `Balita (${datasetLabel}) - ${label}`, type, month)
+                            // Kirim bulan agar hasil difilter per bulan + status gizi
+                            $wire.call('drillDown', `Balita ${datasetLabel} — ${label}`, type, month)
                                 .then(() => { window.isDrillingDown = false; })
                                 .catch(() => { window.isDrillingDown = false; });
                         }
