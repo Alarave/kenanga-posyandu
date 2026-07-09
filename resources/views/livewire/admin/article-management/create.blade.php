@@ -328,9 +328,13 @@
                             <button type="button" 
                                     @click="toggleRestartNumbering(index)"
                                     x-show="hoveredIndex === index"
-                                    class="absolute right-0 -bottom-6 flex items-center justify-center bg-teal-50 border border-teal-200 text-teal-800 text-[10px] font-bold px-1.5 py-0.5 rounded shadow-sm hover:bg-teal-600 hover:text-white transition-all whitespace-nowrap z-20 cursor-pointer"
+                                    x-transition:enter="transition ease-out duration-200"
+                                    x-transition:enter-start="opacity-0 scale-95 -translate-x-1"
+                                    x-transition:enter-end="opacity-100 scale-100 translate-x-0"
+                                    class="absolute right-full mr-2 top-[-2px] flex items-center gap-1 bg-white border border-slate-200 hover:border-teal-500 text-slate-600 hover:text-teal-600 text-[10px] font-bold px-2 py-1 rounded-lg shadow-sm hover:shadow transition-all whitespace-nowrap z-20 cursor-pointer"
                                     style="font-family: sans-serif; min-width: unset; height: auto;"
                                     :title="block.restartNumbering ? 'Klik untuk melanjutkan penomoran dari list sebelumnya' : 'Klik untuk mengulang penomoran dari 1'">
+                                <span class="material-symbols-outlined text-[12px]" style="font-size: 12px; font-weight: bold;" x-text="block.restartNumbering ? 'arrow_downward' : 'looks_one'"></span>
                                 <span x-text="block.restartNumbering ? 'Lanjutkan' : 'Mulai 1'"></span>
                             </button>
                         </div>
