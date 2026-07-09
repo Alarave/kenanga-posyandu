@@ -208,15 +208,25 @@ class Analytics extends BaseAdminComponent
     }
 
     // ── ANA-22: Chart click drill-down ──
-    public function drillDown(string $label, string $type, ?int $month = null, ?string $statusFilter = null, ?int $year = null): void
+    public function drillDown(string $label, string $type, ?int $month = null, ?string $statusFilter = null, ?int $year = null, ?int $posyanduOverride = null): void
     {
         $this->showDrillDown = true;
         $this->drillDownTitle = "Detail: {$label}";
 
         $targetYear = $year ?? $this->selectedYear;
+        $activePosyandu = $posyanduOverride ?? $this->selectedPosyandu;
+
+        // Fallback jika frontend mengirimkan null karena state lama belum direfresh
+        if (!$activePosyandu && str_starts_with($label, 'Stunting - ')) {
+            $posyanduName = trim(str_replace('Stunting - ', '', $label));
+            $pos = \App\Models\Posyandu::where('name', $posyanduName)->first();
+            if ($pos) {
+                $activePosyandu = $pos->id;
+            }
+        }
 
         if (str_starts_with($type, 'lansia_age_')) {
-            $patients = $this->applyPosyanduScope(Patient::query(), $this->selectedPosyandu)
+            $patients = $this->applyPosyanduScope(Patient::query(), $activePosyandu)
                 ->where('category', 'lansia')
                 ->where('status_mutasi', 'aktif')
                 ->get();
@@ -248,7 +258,7 @@ class Analytics extends BaseAdminComponent
         }
 
         if (str_starts_with($type, 'lansia_imt_')) {
-            $query = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
+            $query = $this->applyPosyanduScope(MedicalRecord::query(), $activePosyandu)
                 ->whereHas('patient', function ($q) {
                     $q->where('category', 'lansia')->where('status_mutasi', 'aktif');
                 })
@@ -286,7 +296,44 @@ class Analytics extends BaseAdminComponent
             return;
         }
 
-        $query = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
+        if (str_starts_with($type, 'balita_age_')) {
+            $determinationDate = Carbon::create($targetYear, $month ?? $this->selectedMonth ?: 12, 1)->endOfMonth();
+
+            $basePatientFilter = function ($q) use ($targetYear, $month) {
+                $q->whereYear('visit_date', $targetYear)
+                  ->when($month ?? $this->selectedMonth, fn ($mq) => $mq->whereMonth('visit_date', $month ?? $this->selectedMonth));
+            };
+
+            $patients = $this->applyPosyanduScope(Patient::query(), $activePosyandu)
+                ->whereIn('category', ['balita', 'bayi', 'baduta'])
+                ->whereHas('medicalRecords', $basePatientFilter)
+                ->get();
+
+            $filteredPatients = $patients->filter(function ($p) use ($type, $determinationDate) {
+                if (! $p->birth_date) return false;
+                $months = Carbon::parse($p->birth_date)->diffInMonths($determinationDate);
+
+                return match ($type) {
+                    'balita_age_0_12' => $months <= 11,
+                    'balita_age_12_24' => $months >= 12 && $months <= 23,
+                    'balita_age_24plus' => $months >= 24,
+                    default => false,
+                };
+            });
+
+            $this->drillDownData = $filteredPatients->map(fn ($p) => [
+                'name' => $p->full_name ?? '-',
+                'nik' => $p->id_number ?? '-',
+                'posyandu' => $p->posyandu?->name ?? '-',
+                'nutrition_status' => 'Umur: ' . (int) Carbon::parse($p->birth_date)->diffInMonths($determinationDate) . ' Bulan',
+                'visit_date' => $p->medicalRecords()->whereYear('visit_date', $targetYear)->latest('visit_date')->first()?->visit_date?->format('d M Y') ?? 'Terdaftar',
+                'patient_id' => $p->id,
+            ])->values()->toArray();
+
+            return;
+        }
+
+        $query = $this->applyPosyanduScope(MedicalRecord::query(), $activePosyandu)
             ->with(['patient.posyandu'])
             ->whereYear('visit_date', $targetYear);
 
@@ -294,6 +341,12 @@ class Analytics extends BaseAdminComponent
             $query->whereMonth('visit_date', $month);
         } elseif ($this->selectedMonth) {
             $query->whereMonth('visit_date', $this->selectedMonth);
+        } else {
+            // No specific month selected: Only consider the single latest record for each patient in that year!
+            $latestRecordSubqueryDrillDown = \App\Models\MedicalRecord::selectRaw('MAX(id) as id')
+                ->whereYear('visit_date', $targetYear)
+                ->groupBy('patient_id');
+            $query->whereIn('id', $latestRecordSubqueryDrillDown);
         }
 
         match ($type) {
@@ -818,7 +871,7 @@ class Analytics extends BaseAdminComponent
             $stunting = $stuntingPerPosyandu->get($pos->id, 0);
             $rate = $total > 0 ? round(($stunting / $total) * 100, 1) : 0;
             $stuntingByPosyandu[] = [
-                'name' => $pos->name, 'rate' => $rate, 'stunting' => $stunting, 'total' => $total,
+                'id' => $pos->id, 'name' => $pos->name, 'rate' => $rate, 'stunting' => $stunting, 'total' => $total,
                 'width' => min(100, $rate * 6),
                 'color' => $rate >= 10 ? 'bg-red-500' : ($rate >= 5 ? 'bg-amber-500' : 'bg-green-500'),
                 'text' => $rate >= 10 ? 'text-red-600' : ($rate >= 5 ? 'text-amber-600' : 'text-green-600'),
