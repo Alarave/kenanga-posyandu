@@ -1044,16 +1044,16 @@ window.downloadChart = function(chartInstance, fileName) {
         // Header
         let header = "Label/Bulan";
         datasets.forEach(ds => {
-            header += ";" + ds.label;
+            header += ',"' + ds.label.replace(/"/g, '""') + '"';
         });
         csvString += header + "\r\n";
         
         // Rows
         labels.forEach((label, index) => {
-            let row = label;
+            let row = '"' + label.toString().replace(/"/g, '""') + '"';
             datasets.forEach(ds => {
                 let val = ds.data[index] !== undefined && ds.data[index] !== null ? ds.data[index] : 0;
-                row += ";" + val;
+                row += "," + val;
             });
             csvString += row + "\r\n";
         });
