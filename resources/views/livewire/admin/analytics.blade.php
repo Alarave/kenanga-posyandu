@@ -1381,30 +1381,37 @@ function initCharts(data = null) {
                     responsive: true,
                     maintainAspectRatio: false,
                     interaction: { mode: 'index', intersect: false },
-                    onClick: (event, activeElements) => {
-                        if (activeElements.length > 0) {
-                            if (window.isDrillingDown) return;
-                            window.isDrillingDown = true;
+                    onClick: (event, activeElements, chart) => {
+                        if (window.isDrillingDown) return;
 
-                            const firstPoint = activeElements[0];
-                            const index = firstPoint.index;
-                            const datasetIndex = firstPoint.datasetIndex;
-                            const label = labels[index]; // e.g. "Jan 2026"
-                            const month = index + 1;     // bulan ke-1..12
+                        // Gunakan 'nearest' + intersect:true agar tepat mendeteksi
+                        // titik mana yang diklik (bukan selalu dataset pertama)
+                        const nearest = chart.getElementsAtEventForMode(
+                            event, 'nearest', { intersect: true }, false
+                        );
+                        if (nearest.length === 0) return;
 
-                            // Map dataset → nama tampilan & type backend
-                            const datasetMap = [
-                                { name: 'Normal',                type: 'balita_normal' },
-                                { name: 'Risiko Gizi',           type: 'balita_risiko' },
-                                { name: 'Stunting / Gizi Buruk', type: 'balita_stunting_buruk' },
-                            ];
-                            const { name: datasetLabel, type } = datasetMap[datasetIndex] ?? { name: 'Balita', type: 'balita' };
+                        window.isDrillingDown = true;
 
-                            // Kirim bulan agar hasil difilter per bulan + status gizi
-                            $wire.call('drillDown', `Balita ${datasetLabel} — ${label}`, type, month)
-                                .then(() => { window.isDrillingDown = false; })
-                                .catch(() => { window.isDrillingDown = false; });
-                        }
+                        const clicked = nearest[0];
+                        const index        = clicked.index;
+                        const datasetIndex = clicked.datasetIndex;
+                        const label  = labels[index]; // e.g. "Mar"
+                        const month  = index + 1;     // bulan ke-1..12
+
+                        // Map dataset index → nama & type backend
+                        const datasetMap = [
+                            { name: 'Normal',                type: 'balita_normal' },
+                            { name: 'Risiko Gizi',           type: 'balita_risiko' },
+                            { name: 'Stunting / Gizi Buruk', type: 'balita_stunting_buruk' },
+                        ];
+                        const { name: datasetLabel, type } = datasetMap[datasetIndex]
+                            ?? { name: 'Balita', type: 'balita' };
+
+                        // Kirim bulan + status gizi spesifik ke backend
+                        $wire.call('drillDown', `Balita ${datasetLabel} — ${label}`, type, month)
+                            .then(() => { window.isDrillingDown = false; })
+                            .catch(() => { window.isDrillingDown = false; });
                     },
                     scales: {
                         x: { grid: { display: false } },
