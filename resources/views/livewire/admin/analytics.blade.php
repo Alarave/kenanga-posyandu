@@ -939,7 +939,54 @@
             </div>
             
             {{-- Modal Body --}}
-            <div class="flex-1 overflow-y-auto p-6">
+            <div class="flex-1 overflow-y-auto p-6 space-y-4">
+                {{-- Balita Category Tabs --}}
+                @if(in_array($drillDownType, ['balita_normal', 'balita_risiko', 'balita_stunting_buruk']))
+                <div class="flex gap-2 p-1.5 bg-slate-100 rounded-2xl w-fit">
+                    <button wire:click="switchDrillDownCategory('balita_normal')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'balita_normal' ? 'bg-white text-emerald-700 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        Normal
+                    </button>
+                    <button wire:click="switchDrillDownCategory('balita_risiko')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'balita_risiko' ? 'bg-white text-amber-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                        Risiko Gizi
+                    </button>
+                    <button wire:click="switchDrillDownCategory('balita_stunting_buruk')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'balita_stunting_buruk' ? 'bg-white text-rose-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                        Stunting / Gizi Buruk
+                    </button>
+                </div>
+                @endif
+
+                {{-- Lansia Category Tabs --}}
+                @if(in_array($drillDownType, ['lansia_hipertensi', 'lansia_hiperglikemia', 'lansia_hiperkolesterolemia', 'lansia_hiperurisemia']))
+                <div class="flex flex-wrap gap-2 p-1.5 bg-slate-100 rounded-2xl w-fit">
+                    <button wire:click="switchDrillDownCategory('lansia_hipertensi')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'lansia_hipertensi' ? 'bg-white text-rose-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                        Hipertensi
+                    </button>
+                    <button wire:click="switchDrillDownCategory('lansia_hiperglikemia')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'lansia_hiperglikemia' ? 'bg-white text-amber-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                        Hiperglikemia
+                    </button>
+                    <button wire:click="switchDrillDownCategory('lansia_hiperkolesterolemia')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'lansia_hiperkolesterolemia' ? 'bg-white text-blue-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                        Hiperkolesterolemia
+                    </button>
+                    <button wire:click="switchDrillDownCategory('lansia_hiperurisemia')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'lansia_hiperurisemia' ? 'bg-white text-purple-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+                        Hiperurisemia
+                    </button>
+                </div>
+                @endif
+
                 <div class="overflow-x-auto border border-slate-200 rounded-2xl">
                     <table class="w-full text-left">
                         <thead>

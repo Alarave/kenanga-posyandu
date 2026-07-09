@@ -208,12 +208,67 @@ class Analytics extends BaseAdminComponent
     }
 
     // ── ANA-22: Chart click drill-down ──
+    public string $drillDownType = '';
+
+    public ?int $drillDownMonth = null;
+
+    public string $drillDownLabel = '';
+
+    public ?int $drillDownYear = null;
+
     public function drillDown(string $label, string $type, ?int $month = null, ?string $statusFilter = null, ?int $year = null): void
     {
         $this->showDrillDown = true;
+        $this->drillDownType = $type;
+        $this->drillDownMonth = $month;
+        $this->drillDownLabel = $label;
+        $this->drillDownYear = $year ?? $this->selectedYear;
+
+        // Auto format title on first load
         $this->drillDownTitle = "Detail: {$label}";
 
-        $targetYear = $year ?? $this->selectedYear;
+        $this->loadDrillDown();
+    }
+
+    public function switchDrillDownCategory(string $newType): void
+    {
+        $this->drillDownType = $newType;
+
+        $monthName = '';
+        if ($this->drillDownMonth) {
+            $monthName = match($this->drillDownMonth) {
+                1 => 'Jan', 2 => 'Feb', 3 => 'Mar', 4 => 'Apr', 5 => 'Mei', 6 => 'Jun',
+                7 => 'Jul', 8 => 'Agt', 9 => 'Sep', 10 => 'Okt', 11 => 'Nov', 12 => 'Des',
+                default => ''
+            };
+        }
+        $labelMonth = $monthName ? $monthName . ' ' . $this->drillDownYear : 'Tahun ' . $this->drillDownYear;
+
+        $typeName = match ($newType) {
+            'balita_normal' => 'Normal',
+            'balita_risiko' => 'Risiko Gizi',
+            'balita_stunting_buruk' => 'Stunting / Gizi Buruk',
+            'lansia_hipertensi' => 'Hipertensi',
+            'lansia_hiperglikemia' => 'Hiperglikemia',
+            'lansia_hiperkolesterolemia' => 'Hiperkolesterolemia',
+            'lansia_hiperurisemia' => 'Hiperurisemia',
+            default => 'Data',
+        };
+
+        if (str_starts_with($newType, 'lansia_')) {
+            $this->drillDownTitle = "Detail: Lansia - {$typeName} ({$labelMonth})";
+        } else {
+            $this->drillDownTitle = "Detail: Balita {$typeName} — {$labelMonth}";
+        }
+
+        $this->loadDrillDown();
+    }
+
+    private function loadDrillDown(): void
+    {
+        $type = $this->drillDownType;
+        $month = $this->drillDownMonth;
+        $targetYear = $this->drillDownYear;
 
         if (str_starts_with($type, 'lansia_age_')) {
             $patients = $this->applyPosyanduScope(Patient::query(), $this->selectedPosyandu)
@@ -307,7 +362,6 @@ class Analytics extends BaseAdminComponent
                     ->orWhere('wasting_status', 'Gizi Buruk')),
 
             // ── Tren Prevalensi: Normal
-            // Sama persis dengan chart: nutrition_status IN ('Gizi Baik')
             'balita_normal' => $query
                 ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
                 ->whereIn('nutrition_status', [
@@ -316,7 +370,6 @@ class Analytics extends BaseAdminComponent
                 ]),
 
             // ── Tren Prevalensi: Risiko Gizi
-            // Sama persis dengan chart: nutrition_status IN ('Gizi Lebih', 'Berisiko Gizi Lebih', 'Obesitas')
             'balita_risiko' => $query
                 ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
                 ->whereIn('nutrition_status', [
@@ -327,7 +380,6 @@ class Analytics extends BaseAdminComponent
                 ]),
 
             // ── Tren Prevalensi: Stunting / Gizi Buruk
-            // Sama persis dengan chart: BB/U sangat kurang/kurang ATAU stunting_status pendek ATAU wasting gizi buruk/kurang
             'balita_stunting_buruk' => $query
                 ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
                 ->where(fn ($q) => $q
@@ -349,7 +401,7 @@ class Analytics extends BaseAdminComponent
             'ibu_hamil' => $query->whereHas('patient', fn ($q) => $q->where('category', 'ibu_hamil')),
             'lansia' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')),
             'nutrition_status' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
-                ->where('nutrition_status', $statusFilter),
+                ->where('nutrition_status', null), // fallback
             'lansia_hipertensi' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
                 ->where(fn ($q) => $q->where('systolic_bp', '>=', 140)->orWhere('diastolic_bp', '>=', 90)),
             'lansia_hiperglikemia' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
