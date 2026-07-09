@@ -105,7 +105,15 @@ class IbuHamilAnalytics extends Component
             ->get()
             ->unique('patient_id');
 
-        return $records->whereNotNull('hemoglobin')->where('hemoglobin', '<', 11)->count();
+        $anemia = $records->whereNotNull('hemoglobin')->where('hemoglobin', '<', 11)->count();
+        $totalWithHb = $records->whereNotNull('hemoglobin')->count();
+        $normal = $totalWithHb - $anemia;
+
+        return [
+            'anemia' => $anemia,
+            'normal' => $normal,
+            'total' => $totalWithHb,
+        ];
     }
 
     // AH-04: TTD Status
@@ -176,10 +184,13 @@ class IbuHamilAnalytics extends Component
 
     public function render()
     {
+        $anemiaData = $this->anemiaStats();
+
         return view('livewire.admin.analytics.ibu-hamil-analytics', [
             'trimesterStats' => $this->trimesterStats(),
             'riskStats' => $this->riskStats(),
-            'anemiaCount' => $this->anemiaStats(),
+            'anemiaCount' => $anemiaData['anemia'],
+            'anemiaStats' => $anemiaData,
             'ttdStats' => $this->ttdStats(),
             'ancStats' => $this->ancStats(),
         ]);
