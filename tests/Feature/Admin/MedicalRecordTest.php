@@ -805,7 +805,7 @@ describe('fitur pemilihan kategori dan validasi dinamis', function () {
         $pregnantMother = Patient::factory()->create([
             'posyandu_id' => $this->posyandu->id,
             'category' => 'ibu_hamil',
-            'gender' => 'F',
+            'gender' => 'P',
         ]);
 
         $response = $this->post('/admin/medical-records', [
@@ -875,3 +875,4 @@ describe('fitur pemilihan kategori dan validasi dinamis', function () {
         $response->assertSessionHasErrors('measurement_method');
     });
 });
+

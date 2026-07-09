@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 use App\Models\Patient;
 use App\Models\Posyandu;
@@ -61,7 +61,7 @@ describe('CRUD pasien - Create', function () {
             'id_number' => '1111222233334444',
             'full_name' => 'New Patient',
             'birth_date' => '2020-01-01',
-            'gender' => 'M',
+            'gender' => 'L',
             'address' => 'Test Address',
             'phone_number' => '081234567890',
         ]);
@@ -83,7 +83,7 @@ describe('CRUD pasien - Create', function () {
             'id_number' => '2222333344445555',
             'full_name' => 'New Patient by Staff',
             'birth_date' => '2020-01-01',
-            'gender' => 'F',
+            'gender' => 'P',
             'address' => 'Test Address',
             'phone_number' => '081234567890',
         ]);
@@ -101,7 +101,7 @@ describe('CRUD pasien - Create', function () {
             'id_number' => '3333444455556666',
             'full_name' => 'New Patient',
             'birth_date' => '2020-01-01',
-            'gender' => 'M',
+            'gender' => 'L',
             'address' => 'Test Address',
             'phone_number' => '081234567890',
         ]);
@@ -160,7 +160,7 @@ describe('CRUD pasien - Update', function () {
             'id_number' => '1234567890123456',
             'full_name' => 'Updated Patient Name',
             'birth_date' => '2020-01-01',
-            'gender' => 'M',
+            'gender' => 'L',
             'address' => 'Updated Address',
             'phone_number' => '081234567890',
             'weight_at_birth' => 3.25,
@@ -185,7 +185,7 @@ describe('CRUD pasien - Update', function () {
             'id_number' => '1234567890123456',
             'full_name' => 'Updated Patient Name',
             'birth_date' => '2020-01-01',
-            'gender' => 'M',
+            'gender' => 'L',
             'address' => 'Updated Address',
             'phone_number' => '081234567890',
         ]);
@@ -206,7 +206,7 @@ describe('CRUD pasien - Update', function () {
             'id_number' => '8888777766665555',
             'full_name' => 'Lansia Awal',
             'birth_date' => '1955-05-05',
-            'gender' => 'F',
+            'gender' => 'P',
             'address' => 'Alamat Awal',
             'phone_number' => '081234567890',
         ]);
@@ -217,7 +217,7 @@ describe('CRUD pasien - Update', function () {
             'id_number' => '8888777766665555',
             'full_name' => 'Lansia Update',
             'birth_date' => '1955-05-05',
-            'gender' => 'F',
+            'gender' => 'P',
             'address' => 'Alamat Update',
             'phone_number' => '081234567890',
             'father_name' => 'Ayah Lansia Baru',
@@ -271,7 +271,7 @@ describe('validasi NIK 16 digit', function () {
             'id_number' => '123456789012345', // 15 digits
             'full_name' => 'New Patient',
             'birth_date' => '2020-01-01',
-            'gender' => 'M',
+            'gender' => 'L',
             'address' => 'Test Address',
             'phone_number' => '081234567890',
         ]);
@@ -289,7 +289,7 @@ describe('validasi NIK 16 digit', function () {
             'id_number' => '12345678901234567', // 17 digits
             'full_name' => 'New Patient',
             'birth_date' => '2020-01-01',
-            'gender' => 'M',
+            'gender' => 'L',
             'address' => 'Test Address',
             'phone_number' => '081234567890',
         ]);
@@ -307,7 +307,7 @@ describe('validasi NIK 16 digit', function () {
             'id_number' => '123456789012345A', // Contains letter
             'full_name' => 'New Patient',
             'birth_date' => '2020-01-01',
-            'gender' => 'M',
+            'gender' => 'L',
             'address' => 'Test Address',
             'phone_number' => '081234567890',
         ]);
@@ -325,7 +325,7 @@ describe('validasi NIK 16 digit', function () {
             'id_number' => '1234567890123457',
             'full_name' => 'New Patient',
             'birth_date' => '2020-01-01',
-            'gender' => 'M',
+            'gender' => 'L',
             'address' => 'Test Address',
             'phone_number' => '081234567890',
         ]);
@@ -345,7 +345,7 @@ describe('validasi NIK duplikat', function () {
             'id_number' => '1234567890123456', // Already exists in posyandu1
             'full_name' => 'Duplicate Patient',
             'birth_date' => '2020-01-01',
-            'gender' => 'M',
+            'gender' => 'L',
             'address' => 'Test Address',
             'phone_number' => '081234567890',
         ]);
@@ -363,7 +363,7 @@ describe('validasi NIK duplikat', function () {
             'id_number' => '1234567890123456',
             'full_name' => 'Duplicate Patient',
             'birth_date' => '2020-01-01',
-            'gender' => 'M',
+            'gender' => 'L',
             'address' => 'Test Address',
             'phone_number' => '081234567890',
         ]);
@@ -384,7 +384,7 @@ describe('validasi kategori dan jenis kelamin', function () {
             'id_number' => '9999888877776666',
             'full_name' => 'Bumil Laki Laki',
             'birth_date' => '1995-01-01',
-            'gender' => 'M',
+            'gender' => 'L',
             'address' => 'Test Address',
             'phone_number' => '081234567890',
         ]);
@@ -401,7 +401,7 @@ describe('validasi kategori dan jenis kelamin', function () {
             'id_number' => '9999888877776666',
             'full_name' => 'Bumil Perempuan',
             'birth_date' => '1995-01-01',
-            'gender' => 'F',
+            'gender' => 'P',
             'address' => 'Test Address',
             'phone_number' => '081234567890',
             'husband_name' => 'Suami Test',
@@ -429,7 +429,7 @@ describe('validasi kategori dan jenis kelamin', function () {
             'id_number' => '1111999922228888',
             'full_name' => 'Lansia Test',
             'birth_date' => '1950-01-01',
-            'gender' => 'M',
+            'gender' => 'L',
             'address' => 'Test Lansia Address',
             'phone_number' => '081234567899',
             'father_name' => 'Ayah Lansia',
@@ -476,7 +476,7 @@ describe('scoping data per posyandu', function () {
             'id_number' => '6543210987654321',
             'full_name' => 'Updated Patient',
             'birth_date' => '2020-01-01',
-            'gender' => 'M',
+            'gender' => 'L',
             'address' => 'Updated Address',
             'phone_number' => '081234567890',
         ]);
@@ -523,7 +523,7 @@ describe('otorisasi per role', function () {
             'id_number' => '7777888899990000',
             'full_name' => 'New Patient by Staff',
             'birth_date' => '2020-01-01',
-            'gender' => 'M',
+            'gender' => 'L',
             'address' => 'Test Address',
             'phone_number' => '081234567890',
         ]);
@@ -559,7 +559,7 @@ describe('validasi field wajib', function () {
             // id_number missing
             'full_name' => 'New Patient',
             'birth_date' => '2020-01-01',
-            'gender' => 'M',
+            'gender' => 'L',
             'address' => 'Test Address',
         ]);
 
@@ -576,7 +576,7 @@ describe('validasi field wajib', function () {
             'id_number' => '1111222233334444',
             // full_name missing
             'birth_date' => '2020-01-01',
-            'gender' => 'M',
+            'gender' => 'L',
             'address' => 'Test Address',
         ]);
 
@@ -593,7 +593,7 @@ describe('validasi field wajib', function () {
             'id_number' => '1111222233334444',
             'full_name' => 'New Patient',
             // birth_date missing
-            'gender' => 'M',
+            'gender' => 'L',
             'address' => 'Test Address',
         ]);
 
@@ -627,7 +627,7 @@ describe('validasi field wajib', function () {
             'id_number' => '1111222233334444',
             'full_name' => 'New Patient',
             'birth_date' => '2020-01-01',
-            'gender' => 'M',
+            'gender' => 'L',
             'address' => 'Test Address',
         ]);
 
@@ -644,7 +644,7 @@ describe('validasi field wajib', function () {
             'id_number' => '1111222233334444',
             'full_name' => 'New Patient',
             'birth_date' => '2020-01-01',
-            'gender' => 'M',
+            'gender' => 'L',
             // address missing
         ]);
 
@@ -663,7 +663,7 @@ describe('validasi tanggal lahir', function () {
             'id_number' => '1111222233334444',
             'full_name' => 'New Patient',
             'birth_date' => now()->addDay()->format('Y-m-d'),
-            'gender' => 'M',
+            'gender' => 'L',
             'address' => 'Test Address',
         ]);
 
@@ -680,7 +680,7 @@ describe('validasi tanggal lahir', function () {
             'id_number' => '1111222233334444',
             'full_name' => 'New Patient',
             'birth_date' => now()->format('Y-m-d'),
-            'gender' => 'M',
+            'gender' => 'L',
             'address' => 'Test Address',
             'phone_number' => '081234567890',
         ]);
@@ -795,3 +795,4 @@ describe('Tampilan detail kustom sesuai kategori', function () {
         $response->assertSee('Wiraswasta');
     });
 });
+
