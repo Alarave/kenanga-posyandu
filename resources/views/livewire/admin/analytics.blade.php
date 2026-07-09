@@ -979,9 +979,15 @@
                                 <td class="px-6 py-4">
                                     @php
                                         $statusStr = strtolower(trim($row['nutrition_status'] ?? ''));
-                                        $tagClass = ($statusStr === 'gizi lebih' || $statusStr === 'lebih')
-                                            ? 'bg-orange-50 text-orange-700 border-orange-200'
-                                            : 'bg-teal-50 text-teal-700 border-teal-100';
+                                        if ($statusStr === 'gizi buruk' || $statusStr === 'buruk') {
+                                            $tagClass = 'bg-red-50 text-red-700 border-red-200';
+                                        } elseif ($statusStr === 'gizi kurang' || $statusStr === 'kurang') {
+                                            $tagClass = 'bg-orange-50 text-orange-700 border-orange-200';
+                                        } elseif ($statusStr === 'gizi lebih' || $statusStr === 'lebih') {
+                                            $tagClass = 'bg-yellow-50 text-yellow-700 border-yellow-200';
+                                        } else {
+                                            $tagClass = 'bg-teal-50 text-teal-700 border-teal-100'; // Default
+                                        }
                                     @endphp
                                     <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold border {{ $tagClass }}">
                                         {{ $row['nutrition_status'] }}
