@@ -55,7 +55,7 @@ class BalitaKenanga1Seeder extends Seeder
             ['3275400808247108', 'M. ALBIFARDZAN Z.', '2024-08-08', 'L', 'M. YUDA', 'JL. P.SUMBA'],
             ['3275401604231495', 'M. AZZUMAR', '2023-04-16', 'L', 'M. KAMALUDIN', 'JL. P. BALI 4'],
             ['3275402709257850', 'M. IBRAHIM', '2025-09-27', 'L', 'HARDIAN', 'JL. P. SUMBA 8'],
-            ['3275406606237297', 'M. ICHSAN AL. F', '2023-06-26', 'P', 'IMAM', 'JL. P. LOMBOK'],
+            ['3275406606237297', 'M. ICHSAN AL. F', '2023-06-26', 'L', 'IMAM', 'JL. P. LOMBOK'],
             ['3275400108254730', 'M. ZACKY J.', '2025-08-01', 'L', 'M. ASYSYAM. J', 'JL. P. BALI 3'],
             ['3275402005252533', 'M. ZAID U.', '2025-05-20', 'L', 'HARRY L.', 'JL. P. MADURA'],
             ['3275011009230003', 'M. ZIDAN A', '2023-09-10', 'L', 'RAFDI H', 'JL. P. MADURA'],
@@ -74,7 +74,7 @@ class BalitaKenanga1Seeder extends Seeder
             ['3275400501232088', 'SAFIQ', '2023-01-05', 'L', 'WISNU', 'JL. P. BALI 2'],
             ['3275016906210003', 'SALWA. D. Z', '2021-06-29', 'P', 'HERY. S', 'JL.P.SUMBA RAYA'],
             ['3275405004235083', 'SHAYNALA A. P', '2023-04-10', 'P', 'SYAHMI RIZAL', 'JL. P. MADURA'],
-            ['3275404503255311', 'SOCA M. N.', '2025-03-05', 'P', 'IVAN B. P.', 'JL. P. SUMBA RAYA'],
+            ['3275404503255311', 'SOCA M. N.', '2025-03-05', 'L', 'IVAN B. P.', 'JL. P. SUMBA RAYA'],
             ['3275116911210003', 'TSABINA. A. L', '2021-11-29', 'P', 'ASTU. K. J', 'JL.P.MADURA'],
             ['3275012304210211', 'VALLERA DARREN. R', '2021-04-23', 'L', 'USMAN MUHAMMAD. Y', 'JL.P.BALI 3 NO.351'],
         ];
@@ -85,8 +85,8 @@ class BalitaKenanga1Seeder extends Seeder
         foreach ($balitaData as $data) {
             [$nik, $nama, $tglLahir, $jenisKelamin, $namaOrtu, $alamat] = $data;
 
-            // Check if patient already exists
-            $exists = Patient::where('id_number', $nik)
+            // Check if patient already exists using blind index
+            $exists = Patient::where('id_number_hash', Patient::generateBlindIndex($nik))
                 ->where('posyandu_id', $posyandu->id)
                 ->exists();
 
