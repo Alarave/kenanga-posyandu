@@ -91,7 +91,7 @@ class AboutPageService
      */
     public function getCadres(): array
     {
-        $users = \App\Models\User::whereIn('role', ['admin', 'kader'])
+        $users = \App\Models\User::whereIn('role', ['superadmin', 'admin', 'kader'])
             ->where('is_active', true)
             ->orderBy('id')
             ->get();

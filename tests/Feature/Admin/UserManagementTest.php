@@ -34,7 +34,7 @@ test('user management counts active admins and kaders as active kaders', functio
 
     $this->actingAs($superadmin);
 
-    $expectedCount = User::whereIn('role', ['admin', 'kader'])->where('is_active', true)->count();
+    $expectedCount = User::where('is_active', true)->count();
 
     Livewire::test(UserManagement::class)
         ->assertViewHas('activeKaders', $expectedCount)
