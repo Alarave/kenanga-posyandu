@@ -217,7 +217,9 @@ class Analytics extends BaseAdminComponent
 
     public ?string $drillDownStatusFilter = null;
 
-    public function drillDown(string $label, string $type, ?int $month = null, ?string $statusFilter = null, ?int $year = null): void
+    public ?int $drillDownPosyandu = null;
+
+    public function drillDown(string $label, string $type, ?int $month = null, ?string $statusFilter = null, ?int $year = null, ?int $posyanduId = null): void
     {
         $this->showDrillDown = true;
         $this->drillDownType = $type;
@@ -225,6 +227,7 @@ class Analytics extends BaseAdminComponent
         $this->drillDownStatusFilter = $statusFilter;
         $this->drillDownLabel = $label;
         $this->drillDownYear = $year ?? $this->selectedYear;
+        $this->drillDownPosyandu = $posyanduId;
 
         // Auto format title on first load
         $this->drillDownTitle = "Detail: {$label}";
@@ -272,9 +275,44 @@ class Analytics extends BaseAdminComponent
         $month = $this->drillDownMonth;
         $targetYear = $this->drillDownYear;
         $statusFilter = $this->drillDownStatusFilter;
+        $targetPosyandu = $this->drillDownPosyandu ?? $this->selectedPosyandu;
+
+        if (str_starts_with($type, 'balita_age_')) {
+            $patients = $this->applyPosyanduScope(Patient::query(), $targetPosyandu)
+                ->whereIn('category', ['balita', 'bayi', 'baduta'])
+                ->where('status_mutasi', 'aktif')
+                ->get();
+            
+            $determinationDate = Carbon::create($targetYear, $month ?? 12, 1)->endOfMonth();
+
+            $filteredPatients = $patients->filter(function ($p) use ($type, $determinationDate) {
+                if (! $p->birth_date) {
+                    return false;
+                }
+                $months = Carbon::parse($p->birth_date)->diffInMonths($determinationDate);
+
+                return match ($type) {
+                    'balita_age_0_12' => $months <= 11,
+                    'balita_age_12_24' => $months >= 12 && $months <= 23,
+                    'balita_age_24plus' => $months >= 24,
+                    default => false,
+                };
+            });
+
+            $this->drillDownData = $filteredPatients->map(fn ($p) => [
+                'name' => $p->full_name ?? '-',
+                'nik' => $p->id_number ?? '-',
+                'posyandu' => $p->posyandu?->name ?? '-',
+                'nutrition_status' => 'Umur: ' . (int) Carbon::parse($p->birth_date)->diffInMonths($determinationDate) . ' Bulan',
+                'visit_date' => 'Terdaftar',
+                'patient_id' => $p->id,
+            ])->values()->toArray();
+
+            return;
+        }
 
         if (str_starts_with($type, 'lansia_age_')) {
-            $patients = $this->applyPosyanduScope(Patient::query(), $this->selectedPosyandu)
+            $patients = $this->applyPosyanduScope(Patient::query(), $targetPosyandu)
                 ->where('category', 'lansia')
                 ->where('status_mutasi', 'aktif')
                 ->get();
@@ -306,7 +344,7 @@ class Analytics extends BaseAdminComponent
         }
 
         if (str_starts_with($type, 'lansia_imt_')) {
-            $query = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
+            $query = $this->applyPosyanduScope(MedicalRecord::query(), $targetPosyandu)
                 ->whereHas('patient', function ($q) {
                     $q->where('category', 'lansia')->where('status_mutasi', 'aktif');
                 })
@@ -344,7 +382,7 @@ class Analytics extends BaseAdminComponent
             return;
         }
 
-        $query = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
+        $query = $this->applyPosyanduScope(MedicalRecord::query(), $targetPosyandu)
             ->with(['patient.posyandu'])
             ->whereYear('visit_date', $targetYear);
 
@@ -847,7 +885,7 @@ class Analytics extends BaseAdminComponent
             $stunting = $stuntingPerPosyandu->get($pos->id, 0);
             $rate = $total > 0 ? round(($stunting / $total) * 100, 1) : 0;
             $stuntingByPosyandu[] = [
-                'name' => $pos->name, 'rate' => $rate, 'stunting' => $stunting, 'total' => $total,
+                'id' => $pos->id, 'name' => $pos->name, 'rate' => $rate, 'stunting' => $stunting, 'total' => $total,
                 'width' => min(100, $rate * 6),
                 'color' => $rate >= 10 ? 'bg-red-500' : ($rate >= 5 ? 'bg-amber-500' : 'bg-green-500'),
                 'text' => $rate >= 10 ? 'text-red-600' : ($rate >= 5 ? 'text-amber-600' : 'text-green-600'),
