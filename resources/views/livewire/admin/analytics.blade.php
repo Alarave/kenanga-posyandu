@@ -1390,14 +1390,17 @@ function initCharts(data = null) {
                             const index = firstPoint.index;
                             const datasetIndex = firstPoint.datasetIndex;
                             const label = labels[index];
-                            const month = index + 1;
-                            const datasetLabel = ['Normal', 'Risiko Gizi', 'Stunting / Gizi Buruk'][datasetIndex];
 
-                            let type = 'balita';
-                            if (datasetLabel.includes('Stunting')) type = 'stunting';
-                            else if (datasetLabel.includes('Risiko')) type = 'gizi_buruk';
+                            // Map dataset index to type name and backend type
+                            const datasetMap = [
+                                { name: 'Normal',               type: 'balita_normal' },
+                                { name: 'Risiko Gizi',          type: 'balita_risiko' },
+                                { name: 'Stunting / Gizi Buruk', type: 'balita_stunting_buruk' },
+                            ];
+                            const { name: datasetLabel, type } = datasetMap[datasetIndex] ?? { name: 'Balita', type: 'balita' };
 
-                            $wire.call('drillDown', `Balita (${datasetLabel}) - ${label}`, type, month)
+                            // Tidak kirim bulan — tampilkan semua data status gizi tersebut di tahun yang dipilih
+                            $wire.call('drillDown', `Balita ${datasetLabel} — Tahun ${label.split(' ').pop() || ''}`, type, null)
                                 .then(() => { window.isDrillingDown = false; })
                                 .catch(() => { window.isDrillingDown = false; });
                         }

@@ -305,6 +305,30 @@ class Analytics extends BaseAdminComponent
             'gizi_buruk' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
                 ->where(fn ($q) => $q->where('nutrition_status', 'like', '%Buruk%')
                     ->orWhere('wasting_status', 'Gizi Buruk')),
+            // Tren Prevalensi: Balita dengan status Normal
+            'balita_normal' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+                ->where(fn ($q) => $q
+                    ->where('nutrition_status', 'like', '%Baik%')
+                    ->orWhere('nutrition_status', 'like', '%Normal%')
+                ),
+            // Tren Prevalensi: Balita Risiko (gizi kurang, lebih, obesitas)
+            'balita_risiko' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+                ->where(fn ($q) => $q
+                    ->where('nutrition_status', 'like', '%Kurang%')
+                    ->orWhere('nutrition_status', 'like', '%Lebih%')
+                    ->orWhere('nutrition_status', 'like', '%Obesitas%')
+                    ->orWhere('nutrition_status', 'like', '%Risiko%')
+                    ->orWhere('wasting_status', 'Gizi Kurang')
+                ),
+            // Tren Prevalensi: Stunting + Gizi Buruk gabungan
+            'balita_stunting_buruk' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+                ->where(fn ($q) => $q
+                    ->where('nutrition_status', 'like', '%Stunting%')
+                    ->orWhere('nutrition_status', 'like', '%Pendek%')
+                    ->orWhere('nutrition_status', 'like', '%Buruk%')
+                    ->orWhere('stunting_status', '!=', 'Normal')
+                    ->orWhere('wasting_status', 'Gizi Buruk')
+                ),
             'balita' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta'])),
             'ibu_hamil' => $query->whereHas('patient', fn ($q) => $q->where('category', 'ibu_hamil')),
             'lansia' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')),
