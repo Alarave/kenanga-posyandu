@@ -5,6 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <!-- Suppress harmless View Transition abort rejections (e.g. from tab visibility or double navigation) -->
+    <script>
+        window.addEventListener('unhandledrejection', function (event) {
+            if (event.reason && (event.reason.name === 'AbortError' || event.reason.name === 'InvalidStateError')) {
+                const msg = event.reason.message || '';
+                if (msg.includes('Transition was aborted') || msg.includes('aborted')) {
+                    event.preventDefault();
+                }
+            }
+        });
+    </script>
+
     <title>{{ config('app.name', 'Posyandu') }} - @yield('title', 'Dashboard')</title>
 
     <!-- Favicon -->
