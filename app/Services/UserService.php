@@ -26,7 +26,9 @@ class UserService
         // Handle virtual roles (admin1, admin2, kader1, kader2)
         if (preg_match('/^(admin|kader)([12])$/', $data['role'], $matches)) {
             $data['role'] = $matches[1];
-            $data['posyandu_id'] = $matches[2] == '1' ? 3 : 2;
+            $code = $matches[2] == '1' ? 'PSY003' : 'PSY002';
+            $posyandu = \App\Models\Posyandu::where('unique_code', $code)->first();
+            $data['posyandu_id'] = $posyandu ? $posyandu->id : ($matches[2] == '1' ? 1 : 2);
         }
 
         if (isset($data['image']) && $data['image'] instanceof \Illuminate\Http\UploadedFile) {
@@ -54,7 +56,9 @@ class UserService
         // Handle virtual roles (admin1, admin2, kader1, kader2)
         if (isset($data['role']) && preg_match('/^(admin|kader)([12])$/', $data['role'], $matches)) {
             $data['role'] = $matches[1];
-            $data['posyandu_id'] = $matches[2] == '1' ? 3 : 2;
+            $code = $matches[2] == '1' ? 'PSY003' : 'PSY002';
+            $posyandu = \App\Models\Posyandu::where('unique_code', $code)->first();
+            $data['posyandu_id'] = $posyandu ? $posyandu->id : ($matches[2] == '1' ? 1 : 2);
             $newRole = $data['role'];
         }
 
