@@ -444,6 +444,9 @@
                                 <td class="px-5 py-4">
                                     @php
                                         $st = $record['nutrition_status'] ?? null;
+                                        if ($st === 'Normal') {
+                                            $st = 'Gizi Baik';
+                                        }
                                         $badge = match($st) {
                                             'Normal', 'Gizi Baik' => 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20',
                                             'Gizi Kurang', 'Kurang' => 'bg-amber-50 text-amber-700 ring-1 ring-amber-600/20',

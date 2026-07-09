@@ -78,7 +78,7 @@
                                 'bg-red-50 text-red-600 border border-red-100' => str_contains($record->nutrition_status ?? '', 'Buruk'),
                                 'bg-slate-50 text-slate-400 border border-slate-100' => !$record->nutrition_status,
                             ])>
-                                {{ $record->nutrition_status ?: 'Data N/A' }}
+                                {{ $record->nutrition_status === 'Normal' ? 'Gizi Baik' : ($record->nutrition_status ?: 'Data N/A') }}
                             </span>
                         </td>
                     </tr>

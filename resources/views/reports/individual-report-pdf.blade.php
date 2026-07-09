@@ -298,6 +298,9 @@
                             <td class="text-center">
                                 @php
                                     $st = $record['nutrition_status'] ?? null;
+                                    if ($st === 'Normal') {
+                                        $st = 'Gizi Baik';
+                                    }
                                     $badgeClass = match($st) {
                                         'Normal', 'Gizi Baik' => 'badge-normal',
                                         'Gizi Kurang', 'Kurang' => 'badge-warning',

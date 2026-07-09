@@ -135,8 +135,8 @@ class Analytics extends BaseAdminComponent
     // ── ANA-15: Search on recent records tables ──
     public string $tableSearch = '';
 
-    // ── ANA-16: Gender filter ──
-    public string $filterGender = ''; // '' = all, 'L' = male, 'P' = female
+    // ── ANA-16: Nutrition status filter ──
+    public string $filterNutritionStatus = ''; // '' = all, 'Gizi Baik', 'Gizi Kurang', etc.
 
     // ── ANA-22: Drill-down from chart click ──
     public bool $showDrillDown = false;
@@ -189,7 +189,7 @@ class Analytics extends BaseAdminComponent
     public function updatedActiveTab(): void
     {
         $this->tableSearch = '';
-        $this->filterGender = '';
+        $this->filterNutritionStatus = '';
         $this->drillDownData = [];
         $this->showDrillDown = false;
         $this->loadData();
@@ -201,8 +201,8 @@ class Analytics extends BaseAdminComponent
         $this->loadData();
     }
 
-    // ── ANA-16: Gender filter ──
-    public function updatedFilterGender(): void
+    // ── ANA-16: Nutrition status filter ──
+    public function updatedFilterNutritionStatus(): void
     {
         $this->loadData();
     }
@@ -456,9 +456,15 @@ class Analytics extends BaseAdminComponent
             $medicalRecordQuery->whereMonth('visit_date', $this->selectedMonth);
         }
 
-        // ANA-16: apply gender filter when set
-        if ($this->filterGender) {
-            $medicalRecordQuery->whereHas('patient', fn ($q) => $q->where('gender', $this->filterGender));
+        // ANA-16: apply nutrition status filter when set
+        if ($this->filterNutritionStatus) {
+            if ($this->filterNutritionStatus === 'Gizi Baik') {
+                $medicalRecordQuery->where(fn ($q) => $q->whereNull('nutrition_status')
+                    ->orWhere('nutrition_status', '')
+                    ->orWhere('nutrition_status', 'Gizi Baik'));
+            } else {
+                $medicalRecordQuery->where('nutrition_status', $this->filterNutritionStatus);
+            }
         }
 
         // ANA-15: apply search when set

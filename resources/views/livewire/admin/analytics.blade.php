@@ -703,12 +703,14 @@
                                    placeholder="Cari Nama atau NIK Anak...">
                         </div>
                         <div class="flex items-center gap-2 w-full sm:w-auto">
-                            <span class="text-xs font-bold text-slate-650 whitespace-nowrap uppercase tracking-wider">Gender:</span>
-                            <select wire:model.live="filterGender" wire:key="gender-balita"
+                            <span class="text-xs font-bold text-slate-650 whitespace-nowrap uppercase tracking-wider">Status Gizi:</span>
+                            <select wire:model.live="filterNutritionStatus" wire:key="nutrition-balita"
                                     class="w-full sm:w-36 py-2 px-3 bg-white border border-slate-300 rounded-xl text-sm font-semibold text-slate-800 focus:outline-none focus:ring-4 focus:ring-teal-100 focus:border-teal-600 shadow-xs transition-all">
                                 <option value="">Semua</option>
-                                <option value="L">Laki-laki</option>
-                                <option value="P">Perempuan</option>
+                                <option value="Gizi Baik">Gizi Baik</option>
+                                <option value="Gizi Kurang">Gizi Kurang</option>
+                                <option value="Gizi Buruk">Gizi Buruk</option>
+                                <option value="Gizi Lebih">Gizi Lebih</option>
                             </select>
                         </div>
                     </div>
@@ -741,7 +743,7 @@
                                 <td class="px-6 py-4 text-xs font-bold text-slate-650">{{ $record->patient?->posyandu?->name ?? '-' }}</td>
                                 <td class="px-6 py-4">
                                     @php
-                                        $status = $record->nutrition_status ?: 'Normal';
+                                        $status = $record->nutrition_status ?: 'Gizi Baik';
                                         $isNormal = str_contains(strtolower($status), 'normal') || str_contains(strtolower($status), 'baik');
                                         $isRisk = str_contains(strtolower($status), 'risiko') || str_contains(strtolower($status), 'kurang');
                                     @endphp
