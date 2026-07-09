@@ -502,6 +502,30 @@ class PatientRowProcessor
 
                 return Carbon::createFromTimestamp((int) $unixTs)->startOfDay();
             }
+
+            // Custom parse for mixed separator formats like d/m-yy, d/m-yyyy, d-m-yy, etc.
+            if (preg_match('/^\s*(\d{1,2})\s*[\/\-\.]\s*(\d{1,2})\s*[\/\-\.]\s*(\d{2,4})\s*$/', $str, $matches)) {
+                $day = (int)$matches[1];
+                $month = (int)$matches[2];
+                $year = (int)$matches[3];
+
+                if ($year < 100) {
+                    $currentYear = (int) date('Y');
+                    $currentShort = $currentYear % 100;
+                    $threshold = $currentShort + 10; // e.g. 36 if current year is 2026
+                    
+                    if ($year <= $threshold) {
+                        $year += 2000;
+                    } else {
+                        $year += 1900;
+                    }
+                }
+
+                if (checkdate($month, $day, $year)) {
+                    return Carbon::createFromDate($year, $month, $day)->startOfDay();
+                }
+            }
+
             // "6 Aug 2022" / "6 August 2022"
             if (preg_match('/^\d{1,2}\s+\w+\s+\d{4}$/', $str)) {
                 foreach (['j M Y', 'j F Y', 'd M Y', 'd F Y'] as $fmt) {

@@ -35,7 +35,3 @@ $processor->processSingleRow($row, $colMap, 1);
 
 $patient = \App\Models\Patient::where('id_number_hash', \App\Models\Patient::generateBlindIndex('3275011704550020'))->first();
 echo "Gender after import: " . $patient->gender . "\n";
-
-
-
-
