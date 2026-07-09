@@ -449,9 +449,9 @@
                                         }
                                         $badge = match($st) {
                                             'Normal', 'Gizi Baik' => 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20',
-                                            'Gizi Kurang', 'Kurang' => 'bg-amber-50 text-amber-700 ring-1 ring-amber-600/20',
-                                            'Gizi Buruk/Stunting', 'Gizi Buruk' => 'bg-rose-50 text-rose-700 ring-1 ring-rose-600/20',
-                                            'Gizi Lebih', 'Berisiko Gizi Lebih', 'Obesitas' => 'bg-orange-50 text-orange-700 ring-1 ring-orange-600/20',
+                                            'Gizi Kurang', 'Kurang' => 'bg-orange-100 text-orange-700 ring-1 ring-orange-700/20',
+                                            'Gizi Buruk/Stunting', 'Gizi Buruk' => 'bg-red-100 text-red-700 ring-1 ring-red-700/20',
+                                            'Gizi Lebih', 'Berisiko Gizi Lebih', 'Obesitas' => 'bg-yellow-100 text-yellow-700 ring-1 ring-yellow-700/20',
                                             default => 'bg-slate-100 text-slate-500 ring-1 ring-slate-400/20',
                                         };
                                     @endphp

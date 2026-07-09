@@ -406,9 +406,24 @@
                         <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Tren Kunjungan Bulanan Gabungan</h3>
                         <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Perbandingan tren frekuensi kunjungan pasien per kategori di posyandu (Dapat diklik untuk detail)</p>
                     </div>
-                    <button onclick="downloadChart(visitsTrendChart, 'tren_kunjungan')" class="p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
-                        <span class="material-symbols-outlined text-[20px]">download</span>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        {{-- Tombol Download Gambar (existing) --}}
+                        <button onclick="downloadChart(visitsTrendChart, 'tren_kunjungan')" class="p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                            <span class="material-symbols-outlined text-[20px]">download</span>
+                        </button>
+                        {{-- Tombol Download Excel Data Detail --}}
+                        <button wire:click="exportVisitsTrendExcel"
+                                wire:loading.attr="disabled"
+                                wire:target="exportVisitsTrendExcel"
+                                class="p-2.5 text-emerald-600 hover:text-emerald-800 rounded-xl bg-emerald-50 border border-emerald-300 hover:bg-emerald-100 transition-colors shadow-xs cursor-pointer flex items-center justify-center disabled:opacity-50 disabled:cursor-wait"
+                                title="Unduh Data Excel (.xlsx)">
+                            <span wire:loading.remove wire:target="exportVisitsTrendExcel" class="material-symbols-outlined text-[20px]">table_chart</span>
+                            <svg wire:loading wire:target="exportVisitsTrendExcel" class="animate-spin h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
                 <div class="relative h-96">
                     <canvas id="visitsTrendChart" wire:ignore></canvas>
@@ -530,11 +545,11 @@
                                 } elseif ($sLabel === 'gizi baik') {
                                     $bulletColor = 'bg-teal-500';
                                 } elseif ($sLabel === 'gizi kurang' || $sLabel === 'kurang') {
-                                    $bulletColor = 'bg-amber-500';
+                                    $bulletColor = 'bg-[#C2410C]';
                                 } elseif (str_contains($sLabel, 'sangat') || str_contains($sLabel, 'buruk') || str_contains($sLabel, 'pendek')) {
-                                    $bulletColor = 'bg-rose-500';
+                                    $bulletColor = 'bg-[#B91C1C]';
                                 } elseif (str_contains($sLabel, 'risiko') || str_contains($sLabel, 'berisiko') || str_contains($sLabel, 'lebih') || str_contains($sLabel, 'obesitas')) {
-                                    $bulletColor = 'bg-amber-500';
+                                    $bulletColor = 'bg-[#A16207]';
                                 } else {
                                     $bulletColor = 'bg-slate-400';
                                 }
@@ -633,7 +648,7 @@
                     <h3 class="text-lg font-bold text-slate-900 mb-6">Prevalensi Stunting per Wilayah Posyandu</h3>
                     <div class="space-y-6">
                         @forelse($stuntingByPosyandu as $item)
-                        <div>
+                        <div class="cursor-pointer hover:bg-slate-50 p-2 -mx-2 rounded-lg transition-colors" wire:dblclick="drillDown('Stunting - {{ $item['name'] ?? '' }}', 'balita_stunting_buruk', null, null, null, {{ $item['id'] ?? 'null' }})">
                             <div class="flex justify-between items-end mb-2 text-xs font-bold text-slate-700">
                                 <span>{{ $item['name'] }} ({{ $item['stunting'] }}/{{ $item['total'] }} Balita)</span>
                                 <span class="font-extrabold text-slate-900">{{ $item['rate'] }}%</span>
@@ -653,15 +668,15 @@
                     <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-slate-200 shadow-xs">
                         <h3 class="text-lg font-bold text-slate-900 mb-6 text-center">Segmentasi Usia Terpantau</h3>
                         <div class="grid grid-cols-3 gap-4">
-                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center">
+                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center cursor-pointer hover:bg-slate-100 transition-colors" wire:dblclick="drillDown('Segmentasi Usia: 0-12 Bulan', 'balita_age_0_12')">
                                 <span class="block text-2xl font-black text-slate-900">{{ $usia0_12 }}</span>
                                 <span class="text-xs md:text-sm font-bold text-slate-600 uppercase tracking-wider">0–12 Bulan</span>
                             </div>
-                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center">
+                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center cursor-pointer hover:bg-slate-100 transition-colors" wire:dblclick="drillDown('Segmentasi Usia: 12-24 Bulan', 'balita_age_12_24')">
                                 <span class="block text-2xl font-black text-slate-900">{{ $usia12_24 }}</span>
                                 <span class="text-xs md:text-sm font-bold text-slate-600 uppercase tracking-wider">12–24 Bulan</span>
                             </div>
-                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center">
+                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center cursor-pointer hover:bg-slate-100 transition-colors" wire:dblclick="drillDown('Segmentasi Usia: >24 Bulan', 'balita_age_24plus')">
                                 <span class="block text-2xl font-black text-slate-900">{{ $usia24plus }}</span>
                                 <span class="text-xs md:text-sm font-bold text-slate-600 uppercase tracking-wider">>24 Bulan</span>
                             </div>
@@ -743,17 +758,21 @@
                                 <td class="px-6 py-4 text-xs font-bold text-slate-650">{{ $record->patient?->posyandu?->name ?? '-' }}</td>
                                 <td class="px-6 py-4">
                                     @php
-                                        $status = $record->nutrition_status ?: 'Gizi Baik';
-                                        $isNormal = str_contains(strtolower($status), 'normal') || str_contains(strtolower($status), 'baik');
-                                        $isRisk = str_contains(strtolower($status), 'risiko') || str_contains(strtolower($status), 'kurang');
+                                        $statusStr = strtolower(trim($record->nutrition_status ?: 'Gizi Baik'));
+                                        $tagStyle = '';
+                                        $tagClass = '';
+                                        if ($statusStr === 'gizi buruk' || $statusStr === 'buruk') {
+                                            $tagStyle = 'background-color: #FEE2E2; color: #B91C1C; border-color: rgba(185, 28, 28, 0.2);';
+                                        } elseif ($statusStr === 'gizi kurang' || $statusStr === 'kurang') {
+                                            $tagStyle = 'background-color: #FFEDD5; color: #C2410C; border-color: rgba(194, 65, 12, 0.2);';
+                                        } elseif (str_contains($statusStr, 'lebih') || str_contains($statusStr, 'obesitas')) {
+                                            $tagStyle = 'background-color: #FEF9C3; color: #A16207; border-color: rgba(161, 98, 7, 0.2);';
+                                        } else {
+                                            $tagClass = 'bg-emerald-50 text-emerald-700 border-emerald-200/60';
+                                        }
                                     @endphp
-                                    <span @class([
-                                        'inline-flex px-3 py-1 rounded-full text-xs font-bold border',
-                                        'bg-emerald-50 text-emerald-700 border-emerald-200/60' => $isNormal,
-                                        'bg-amber-50 text-amber-700 border-amber-200/60' => $isRisk && !$isNormal,
-                                        'bg-rose-50 text-rose-700 border-rose-200/60' => !$isNormal && !$isRisk,
-                                    ])>
-                                        {{ $status }}
+                                    <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold border {{ $tagClass }}" style="{{ $tagStyle }}">
+                                        {{ $record->nutrition_status ?: 'Gizi Baik' }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ \Carbon\Carbon::parse($record->visit_date)->translatedFormat('d M Y') }}</td>
@@ -1009,7 +1028,21 @@
                                 </td>
                                 <td class="px-6 py-4 text-xs font-bold text-slate-700">{{ $row['posyandu'] }}</td>
                                 <td class="px-6 py-4">
-                                    <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold bg-teal-50 text-teal-700 border border-teal-100">
+                                    @php
+                                        $statusStr = strtolower(trim($row['nutrition_status'] ?? ''));
+                                        $tagStyle = '';
+                                        $tagClass = '';
+                                        if ($statusStr === 'gizi buruk' || $statusStr === 'buruk') {
+                                            $tagStyle = 'background-color: #FEE2E2; color: #B91C1C; border-color: rgba(185, 28, 28, 0.2);';
+                                        } elseif ($statusStr === 'gizi kurang' || $statusStr === 'kurang') {
+                                            $tagStyle = 'background-color: #FFEDD5; color: #C2410C; border-color: rgba(194, 65, 12, 0.2);';
+                                        } elseif (str_contains($statusStr, 'lebih') || str_contains($statusStr, 'obesitas')) {
+                                            $tagStyle = 'background-color: #FEF9C3; color: #A16207; border-color: rgba(161, 98, 7, 0.2);';
+                                        } else {
+                                            $tagClass = 'bg-teal-50 text-teal-700 border-teal-100'; // Default
+                                        }
+                                    @endphp
+                                    <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold border {{ $tagClass }}" style="{{ $tagStyle }}">
                                         {{ $row['nutrition_status'] }}
                                     </span>
                                 </td>
@@ -1401,24 +1434,24 @@ function initCharts(data = null) {
                         {
                             label: 'Risiko Gizi',
                             data: risk,
-                            borderColor: '#f59e0b',
-                            backgroundColor: 'rgba(245, 158, 11, 0.10)',
+                            borderColor: '#C2410C',
+                            backgroundColor: 'rgba(194, 65, 12, 0.10)',
                             borderWidth: 3,
                             tension: 0.4,
                             fill: true,
-                            pointBackgroundColor: '#f59e0b',
+                            pointBackgroundColor: '#C2410C',
                             pointRadius: 4,
                             pointHoverRadius: 7,
                         },
                         {
                             label: 'Stunting / Gizi Buruk',
                             data: stunting,
-                            borderColor: '#ef4444',
-                            backgroundColor: 'rgba(239, 68, 68, 0.10)',
+                            borderColor: '#B91C1C',
+                            backgroundColor: 'rgba(185, 28, 28, 0.10)',
                             borderWidth: 3,
                             tension: 0.4,
                             fill: true,
-                            pointBackgroundColor: '#ef4444',
+                            pointBackgroundColor: '#B91C1C',
                             pointRadius: 4,
                             pointHoverRadius: 7,
                         }
@@ -1495,9 +1528,9 @@ function initCharts(data = null) {
                 const sLabel = String(label).toLowerCase();
                 if (sLabel === 'baik' || sLabel === 'normal') return '#10b981'; // emerald-500
                 if (sLabel === 'gizi baik') return '#0d9488'; // teal-500
-                if (sLabel === 'gizi kurang' || sLabel === 'kurang') return '#f59e0b'; // amber-500
-                if (sLabel.includes('sangat') || sLabel.includes('buruk') || sLabel.includes('pendek')) return '#f43f5e'; // rose-500
-                if (sLabel.includes('risiko') || sLabel.includes('berisiko') || sLabel.includes('lebih') || sLabel.includes('obesitas')) return '#f59e0b'; // amber-500
+                if (sLabel === 'gizi kurang' || sLabel === 'kurang') return '#C2410C';
+                if (sLabel.includes('sangat') || sLabel.includes('buruk') || sLabel.includes('pendek')) return '#B91C1C';
+                if (sLabel.includes('risiko') || sLabel.includes('berisiko') || sLabel.includes('lebih') || sLabel.includes('obesitas')) return '#A16207';
                 return '#94a3b8'; // slate-400
             });
             nutritionDonutChart = new Chart(donutCtx, {
@@ -1698,8 +1731,18 @@ function initCharts(data = null) {
                         }
                     },
                     plugins: {
-                        legend: { display: false },
+                        legend: { display: true, position: 'bottom' },
                         tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                            titleColor: '#0f172a',
+                            bodyColor: '#334155',
+                            borderColor: '#e2e8f0',
+                            borderWidth: 1,
+                            padding: 12,
+                            boxPadding: 6,
+                            usePointStyle: true,
                             callbacks: {
                                 label: function(context) {
                                     const label = context.dataset.label || '';
@@ -1713,6 +1756,17 @@ function initCharts(data = null) {
                     }
                 }
             });
+
+            growthCtx.ondblclick = function(evt) {
+                if (!growthChart) return;
+                const elements = growthChart.getElementsAtEventForMode(evt, 'index', { intersect: false }, true);
+                if (elements && elements.length > 0) {
+                    const index = elements[0].index;
+                    const month = index + 1;
+                    const label = growthChart.data.labels[index];
+                    $wire.call('drillDown', 'Grafik Pertumbuhan Balita - ' + label, 'balita', month);
+                }
+            };
         } catch (e) {
             console.error("Error loading growthChart:", e);
             showChartError('growthChart');

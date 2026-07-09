@@ -1095,10 +1095,10 @@
                 
                         const colors = nd.labels.map(label => {
                             if (label.includes('Normal') || label.includes('Baik')) return '#059669';
-                            if (label.includes('Kurang') && !label.includes('Sangat')) return '#f59e0b';
-                            if (label.includes('Risiko') || label.includes('Berisiko')) return '#f59e0b';
-                            if (label.includes('Sangat') || label.includes('Buruk') || label.includes('Pendek')) return '#ef4444';
-                            if (label.includes('Lebih') || label.includes('Obesitas')) return '#f59e0b'; // Oranye untuk Gizi Lebih
+                            if (label.includes('Kurang') && !label.includes('Sangat')) return '#C2410C';
+                            if (label.includes('Risiko') || label.includes('Berisiko')) return '#C2410C';
+                            if (label.includes('Sangat') || label.includes('Buruk') || label.includes('Pendek')) return '#B91C1C';
+                            if (label.includes('Lebih') || label.includes('Obesitas')) return '#A16207'; // Gizi Lebih
                             return '#94a3b8';
                         });
                 
