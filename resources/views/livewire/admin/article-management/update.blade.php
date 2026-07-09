@@ -312,8 +312,20 @@
                             <span class="material-symbols-outlined text-[20px]" style="font-weight: 900; line-height: 1;">add</span>
                         </button>
                     </div>
-                    <div class="flex-1 flex items-start gap-2 py-0.5">
-                        <span class="text-sm font-black text-black flex-shrink-0 w-5 text-right mt-1.5" x-text="getNumberedIndex(index) + '.'"></span>
+                    <div class="flex-1 flex items-start gap-2 py-0.5 relative">
+                        <div class="flex-shrink-0 w-8 flex flex-col items-end mt-1.5 relative">
+                            <span class="text-sm font-black text-black text-right pr-1" x-text="getNumberedIndex(index) + '.'"></span>
+                            
+                            <!-- Toggle Button to restart numbering -->
+                            <button type="button" 
+                                    @click="toggleRestartNumbering(index)"
+                                    x-show="hoveredIndex === index"
+                                    class="absolute right-0 -bottom-6 flex items-center justify-center bg-teal-50 border border-teal-200 text-teal-800 text-[10px] font-bold px-1.5 py-0.5 rounded shadow-sm hover:bg-teal-600 hover:text-white transition-all whitespace-nowrap z-20 cursor-pointer"
+                                    style="font-family: sans-serif; min-width: unset; height: auto;"
+                                    :title="block.restartNumbering ? 'Klik untuk melanjutkan penomoran dari list sebelumnya' : 'Klik untuk mengulang penomoran dari 1'">
+                                <span x-text="block.restartNumbering ? 'Lanjutkan' : 'Mulai 1'"></span>
+                            </button>
+                        </div>
                         <div :id="'block-' + block.id" contenteditable="true" autocapitalize="sentences"
                              x-init="if ($el.innerHTML !== (block.content || '')) $el.innerHTML = block.content || ''"
                              @keydown="handleKeydown($event, index)"
@@ -1197,9 +1209,13 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
         getNumberedIndex(index) {
             let count = 0;
             for (let i = index; i >= 0; i--) {
-                const type = this.blocks[i]?.type;
+                const b = this.blocks[i];
+                const type = b?.type;
                 if (type === 'numbered') {
                     count++;
+                    if (b.restartNumbering) {
+                        break;
+                    }
                 } else if (type === 'h1' || type === 'h2' || type === 'h3' || type === 'divider') {
                     break;
                 }
@@ -1207,11 +1223,24 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
             return count;
         },
 
+        toggleRestartNumbering(index) {
+            const block = this.blocks[index];
+            if (block.type === 'numbered') {
+                block.restartNumbering = !block.restartNumbering;
+                this.isDirty = true;
+                this.blocks = [...this.blocks];
+            }
+        },
+
         serializeContent() {
             return JSON.stringify(this.blocks.map(b => {
                 if (['paragraph','h1','h2','h3','quote','callout','bullet','numbered'].includes(b.type)) {
                     const el = this.getBlockEl(b.id);
-                    return { type: b.type, content: el ? el.innerHTML : (b.content || '') };
+                    const res = { type: b.type, content: el ? el.innerHTML : (b.content || '') };
+                    if (b.type === 'numbered' && b.restartNumbering) {
+                        res.restartNumbering = true;
+                    }
+                    return res;
                 }
                 if (b.type === 'image')   return { type: 'image', src: b.src, caption: b.caption || '' };
                 if (b.type === 'video')   return { type: 'video', src: b.embedSrc || b.localSrc || '' };

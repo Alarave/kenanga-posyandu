@@ -221,7 +221,11 @@ class ArticleService
                     $items = [];
                     while ($i < $len && ($blocks[$i]['type'] ?? '') === 'numbered') {
                         $itemContent = $blocks[$i]['content'] ?? '';
-                        $numberedCount++;
+                        if (!empty($blocks[$i]['restartNumbering'])) {
+                            $numberedCount = 1;
+                        } else {
+                            $numberedCount++;
+                        }
                         if (trim(strip_tags($itemContent)) !== '') {
                             $items[] = [
                                 'content' => preg_replace('/\s*(style|class|id)\s*=\s*("|\')(.*?)\2/i', '', $itemContent),

@@ -305,30 +305,46 @@ class Analytics extends BaseAdminComponent
             'gizi_buruk' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
                 ->where(fn ($q) => $q->where('nutrition_status', 'like', '%Buruk%')
                     ->orWhere('wasting_status', 'Gizi Buruk')),
-            // Tren Prevalensi: Balita dengan status Normal
-            'balita_normal' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+
+            // ── Tren Prevalensi: Normal
+            // Sama persis dengan chart: nutrition_status IN ('Gizi Baik')
+            'balita_normal' => $query
+                ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+                ->whereIn('nutrition_status', [
+                    MedicalRecord::STATUS_BB_U_NORMAL,  // 'Gizi Baik'
+                    MedicalRecord::STATUS_GIZI_BAIK,    // 'Gizi Baik'
+                ]),
+
+            // ── Tren Prevalensi: Risiko Gizi
+            // Sama persis dengan chart: nutrition_status IN ('Gizi Lebih', 'Berisiko Gizi Lebih', 'Obesitas')
+            'balita_risiko' => $query
+                ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+                ->whereIn('nutrition_status', [
+                    MedicalRecord::STATUS_BB_U_RISIKO_LEBIH,    // 'Gizi Lebih'
+                    MedicalRecord::STATUS_GIZI_BERISIKO_LEBIH,  // 'Berisiko Gizi Lebih'
+                    MedicalRecord::STATUS_GIZI_LEBIH,           // 'Gizi Lebih'
+                    MedicalRecord::STATUS_GIZI_OBESITAS,        // 'Obesitas'
+                ]),
+
+            // ── Tren Prevalensi: Stunting / Gizi Buruk
+            // Sama persis dengan chart: BB/U sangat kurang/kurang ATAU stunting_status pendek ATAU wasting gizi buruk/kurang
+            'balita_stunting_buruk' => $query
+                ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
                 ->where(fn ($q) => $q
-                    ->where('nutrition_status', 'like', '%Baik%')
-                    ->orWhere('nutrition_status', 'like', '%Normal%')
+                    ->whereIn('nutrition_status', [
+                        MedicalRecord::STATUS_BB_U_SANGAT_KURANG,  // 'Gizi Buruk'
+                        MedicalRecord::STATUS_BB_U_KURANG,         // 'Gizi Kurang'
+                    ])
+                    ->orWhereIn('stunting_status', [
+                        MedicalRecord::STATUS_TB_U_SANGAT_PENDEK,  // 'Sangat Pendek'
+                        MedicalRecord::STATUS_TB_U_PENDEK,         // 'Pendek'
+                    ])
+                    ->orWhereIn('wasting_status', [
+                        MedicalRecord::STATUS_GIZI_BURUK,   // 'Gizi Buruk'
+                        MedicalRecord::STATUS_GIZI_KURANG,  // 'Gizi Kurang'
+                    ])
                 ),
-            // Tren Prevalensi: Balita Risiko (gizi kurang, lebih, obesitas)
-            'balita_risiko' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
-                ->where(fn ($q) => $q
-                    ->where('nutrition_status', 'like', '%Kurang%')
-                    ->orWhere('nutrition_status', 'like', '%Lebih%')
-                    ->orWhere('nutrition_status', 'like', '%Obesitas%')
-                    ->orWhere('nutrition_status', 'like', '%Risiko%')
-                    ->orWhere('wasting_status', 'Gizi Kurang')
-                ),
-            // Tren Prevalensi: Stunting + Gizi Buruk gabungan
-            'balita_stunting_buruk' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
-                ->where(fn ($q) => $q
-                    ->where('nutrition_status', 'like', '%Stunting%')
-                    ->orWhere('nutrition_status', 'like', '%Pendek%')
-                    ->orWhere('nutrition_status', 'like', '%Buruk%')
-                    ->orWhere('stunting_status', '!=', 'Normal')
-                    ->orWhere('wasting_status', 'Gizi Buruk')
-                ),
+
             'balita' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta'])),
             'ibu_hamil' => $query->whereHas('patient', fn ($q) => $q->where('category', 'ibu_hamil')),
             'lansia' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')),
