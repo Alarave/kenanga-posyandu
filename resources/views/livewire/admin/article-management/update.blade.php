@@ -313,16 +313,22 @@
                         </button>
                     </div>
                     <div class="flex-1 flex items-start gap-2 py-0.5 relative">
-                        <div class="flex-shrink-0 w-8 flex flex-col items-end mt-1.5 relative">
+                        <div class="flex-shrink-0 w-8 flex flex-col items-end mt-1.5 relative"
+                             @mouseenter="showSettings = true"
+                             @mouseleave="showSettings = false"
+                             x-data="{ showSettings: false }">
                             <span class="text-sm font-black text-black text-right pr-1" x-text="getNumberedIndex(index) + '.'"></span>
                             
                             <!-- Toggle Button to restart numbering -->
                             <button type="button" 
                                     @click="toggleRestartNumbering(index)"
-                                    x-show="hoveredIndex === index"
-                                    x-transition:enter="transition ease-out duration-200"
-                                    x-transition:enter-start="opacity-0 scale-95 -translate-x-1"
+                                    x-show="showSettings"
+                                    x-transition:enter="transition ease-out duration-150"
+                                    x-transition:enter-start="opacity-0 scale-90 -translate-x-1"
                                     x-transition:enter-end="opacity-100 scale-100 translate-x-0"
+                                    x-transition:leave="transition ease-in duration-100"
+                                    x-transition:leave-start="opacity-100 scale-100 translate-x-0"
+                                    x-transition:leave-end="opacity-0 scale-90 -translate-x-1"
                                     class="absolute right-full mr-2 top-[-2px] flex items-center gap-1 bg-white border border-slate-200 hover:border-teal-500 text-slate-600 hover:text-teal-600 text-[10px] font-bold px-2 py-1 rounded-lg shadow-sm hover:shadow transition-all whitespace-nowrap z-20 cursor-pointer"
                                     style="font-family: sans-serif; min-width: unset; height: auto;"
                                     :title="block.restartNumbering ? 'Klik untuk melanjutkan penomoran dari list sebelumnya' : 'Klik untuk mengulang penomoran dari 1'">

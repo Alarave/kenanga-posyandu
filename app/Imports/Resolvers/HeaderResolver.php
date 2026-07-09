@@ -40,7 +40,7 @@ class HeaderResolver
         'imunisasi dasar',
         'booster',
         'bias',
-        'bpi']
+        'bpi'],
         'category' => ['category', 'kategori', 'tipe', 'type', 'golongan', 'status_warga'],
         'husband_name' => ['husband_name', 'nama_suami', 'suami', 'nm_suami'],
         'father_name' => ['father_name', 'nama_ayah', 'ayah', 'nama_ayah_kandung', 'nm_ayah'],
