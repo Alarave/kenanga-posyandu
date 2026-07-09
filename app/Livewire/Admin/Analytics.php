@@ -207,7 +207,6 @@ class Analytics extends BaseAdminComponent
         $this->loadData();
     }
 
-    // ── ANA-22: Chart click drill-down ──
     public string $drillDownType = '';
 
     public ?int $drillDownMonth = null;
@@ -216,11 +215,14 @@ class Analytics extends BaseAdminComponent
 
     public ?int $drillDownYear = null;
 
+    public ?string $drillDownStatusFilter = null;
+
     public function drillDown(string $label, string $type, ?int $month = null, ?string $statusFilter = null, ?int $year = null): void
     {
         $this->showDrillDown = true;
         $this->drillDownType = $type;
         $this->drillDownMonth = $month;
+        $this->drillDownStatusFilter = $statusFilter;
         $this->drillDownLabel = $label;
         $this->drillDownYear = $year ?? $this->selectedYear;
 
@@ -269,6 +271,7 @@ class Analytics extends BaseAdminComponent
         $type = $this->drillDownType;
         $month = $this->drillDownMonth;
         $targetYear = $this->drillDownYear;
+        $statusFilter = $this->drillDownStatusFilter;
 
         if (str_starts_with($type, 'lansia_age_')) {
             $patients = $this->applyPosyanduScope(Patient::query(), $this->selectedPosyandu)
@@ -401,7 +404,7 @@ class Analytics extends BaseAdminComponent
             'ibu_hamil' => $query->whereHas('patient', fn ($q) => $q->where('category', 'ibu_hamil')),
             'lansia' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')),
             'nutrition_status' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
-                ->where('nutrition_status', null), // fallback
+                ->where('nutrition_status', $statusFilter),
             'lansia_hipertensi' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
                 ->where(fn ($q) => $q->where('systolic_bp', '>=', 140)->orWhere('diastolic_bp', '>=', 90)),
             'lansia_hiperglikemia' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
