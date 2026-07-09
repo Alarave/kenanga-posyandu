@@ -134,8 +134,8 @@
                             <div class="flex items-center gap-4">
                                 <div @class([
                                     'w-11 h-11 rounded-xl flex items-center justify-center font-black text-sm flex-shrink-0',
-                                    'bg-blue-100 text-blue-600' => $result->gender === 'male',
-                                    'bg-rose-100 text-rose-600' => $result->gender === 'female',
+                                    'bg-blue-100 text-blue-600' => in_array(strtoupper($result->gender ?? ''), ['L', 'M', 'MALE']),
+                                    'bg-rose-100 text-rose-600' => !in_array(strtoupper($result->gender ?? ''), ['L', 'M', 'MALE']),
                                 ])>
                                     {{ strtoupper(substr($result->full_name, 0, 2)) }}
                                 </div>
@@ -143,7 +143,7 @@
                                     <p class="text-sm font-black text-slate-900">{{ $result->full_name }}</p>
                                     <p class="text-xs font-bold text-slate-400">
                                         {{ $result->age_in_months }} bulan &bull;
-                                        {{ $result->gender === 'male' ? 'Laki-laki' : 'Perempuan' }}
+                                        {{ in_array(strtoupper($result->gender ?? ''), ['L', 'M', 'MALE']) ? 'Laki-laki' : 'Perempuan' }}
                                     </p>
                                 </div>
                             </div>
@@ -196,11 +196,11 @@
                         {{-- Avatar gender --}}
                         <div @class([
                             'w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0',
-                            'bg-blue-100 text-blue-600' => $m['gender'] === 'male',
-                            'bg-rose-100 text-rose-600' => $m['gender'] === 'female',
+                            'bg-blue-100 text-blue-600' => in_array(strtoupper($m['gender'] ?? ''), ['L', 'M', 'MALE']),
+                            'bg-rose-100 text-rose-600' => !in_array(strtoupper($m['gender'] ?? ''), ['L', 'M', 'MALE']),
                         ])>
                             <span class="material-symbols-outlined text-[24px]">
-                                {{ $m['gender'] === 'male' ? 'boy' : 'girl' }}
+                                {{ in_array(strtoupper($m['gender'] ?? ''), ['L', 'M', 'MALE']) ? 'boy' : 'girl' }}
                             </span>
                         </div>
 
@@ -210,8 +210,8 @@
                             <div class="flex items-center gap-2 mt-0.5">
                                 <span @class([
                                     'text-xs font-bold px-2 py-0.5 rounded-lg',
-                                    'bg-blue-50 text-blue-700' => $m['gender'] === 'male',
-                                    'bg-rose-50 text-rose-700' => $m['gender'] === 'female',
+                                    'bg-blue-50 text-blue-700' => in_array(strtoupper($m['gender'] ?? ''), ['L', 'M', 'MALE']),
+                                    'bg-rose-50 text-rose-700' => !in_array(strtoupper($m['gender'] ?? ''), ['L', 'M', 'MALE']),
                                 ])>
                                     {{ $m['age_months'] }} bulan
                                 </span>

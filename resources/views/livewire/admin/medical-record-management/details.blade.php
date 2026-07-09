@@ -152,13 +152,13 @@
                         <div>
                             <span class="px-4 py-1.5 rounded-full bg-primary/10 text-primary text-[10px] font-black uppercase tracking-widest border border-primary/20">
                                 @if($isChild)
-                                    Balita ({{ ucfirst($category) }}) • {{ $medicalRecord->patient->gender === 'L' ? 'Laki-laki' : 'Perempuan' }} • {{ $medicalRecord->patient->age }}
+                                    Balita ({{ ucfirst($category) }}) • {{ ($medicalRecord->patient->gender === 'L' || $medicalRecord->patient->gender === 'M') ? 'Laki-laki' : 'Perempuan' }} • {{ $medicalRecord->patient->age }}
                                 @elseif($isPregnancy)
                                     Ibu Hamil / Nifas • {{ $medicalRecord->patient->age }}
                                 @elseif($isLansia)
-                                    Lansia • {{ $medicalRecord->patient->gender === 'L' ? 'Laki-laki' : 'Perempuan' }} • {{ $medicalRecord->patient->age }}
+                                    Lansia • {{ ($medicalRecord->patient->gender === 'L' || $medicalRecord->patient->gender === 'M') ? 'Laki-laki' : 'Perempuan' }} • {{ $medicalRecord->patient->age }}
                                 @else
-                                    {{ ucfirst($category) }} • {{ $medicalRecord->patient->gender === 'L' ? 'Laki-laki' : 'Perempuan' }} • {{ $medicalRecord->patient->age }}
+                                    {{ ucfirst($category) }} • {{ ($medicalRecord->patient->gender === 'L' || $medicalRecord->patient->gender === 'M') ? 'Laki-laki' : 'Perempuan' }} • {{ $medicalRecord->patient->age }}
                                 @endif
                             </span>
                             <h1 class="text-4xl font-black text-slate-900 tracking-tight mt-4 leading-tight">
