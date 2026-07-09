@@ -1019,4 +1019,63 @@ class Analytics extends BaseAdminComponent
     {
         return view('livewire.admin.analytics');
     }
+
+    public function exportChartDataExcel(string $chartName)
+    {
+        $query = MedicalRecord::with(['patient', 'patient.posyandu'])
+            ->whereYear('visit_date', $this->selectedYear)
+            ->when($this->selectedPosyandu, function ($q) {
+                $q->whereHas('patient', fn ($sq) => $sq->where('posyandu_id', $this->selectedPosyandu));
+            });
+
+        if ($this->selectedMonth) {
+            $query->whereMonth('visit_date', $this->selectedMonth);
+        }
+
+        if ($chartName === 'tren_kunjungan') {
+            $filename = 'export_tren_kunjungan_' . $this->selectedYear . '.csv';
+        } elseif ($chartName === 'tren_status_gizi_balita' || $chartName === 'distribusi_status_gizi_balita') {
+            $query->whereHas('patient', fn ($sq) => $sq->where('category', 'balita'));
+            $filename = 'export_status_gizi_balita_' . $this->selectedYear . '.csv';
+        } elseif ($chartName === 'capaian_imunisasi_balita') {
+            $query->whereHas('patient', fn ($sq) => $sq->where('category', 'balita'));
+            $query->whereNotNull('immunization')->where('immunization', '!=', '');
+            $filename = 'export_imunisasi_balita_' . $this->selectedYear . '.csv';
+        } else {
+            $filename = 'export_data_' . $this->selectedYear . '.csv';
+        }
+
+        $records = $query->orderBy('visit_date', 'asc')->get();
+
+        $headers = [
+            "Content-type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=$filename",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        ];
+
+        $callback = function () use ($records) {
+            $file = fopen('php://output', 'w');
+            
+            // BOM for Excel UTF-8
+            fputs($file, "\xEF\xBB\xBF");
+            
+            fputcsv($file, ['Bulan', 'Nama Pasien', 'Unit Posyandu', 'Status', 'Tanggal']);
+
+            foreach ($records as $record) {
+                $bulan = Carbon::parse($record->visit_date)->translatedFormat('M');
+                $nama = $record->patient->full_name ?? '-';
+                $posyandu = $record->patient->posyandu->name ?? '-';
+                $status = ucfirst($record->patient->category ?? '-');
+                $tanggal = Carbon::parse($record->visit_date)->translatedFormat('d-m-Y');
+
+                fputcsv($file, [$bulan, $nama, $posyandu, $status, $tanggal]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
 }

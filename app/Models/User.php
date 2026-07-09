@@ -162,7 +162,7 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         $unitSuffix = '';
-        if ($this->posyandu_id == 3) {
+        if ($this->posyandu_id == 1) {
             $unitSuffix = '1';
         } elseif ($this->posyandu_id == 2) {
             $unitSuffix = '2';

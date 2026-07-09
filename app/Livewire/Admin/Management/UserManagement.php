@@ -24,6 +24,16 @@ class UserManagement extends BaseAdminComponent
         'status' => ['except' => ''],
     ];
 
+    public function updatedRole(): void
+    {
+        $this->resetPage();
+    }
+
+    public function updatedStatus(): void
+    {
+        $this->resetPage();
+    }
+
     public function render()
     {
         // Scope pengguna berdasarkan level akses (Opsional, di sini kita tampilkan semua untuk SuperAdmin/Admin)

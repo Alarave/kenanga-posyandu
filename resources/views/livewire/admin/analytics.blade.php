@@ -406,9 +406,18 @@
                         <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Tren Kunjungan Bulanan Gabungan</h3>
                         <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Perbandingan tren frekuensi kunjungan pasien per kategori di posyandu (Dapat diklik untuk detail)</p>
                     </div>
-                    <button onclick="downloadChart(visitsTrendChart, 'tren_kunjungan')" class="p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
-                        <span class="material-symbols-outlined text-[20px]">download</span>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <button wire:click="exportChartDataExcel('tren_kunjungan')" wire:loading.attr="disabled" wire:target="exportChartDataExcel('tren_kunjungan')" class="p-2.5 text-emerald-600 hover:text-emerald-800 rounded-xl bg-emerald-50 border border-emerald-200 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Data Excel">
+                            <span wire:loading.remove wire:target="exportChartDataExcel('tren_kunjungan')" class="material-symbols-outlined text-[20px]">description</span>
+                            <svg wire:loading wire:target="exportChartDataExcel('tren_kunjungan')" class="animate-spin h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                            </svg>
+                        </button>
+                        <button onclick="downloadChart(visitsTrendChart, 'tren_kunjungan')" class="p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                            <span class="material-symbols-outlined text-[20px]">download</span>
+                        </button>
+                    </div>
                 </div>
                 <div class="relative h-96">
                     <canvas id="visitsTrendChart" wire:ignore></canvas>
@@ -459,9 +468,18 @@
                         <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Prevalensi Pertumbuhan Balita</h3>
                         <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Tren bulanan persentase status gizi balita: Normal, Risiko, dan Stunting/Gizi Buruk</p>
                     </div>
-                    <button onclick="downloadChart(nutritionTrendChart, 'tren_status_gizi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
-                        <span class="material-symbols-outlined text-[20px]">download</span>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <button wire:click="exportChartDataExcel('tren_status_gizi_balita')" wire:loading.attr="disabled" wire:target="exportChartDataExcel('tren_status_gizi_balita')" class="shrink-0 p-2.5 text-emerald-600 hover:text-emerald-800 rounded-xl bg-emerald-50 border border-emerald-200 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Data Excel">
+                            <span wire:loading.remove wire:target="exportChartDataExcel('tren_status_gizi_balita')" class="material-symbols-outlined text-[20px]">description</span>
+                            <svg wire:loading wire:target="exportChartDataExcel('tren_status_gizi_balita')" class="animate-spin h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                            </svg>
+                        </button>
+                        <button onclick="downloadChart(nutritionTrendChart, 'tren_status_gizi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                            <span class="material-symbols-outlined text-[20px]">download</span>
+                        </button>
+                    </div>
                 </div>
 
                 {{-- Legend badges --}}
@@ -497,9 +515,18 @@
                         <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Status Gizi Balita (Pemeriksaan Terbaru)</h3>
                         <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Distribusi persentase status gizi balita berdasarkan hasil pemeriksaan status gizi terbaru</p>
                     </div>
-                    <button onclick="downloadChart(nutritionDonutChart, 'distribusi_status_gizi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
-                        <span class="material-symbols-outlined text-[20px]">download</span>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <button wire:click="exportChartDataExcel('distribusi_status_gizi_balita')" wire:loading.attr="disabled" wire:target="exportChartDataExcel('distribusi_status_gizi_balita')" class="shrink-0 p-2.5 text-emerald-600 hover:text-emerald-800 rounded-xl bg-emerald-50 border border-emerald-200 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Data Excel">
+                            <span wire:loading.remove wire:target="exportChartDataExcel('distribusi_status_gizi_balita')" class="material-symbols-outlined text-[20px]">description</span>
+                            <svg wire:loading wire:target="exportChartDataExcel('distribusi_status_gizi_balita')" class="animate-spin h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                            </svg>
+                        </button>
+                        <button onclick="downloadChart(nutritionDonutChart, 'distribusi_status_gizi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                            <span class="material-symbols-outlined text-[20px]">download</span>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
@@ -566,9 +593,18 @@
                         <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Capaian Imunisasi Per Jenis Vaksin</h3>
                         <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Jumlah balita yang menerima setiap jenis imunisasi dasar pada periode yang dipilih</p>
                     </div>
-                    <button onclick="downloadChart(vaccineChart, 'capaian_imunisasi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
-                        <span class="material-symbols-outlined text-[20px]">download</span>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <button wire:click="exportChartDataExcel('capaian_imunisasi_balita')" wire:loading.attr="disabled" wire:target="exportChartDataExcel('capaian_imunisasi_balita')" class="shrink-0 p-2.5 text-emerald-600 hover:text-emerald-800 rounded-xl bg-emerald-50 border border-emerald-200 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Data Excel">
+                            <span wire:loading.remove wire:target="exportChartDataExcel('capaian_imunisasi_balita')" class="material-symbols-outlined text-[20px]">description</span>
+                            <svg wire:loading wire:target="exportChartDataExcel('capaian_imunisasi_balita')" class="animate-spin h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                            </svg>
+                        </button>
+                        <button onclick="downloadChart(vaccineChart, 'capaian_imunisasi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                            <span class="material-symbols-outlined text-[20px]">download</span>
+                        </button>
+                    </div>
                 </div>
 
                 {{-- Cakupan badge --}}

@@ -212,29 +212,13 @@
         <div class="px-6 lg:px-8 py-5 border-b border-slate-100 bg-white">
             <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-center">
                 {{-- Search Input --}}
-                <div class="relative group md:col-span-9">
+                <div class="relative group md:col-span-12">
                     <div class="absolute inset-y-0 left-0 w-10 flex items-center justify-center pointer-events-none">
                         <span class="material-symbols-outlined text-slate-350 group-focus-within:text-teal-500 transition-colors text-[20px]">search</span>
                     </div>
                     <input type="text" wire:model.live.debounce.300ms="search" 
                            placeholder="Cari Nama/NIK..."
                            class="w-full pl-10 pr-4 h-11 rounded-2xl border border-slate-200 bg-slate-50/50 text-[13px] font-semibold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all shadow-sm">
-                </div>
-
-                {{-- Filter Kategori --}}
-                <div class="md:col-span-3">
-                    <div class="relative">
-                        <select wire:model.live="filterCategory" 
-                                class="w-full h-11 pl-4 pr-10 rounded-2xl border border-slate-200 bg-slate-50/50 text-[13px] font-bold text-slate-700 focus:bg-white focus:border-teal-500 focus:ring-4 focus:ring-teal-500/10 transition-all appearance-none shadow-sm">
-                            <option value="">Semua Kategori</option>
-                            <option value="balita">Balita</option>
-                            <option value="ibu_hamil">Ibu Hamil</option>
-                            <option value="lansia">Lansia</option>
-                        </select>
-                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-slate-450">
-                            <span class="material-symbols-outlined text-[18px]">keyboard_arrow_down</span>
-                        </div>
-                    </div>
                 </div>
             </div>
 
