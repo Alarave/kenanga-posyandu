@@ -192,7 +192,7 @@ class PatientRowProcessor
             }
         }
 
-        $existing = $this->findExistingPatient($hasValidNik, $nikClean, $nama, $resolvedBirthDate);
+        $existing = $this->findExistingPatient($hasValidNik, $nikClean, $nama, $resolvedBirthDate, $namaOrtu);
 
         // Normalize pregnant status
         $isPregnant = false;
@@ -285,7 +285,8 @@ class PatientRowProcessor
         bool $hasValidNik,
         string $nikClean,
         string $nama,
-        ?Carbon $birthDate
+        ?Carbon $birthDate,
+        string $namaOrtu = ''
     ): ?Patient {
         if ($hasValidNik) {
             // NIK is database-wide unique, so check system-wide to avoid duplicate key errors
@@ -316,6 +317,27 @@ class PatientRowProcessor
                     return $cand;
                 }
             }
+        }
+
+        // Fallback 2: Name-based matching within the same posyandu (even if birth date is different/unmatched)
+        $normalizedNamaInput = $this->normalizeName($nama);
+        $candidatesByName = Patient::where('posyandu_id', $this->posyanduId)->get()->filter(function ($cand) use ($normalizedNamaInput) {
+            return $this->normalizeName($cand->full_name) === $normalizedNamaInput;
+        });
+
+        if ($candidatesByName->isNotEmpty()) {
+            // A. If parent's name matches (normalized)
+            if ($namaOrtu !== '') {
+                $normalizedOrtuInput = $this->normalizeName($namaOrtu);
+                foreach ($candidatesByName as $cand) {
+                    if ($cand->parent_name && $this->normalizeName($cand->parent_name) === $normalizedOrtuInput) {
+                        return $cand;
+                    }
+                }
+            }
+            
+            // B. If no parent matches, or parent name is empty, reuse the first candidate with the same name to prevent duplication
+            return $candidatesByName->first();
         }
 
         return null;

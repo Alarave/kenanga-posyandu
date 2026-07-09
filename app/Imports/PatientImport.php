@@ -106,7 +106,7 @@ class PatientImport
             // 1. Check if the row contains a date declaration (e.g. "Tanggal: 05 Jan 2026")
             $rowDate = null;
             foreach ($rowCleaned as $cell) {
-                if (preg_match('/tanggals*(?:pelaksanaan|ukur|periksa)?s*:s*(.+)/i', $cell, $matches)) {
+                if (preg_match('/tanggal\s*(?:pelaksanaan|ukur|periksa)?\s*:?\s*(.+)/i', $cell, $matches)) {
                     $dateStr = trim($matches[1]);
                     $rowDate = $this->parseReportDate($dateStr);
                     if ($rowDate) {
