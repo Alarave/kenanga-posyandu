@@ -592,8 +592,11 @@ class PatientRowProcessor
     private function normalizeGender(string $jk): ?string
     {
         $original = $jk;
+        // Trim standard whitespaces and uppercase
         $jk = strtoupper(trim($jk));
-        $clean = str_replace([' ', '-', '.', '_', '/', '\\', '|'], '', $jk);
+        
+        // Strip all unicode whitespaces (including NBSP \u{A0}), dashes, dots, underscores, slashes, etc.
+        $clean = preg_replace('/[\s\-\.\_\/\\\|]+/u', '', $jk);
 
         // Exact matches - male
         if (in_array($clean, ['L', 'LK', 'LAKI', 'LAKILAKI', 'MALE', 'M', 'PRIA', 'LAKI2', 'COWOK', 'LAKIILAKI'], true)) {
