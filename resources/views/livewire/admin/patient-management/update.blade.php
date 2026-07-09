@@ -488,15 +488,15 @@
             @endif
  
             {{-- ── Action Buttons ── --}}
-            <div class="flex items-center gap-2 bg-white border border-slate-100 p-3 rounded-2xl shadow-md overflow-hidden">
+            <div class="flex flex-col-reverse sm:flex-row items-center gap-2 sm:gap-3 bg-white border border-slate-100 p-3 rounded-2xl shadow-md overflow-hidden">
                 <a href="{{ route('admin.patients.index') }}"
-                   class="flex-1 flex items-center justify-center h-11 px-4 rounded-xl border border-slate-200 text-sm font-bold text-slate-500 hover:bg-slate-50 transition-colors whitespace-nowrap">
+                   class="w-full sm:flex-1 flex items-center justify-center h-11 px-4 rounded-xl border border-slate-200 text-sm font-bold text-slate-500 hover:bg-slate-50 transition-colors whitespace-nowrap">
                     Batal
                 </a>
                 <button type="submit"
-                        class="flex-1 flex items-center justify-center gap-1.5 h-11 px-4 rounded-xl bg-teal-600 text-white text-sm font-black hover:bg-teal-700 active:scale-95 transition-all shadow-sm shadow-teal-500/20 whitespace-nowrap overflow-hidden min-w-0">
+                        class="w-full sm:flex-1 flex items-center justify-center gap-1.5 h-11 px-4 rounded-xl bg-teal-600 text-white text-sm font-black hover:bg-teal-700 active:scale-95 transition-all shadow-sm shadow-teal-500/20 whitespace-nowrap overflow-hidden min-w-0">
                     <span class="material-symbols-outlined text-[17px] flex-shrink-0">save</span>
-                    <span class="truncate">Simpan Perubahan</span>
+                    <span class="whitespace-nowrap">Simpan Perubahan</span>
                 </button>
             </div>
         </div>

@@ -77,11 +77,11 @@
                 </div>
             </div>
 
-            <div class="flex justify-end mt-12 gap-4">
-                <a href="{{ route('admin.gallery.index') }}" class="px-8 py-3.5 bg-slate-100 text-slate-600 font-black rounded-2xl hover:bg-slate-200 transition-all text-xs uppercase tracking-widest">Batal</a>
-                <button type="submit" class="px-8 py-3.5 bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-black rounded-2xl hover:from-teal-700 hover:to-emerald-700 hover:shadow-lg hover:shadow-teal-600/20 active:scale-95 transition-all text-xs uppercase tracking-widest flex items-center gap-2">
-                    <span class="material-symbols-outlined text-[18px]">save</span>
-                    Simpan Folder
+            <div class="flex flex-col-reverse sm:flex-row justify-end mt-12 gap-3 sm:gap-4">
+                <a href="{{ route('admin.gallery.index') }}" class="w-full sm:w-auto text-center px-8 py-3.5 bg-slate-100 text-slate-600 font-black rounded-2xl hover:bg-slate-200 transition-all text-xs uppercase tracking-widest">Batal</a>
+                <button type="submit" class="w-full sm:w-auto justify-center px-8 py-3.5 bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-black rounded-2xl hover:from-teal-700 hover:to-emerald-700 hover:shadow-lg hover:shadow-teal-600/20 active:scale-95 transition-all text-xs uppercase tracking-widest flex items-center justify-center gap-2">
+                    <span class="material-symbols-outlined text-[18px] shrink-0">save</span>
+                    <span class="whitespace-nowrap">Simpan Folder</span>
                 </button>
             </div>
         </form>

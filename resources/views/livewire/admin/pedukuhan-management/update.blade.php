@@ -107,16 +107,16 @@
             </div>
 
             {{-- Actions --}}
-            <div class="border-t border-slate-100 pt-5 flex items-center justify-between gap-3">
+            <div class="border-t border-slate-100 pt-5 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3">
                 <a href="{{ route('admin.pedukuhans.index') }}"
-                   class="h-11 px-6 flex items-center gap-2 rounded-xl border border-slate-300 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors">
-                    <span class="material-symbols-outlined text-[18px]">close</span>
+                   class="w-full sm:w-auto h-11 px-6 flex items-center justify-center gap-2 rounded-xl border border-slate-300 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors">
+                    <span class="material-symbols-outlined text-[18px] shrink-0">close</span>
                     Batal
                 </a>
                 <button type="submit"
-                        class="h-11 px-8 bg-teal-600 text-white rounded-xl text-sm font-bold hover:bg-teal-700 active:scale-95 transition-all flex items-center gap-2 shadow-sm">
-                    <span class="material-symbols-outlined text-[18px]">check</span>
-                    Simpan Perubahan
+                        class="w-full sm:w-auto h-11 px-8 justify-center bg-teal-600 text-white rounded-xl text-sm font-bold hover:bg-teal-700 active:scale-95 transition-all flex items-center gap-2 shadow-sm">
+                    <span class="material-symbols-outlined text-[18px] shrink-0">check</span>
+                    <span class="whitespace-nowrap">Simpan Perubahan</span>
                 </button>
             </div>
         </form>

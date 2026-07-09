@@ -294,9 +294,9 @@
                                 <label class="block text-xs font-black text-slate-400 uppercase tracking-widest">Keterangan Media</label>
                                 <textarea name="description" x-model="activeDesc" rows="2" class="w-full bg-slate-50 focus:bg-white rounded-xl px-4 py-3 text-sm font-semibold text-slate-700 border-2 border-slate-100 focus:border-teal-500 focus:ring-0 transition-all"></textarea>
                             </div>
-                            <div class="flex justify-end gap-3 pt-2">
-                                <button type="button" @click="isEditing = false" class="px-5 py-2.5 bg-slate-100 text-slate-600 hover:bg-slate-200 font-black rounded-xl text-xs uppercase tracking-wider transition-all">Batal</button>
-                                <button type="submit" class="px-5 py-2.5 bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-black rounded-xl text-xs uppercase tracking-wider transition-all shadow-md">Simpan Perubahan</button>
+                            <div class="flex flex-col-reverse sm:flex-row justify-end gap-2.5 sm:gap-3 pt-2">
+                                <button type="button" @click="isEditing = false" class="w-full sm:w-auto px-5 py-2.5 bg-slate-100 text-slate-600 hover:bg-slate-200 font-black rounded-xl text-xs uppercase tracking-wider transition-all">Batal</button>
+                                <button type="submit" class="w-full sm:w-auto px-5 py-2.5 bg-gradient-to-r from-teal-600 to-emerald-600 text-white font-black rounded-xl text-xs uppercase tracking-wider transition-all shadow-md whitespace-nowrap">Simpan Perubahan</button>
                             </div>
                         </form>
                     </div>
