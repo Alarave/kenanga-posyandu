@@ -157,4 +157,19 @@ return [
     */
 
     'pagination_theme' => 'tailwind',
+
+    /*
+    |---------------------------------------------------------------------------
+    | Max Request Payload Size
+    |---------------------------------------------------------------------------
+    |
+    | This value sets the maximum allowed size (in kilobytes) of request payloads
+    | sent from the browser to Livewire. It helps protect your application
+    | from denial of service attacks by rejecting excessively large payloads.
+    |
+    */
+
+    'payload' => [
+        'max_size' => 33554432, // 32MB (in bytes)
+    ],
 ];

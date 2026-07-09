@@ -96,7 +96,19 @@
     margin-top: -0.5rem;
 }
 .article-content .article-list--numbered {
-    list-style: decimal;
+    list-style-type: decimal !important;
+    padding-left: 1.5rem !important;
+}
+.article-content .article-list--bulleted {
+    list-style-type: disc !important;
+    padding-left: 3rem !important;
+}
+.article-content .article-list li::marker {
+    color: #0f172a;
+}
+.article-content .article-list li:has(strong)::marker,
+.article-content .article-list li:has(b)::marker {
+    font-weight: 800;
 }
 
 /* PARAGRAPH */
@@ -219,9 +231,9 @@
         </div>
 
         {{-- Cover Image --}}
-        @if($article->thumbnail && \Illuminate\Support\Facades\Storage::disk('public')->exists($article->thumbnail))
+        @if($article->thumbnail)
             <div class="w-full aspect-video rounded-2xl overflow-hidden shadow-lg">
-                <img src="{{ asset('storage/'.$article->thumbnail) }}"
+                <img src="{{ $article->thumbnail_url }}"
                      alt="{{ $article->title }}"
                      class="w-full h-full object-cover">
             </div>

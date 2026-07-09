@@ -1058,7 +1058,7 @@
             </div>
             <div class="featured-img-wrap">
                 <div class="featured-img-overlay"></div>
-                <img src="{{ $featured->thumbnail ? asset('storage/'.$featured->thumbnail) : 'https://images.unsplash.com/photo-1576091160550-217359f4ecf8?q=80&w=1200&auto=format&fit=crop' }}"
+                <img src="{{ $featured->thumbnail ? $featured->thumbnail_url : 'https://images.unsplash.com/photo-1576091160550-217359f4ecf8?q=80&w=1200&auto=format&fit=crop' }}"
                      alt="{{ $featured->title }}"
                      fetchpriority="high" loading="eager" decoding="sync">
                 <div class="featured-img-cat">{{ $featured->category->name ?? 'Artikel Pilihan' }}</div>
@@ -1140,7 +1140,7 @@
                         </div>
                     </div>
                     <div class="article-item-thumb">
-                        <img src="{{ $article->thumbnail ? asset('storage/'.$article->thumbnail) : 'https://images.unsplash.com/photo-1576091160550-217359f4ecf8?q=80&w=600&auto=format&fit=crop' }}"
+                        <img src="{{ $article->thumbnail ? $article->thumbnail_url : 'https://images.unsplash.com/photo-1576091160550-217359f4ecf8?q=80&w=600&auto=format&fit=crop' }}"
                              alt="{{ $article->title }}" loading="lazy" decoding="async">
                     </div>
                 </div>

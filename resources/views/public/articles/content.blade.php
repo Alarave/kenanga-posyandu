@@ -13,7 +13,7 @@
 
             @elseif($block['type'] === 'image' && isset($block['data']['url']) && !empty($block['data']['url']))
                 <figure class="my-8">
-                    <img src="{{ asset('storage/' . $block['data']['url']) }}" alt="{{ $block['data']['caption'] ?? 'Gambar' }}" class="rounded-3xl shadow-xl w-full">
+                    <img src="{{ \Illuminate\Support\Facades\Storage::disk(config('filesystems.cloud', 'public'))->url($block['data']['url']) }}" alt="{{ $block['data']['caption'] ?? 'Gambar' }}" class="rounded-3xl shadow-xl w-full">
                     @if(!empty($block['data']['caption']))
                         <figcaption class="text-center text-sm text-slate-500 mt-2 italic">{{ $block['data']['caption'] }}</figcaption>
                     @endif

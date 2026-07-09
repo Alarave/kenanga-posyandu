@@ -121,8 +121,8 @@
         
         {{-- Thumbnail — klik untuk baca --}}
         <a href="{{ route('admin.articles.show', $article->id) }}" class="block relative h-48 bg-gradient-to-br from-slate-100 to-slate-200 overflow-hidden">
-            @if($article->thumbnail && Storage::disk('public')->exists($article->thumbnail))
-                <img src="{{ asset('storage/'.$article->thumbnail) }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="{{ $article->title }}">
+            @if($article->thumbnail)
+                <img src="{{ $article->thumbnail_url }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="{{ $article->title }}">
             @else
                 <div class="w-full h-full flex items-center justify-center text-slate-300">
                     <span class="material-symbols-outlined text-[80px]">image</span>

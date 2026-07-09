@@ -280,7 +280,7 @@
                             <span class="material-symbols-outlined text-[20px]" style="font-weight: 900; line-height: 1;">add</span>
                         </button>
                     </div>
-                    <div class="flex-1 flex items-start gap-2 py-0.5">
+                    <div class="flex-1 flex items-start gap-2 py-0.5 pl-8">
                         <span class="w-1.5 h-1.5 rounded-lg bg-slate-700 flex-shrink-0 mt-3"></span>
                         <div :id="'block-' + block.id" contenteditable="true" autocapitalize="sentences"
                              x-init="if ($el.innerHTML !== (block.content || '')) $el.innerHTML = block.content || ''"
@@ -306,7 +306,7 @@
                         </button>
                     </div>
                     <div class="flex-1 flex items-start gap-2 py-0.5">
-                        <span class="text-sm font-bold text-outline flex-shrink-0 w-5 text-right mt-1.5" x-text="getNumberedIndex(index) + '.'"></span>
+                        <span class="text-sm font-black text-black flex-shrink-0 w-5 text-right mt-1.5" x-text="getNumberedIndex(index) + '.'"></span>
                         <div :id="'block-' + block.id" contenteditable="true" autocapitalize="sentences"
                              x-init="if ($el.innerHTML !== (block.content || '')) $el.innerHTML = block.content || ''"
                              @keydown="handleKeydown($event, index)"
@@ -880,20 +880,39 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
             }
 
             if (event.key === 'Enter') {
+                if (event.shiftKey) {
+                    event.preventDefault();
+                    document.execCommand('insertHTML', false, '<br>');
+                    this.isDirty = true;
+                    return;
+                }
+
+                const el = this.getBlockEl(block.id);
+                const isEmpty = !el || el.innerText.trim() === '';
+
+                if ((block.type === 'numbered' || block.type === 'bullet') && isEmpty) {
+                    event.preventDefault();
+                    this.blocks[index] = { ...block, type: 'paragraph', content: '' };
+                    this.isDirty = true;
+                    this.$nextTick(() => {
+                        setTimeout(() => {
+                            const el = this.getBlockEl(block.id);
+                            if (el) { el.focus(); placeCaretAtEnd(el); }
+                        }, 50);
+                    });
+                    return;
+                }
+
                 event.preventDefault();
-                const continueTypes = ['bullet', 'numbered'];
-                const nextType = continueTypes.includes(block.type) ? block.type : 'paragraph';
+                const nextType = (block.type === 'bullet' || block.type === 'numbered') ? block.type : 'paragraph';
                 const nb = { id: this.nextId++, type: nextType, content: '' };
                 this.blocks.splice(index + 1, 0, nb);
                 this.isDirty = true;
                 this.$nextTick(() => {
                     setTimeout(() => {
                         const el = this.getBlockEl(nb.id);
-                        if (el) {
-                            el.focus();
-                            placeCaretAtEnd(el);
-                        }
-                    }, 100);
+                        if (el) { el.focus(); placeCaretAtEnd(el); }
+                    }, 50);
                 });
                 return;
             }
@@ -1172,9 +1191,10 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
         getNumberedIndex(index) {
             let count = 0;
             for (let i = index; i >= 0; i--) {
-                if (this.blocks[i]?.type === 'numbered') {
+                const type = this.blocks[i]?.type;
+                if (type === 'numbered') {
                     count++;
-                } else {
+                } else if (type === 'h1' || type === 'h2' || type === 'h3' || type === 'divider') {
                     break;
                 }
             }

@@ -29,7 +29,8 @@ class ArticleService
 
             // Handle cover/thumbnail upload
             if (isset($data['thumbnail']) && $data['thumbnail'] instanceof \Illuminate\Http\UploadedFile) {
-                $data['thumbnail'] = $data['thumbnail']->store('articles', 'public');
+                $disk = config('filesystems.cloud', 'public');
+                $data['thumbnail'] = $data['thumbnail']->store('articles', $disk);
             }
 
             return Article::create($data);
@@ -51,10 +52,11 @@ class ArticleService
             }
 
             if (isset($data['thumbnail']) && $data['thumbnail'] instanceof \Illuminate\Http\UploadedFile) {
+                $disk = config('filesystems.cloud', 'public');
                 if ($article->thumbnail) {
-                    Storage::disk('public')->delete($article->thumbnail);
+                    Storage::disk($disk)->delete($article->thumbnail);
                 }
-                $data['thumbnail'] = $data['thumbnail']->store('articles', 'public');
+                $data['thumbnail'] = $data['thumbnail']->store('articles', $disk);
             }
 
             $article->update($data);
@@ -70,7 +72,8 @@ class ArticleService
     {
         return DB::transaction(function () use ($article) {
             if ($article->thumbnail) {
-                Storage::disk('public')->delete($article->thumbnail);
+                $disk = config('filesystems.cloud', 'public');
+                Storage::disk($disk)->delete($article->thumbnail);
             }
 
             return $article->delete();
@@ -136,6 +139,7 @@ class ArticleService
 
         $html = '';
         $len = count($blocks);
+        $numberedCount = 0;
 
         for ($i = 0; $i < $len; $i++) {
             $block = $blocks[$i];
@@ -156,6 +160,7 @@ class ArticleService
                     break;
 
                 case 'h1':
+                    $numberedCount = 0;
                     if (trim(strip_tags($blockContent)) === '') {
                         break;
                     }
@@ -163,6 +168,7 @@ class ArticleService
                     break;
 
                 case 'h2':
+                    $numberedCount = 0;
                     if (trim(strip_tags($blockContent)) === '') {
                         break;
                     }
@@ -170,6 +176,7 @@ class ArticleService
                     break;
 
                 case 'h3':
+                    $numberedCount = 0;
                     if (trim(strip_tags($blockContent)) === '') {
                         break;
                     }
@@ -214,8 +221,12 @@ class ArticleService
                     $items = [];
                     while ($i < $len && ($blocks[$i]['type'] ?? '') === 'numbered') {
                         $itemContent = $blocks[$i]['content'] ?? '';
+                        $numberedCount++;
                         if (trim(strip_tags($itemContent)) !== '') {
-                            $items[] = preg_replace('/\s*(style|class|id)\s*=\s*("|\')(.*?)\2/i', '', $itemContent);
+                            $items[] = [
+                                'content' => preg_replace('/\s*(style|class|id)\s*=\s*("|\')(.*?)\2/i', '', $itemContent),
+                                'value' => $numberedCount
+                            ];
                         }
                         $i++;
                     }
@@ -224,7 +235,7 @@ class ArticleService
                     if (! empty($items)) {
                         $html .= '<ol class="article-list article-list--numbered">';
                         foreach ($items as $item) {
-                            $html .= '<li>'.$item.'</li>';
+                            $html .= '<li value="'.$item['value'].'">'.$item['content'].'</li>';
                         }
                         $html .= '</ol>';
                     }
@@ -232,7 +243,7 @@ class ArticleService
 
                 case 'image':
                     $src = $block['src'] ?? '';
-                    if (! $src || str_starts_with($src, 'data:')) {
+                    if (! $src) {
                         break;
                     }
                     $caption = e($block['caption'] ?? '');
@@ -264,6 +275,7 @@ class ArticleService
                     break;
 
                 case 'divider':
+                    $numberedCount = 0;
                     $html .= '<hr class="article-divider">';
                     break;
             }

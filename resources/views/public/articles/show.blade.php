@@ -56,7 +56,7 @@
     {{-- ── Hero Cover Image (selalu tampil) ── --}}
     @if($article->thumbnail)
     <div class="max-w-4xl mx-auto aspect-[21/9] rounded-[3rem] overflow-hidden mb-20 shadow-2xl relative group">
-        <img src="{{ asset('storage/' . $article->thumbnail) }}"
+        <img src="{{ $article->thumbnail_url }}"
              alt="{{ $article->title }}"
              fetchpriority="high"
              loading="eager"
@@ -197,13 +197,22 @@
     margin-top: 0.75rem;
 }
 .article-content .article-list--bulleted {
-    list-style-type: disc;
+    list-style-type: disc !important;
+    padding-left: 3rem !important;
 }
 .article-content .article-list--numbered {
-    list-style-type: decimal;
+    list-style-type: decimal !important;
+    padding-left: 1.5rem !important;
 }
 .article-content .article-list li {
     margin-bottom: 0.75rem;
+}
+.article-content .article-list li::marker {
+    color: #0f172a;
+}
+.article-content .article-list li:has(strong)::marker,
+.article-content .article-list li:has(b)::marker {
+    font-weight: 800;
 }
 
 /* PARAGRAPH */

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\LogsActivity;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class Article extends Model
 {
@@ -18,6 +19,19 @@ class Article extends Model
         'published_at' => 'datetime',
         'content_blocks' => 'array',
     ];
+
+    protected $appends = [
+        'thumbnail_url',
+    ];
+
+    public function getThumbnailUrlAttribute(): ?string
+    {
+        if (empty($this->thumbnail)) {
+            return null;
+        }
+
+        return Storage::disk(config('filesystems.cloud', 'public'))->url($this->thumbnail);
+    }
 
     protected static function booted()
     {
