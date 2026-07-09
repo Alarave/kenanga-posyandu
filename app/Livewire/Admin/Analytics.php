@@ -1022,30 +1022,7 @@ class Analytics extends BaseAdminComponent
 
     public function exportChartDataExcel(string $chartName)
     {
-        $query = MedicalRecord::with(['patient', 'patient.posyandu'])
-            ->whereYear('visit_date', $this->selectedYear)
-            ->when($this->selectedPosyandu, function ($q) {
-                $q->whereHas('patient', fn ($sq) => $sq->where('posyandu_id', $this->selectedPosyandu));
-            });
-
-        if ($this->selectedMonth) {
-            $query->whereMonth('visit_date', $this->selectedMonth);
-        }
-
-        if ($chartName === 'tren_kunjungan') {
-            $filename = 'export_tren_kunjungan_' . $this->selectedYear . '.csv';
-        } elseif ($chartName === 'tren_status_gizi_balita' || $chartName === 'distribusi_status_gizi_balita') {
-            $query->whereHas('patient', fn ($sq) => $sq->where('category', 'balita'));
-            $filename = 'export_status_gizi_balita_' . $this->selectedYear . '.csv';
-        } elseif ($chartName === 'capaian_imunisasi_balita') {
-            $query->whereHas('patient', fn ($sq) => $sq->where('category', 'balita'));
-            $query->whereNotNull('immunization')->where('immunization', '!=', '');
-            $filename = 'export_imunisasi_balita_' . $this->selectedYear . '.csv';
-        } else {
-            $filename = 'export_data_' . $this->selectedYear . '.csv';
-        }
-
-        $records = $query->orderBy('visit_date', 'asc')->get();
+        $filename = 'export_' . $chartName . '_' . $this->selectedYear . '.csv';
 
         $headers = [
             "Content-type" => "text/csv",
@@ -1055,22 +1032,50 @@ class Analytics extends BaseAdminComponent
             "Expires" => "0"
         ];
 
-        $callback = function () use ($records) {
+        $callback = function () use ($chartName) {
             $file = fopen('php://output', 'w');
             
             // BOM for Excel UTF-8
             fputs($file, "\xEF\xBB\xBF");
-            
-            fputcsv($file, ['Bulan', 'Nama Pasien', 'Unit Posyandu', 'Status', 'Tanggal']);
 
-            foreach ($records as $record) {
-                $bulan = Carbon::parse($record->visit_date)->translatedFormat('M');
-                $nama = $record->patient->full_name ?? '-';
-                $posyandu = $record->patient->posyandu->name ?? '-';
-                $status = ucfirst($record->patient->category ?? '-');
-                $tanggal = Carbon::parse($record->visit_date)->translatedFormat('d-m-Y');
-
-                fputcsv($file, [$bulan, $nama, $posyandu, $status, $tanggal]);
+            if ($chartName === 'tren_kunjungan') {
+                fputcsv($file, ['Bulan', 'Kunjungan Balita', 'Kunjungan Ibu Hamil', 'Kunjungan Lansia']);
+                foreach ($this->trendLabels as $index => $bulan) {
+                    fputcsv($file, [
+                        $bulan,
+                        $this->trendVisitsBalita[$index] ?? 0,
+                        $this->trendVisitsIbuHamil[$index] ?? 0,
+                        $this->trendVisitsLansia[$index] ?? 0
+                    ]);
+                }
+            } elseif ($chartName === 'tren_status_gizi_balita') {
+                fputcsv($file, ['Bulan', 'Normal (%)', 'Risiko/Lebih (%)', 'Stunting/Kurang (%)']);
+                foreach ($this->trendLabels as $index => $bulan) {
+                    fputcsv($file, [
+                        $bulan,
+                        $this->trendNormal[$index] ?? 0,
+                        $this->trendRisk[$index] ?? 0,
+                        $this->trendStunting[$index] ?? 0
+                    ]);
+                }
+            } elseif ($chartName === 'distribusi_status_gizi_balita') {
+                fputcsv($file, ['Status Gizi', 'Jumlah Balita']);
+                foreach ($this->nutritionLabels as $index => $label) {
+                    fputcsv($file, [
+                        $label,
+                        $this->nutritionData[$index] ?? 0
+                    ]);
+                }
+            } elseif ($chartName === 'capaian_imunisasi_balita') {
+                fputcsv($file, ['Jenis Vaksin', 'Jumlah Balita']);
+                foreach ($this->vaccineLabels as $index => $label) {
+                    fputcsv($file, [
+                        $label,
+                        $this->vaccineData[$index] ?? 0
+                    ]);
+                }
+            } else {
+                fputcsv($file, ['Data tidak ditemukan']);
             }
 
             fclose($file);
