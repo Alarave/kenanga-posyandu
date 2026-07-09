@@ -8,36 +8,43 @@
 
         {{-- Stats Grid Ibu Hamil --}}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {{-- AH-02 & 03: 4T Risk --}}
+            {{-- AH-02 & 03: Pregnancy Safety --}}
             <div wire:click="$parent.drillDown('Ibu Hamil - Risiko Tinggi &amp; 4T', 'pregnancy_high_risk', {{ $selectedMonth ?? 'null' }})"
-                 class="relative overflow-hidden bg-gradient-to-br from-white to-amber-50/10 rounded-3xl p-6 border border-amber-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-amber-100/40 hover:-translate-y-1 hover:border-amber-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group pregnancy-card">
+                 class="relative overflow-hidden bg-gradient-to-br from-white to-emerald-50/10 rounded-3xl p-6 border border-emerald-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-emerald-100/40 hover:-translate-y-1 hover:border-emerald-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group pregnancy-card">
                 
                 {{-- Background Watermark Icon --}}
-                <span class="material-symbols-outlined absolute -bottom-6 -right-6 text-[120px] text-amber-500 opacity-[0.04] transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 pointer-events-none">warning</span>
+                <span class="material-symbols-outlined absolute -bottom-6 -right-6 text-[120px] text-emerald-500 opacity-[0.04] transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 pointer-events-none">shield</span>
 
                 <div>
                     <div class="flex items-center justify-between mb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200/50 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:bg-amber-100 group-hover:text-amber-750">
-                            <span class="material-symbols-outlined text-[26px]">warning</span>
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-200/50 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:bg-emerald-100 group-hover:text-emerald-750">
+                            <span class="material-symbols-outlined text-[26px]">shield</span>
                         </div>
-                        <span class="text-[10px] font-black text-amber-700 uppercase tracking-widest bg-amber-50 px-2.5 py-1 rounded-lg">Risiko Tinggi &amp; 4T</span>
+                        <span class="text-[10px] font-black text-emerald-700 uppercase tracking-widest bg-emerald-50 px-2.5 py-1 rounded-lg">Risiko Rendah</span>
                     </div>
-                    <div class="flex items-baseline gap-2">
-                        <span class="text-5xl font-black text-amber-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ $riskStats['highRisk'] }}</span>
-                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Ibu Hamil</span>
+                    <div class="flex items-baseline justify-between w-full">
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-5xl font-black text-emerald-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ $riskStats['normal'] }}</span>
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Ibu Hamil</span>
+                        </div>
+                        @php
+                            $totalRisk = $riskStats['normal'] + $riskStats['highRisk'];
+                            $riskPercentage = $totalRisk > 0 ? round(($riskStats['normal'] / $totalRisk) * 100) : 100;
+                        @endphp
+                        <span class="text-xs font-extrabold text-emerald-750 bg-emerald-100/80 px-2 py-0.5 rounded-md">{{ $riskPercentage }}% Aman</span>
                     </div>
-                    <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Ibu hamil yang tergolong berisiko tinggi (terlalu muda, tua, dekat, atau pendek)</p>
+                    <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Ibu hamil dengan kondisi normal (usia aman 20-35 tahun &amp; tinggi badan ideal &ge; 145 cm).</p>
                 </div>
                 <div class="mt-6 pt-4 border-t border-slate-100 flex justify-between items-center pr-2">
-                    <span class="text-xs font-bold text-slate-500 transition-colors duration-300 hover-text-amber">Kondisi Normal:</span>
+                    <span class="text-xs font-bold text-slate-500 transition-colors duration-300 hover-text-teal">Risiko Tinggi &amp; 4T:</span>
                     <div class="flex items-center gap-2">
-                        <span class="text-emerald-700 font-extrabold bg-emerald-50 px-2.5 py-0.5 rounded-lg">{{ $riskStats['normal'] }} Ibu</span>
-                        <span class="material-symbols-outlined text-[14px] !w-auto !overflow-visible text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 hover-text-amber">arrow_forward</span>
+                        <span class="text-amber-700 font-extrabold bg-amber-50 px-2.5 py-0.5 rounded-lg">{{ $riskStats['highRisk'] }} Ibu</span>
+                        <span class="material-symbols-outlined text-[14px] !w-auto !overflow-visible text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 hover-text-teal">arrow_forward</span>
                     </div>
                 </div>
             </div>
     
-            {{-- AH-06: Anemia --}}
+            {{-- AH-06: Hemoglobin Index --}}
             <div wire:click="$parent.drillDown('Ibu Hamil - Kasus Anemia', 'pregnancy_anemia', {{ $selectedMonth ?? 'null' }})"
                  class="relative overflow-hidden bg-gradient-to-br from-white to-rose-50/10 rounded-3xl p-6 border border-rose-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-rose-100/40 hover:-translate-y-1 hover:border-rose-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group pregnancy-card">
                 
@@ -49,21 +56,30 @@
                         <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-200/50 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:bg-rose-100 group-hover:text-rose-750">
                             <span class="material-symbols-outlined text-[26px]">water_drop</span>
                         </div>
-                        <span class="text-[10px] font-black text-rose-700 uppercase tracking-widest bg-rose-50 px-2.5 py-1 rounded-lg">Kasus Anemia</span>
+                        <span class="text-[10px] font-black text-rose-700 uppercase tracking-widest bg-rose-50 px-2.5 py-1 rounded-lg">Hemoglobin Sehat</span>
                     </div>
-                    <div class="flex items-baseline gap-2">
-                        <span class="text-5xl font-black text-rose-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ $anemiaCount }}</span>
-                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Ibu Hamil</span>
+                    <div class="flex items-baseline justify-between w-full">
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-5xl font-black text-rose-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ $anemiaStats['normal'] }}</span>
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Ibu Hamil</span>
+                        </div>
+                        @php
+                            $anemiaPercentage = $anemiaStats['total'] > 0 ? round(($anemiaStats['normal'] / $anemiaStats['total']) * 100) : 100;
+                        @endphp
+                        <span class="text-xs font-extrabold text-rose-750 bg-rose-100/80 px-2 py-0.5 rounded-md">{{ $anemiaPercentage }}% Normal</span>
                     </div>
-                    <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Ibu hamil dengan kadar Hemoglobin (Hb) di bawah 11 g/dL</p>
+                    <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Ibu hamil dengan kadar Hemoglobin (Hb) aman (&ge; 11 g/dL) bebas dari anemia.</p>
                 </div>
                 <div class="mt-6 pt-4 border-t border-slate-100 flex justify-between items-center pr-2">
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider transition-colors duration-300 hover-text-rose">Terdeteksi otomatis rekam medis</span>
-                    <span class="material-symbols-outlined text-[14px] !w-auto !overflow-visible text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 hover-text-rose">arrow_forward</span>
+                    <span class="text-xs font-bold text-slate-500 transition-colors duration-300 hover-text-rose">Kasus Anemia:</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-rose-700 font-extrabold bg-rose-50 px-2.5 py-0.5 rounded-lg">{{ $anemiaStats['anemia'] }} Ibu</span>
+                        <span class="material-symbols-outlined text-[14px] !w-auto !overflow-visible text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 hover-text-rose">arrow_forward</span>
+                    </div>
                 </div>
             </div>
     
-            {{-- AH-04: TTD --}}
+            {{-- AH-04: TTD Coverage --}}
             <div wire:click="$parent.drillDown('Ibu Hamil - Pemberian Tablet Fe', 'pregnancy_tablet_fe', {{ $selectedMonth ?? 'null' }})"
                  class="relative overflow-hidden bg-gradient-to-br from-white to-teal-50/10 rounded-3xl p-6 border border-teal-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-teal-100/40 hover:-translate-y-1 hover:border-teal-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group pregnancy-card">
                 
@@ -75,13 +91,23 @@
                         <div class="w-12 h-12 rounded-2xl bg-teal-50 text-teal-650 flex items-center justify-center border border-teal-200/50 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:bg-teal-100 group-hover:text-teal-750">
                             <span class="material-symbols-outlined text-[26px]">pill</span>
                         </div>
-                        <span class="text-[10px] font-black text-teal-700 uppercase tracking-widest bg-teal-50 px-2.5 py-1 rounded-lg">Pemberian Tablet Fe</span>
+                        <span class="text-[10px] font-black text-teal-700 uppercase tracking-widest bg-teal-50 px-2.5 py-1 rounded-lg">Cakupan TTD</span>
                     </div>
+                    @php
+                        $totalTtd = $ttdStats['received'] + $ttdStats['notReceived'];
+                        $ttdPercentage = $totalTtd > 0 ? round(($ttdStats['received'] / $totalTtd) * 100) : 0;
+                    @endphp
                     <div class="flex items-baseline gap-2">
-                        <span class="text-5xl font-black text-teal-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ $ttdStats['received'] }}</span>
-                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Ibu Hamil</span>
+                        <span class="text-5xl font-black text-teal-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ $ttdPercentage }}%</span>
+                        <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Cakupan Distribusi</span>
                     </div>
-                    <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Ibu hamil yang sudah menerima Tablet Tambah Darah (TTD) atau suplemen MMS</p>
+                    
+                    {{-- Mini Progress Bar --}}
+                    <div class="mt-3 w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                        <div class="bg-teal-500 h-full rounded-full transition-all duration-500" style="width: {{ $ttdPercentage }}%"></div>
+                    </div>
+
+                    <p class="text-xs font-semibold text-slate-500 mt-3 leading-relaxed">Ibu hamil yang sudah menerima Tablet Tambah Darah (TTD) atau suplemen MMS.</p>
                 </div>
                 <div class="mt-6 pt-4 border-t border-slate-100 flex justify-between items-center pr-2">
                     <span class="text-xs font-bold text-slate-500 transition-colors duration-300 hover-text-teal">Belum Menerima:</span>

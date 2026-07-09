@@ -405,10 +405,12 @@ test('ibu hamil analytics component computes correct health scorecards and cover
         'selectedMonth' => now()->month,
         'selectedPosyandu' => $posyandu->id
     ])
-    ->assertSeeHtml('RISIKO RENDAH')
-    ->assertSeeHtml('HEMOGLOBIN SEHAT')
-    ->assertSeeHtml('CAKUPAN TTD')
+    ->assertSeeHtml('Risiko Rendah')
+    ->assertSeeHtml('Hemoglobin Sehat')
+    ->assertSeeHtml('Cakupan TTD')
     ->assertSeeHtml('50%'); // 1 out of 2 received Fe (50% coverage)
 });
+
+
 
 
