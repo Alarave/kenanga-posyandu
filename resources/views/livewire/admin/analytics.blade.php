@@ -1008,9 +1008,22 @@ window.isDrillingDown = false;
 window.downloadChart = function(chartInstance, fileName) {
     if (!chartInstance) return;
     
-    // 1. Download Gambar PNG
+    // 1. Download Gambar PNG dengan Background Putih Solid agar informasinya jelas
     try {
-        const url = chartInstance.toBase64Image();
+        const sourceCanvas = chartInstance.canvas;
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = sourceCanvas.width;
+        tempCanvas.height = sourceCanvas.height;
+        const tempCtx = tempCanvas.getContext('2d');
+        
+        // Isi background dengan warna putih solid
+        tempCtx.fillStyle = '#ffffff';
+        tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
+        
+        // Gambar chart di atas background putih
+        tempCtx.drawImage(sourceCanvas, 0, 0);
+        
+        const url = tempCanvas.toDataURL('image/png');
         const a = document.createElement('a');
         a.href = url;
         a.download = fileName + '.png';
