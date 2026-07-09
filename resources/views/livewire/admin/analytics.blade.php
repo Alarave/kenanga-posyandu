@@ -1114,7 +1114,12 @@ function initCharts(data = null) {
             val = typeof $wire.get === 'function' ? $wire.get(wireProp) : $wire[wireProp];
         }
         try {
-            return JSON.parse(JSON.stringify(val || []));
+            if (!val) return [];
+            let parsed = JSON.parse(JSON.stringify(val));
+            if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+                return Object.values(parsed);
+            }
+            return Array.isArray(parsed) ? parsed : [];
         } catch(e) {
             return [];
         }
@@ -1128,8 +1133,8 @@ function initCharts(data = null) {
     const visitsIbuHamil = getArr(data, 'trendVisitsIbuHamil');
     const visitsLansia = getArr(data, 'trendVisitsLansia');
 
-    const viewMode = data ? data.viewMode : $wire.viewMode;
-    const compareMode = data ? data.compareMode : $wire.compareMode;
+    const viewMode = data ? data.viewMode : (typeof $wire.get === 'function' ? $wire.get('viewMode') : $wire.viewMode);
+    const compareMode = data ? data.compareMode : (typeof $wire.get === 'function' ? $wire.get('compareMode') : $wire.compareMode);
     const trendCompareCurrent = getArr(data, 'trendCompareCurrent');
     const trendComparePrevious = getArr(data, 'trendComparePrevious');
     const trendLabelsPrevious = getArr(data, 'trendLabelsPrevious');
