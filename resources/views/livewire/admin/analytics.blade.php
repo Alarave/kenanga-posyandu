@@ -1160,10 +1160,20 @@ function initCharts(data = null) {
         if (fromData && fromData[wireProp] !== undefined) {
             val = fromData[wireProp];
         } else {
-            val = $wire[wireProp];
+            val = $wire.get(wireProp);
         }
         try {
-            return JSON.parse(JSON.stringify(val || []));
+            // Livewire 3 wraps arrays in proxies, but we need plain arrays for Chart.js
+            // If it's already an array, JSON.stringify handles it.
+            // If it's a proxy, $wire.get() usually returns a plain array/object we can stringify.
+            if (!val) return [];
+            
+            // Convert objects that are array-like (from PHP associative arrays) to plain arrays
+            let parsed = JSON.parse(JSON.stringify(val));
+            if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+                return Object.values(parsed);
+            }
+            return Array.isArray(parsed) ? parsed : [];
         } catch(e) {
             return [];
         }
@@ -1177,8 +1187,8 @@ function initCharts(data = null) {
     const visitsIbuHamil = getArr(data, 'trendVisitsIbuHamil');
     const visitsLansia = getArr(data, 'trendVisitsLansia');
 
-    const viewMode = data ? data.viewMode : $wire.viewMode;
-    const compareMode = data ? data.compareMode : $wire.compareMode;
+    const viewMode = data ? data.viewMode : $wire.get('viewMode');
+    const compareMode = data ? data.compareMode : $wire.get('compareMode');
     const trendCompareCurrent = getArr(data, 'trendCompareCurrent');
     const trendComparePrevious = getArr(data, 'trendComparePrevious');
     const trendLabelsPrevious = getArr(data, 'trendLabelsPrevious');
