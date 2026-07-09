@@ -391,6 +391,32 @@ class Analytics extends BaseAdminComponent
     }
 
     /**
+     * Export data detail kunjungan bulanan gabungan ke Excel (.xlsx).
+     * Kolom: Bulan | Nama | NIK | Kategori | Tanggal Kunjungan | Aksi Lihat
+     */
+    public function exportVisitsTrendExcel()
+    {
+        $records = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
+            ->with(['patient'])
+            ->whereYear('visit_date', $this->selectedYear)
+            ->orderBy('visit_date', 'asc')
+            ->get();
+
+        $baseUrl = rtrim(config('app.url'), '/');
+        $export = new \App\Exports\VisitsTrendExport($records, $this->selectedYear, $baseUrl);
+
+        $fileName = 'data_kunjungan_bulanan_' . $this->selectedYear . '.xlsx';
+
+        return response()->streamDownload(function () use ($export) {
+            $spreadsheet = $export->generate();
+            $writer = new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+            $writer->save('php://output');
+        }, $fileName, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
+    }
+
+    /**
      * Refresh data manually (clears cache)
      */
     public function refreshStats(): void

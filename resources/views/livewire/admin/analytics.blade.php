@@ -406,9 +406,24 @@
                         <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Tren Kunjungan Bulanan Gabungan</h3>
                         <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Perbandingan tren frekuensi kunjungan pasien per kategori di posyandu (Dapat diklik untuk detail)</p>
                     </div>
-                    <button onclick="downloadChart(visitsTrendChart, 'tren_kunjungan')" class="p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
-                        <span class="material-symbols-outlined text-[20px]">download</span>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        {{-- Tombol Download Gambar (existing) --}}
+                        <button onclick="downloadChart(visitsTrendChart, 'tren_kunjungan')" class="p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                            <span class="material-symbols-outlined text-[20px]">download</span>
+                        </button>
+                        {{-- Tombol Download Excel Data Detail --}}
+                        <button wire:click="exportVisitsTrendExcel"
+                                wire:loading.attr="disabled"
+                                wire:target="exportVisitsTrendExcel"
+                                class="p-2.5 text-emerald-600 hover:text-emerald-800 rounded-xl bg-emerald-50 border border-emerald-300 hover:bg-emerald-100 transition-colors shadow-xs cursor-pointer flex items-center justify-center disabled:opacity-50 disabled:cursor-wait"
+                                title="Unduh Data Excel (.xlsx)">
+                            <span wire:loading.remove wire:target="exportVisitsTrendExcel" class="material-symbols-outlined text-[20px]">table_chart</span>
+                            <svg wire:loading wire:target="exportVisitsTrendExcel" class="animate-spin h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
                 <div class="relative h-96">
                     <canvas id="visitsTrendChart" wire:ignore></canvas>
