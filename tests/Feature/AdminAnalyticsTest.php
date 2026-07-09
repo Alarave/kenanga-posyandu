@@ -339,11 +339,17 @@ test('analytics component can drill down on pregnancy risks', function () {
         ->assertSee('TB: 140.00 cm');
 
     // Test Tablet Fe drill down
-    Livewire::test(\App\Livewire\Admin\Analytics::class)
-        ->call('drillDown', 'Ibu Hamil - Pemberian Tablet Fe', 'pregnancy_tablet_fe', now()->month)
-        ->assertSee('Ibu Hamil Menerima Fe')
-        ->assertSee('Tablet Fe: Menerima');
+    $testComponent = Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->call('drillDown', 'Ibu Hamil - Pemberian Tablet Fe', 'pregnancy_tablet_fe', now()->month);
+        
+    $testComponent->assertSee('Ibu Hamil Menerima Fe')
+        ->assertSee('Tablet Fe: Menerima')
+        ->assertSee('Ibu Hamil Anemia')
+        ->assertSee('Tablet Fe: Belum Menerima');
 
+    $drillDownData = $testComponent->get('drillDownData');
+    expect($drillDownData[0]['nutrition_status'])->toBe('Tablet Fe: Belum Menerima');
+    expect($drillDownData[2]['nutrition_status'])->toBe('Tablet Fe: Menerima');
     // Test ANC K1 drill down
     Livewire::test(\App\Livewire\Admin\Analytics::class)
         ->call('drillDown', 'Ibu Hamil - Kunjungan K1', 'pregnancy_k1', now()->month)

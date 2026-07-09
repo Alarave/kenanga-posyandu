@@ -482,12 +482,16 @@ class Analytics extends BaseAdminComponent
                 ->where('hemoglobin', '<', 11),
             'pregnancy_tablet_fe' => $query->whereHas('patient', function ($q) {
                     $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
-                })
-                ->where('nakes_gives_fe_mms', 1),
+                }),
             default => null,
         };
 
-        $this->drillDownData = $query->latest('visit_date')->get()->map(fn ($r) => [
+        $records = $query->latest('visit_date')->get();
+        if ($type === 'pregnancy_tablet_fe') {
+            $records = $records->sortBy('nakes_gives_fe_mms');
+        }
+
+        $this->drillDownData = $records->map(fn ($r) => [
             'name' => $r->patient?->full_name ?? '-',
             'nik' => $r->patient?->id_number ?? '-',
             'posyandu' => $r->patient?->posyandu?->name ?? '-',
@@ -519,8 +523,9 @@ class Analytics extends BaseAdminComponent
             },
             'visit_date' => $r->visit_date?->format('d M Y') ?? '-',
             'patient_id' => $r->patient_id,
-        ])->toArray();
+        ])->values()->toArray();
     }
+
 
     public function closeDrillDown(): void
     {
