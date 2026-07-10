@@ -211,6 +211,7 @@ class PatientController extends Controller
         return response()->stream(function () use ($rows) {
             $file = fopen('php://output', 'w');
             fwrite($file, "\xEF\xBB\xBF"); // BOM UTF-8
+            fwrite($file, "sep=,\n"); // Force Excel to use comma separator
             foreach ($rows as $row) {
                 fputcsv($file, $row);
             }
@@ -284,17 +285,7 @@ class PatientController extends Controller
                     'NIK', 'nama', 'tgl_lahir', 'jk', 'suami',
                     'tempat_lahir', 'phone_number', 'RT', 'RW', 'ALAMAT',
                     'apakah_hamil', 'TANGGAL UKUR', 'BERAT', 'TINGGI', 'LILA',
-                ],
-                [
-                    '3275014102920002', 'SITI AMINAH', '1992-02-14', 'P', 'BUDI SANTOSO',
-                    'Bekasi', '082345678901', '5', '11', 'JL. CENDRAWASIH NO. 12',
-                    'Ya', '2026-03-15', '65.2', '160.0', '24.5',
-                ],
-                [
-                    '3275014102920005', 'HANIFAH', '1995-05-20', 'P', 'AGUS WIDODO',
-                    'Jakarta', '082345678902', '3', '11', 'JL. MERPATI NO. 5',
-                    'Ya', '2026-03-15', '60.0', '158.0', '23.8',
-                ],
+                ]
             ];
         }
 
@@ -304,17 +295,7 @@ class PatientController extends Controller
                     'NIK', 'nama', 'tgl_lahir', 'jk', 'tempat_lahir',
                     'phone_number', 'RT', 'RW', 'ALAMAT', 'riwayat_penyakit',
                     'TANGGAL UKUR', 'BERAT', 'TINGGI',
-                ],
-                [
-                    '3275010101500003', 'KARTOSUWIRYO', '1950-01-01', 'L', 'Solo',
-                    '085678901234', '2', '11', 'JL. MATARAMAN NO. 45', 'Hipertensi, Asam Urat',
-                    '2026-03-15', '70.0', '165.0',
-                ],
-                [
-                    '3275014101550004', 'SUHARTINI', '1955-08-12', 'P', 'Yogyakarta',
-                    '085678901235', '4', '11', 'JL. DUKUH NO. 8', 'Diabetes',
-                    '2026-03-15', '55.5', '150.0',
-                ],
+                ]
             ];
         }
 
@@ -325,19 +306,7 @@ class PatientController extends Controller
                 'tempat_lahir', 'phone_number', 'RT', 'RW', 'ALAMAT',
                 'TANGGAL UKUR', 'BERAT', 'TINGGI', 'LILA', 'lingkar_kepala',
                 'CARA UKUR', 'vitamin', 'Imunisasi',
-            ],
-            [
-                '3275010608224411', 'A. ZAFRAN. U.R', '2022-08-06', 'L', 'RYAN. R. R',
-                'Jakarta', '081234567890', '4', '11', 'JL. P. NUSANTARA',
-                '2026-03-15', '12.5', '85.0', '14.5', '48.0',
-                'Berdiri', 'Ya', 'DPT-HB-Hib 3',
-            ],
-            [
-                '3275015101220001', 'AISYAH HANIN.K', '2022-01-11', 'P', 'YUNIAR. P',
-                'Bekasi', '081234567891', '3', '11', 'JL. P. MADURA',
-                '2026-03-15', '11.0', '82.0', '13.8', '47.5',
-                'Berdiri', '', 'Campak MR',
-            ],
+            ]
         ];
     }
 }

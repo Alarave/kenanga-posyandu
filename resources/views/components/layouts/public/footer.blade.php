@@ -25,10 +25,10 @@
 
             {{-- Column 2: Layanan --}}
             <div>
-                <h4 class="text-[11px] font-extrabold uppercase tracking-widest text-slate-500 mb-6 relative pl-3">
+                <p class="text-[11px] font-extrabold uppercase tracking-widest text-slate-500 mb-6 relative pl-3">
                     <span class="absolute left-0 top-0 bottom-0 w-0.75 rounded bg-emerald-600"></span>
                     Layanan Kami
-                </h4>
+                </p>
                 <ul class="space-y-3.5">
                     @php
                         $services = [
@@ -51,10 +51,10 @@
 
             {{-- Column 3: Informasi --}}
             <div>
-                <h4 class="text-[11px] font-extrabold uppercase tracking-widest text-slate-500 mb-6 relative pl-3">
+                <p class="text-[11px] font-extrabold uppercase tracking-widest text-slate-500 mb-6 relative pl-3">
                     <span class="absolute left-0 top-0 bottom-0 w-0.75 rounded bg-emerald-600"></span>
                     Informasi
-                </h4>
+                </p>
                 <ul class="space-y-3.5">
                     @php
                         $info = [
@@ -77,10 +77,10 @@
 
             {{-- Column 4: Kontak --}}
             <div>
-                <h4 class="text-[11px] font-extrabold uppercase tracking-widest text-slate-500 mb-6 relative pl-3">
+                <p class="text-[11px] font-extrabold uppercase tracking-widest text-slate-500 mb-6 relative pl-3">
                     <span class="absolute left-0 top-0 bottom-0 w-0.75 rounded bg-emerald-600"></span>
                     Kontak Kami
-                </h4>
+                </p>
                 <ul class="space-y-4 text-[13.5px]">
                     <li>
                         <a href="https://www.google.com/maps/place/Jl.+Pulau+Lombok+I,+RT.005%2FRW.011,+Aren+Jaya,+Kec.+Bekasi+Tim.,+Kota+Bks,+Jawa+Barat+17111/@-6.2440988,107.0340301,17z/data=!3m1!4b1!4m6!3m5!1s0x2e698ef3b1f96e2d:0x6b6411d4927c81b2!8m2!3d-6.2440988!4d107.0340301!16s%2Fg%2F11lf4vqv43!18m1!1e1?entry=ttu&g_ep=EgoyMDI2MDYyNC4wIKXMDSoASAFQAw%3D%3D" 

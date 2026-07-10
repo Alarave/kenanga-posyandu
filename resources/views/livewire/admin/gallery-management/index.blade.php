@@ -65,6 +65,7 @@
                         @if($folder->cover_photo)
                             <img src="{{ asset('storage/' . $folder->cover_photo) }}" 
                                  alt="{{ $folder->name }}"
+                                 onerror="this.onerror=null; this.src='https://placehold.co/600x450/e2e8f0/0f766e?text=Posyandu+Kenanga';"
                                  class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105">
                         @else
                             {{-- Folder Placeholder Graphic (Gradient Pastel) --}}

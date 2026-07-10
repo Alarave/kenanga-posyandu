@@ -45,7 +45,7 @@ beforeEach(function () {
         'id_number' => '1234567890123456',
         'full_name' => 'Test Balita',
         'birth_date' => now()->subMonths(12), // 12 months old
-        'gender' => 'M',
+        'gender' => 'L',
         'address' => 'Test Address',
         'phone_number' => '08123456789',
     ]);
@@ -198,7 +198,7 @@ test('medical record does not calculate nutrition status for non-balita categori
         'id_number' => '1234567890123457',
         'full_name' => 'Test Lansia',
         'birth_date' => now()->subYears(65),
-        'gender' => 'M',
+        'gender' => 'L',
         'address' => 'Test Address',
         'phone_number' => '08123456789',
     ]);
@@ -253,3 +253,4 @@ test('compareNutritionStatus returns correct trend values', function () {
     $trend = $method->invoke($service, 'Gizi Buruk', 'Gizi Kurang');
     expect($trend)->toBe('naik');
 });
+

@@ -29,7 +29,12 @@ class ActivityLogController extends Controller
 
         // Filter by action type
         if ($request->filled('action_type')) {
-            $query->where('action_type', $request->action_type);
+            $actType = $request->action_type;
+            if (in_array($actType, ['create', 'update', 'delete'])) {
+                $query->where('action_type', 'like', "%{$actType}%");
+            } else {
+                $query->where('action_type', $actType);
+            }
         }
 
         // Filter by entity type
@@ -67,10 +72,19 @@ class ActivityLogController extends Controller
 
         $totalStats = [
             'total' => array_sum($counts),
-            'create' => $counts['create'] ?? 0,
-            'update' => $counts['update'] ?? 0,
-            'delete' => $counts['delete'] ?? 0,
+            'create' => 0,
+            'update' => 0,
+            'delete' => 0,
         ];
+        foreach ($counts as $type => $cnt) {
+            if (str_contains($type, 'create')) {
+                $totalStats['create'] += $cnt;
+            } elseif (str_contains($type, 'update')) {
+                $totalStats['update'] += $cnt;
+            } elseif (str_contains($type, 'delete')) {
+                $totalStats['delete'] += $cnt;
+            }
+        }
 
         // Get unique users for filter dropdown
         $users = DB::table('activity_logs')
@@ -79,12 +93,25 @@ class ActivityLogController extends Controller
             ->distinct()
             ->get();
 
-        // Get unique action types for filter dropdown
-        $actionTypes = DB::table('activity_logs')
+        // Get unique action types for filter dropdown (normalized)
+        $rawTypes = DB::table('activity_logs')
             ->select('action_type')
             ->distinct()
             ->get()
-            ->pluck('action_type');
+            ->pluck('action_type')
+            ->toArray();
+
+        $actionTypes = [];
+        foreach ($rawTypes as $type) {
+            $normalized = match(true) {
+                str_contains($type, 'create') => 'create',
+                str_contains($type, 'update') => 'update',
+                str_contains($type, 'delete') => 'delete',
+                default => $type,
+            };
+            $actionTypes[] = $normalized;
+        }
+        $actionTypes = array_unique($actionTypes);
 
         // Get unique entity types for filter dropdown
         $entityTypes = DB::table('activity_logs')

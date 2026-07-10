@@ -30,7 +30,7 @@
                     
                     {{-- Current Media Display --}}
                     <div id="imagePreview" class="@if($gallery->type === 'video') hidden @endif mb-4 max-w-full">
-                        <img src="{{ asset('storage/' . $gallery->photo) }}" alt="{{ $gallery->title }}" class="h-64 rounded-2xl shadow-xl border-4 border-white object-cover mx-auto">
+                        <img src="{{ asset('storage/' . $gallery->photo) }}" alt="{{ $gallery->title }}" onerror="this.onerror=null; this.src='https://placehold.co/600x450/e2e8f0/0f766e?text=Media+Posyandu';" class="h-64 rounded-2xl shadow-xl border-4 border-white object-cover mx-auto">
                     </div>
 
                     <div id="videoPreview" class="@if($gallery->type !== 'video') hidden @endif mb-4 w-full max-w-md">

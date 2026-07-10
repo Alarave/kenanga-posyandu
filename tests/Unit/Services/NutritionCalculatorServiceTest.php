@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 use App\Models\WhoWeightForAge;
 use App\Services\NutritionCalculatorService;
@@ -265,7 +265,7 @@ describe('deterministic property (sifat deterministik)', function () {
             $result1 = $this->service->calculate($weight, 75.0, $age, $gender);
             $result2 = $this->service->calculate($weight, 75.0, $age, $gender);
 
-            // Property: deterministic — same input always produces same output
+            // Property: deterministic â€” same input always produces same output
             expect($result1['z_score'])->toBe($result2['z_score'])
                 ->and($result1['status'])->toBe($result2['status']);
         }
@@ -338,3 +338,5 @@ describe('edge cases', function () {
         expect($zScore)->not->toBeNull();
     });
 });
+
+

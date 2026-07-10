@@ -200,43 +200,43 @@
     </section>
 
     {{-- ── Tab Navigation ── --}}
-    <div class="flex overflow-x-auto whitespace-nowrap bg-slate-100/80 backdrop-blur-sm p-1 sm:p-1.5 rounded-xl sm:rounded-2xl border border-slate-200/80 shadow-sm gap-0.5 sm:gap-1 scrollbar-none w-full">
+    <div class="flex overflow-x-auto whitespace-nowrap bg-slate-100/80 backdrop-blur-sm p-1.5 sm:p-2 rounded-2xl border border-slate-200/80 shadow-sm gap-1 sm:gap-2 scrollbar-none w-full">
         <button wire:click="$set('activeTab', 'overview')" @class([
-            'analytics-tab-btn flex-1 shrink-0 min-w-max py-2.5 sm:py-3 px-3 sm:px-5 rounded-lg sm:rounded-xl text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer',
-            'bg-white text-teal-800 border border-teal-100/80 shadow-md font-extrabold tracking-tight' => $activeTab === 'overview',
-            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-semibold' => $activeTab !== 'overview'
+            'analytics-tab-btn flex-1 shrink-0 min-w-max py-3.5 sm:py-4 px-4 sm:px-7 rounded-xl text-sm sm:text-[15px] transition-all duration-200 flex items-center justify-center gap-2 sm:gap-2.5 cursor-pointer',
+            'bg-white text-teal-850 border border-teal-100/80 shadow-md font-black tracking-tight' => $activeTab === 'overview',
+            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-extrabold' => $activeTab !== 'overview'
         ]) style="min-width: max-content; flex-shrink: 0;">
-            <span class="material-symbols-outlined text-[16px] sm:text-[18px] {{ $activeTab === 'overview' ? 'text-teal-600' : 'text-slate-400' }}">dashboard</span>
+            <span class="material-symbols-outlined text-[18px] sm:text-[22px] {{ $activeTab === 'overview' ? 'text-teal-600' : 'text-slate-400' }}">dashboard</span>
             <span class="hidden xs:inline sm:inline">Overview</span>
             <span class="inline xs:hidden sm:hidden">Ov.</span>
-            @if($activeTab === 'overview')<span class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-teal-500 ml-0.5 sm:ml-1"></span>@endif
+            @if($activeTab === 'overview')<span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-teal-500 ml-0.5 sm:ml-1"></span>@endif
         </button>
         <button wire:click="$set('activeTab', 'balita')" @class([
-            'analytics-tab-btn flex-1 shrink-0 min-w-max py-2.5 sm:py-3 px-3 sm:px-5 rounded-lg sm:rounded-xl text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer',
-            'bg-white text-teal-800 border border-teal-100/80 shadow-md font-extrabold tracking-tight' => $activeTab === 'balita',
-            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-semibold' => $activeTab !== 'balita'
+            'analytics-tab-btn flex-1 shrink-0 min-w-max py-3.5 sm:py-4 px-4 sm:px-7 rounded-xl text-sm sm:text-[15px] transition-all duration-200 flex items-center justify-center gap-2 sm:gap-2.5 cursor-pointer',
+            'bg-white text-teal-850 border border-teal-100/80 shadow-md font-black tracking-tight' => $activeTab === 'balita',
+            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-extrabold' => $activeTab !== 'balita'
         ]) style="min-width: max-content; flex-shrink: 0;">
-            <span class="material-symbols-outlined text-[16px] sm:text-[18px] {{ $activeTab === 'balita' ? 'text-teal-600' : 'text-slate-400' }}">child_care</span>
+            <span class="material-symbols-outlined text-[18px] sm:text-[22px] {{ $activeTab === 'balita' ? 'text-teal-600' : 'text-slate-400' }}">child_care</span>
             Balita
-            @if($activeTab === 'balita')<span class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-teal-500 ml-0.5 sm:ml-1"></span>@endif
+            @if($activeTab === 'balita')<span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-teal-500 ml-0.5 sm:ml-1"></span>@endif
         </button>
         <button wire:click="$set('activeTab', 'pregnancy')" @class([
-            'analytics-tab-btn flex-1 shrink-0 min-w-max py-2.5 sm:py-3 px-3 sm:px-5 rounded-lg sm:rounded-xl text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer',
-            'bg-white text-rose-800 border border-rose-100/80 shadow-md font-extrabold tracking-tight' => $activeTab === 'pregnancy',
-            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-semibold' => $activeTab !== 'pregnancy'
+            'analytics-tab-btn flex-1 shrink-0 min-w-max py-3.5 sm:py-4 px-4 sm:px-7 rounded-xl text-sm sm:text-[15px] transition-all duration-200 flex items-center justify-center gap-2 sm:gap-2.5 cursor-pointer',
+            'bg-white text-rose-850 border border-rose-100/80 shadow-md font-black tracking-tight' => $activeTab === 'pregnancy',
+            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-extrabold' => $activeTab !== 'pregnancy'
         ]) style="min-width: max-content; flex-shrink: 0;">
-            <span class="material-symbols-outlined text-[16px] sm:text-[18px] {{ $activeTab === 'pregnancy' ? 'text-rose-500' : 'text-slate-400' }}">pregnant_woman</span>
+            <span class="material-symbols-outlined text-[18px] sm:text-[22px] {{ $activeTab === 'pregnancy' ? 'text-rose-500' : 'text-slate-400' }}">pregnant_woman</span>
             Hamil
-            @if($activeTab === 'pregnancy')<span class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-rose-500 ml-0.5 sm:ml-1"></span>@endif
+            @if($activeTab === 'pregnancy')<span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-rose-500 ml-0.5 sm:ml-1"></span>@endif
         </button>
         <button wire:click="$set('activeTab', 'lansia')" @class([
-            'analytics-tab-btn flex-1 shrink-0 min-w-max py-2.5 sm:py-3 px-3 sm:px-5 rounded-lg sm:rounded-xl text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer',
-            'bg-white text-indigo-800 border border-indigo-100/80 shadow-md font-extrabold tracking-tight' => $activeTab === 'lansia',
-            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-semibold' => $activeTab !== 'lansia'
+            'analytics-tab-btn flex-1 shrink-0 min-w-max py-3.5 sm:py-4 px-4 sm:px-7 rounded-xl text-sm sm:text-[15px] transition-all duration-200 flex items-center justify-center gap-2 sm:gap-2.5 cursor-pointer',
+            'bg-white text-indigo-850 border border-indigo-100/80 shadow-md font-black tracking-tight' => $activeTab === 'lansia',
+            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-extrabold' => $activeTab !== 'lansia'
         ]) style="min-width: max-content; flex-shrink: 0;">
-            <span class="material-symbols-outlined text-[16px] sm:text-[18px] {{ $activeTab === 'lansia' ? 'text-indigo-500' : 'text-slate-400' }}">elderly</span>
+            <span class="material-symbols-outlined text-[18px] sm:text-[22px] {{ $activeTab === 'lansia' ? 'text-indigo-500' : 'text-slate-400' }}">elderly</span>
             Lansia
-            @if($activeTab === 'lansia')<span class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-indigo-500 ml-0.5 sm:ml-1"></span>@endif
+            @if($activeTab === 'lansia')<span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-indigo-500 ml-0.5 sm:ml-1"></span>@endif
         </button>
     </div>
 
@@ -399,23 +399,264 @@
                 @endforeach
             </div>
 
-            {{-- Combined Trend Line Chart --}}
-            <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-slate-200 shadow-xs">
-                <div class="flex items-center justify-between gap-4 mb-6">
-                    <div>
-                        <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Tren Kunjungan Bulanan Gabungan</h3>
-                        <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Perbandingan tren frekuensi kunjungan pasien per kategori di posyandu (Dapat diklik untuk detail)</p>
-                    </div>
-                    <button onclick="downloadChart(visitsTrendChart, 'tren_kunjungan')" class="p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
-                        <span class="material-symbols-outlined text-[20px]">download</span>
-                    </button>
+            {{-- Widget 3: Rangkuman Indikator Kesehatan Utama (Horizontal Layout, Below Main KPIs, No Donut Charts) --}}
+            <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-slate-200 shadow-xs">
+                <div class="mb-4">
+                    <h3 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                        <span class="material-symbols-outlined text-teal-600 text-[20px]">clinical_notes</span>
+                        Indikator Kesehatan Utama
+                    </h3>
+                    <p class="text-xs text-slate-500 font-semibold mt-0.5">Ringkasan parameter klinis pasien dari pemeriksaan terbaru</p>
                 </div>
-                <div class="relative h-96">
-                    <canvas id="visitsTrendChart" wire:ignore></canvas>
-                    <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/95 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-300 rounded-2xl" id="error-visitsTrendChart">
-                        <span class="material-symbols-outlined text-rose-600 text-4xl mb-2">error</span>
-                        <p class="text-sm font-extrabold text-slate-800">Gagal memuat data grafik</p>
-                        <button onclick="initCharts()" class="mt-3 px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-slate-700 cursor-pointer">Coba Lagi</button>
+                
+                {{-- Grid 3 Kolom: Balita, Ibu Hamil, Lansia (Horizontal) --}}
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {{-- Balita --}}
+                    <div class="space-y-3">
+                        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span> Balita & Anak
+                        </h4>
+                        <div class="grid grid-cols-2 gap-2">
+                            {{-- Prevalensi Stunting --}}
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col justify-between min-h-[105px]">
+                                <div>
+                                    <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Prevalensi Stunting</p>
+                                    <p class="text-xl font-black text-slate-800 mt-1">{{ $stuntingRate }}%</p>
+                                </div>
+                                <div class="border-t border-slate-200/60 pt-1.5 mt-2 flex items-center justify-between text-[8px] font-bold">
+                                    <span class="text-rose-600 flex items-center gap-1">
+                                        <span class="w-1 h-1 rounded-full bg-rose-500"></span> Stunting: {{ $stuntingRate }}%
+                                    </span>
+                                    <span class="text-slate-300">|</span>
+                                    <span class="text-emerald-600 flex items-center gap-1">
+                                        <span class="w-1 h-1 rounded-full bg-emerald-500"></span> Normal: {{ round(100 - $stuntingRate, 1) }}%
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            {{-- Imunisasi Dasar --}}
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col justify-between min-h-[105px]">
+                                <div>
+                                    <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Imunisasi Dasar</p>
+                                    <p class="text-xl font-black text-slate-800 mt-1">{{ $cakupanImunisasi }}%</p>
+                                </div>
+                                <div class="border-t border-slate-200/60 pt-1.5 mt-2 flex items-center justify-between text-[8px] font-bold">
+                                    <span class="text-teal-600 flex items-center gap-1">
+                                        <span class="w-1 h-1 rounded-full bg-teal-500"></span> Lengkap: {{ $cakupanImunisasi }}%
+                                    </span>
+                                    <span class="text-slate-300">|</span>
+                                    <span class="text-slate-500 flex items-center gap-1">
+                                        <span class="w-1 h-1 rounded-full bg-slate-400"></span> Belum: {{ round(100 - $cakupanImunisasi, 1) }}%
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Ibu Hamil --}}
+                    <div class="space-y-3">
+                        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Ibu Hamil
+                        </h4>
+                        <div class="grid grid-cols-2 gap-2">
+                            {{-- Risiko Hipertensi --}}
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col justify-between min-h-[105px]">
+                                <div>
+                                    <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Risiko Hipertensi</p>
+                                    <p class="text-xl font-black text-slate-800 mt-1">{{ $hypertensionRiskRate }}%</p>
+                                </div>
+                                <div class="border-t border-slate-200/60 pt-1.5 mt-2 flex items-center justify-between text-[8px] font-bold">
+                                    <span class="text-rose-600 flex items-center gap-1">
+                                        <span class="w-1 h-1 rounded-full bg-rose-500"></span> Risiko: {{ $hypertensionRiskRate }}%
+                                    </span>
+                                    <span class="text-slate-300">|</span>
+                                    <span class="text-emerald-600 flex items-center gap-1">
+                                        <span class="w-1 h-1 rounded-full bg-emerald-500"></span> Normal: {{ round(100 - $hypertensionRiskRate, 1) }}%
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            {{-- Kepatuhan Fe --}}
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col justify-between min-h-[105px]">
+                                <div>
+                                    <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Kepatuhan Tablet Fe</p>
+                                    <p class="text-xl font-black text-slate-800 mt-1">{{ $feComplianceRate }}%</p>
+                                </div>
+                                <div class="border-t border-slate-200/60 pt-1.5 mt-2 flex items-center justify-between text-[8px] font-bold">
+                                    <span class="text-teal-600 flex items-center gap-1">
+                                        <span class="w-1 h-1 rounded-full bg-teal-500"></span> Patuh: {{ $feComplianceRate }}%
+                                    </span>
+                                    <span class="text-slate-300">|</span>
+                                    <span class="text-slate-500 flex items-center gap-1">
+                                        <span class="w-1 h-1 rounded-full bg-slate-400"></span> Belum: {{ round(100 - $feComplianceRate, 1) }}%
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Lansia --}}
+                    <div class="space-y-3">
+                        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span> Lanjut Usia
+                        </h4>
+                        <div class="grid grid-cols-2 gap-2">
+                            {{-- Hipertensi Lansia --}}
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col justify-between min-h-[105px]">
+                                <div>
+                                    <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Hipertensi Lansia</p>
+                                    <p class="text-xl font-black text-slate-800 mt-1">{{ $lansiaHypertensionRate }}%</p>
+                                </div>
+                                <div class="border-t border-slate-200/60 pt-1.5 mt-2 flex items-center justify-between text-[8px] font-bold">
+                                    <span class="text-rose-600 flex items-center gap-1">
+                                        <span class="w-1 h-1 rounded-full bg-rose-500"></span> Risiko: {{ $lansiaHypertensionRate }}%
+                                    </span>
+                                    <span class="text-slate-300">|</span>
+                                    <span class="text-emerald-600 flex items-center gap-1">
+                                        <span class="w-1 h-1 rounded-full bg-emerald-500"></span> Normal: {{ round(100 - $lansiaHypertensionRate, 1) }}%
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            {{-- Diabetes Lansia --}}
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col justify-between min-h-[105px]">
+                                <div>
+                                    <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Diabetes Lansia</p>
+                                    <p class="text-xl font-black text-slate-800 mt-1">{{ $lansiaHyperglycemiaRate }}%</p>
+                                </div>
+                                <div class="border-t border-slate-200/60 pt-1.5 mt-2 flex items-center justify-between text-[8px] font-bold">
+                                    <span class="text-rose-600 flex items-center gap-1">
+                                        <span class="w-1 h-1 rounded-full bg-rose-500"></span> Risiko: {{ $lansiaHyperglycemiaRate }}%
+                                    </span>
+                                    <span class="text-slate-300">|</span>
+                                    <span class="text-emerald-600 flex items-center gap-1">
+                                        <span class="w-1 h-1 rounded-full bg-emerald-500"></span> Normal: {{ round(100 - $lansiaHyperglycemiaRate, 1) }}%
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Main Layout Grid: 2 Columns below health indicators --}}
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+                
+                {{-- Kiri: Grafik Tren Kunjungan (Span-2) --}}
+                <div class="lg:col-span-2">
+                    {{-- Widget 2: Combined Monthly Visits Trend --}}
+                    <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-slate-200 shadow-xs">
+                        <div class="flex items-center justify-between gap-4 mb-6">
+                            <div>
+                                <h3 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-teal-600 text-[20px]">insights</span>
+                                    Tren Kunjungan Bulanan Gabungan
+                                </h3>
+                                <p class="text-xs text-slate-500 font-semibold mt-0.5">Perbandingan tren frekuensi kunjungan pasien per kategori di posyandu (Dapat diklik untuk detail)</p>
+                            </div>
+                            <button onclick="downloadChart(visitsTrendChart, 'tren_kunjungan')" class="p-2 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                                <span class="material-symbols-outlined text-[18px]">download</span>
+                            </button>
+                        </div>
+                        <div class="relative h-80 sm:h-96">
+                            <canvas id="visitsTrendChart" wire:ignore></canvas>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/95 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-300 rounded-2xl" id="error-visitsTrendChart">
+                                <span class="material-symbols-outlined text-rose-600 text-4xl mb-2">error</span>
+                                <p class="text-sm font-extrabold text-slate-800">Gagal memuat data grafik</p>
+                                <button onclick="initCharts()" class="mt-3 px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-slate-700 cursor-pointer">Coba Lagi</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Kanan: Kehadiran & Live Health Alerts (Span-1) --}}
+                <div class="space-y-4 sm:space-y-6">
+                    
+                    {{-- Widget 1: Realisasi Kehadiran --}}
+                    <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-slate-200 shadow-xs">
+                        <div class="mb-4">
+                            <h3 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                                <span class="material-symbols-outlined text-teal-600 text-[20px]">how_to_reg</span>
+                                Target vs Realisasi Kehadiran Pasien
+                            </h3>
+                            <p class="text-xs text-slate-500 font-semibold mt-0.5">Persentase keaktifan kunjungan warga terdaftar di periode terpilih</p>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            @foreach([
+                                ['label' => 'Balita & Anak', 'visited' => $balitaBerkunjung, 'total' => $totalBalita, 'color' => 'bg-teal-500', 'text' => 'text-teal-700', 'bg' => 'bg-teal-50', 'icon' => 'child_care'],
+                                ['label' => 'Ibu Hamil', 'visited' => $ibuHamilBerkunjung, 'total' => $totalIbuHamil, 'color' => 'bg-rose-500', 'text' => 'text-rose-700', 'bg' => 'bg-rose-50', 'icon' => 'pregnant_woman'],
+                                ['label' => 'Lansia', 'visited' => $lansiaBerkunjung, 'total' => $totalLansia, 'color' => 'bg-indigo-500', 'text' => 'text-indigo-700', 'bg' => 'bg-indigo-50', 'icon' => 'elderly']
+                            ] as $item)
+                                @php
+                                    $pct = $item['total'] > 0 ? round(($item['visited'] / $item['total']) * 100, 1) : 0;
+                                    // Dinamis warna bar
+                                    $barColor = $pct >= 75 ? 'bg-emerald-500' : ($pct >= 40 ? 'bg-amber-500' : 'bg-rose-500');
+                                @endphp
+                                <div class="space-y-1.5">
+                                    <div class="flex items-center justify-between text-xs sm:text-sm font-bold text-slate-700">
+                                        <span class="flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-[18px] text-slate-400">{{ $item['icon'] }}</span>
+                                            <span>{{ $item['label'] }}</span>
+                                        </span>
+                                        <span>
+                                            <span class="font-extrabold text-slate-900">{{ $pct }}%</span>
+                                            <span class="text-slate-400 font-semibold">({{ $item['visited'] }} / {{ $item['total'] }})</span>
+                                        </span>
+                                    </div>
+                                    <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                                        <div class="{{ $barColor }} h-full rounded-full transition-all duration-500" style="width: {{ $pct }}%"></div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    {{-- Widget 4: Live Health Alerts Feed --}}
+                    <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-slate-200 shadow-xs flex flex-col">
+                        <div class="mb-4">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-rose-600 text-[20px] animate-pulse">warning</span>
+                                    Live Health Alerts
+                                </h3>
+                                <span class="text-[9px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 px-2 py-0.5 rounded-full border border-rose-200">Kasus Kritis</span>
+                            </div>
+                            <p class="text-xs text-slate-500 font-semibold mt-0.5">5 kasus pemeriksaan berisiko kesehatan tinggi terbaru</p>
+                        </div>
+                        
+                        <div class="space-y-3 flex-1">
+                            @forelse($liveHealthAlerts as $alert)
+                                <div class="p-3 rounded-xl border border-rose-100 bg-rose-50/30 flex flex-col gap-1.5 transition-all hover:bg-rose-50/60">
+                                    <div class="flex items-center justify-between">
+                                        <a href="/admin/patients/{{ $alert['patient_id'] }}" class="text-xs font-black text-slate-800 hover:text-rose-600 hover:underline">
+                                            {{ $alert['patient_name'] }}
+                                        </a>
+                                        <span class="text-[9px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600">
+                                            {{ $alert['patient_category'] }}
+                                        </span>
+                                    </div>
+                                    
+                                    {{-- Reasons pills --}}
+                                    <div class="flex flex-wrap gap-1">
+                                        @foreach($alert['reasons'] as $reason)
+                                            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-rose-100 text-rose-700">{{ $reason }}</span>
+                                        @endforeach
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between text-[10px] text-slate-400 font-semibold border-t border-rose-100/50 pt-1.5 mt-0.5">
+                                        <span>Pos: {{ $alert['posyandu_name'] }}</span>
+                                        <span>{{ $alert['visit_date'] }}</span>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="flex flex-col items-center justify-center py-8 text-center text-slate-400">
+                                    <span class="material-symbols-outlined text-emerald-500 text-4xl mb-2">check_circle</span>
+                                    <p class="text-xs font-bold text-slate-700">Seluruh Warga Sehat!</p>
+                                    <p class="text-[10px] font-semibold text-slate-400 mt-0.5">Tidak terdeteksi adanya kasus berisiko tinggi baru</p>
+                                </div>
+                            @endforelse
+                        </div>
                     </div>
                 </div>
             </div>
@@ -459,9 +700,11 @@
                         <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Prevalensi Pertumbuhan Balita</h3>
                         <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Tren bulanan persentase status gizi balita: Normal, Risiko, dan Stunting/Gizi Buruk</p>
                     </div>
-                    <button onclick="downloadChart(nutritionTrendChart, 'tren_status_gizi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
-                        <span class="material-symbols-outlined text-[20px]">download</span>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <button onclick="downloadChart(nutritionTrendChart, 'tren_status_gizi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                            <span class="material-symbols-outlined text-[20px]">download</span>
+                        </button>
+                    </div>
                 </div>
 
                 {{-- Legend badges --}}
@@ -497,9 +740,11 @@
                         <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Status Gizi Balita (Pemeriksaan Terbaru)</h3>
                         <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Distribusi persentase status gizi balita berdasarkan hasil pemeriksaan status gizi terbaru</p>
                     </div>
-                    <button onclick="downloadChart(nutritionDonutChart, 'distribusi_status_gizi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
-                        <span class="material-symbols-outlined text-[20px]">download</span>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <button onclick="downloadChart(nutritionDonutChart, 'distribusi_status_gizi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                            <span class="material-symbols-outlined text-[20px]">download</span>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
@@ -530,11 +775,11 @@
                                 } elseif ($sLabel === 'gizi baik') {
                                     $bulletColor = 'bg-teal-500';
                                 } elseif ($sLabel === 'gizi kurang' || $sLabel === 'kurang') {
-                                    $bulletColor = 'bg-amber-500';
+                                    $bulletColor = 'bg-[#C2410C]';
                                 } elseif (str_contains($sLabel, 'sangat') || str_contains($sLabel, 'buruk') || str_contains($sLabel, 'pendek')) {
-                                    $bulletColor = 'bg-rose-500';
+                                    $bulletColor = 'bg-[#B91C1C]';
                                 } elseif (str_contains($sLabel, 'risiko') || str_contains($sLabel, 'berisiko') || str_contains($sLabel, 'lebih') || str_contains($sLabel, 'obesitas')) {
-                                    $bulletColor = 'bg-amber-500';
+                                    $bulletColor = 'bg-[#A16207]';
                                 } else {
                                     $bulletColor = 'bg-slate-400';
                                 }
@@ -566,9 +811,11 @@
                         <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Capaian Imunisasi Per Jenis Vaksin</h3>
                         <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Jumlah balita yang menerima setiap jenis imunisasi dasar pada periode yang dipilih</p>
                     </div>
-                    <button onclick="downloadChart(vaccineChart, 'capaian_imunisasi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
-                        <span class="material-symbols-outlined text-[20px]">download</span>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <button onclick="downloadChart(vaccineChart, 'capaian_imunisasi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                            <span class="material-symbols-outlined text-[20px]">download</span>
+                        </button>
+                    </div>
                 </div>
 
                 {{-- Cakupan badge --}}
@@ -603,9 +850,11 @@
                         <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Grafik Pertumbuhan Keseluruhan Balita & Anak</h3>
                         <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Rata-rata berat badan (kg) dan tinggi badan (cm) per bulan sepanjang tahun</p>
                     </div>
-                    <button onclick="downloadChart(growthChart, 'pertumbuhan_balita')" class="p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
-                        <span class="material-symbols-outlined text-[20px]">download</span>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <button onclick="downloadChart(growthChart, 'pertumbuhan_balita')" class="p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                            <span class="material-symbols-outlined text-[20px]">download</span>
+                        </button>
+                    </div>
                 </div>
                 <div class="relative h-96">
                     <canvas id="growthChart" wire:ignore></canvas>
@@ -633,7 +882,7 @@
                     <h3 class="text-lg font-bold text-slate-900 mb-6">Prevalensi Stunting per Wilayah Posyandu</h3>
                     <div class="space-y-6">
                         @forelse($stuntingByPosyandu as $item)
-                        <div>
+                        <div class="cursor-pointer hover:bg-slate-50 p-2 -mx-2 rounded-lg transition-colors" wire:dblclick="drillDown('Stunting - {{ $item['name'] ?? '' }}', 'balita_stunting_buruk', null, null, null, {{ $item['id'] ?? 'null' }}, 'stunting_posyandu')">
                             <div class="flex justify-between items-end mb-2 text-xs font-bold text-slate-700">
                                 <span>{{ $item['name'] }} ({{ $item['stunting'] }}/{{ $item['total'] }} Balita)</span>
                                 <span class="font-extrabold text-slate-900">{{ $item['rate'] }}%</span>
@@ -653,15 +902,15 @@
                     <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-slate-200 shadow-xs">
                         <h3 class="text-lg font-bold text-slate-900 mb-6 text-center">Segmentasi Usia Terpantau</h3>
                         <div class="grid grid-cols-3 gap-4">
-                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center">
+                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center cursor-pointer hover:bg-slate-100 transition-colors" wire:dblclick="drillDown('Segmentasi Usia: 0-12 Bulan', 'balita_age_0_12', null, null, null, null, 'age_segmentation')">
                                 <span class="block text-2xl font-black text-slate-900">{{ $usia0_12 }}</span>
                                 <span class="text-xs md:text-sm font-bold text-slate-600 uppercase tracking-wider">0–12 Bulan</span>
                             </div>
-                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center">
+                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center cursor-pointer hover:bg-slate-100 transition-colors" wire:dblclick="drillDown('Segmentasi Usia: 12-24 Bulan', 'balita_age_12_24', null, null, null, null, 'age_segmentation')">
                                 <span class="block text-2xl font-black text-slate-900">{{ $usia12_24 }}</span>
                                 <span class="text-xs md:text-sm font-bold text-slate-600 uppercase tracking-wider">12–24 Bulan</span>
                             </div>
-                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center">
+                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center cursor-pointer hover:bg-slate-100 transition-colors" wire:dblclick="drillDown('Segmentasi Usia: >24 Bulan', 'balita_age_24plus', null, null, null, null, 'age_segmentation')">
                                 <span class="block text-2xl font-black text-slate-900">{{ $usia24plus }}</span>
                                 <span class="text-xs md:text-sm font-bold text-slate-600 uppercase tracking-wider">>24 Bulan</span>
                             </div>
@@ -743,17 +992,21 @@
                                 <td class="px-6 py-4 text-xs font-bold text-slate-650">{{ $record->patient?->posyandu?->name ?? '-' }}</td>
                                 <td class="px-6 py-4">
                                     @php
-                                        $status = $record->nutrition_status ?: 'Gizi Baik';
-                                        $isNormal = str_contains(strtolower($status), 'normal') || str_contains(strtolower($status), 'baik');
-                                        $isRisk = str_contains(strtolower($status), 'risiko') || str_contains(strtolower($status), 'kurang');
+                                        $statusStr = strtolower(trim($record->nutrition_status ?: 'Gizi Baik'));
+                                        $tagStyle = '';
+                                        $tagClass = '';
+                                        if ($statusStr === 'gizi buruk' || $statusStr === 'buruk') {
+                                            $tagStyle = 'background-color: #FEE2E2; color: #B91C1C; border-color: rgba(185, 28, 28, 0.2);';
+                                        } elseif ($statusStr === 'gizi kurang' || $statusStr === 'kurang') {
+                                            $tagStyle = 'background-color: #FFEDD5; color: #C2410C; border-color: rgba(194, 65, 12, 0.2);';
+                                        } elseif (str_contains($statusStr, 'lebih') || str_contains($statusStr, 'obesitas')) {
+                                            $tagStyle = 'background-color: #FEF9C3; color: #A16207; border-color: rgba(161, 98, 7, 0.2);';
+                                        } else {
+                                            $tagClass = 'bg-emerald-50 text-emerald-700 border-emerald-200/60';
+                                        }
                                     @endphp
-                                    <span @class([
-                                        'inline-flex px-3 py-1 rounded-full text-xs font-bold border',
-                                        'bg-emerald-50 text-emerald-700 border-emerald-200/60' => $isNormal,
-                                        'bg-amber-50 text-amber-700 border-amber-200/60' => $isRisk && !$isNormal,
-                                        'bg-rose-50 text-rose-700 border-rose-200/60' => !$isNormal && !$isRisk,
-                                    ])>
-                                        {{ $status }}
+                                    <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold border {{ $tagClass }}" style="{{ $tagStyle }}">
+                                        {{ $record->nutrition_status ?: 'Gizi Baik' }}
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ \Carbon\Carbon::parse($record->visit_date)->translatedFormat('d M Y') }}</td>
@@ -939,43 +1192,290 @@
             </div>
             
             {{-- Modal Body --}}
-            <div class="flex-1 overflow-y-auto p-6">
+            <div class="flex-1 overflow-y-auto p-6 space-y-4">
+                {{-- Balita Category Tabs --}}
+                @if(in_array($drillDownType, ['balita_normal', 'balita_risiko', 'balita_stunting_buruk']))
+                <div class="flex gap-2 p-1.5 bg-slate-100 rounded-2xl w-fit">
+                    <button wire:click="switchDrillDownCategory('balita_normal')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'balita_normal' ? 'bg-white text-emerald-700 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        Normal
+                    </button>
+                    <button wire:click="switchDrillDownCategory('balita_risiko')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'balita_risiko' ? 'bg-white text-amber-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+                        Risiko Gizi
+                    </button>
+                    <button wire:click="switchDrillDownCategory('balita_stunting_buruk')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'balita_stunting_buruk' ? 'bg-white text-rose-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2 h-2 rounded-full bg-rose-500"></span>
+                        Stunting / Gizi Buruk
+                    </button>
+                </div>
+                @endif
+
+                {{-- Lansia Category Tabs --}}
+                @if(in_array($drillDownType, ['lansia_hipertensi', 'lansia_hiperglikemia', 'lansia_hiperkolesterolemia', 'lansia_hiperurisemia']))
+                <div class="flex flex-wrap gap-2 p-1.5 bg-slate-100 rounded-2xl w-fit">
+                    <button wire:click="switchDrillDownCategory('lansia_hipertensi')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'lansia_hipertensi' ? 'bg-white text-rose-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                        Hipertensi
+                    </button>
+                    <button wire:click="switchDrillDownCategory('lansia_hiperglikemia')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'lansia_hiperglikemia' ? 'bg-white text-amber-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                        Hiperglikemia
+                    </button>
+                    <button wire:click="switchDrillDownCategory('lansia_hiperkolesterolemia')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'lansia_hiperkolesterolemia' ? 'bg-white text-blue-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                        Hiperkolesterolemia
+                    </button>
+                    <button wire:click="switchDrillDownCategory('lansia_hiperurisemia')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'lansia_hiperurisemia' ? 'bg-white text-purple-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+                        Hiperurisemia
+                    </button>
+                </div>
+                @endif
+
+                {{-- Ibu Hamil Category Tabs --}}
+                @if(in_array($drillDownType, ['pregnancy_high_risk', 'pregnancy_kek', 'pregnancy_anemia', 'pregnancy_tablet_fe']))
+                <div class="flex flex-wrap gap-2 p-1.5 bg-slate-100 rounded-2xl w-fit">
+                    <button wire:click="switchDrillDownCategory('pregnancy_high_risk')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'pregnancy_high_risk' ? 'bg-white text-amber-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                        Risiko Tinggi &amp; 4T
+                    </button>
+                    <button wire:click="switchDrillDownCategory('pregnancy_kek')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'pregnancy_kek' ? 'bg-white text-purple-650 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+                        Kasus KEK
+                    </button>
+                    <button wire:click="switchDrillDownCategory('pregnancy_anemia')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'pregnancy_anemia' ? 'bg-white text-rose-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                        Kasus Anemia
+                    </button>
+                    <button wire:click="switchDrillDownCategory('pregnancy_tablet_fe')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'pregnancy_tablet_fe' ? 'bg-white text-teal-650 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-teal-500"></span>
+                        Pemberian Tablet Fe
+                    </button>
+                </div>
+                @endif
+
+                {{-- Ibu Hamil ANC K1-K6 Category Tabs --}}
+                @if(in_array($drillDownType, ['pregnancy_k1', 'pregnancy_k2', 'pregnancy_k3', 'pregnancy_k4', 'pregnancy_k5', 'pregnancy_k6']))
+                <div class="flex flex-wrap gap-2 p-1.5 bg-slate-100 rounded-2xl w-fit">
+                    @foreach([
+                        'pregnancy_k1' => 'K1',
+                        'pregnancy_k2' => 'K2',
+                        'pregnancy_k3' => 'K3',
+                        'pregnancy_k4' => 'K4',
+                        'pregnancy_k5' => 'K5',
+                        'pregnancy_k6' => 'K6'
+                    ] as $key => $lbl)
+                    <button wire:click="switchDrillDownCategory('{{ $key }}')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 {{ $drillDownType === $key ? 'bg-white text-indigo-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full {{ $drillDownType === $key ? 'bg-indigo-500' : 'bg-slate-400' }}"></span>
+                        {{ $lbl }}
+                    </button>
+                    @endforeach
+                </div>
+                @endif
+
                 <div class="overflow-x-auto border border-slate-200 rounded-2xl">
                     <table class="w-full text-left">
-                        <thead>
-                            <tr class="bg-slate-100 border-b border-slate-200">
-                                <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Nama Pasien</th>
-                                <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Unit Posyandu</th>
-                                <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Status / Keterangan</th>
-                                <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Tanggal Kunjungan</th>
-                                <th class="px-6 py-4 text-right text-xs font-bold text-slate-700 uppercase tracking-wider">Aksi</th>
-                            </tr>
-                        </thead>
+                                                <thead>
+                              <tr class="bg-slate-100 border-b border-slate-200">
+                                @if ($drillDownChartSource === 'visits_trend')
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Nama Warga</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Unit Posyandu</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Kategori Warga</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Tanggal Kunjungan</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">BB (kg)</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">TB (cm)</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Status / Info</th>
+                                  <th class="px-6 py-4 text-right text-xs font-bold text-slate-700 uppercase tracking-wider">Aksi</th>
+                                @elseif ($drillDownChartSource === 'nutrition_trend')
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Nama Warga</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Unit Posyandu</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Kategori Gizi</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Status / Info</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Tanggal Kunjungan</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">BB (kg)</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">TB (cm)</th>
+                                  <th class="px-6 py-4 text-right text-xs font-bold text-slate-700 uppercase tracking-wider">Aksi</th>
+                                @elseif ($drillDownChartSource === 'nutrition_donut')
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Nama Warga</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Unit Posyandu</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Status / Info</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Tanggal Kunjungan</th>
+                                  <th class="px-6 py-4 text-right text-xs font-bold text-slate-700 uppercase tracking-wider">Aksi</th>
+                                @elseif ($drillDownChartSource === 'vaccine_chart')
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Nama Warga</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Unit Posyandu</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Tanggal Kunjungan</th>
+                                  <th class="px-6 py-4 text-right text-xs font-bold text-slate-700 uppercase tracking-wider">Aksi</th>
+                                @elseif ($drillDownChartSource === 'growth_chart')
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Nama Warga</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Unit Posyandu</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Status / Info</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Tanggal Kunjungan</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">BB (kg)</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">TB (cm)</th>
+                                  <th class="px-6 py-4 text-right text-xs font-bold text-slate-700 uppercase tracking-wider">Aksi</th>
+                                @elseif ($drillDownChartSource === 'stunting_posyandu')
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Nama Warga</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Status / Info (Gizi Buruk)</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Tanggal Kunjungan</th>
+                                  <th class="px-6 py-4 text-right text-xs font-bold text-slate-700 uppercase tracking-wider">Aksi</th>
+                                @elseif ($drillDownChartSource === 'age_segmentation')
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Nama Warga</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Umur (Bulan)</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Status / Info</th>
+                                  <th class="px-6 py-4 text-right text-xs font-bold text-slate-700 uppercase tracking-wider">Aksi</th>
+                                @else
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Nama Warga</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Unit Posyandu</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Status / Info</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Tanggal Kunjungan</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">BB</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">TB</th>
+                                  <th class="px-6 py-4 text-right text-xs font-bold text-slate-700 uppercase tracking-wider">Aksi</th>
+                                @endif
+                              </tr></thead>
                         <tbody class="divide-y divide-slate-200">
                             @forelse($drillDownData as $row)
                             <tr class="hover:bg-slate-50 text-slate-800">
-                                <td class="px-6 py-4">
-                                    <div>
-                                        <span class="block font-bold text-slate-900">{{ $row['name'] }}</span>
-                                        <span class="text-[10px] text-slate-500 uppercase block font-semibold">NIK: {{ $row['nik'] }}</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-xs font-bold text-slate-700">{{ $row['posyandu'] }}</td>
-                                <td class="px-6 py-4">
-                                    <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold bg-teal-50 text-teal-700 border border-teal-100">
-                                        {{ $row['nutrition_status'] }}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['visit_date'] }}</td>
-                                <td class="px-6 py-4 text-right">
-                                    <a href="{{ route('admin.patients.show', $row['patient_id']) }}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-slate-100 text-slate-500 hover:bg-teal-600 hover:text-white transition-all shadow-xs">
-                                        <span class="material-symbols-outlined text-[18px]">visibility</span>
-                                    </a>
-                                </td>
-                            </tr>
+                                  <td class="px-6 py-4">
+                                      <div>
+                                          <span class="block font-bold text-slate-900">{{ $row['name'] }}</span>
+                                          <span class="text-[10px] text-slate-500 uppercase block font-semibold">NIK: {{ $row['nik'] }}</span>
+                                      </div>
+                                  </td>
+
+                                  @php
+                                      $statusText = ($row['status_info'] ?? '') !== '-' ? ($row['status_info'] ?? '') : ($row['nutrition_status'] ?? '-');
+                                      $statusStr = strtolower(trim($statusText));
+                                      $tagStyle = '';
+                                      $tagClass = '';
+                                      
+                                      $isDanger = false;
+                                      $isWarning = false;
+                                      $isSuccess = false;
+                                      $customStyle = '';
+
+                                      if (str_contains($statusStr, 'gizi buruk') || $statusStr === 'buruk') {
+                                          $customStyle = 'background-color: #FEE2E2; color: #B91C1C; border-color: rgba(185, 28, 28, 0.15);';
+                                      } elseif (str_contains($statusStr, 'gizi kurang') || $statusStr === 'kurang') {
+                                          $customStyle = 'background-color: #FFEDD5; color: #C2410C; border-color: rgba(194, 65, 12, 0.15);';
+                                      } elseif (str_contains($statusStr, 'gizi lebih') || str_contains($statusStr, 'lebih') || str_contains($statusStr, 'obesitas')) {
+                                          $customStyle = 'background-color: #FEF9C3; color: #A16207; border-color: rgba(161, 98, 7, 0.15);';
+                                      } elseif (str_contains($statusStr, 'gizi baik') || $statusStr === 'baik' || str_contains($statusStr, 'normal')) {
+                                          $customStyle = 'background-color: #DCFCE7; color: #15803D; border-color: rgba(21, 128, 61, 0.15);';
+                                      } elseif (str_contains($statusStr, 'sangat kurang') || str_contains($statusStr, 'belum') || str_contains($statusStr, 'anemia') || str_contains($statusStr, 'risiko')) {
+                                          $isDanger = true;
+                                      }
+                                      
+                                      // Specific clinical measurement warning checks
+                                      if (str_contains($statusStr, 'tb:')) {
+                                          preg_match('/tb:\s*([\d\.]+)/', $statusStr, $matches);
+                                          if (isset($matches[1]) && (float)$matches[1] < 145) {
+                                              $isDanger = true;
+                                          }
+                                      }
+                                      if (str_contains($statusStr, 'lila:')) {
+                                          preg_match('/lila:\s*([\d\.]+)/', $statusStr, $matches);
+                                          if (isset($matches[1]) && (float)$matches[1] < 23.5) {
+                                              $isDanger = true;
+                                          }
+                                      }
+                                      if (str_contains($statusStr, 'hb:')) {
+                                          preg_match('/hb:\s*([\d\.]+)/', $statusStr, $matches);
+                                          if (isset($matches[1]) && (float)$matches[1] < 11) {
+                                              $isDanger = true;
+                                          }
+                                      }
+                                      if (str_contains($statusStr, 'umur:')) {
+                                          preg_match('/umur:\s*([\d\.]+)/', $statusStr, $matches);
+                                          if (isset($matches[1])) {
+                                              $ageVal = (float)$matches[1];
+                                              if ($ageVal < 20 || $ageVal > 35) {
+                                                  $isDanger = true;
+                                              }
+                                          }
+                                      }
+                                      if (str_contains($statusStr, 'menerima')) {
+                                          $isSuccess = true;
+                                      }
+
+                                      if ($customStyle !== '') {
+                                          $tagStyle = $customStyle;
+                                      } elseif ($isDanger) {
+                                          $tagStyle = 'background-color: #FEF2F2; color: #DC2626; border-color: rgba(220, 38, 38, 0.15);';
+                                      } elseif ($isWarning) {
+                                          $tagStyle = 'background-color: #FFFBEB; color: #D97706; border-color: rgba(217, 119, 6, 0.15);';
+                                      } elseif ($isSuccess) {
+                                          $tagClass = 'bg-emerald-50 text-emerald-700 border-emerald-100';
+                                      } else {
+                                          $tagClass = 'bg-slate-50 text-slate-650 border-slate-200';
+                                      }
+                                      $statusHtml = '<span class="inline-flex px-3 py-1 rounded-full text-xs font-bold border ' . $tagClass . '" style="' . $tagStyle . '">' . $statusText . '</span>';
+                                  @endphp
+
+                                @if ($drillDownChartSource === 'visits_trend')
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-700">{{ $row['posyandu'] }}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-700">{{ $row['category_warga'] ?? '-' }}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['visit_date'] }}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['weight'] ?? '-' }}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['height'] ?? '-' }}</td>
+                                  <td class="px-6 py-4">{!! $statusHtml !!}</td>
+                                @elseif ($drillDownChartSource === 'nutrition_trend')
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-700">{{ $row['posyandu'] }}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-700">{{ $row['kategori_gizi'] ?? '-' }}</td>
+                                  <td class="px-6 py-4">{!! $statusHtml !!}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['visit_date'] }}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['weight'] ?? '-' }}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['height'] ?? '-' }}</td>
+                                @elseif ($drillDownChartSource === 'nutrition_donut')
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-700">{{ $row['posyandu'] }}</td>
+                                  <td class="px-6 py-4">{!! $statusHtml !!}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['visit_date'] }}</td>
+                                @elseif ($drillDownChartSource === 'vaccine_chart')
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-700">{{ $row['posyandu'] }}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['visit_date'] }}</td>
+                                @elseif ($drillDownChartSource === 'growth_chart')
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-700">{{ $row['posyandu'] }}</td>
+                                  <td class="px-6 py-4">{!! $statusHtml !!}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['visit_date'] }}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['weight'] ?? '-' }}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['height'] ?? '-' }}</td>
+                                @elseif ($drillDownChartSource === 'stunting_posyandu')
+                                  <td class="px-6 py-4">{!! $statusHtml !!}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['visit_date'] }}</td>
+                                @elseif ($drillDownChartSource === 'age_segmentation')
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-700">{{ $row['age_months'] ?? '-' }}</td>
+                                  <td class="px-6 py-4">{!! $statusHtml !!}</td>
+                                @else
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-700">{{ $row['posyandu'] }}</td>
+                                  <td class="px-6 py-4">{!! $statusHtml !!}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['visit_date'] }}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['weight'] ?? '-' }}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['height'] ?? '-' }}</td>
+                                @endif
+
+                                  <td class="px-6 py-4 text-right">
+                                      <a href="{{ route('admin.patients.show', $row['patient_id']) }}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-slate-100 text-slate-500 hover:bg-teal-600 hover:text-white transition-all shadow-xs">
+                                          <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                      </a>
+                                  </td>
+                              </tr>
                             @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-10 text-center text-sm text-slate-500 font-bold bg-white">Tidak ada data detail untuk periode/filter ini</td>
+                                <td colspan="7" class="px-6 py-10 text-center text-sm text-slate-500 font-bold bg-white">Tidak ada data detail untuk periode/filter ini</td>
                             </tr>
                             @endforelse
                         </tbody>
@@ -1013,17 +1513,97 @@ window.downloadChart = function(chartInstance, fileName) {
     // 1. Download Gambar PNG dengan Background Putih Solid agar informasinya jelas
     try {
         const sourceCanvas = chartInstance.canvas;
+        const scale = window.devicePixelRatio || 1;
+        
+        // Cari judul dan subjudul dari kontainer DOM terdekat
+        const card = sourceCanvas.closest('.bg-white');
+        let titleText = '';
+        let subtitleText = '';
+        if (card) {
+            const h3 = card.querySelector('h3');
+            if (h3) titleText = h3.innerText.trim();
+            const p = card.querySelector('p');
+            if (p) subtitleText = p.innerText.trim();
+        }
+        
+        // Judul fallback jika tidak ditemukan
+        if (!titleText) {
+            titleText = fileName.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ');
+        }
+        
+        // Tentukan tinggi header dan footer berdasarkan teks
+        const topPadding = (titleText ? (subtitleText ? 90 : 60) : 20) * scale;
+        const bottomPadding = 50 * scale; // Untuk legenda
+        
         const tempCanvas = document.createElement('canvas');
         tempCanvas.width = sourceCanvas.width;
-        tempCanvas.height = sourceCanvas.height;
+        tempCanvas.height = sourceCanvas.height + topPadding + bottomPadding;
         const tempCtx = tempCanvas.getContext('2d');
         
         // Isi background dengan warna putih solid
         tempCtx.fillStyle = '#ffffff';
         tempCtx.fillRect(0, 0, tempCanvas.width, tempCanvas.height);
         
+        // Gambar Judul & Subjudul
+        let currentY = 30 * scale;
+        if (titleText) {
+            tempCtx.font = `bold ${Math.round(18 * scale)}px sans-serif`;
+            tempCtx.fillStyle = '#0f172a'; // slate-900
+            tempCtx.fillText(titleText, 24 * scale, currentY);
+            currentY += 22 * scale;
+        }
+        if (subtitleText) {
+            tempCtx.font = `${Math.round(11 * scale)}px sans-serif`;
+            tempCtx.fillStyle = '#64748b'; // slate-500
+            
+            // Bungkus kata jika teks subjudul terlalu panjang
+            const maxWidth = tempCanvas.width - 48 * scale;
+            const words = subtitleText.split(' ');
+            let line = '';
+            for (let n = 0; n < words.length; n++) {
+                let testLine = line + words[n] + ' ';
+                let metrics = tempCtx.measureText(testLine);
+                let testWidth = metrics.width;
+                if (testWidth > maxWidth && n > 0) {
+                    tempCtx.fillText(line, 24 * scale, currentY);
+                    line = words[n] + ' ';
+                    currentY += 16 * scale;
+                } else {
+                    line = testLine;
+                }
+            }
+            tempCtx.fillText(line, 24 * scale, currentY);
+        }
+        
         // Gambar chart di atas background putih
-        tempCtx.drawImage(sourceCanvas, 0, 0);
+        tempCtx.drawImage(sourceCanvas, 0, topPadding);
+        
+        // Gambar Legenda di bagian bawah
+        const datasets = chartInstance.data.datasets || [];
+        if (datasets.length > 0) {
+            tempCtx.font = `bold ${Math.round(11 * scale)}px sans-serif`;
+            let startX = 24 * scale;
+            const legendY = tempCanvas.height - (bottomPadding / 2) + 4 * scale;
+            
+            datasets.forEach((dataset, index) => {
+                const color = dataset.borderColor || dataset.backgroundColor || '#64748b';
+                const label = dataset.label || `Dataset ${index + 1}`;
+                
+                // Gambar indikator warna (lingkaran)
+                tempCtx.fillStyle = color;
+                tempCtx.beginPath();
+                tempCtx.arc(startX + 6 * scale, legendY - 4 * scale, 5 * scale, 0, 2 * Math.PI);
+                tempCtx.fill();
+                
+                // Gambar label teks legenda
+                tempCtx.fillStyle = '#334155'; // slate-700
+                tempCtx.fillText(label, startX + 16 * scale, legendY);
+                
+                // Geser koordinat X untuk item legenda berikutnya
+                const textWidth = tempCtx.measureText(label).width;
+                startX += textWidth + 36 * scale;
+            });
+        }
         
         const url = tempCanvas.toDataURL('image/png');
         const a = document.createElement('a');
@@ -1036,43 +1616,22 @@ window.downloadChart = function(chartInstance, fileName) {
         console.error("Gagal mendownload gambar PNG:", e);
     }
 
-    // 2. Download Data CSV (Excel)
+    // 2. Unduh data Excel detail dari backend (berisi informasi nama pasien dll)
     try {
-        const labels = chartInstance.data.labels;
-        const datasets = chartInstance.data.datasets;
-        
-        let csvString = "";
-        
-        // Header
-        let header = "Label/Bulan";
-        datasets.forEach(ds => {
-            header += ',"' + ds.label.replace(/"/g, '""') + '"';
-        });
-        csvString += header + "\r\n";
-        
-        // Rows
-        labels.forEach((label, index) => {
-            let row = '"' + label.toString().replace(/"/g, '""') + '"';
-            datasets.forEach(ds => {
-                let val = ds.data[index] !== undefined && ds.data[index] !== null ? ds.data[index] : 0;
-                row += "," + val;
-            });
-            csvString += row + "\r\n";
-        });
-        
-        // Gunakan BOM agar Excel membaca karakter UTF-8 dengan benar
-        const BOM = "\uFEFF";
-        const blob = new Blob([BOM + csvString], { type: 'text/csv;charset=utf-8;' });
-        const link = document.createElement("a");
-        const url = URL.createObjectURL(blob);
-        link.setAttribute("href", url);
-        link.setAttribute("download", fileName + "_data.csv");
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
+        const typeMap = {
+            'tren_kunjungan': 'visits_trend',
+            'tren_status_gizi_balita': 'nutrition_trend',
+            'distribusi_status_gizi_balita': 'nutrition_donut',
+            'capaian_imunisasi_balita': 'vaccine_chart',
+            'pertumbuhan_balita': 'growth_chart',
+            'tren_risiko_metabolik_lansia': 'lansia_metabolic_trend'
+        };
+        const chartType = typeMap[fileName];
+        if (chartType && typeof $wire !== 'undefined') {
+            $wire.call('exportChartData', chartType);
+        }
     } catch (e) {
-        console.error("Gagal mendownload data CSV:", e);
+        console.error("Gagal mendownload data Excel:", e);
     }
 }
 
@@ -1310,7 +1869,7 @@ function initCharts(data = null) {
                                 else if (datasetLabel.includes('Lansia')) type = 'lansia';
                             }
 
-                            $wire.call('drillDown', `${dsLabel} - ${label}`, type, targetMonth, null, targetYear)
+                            $wire.call('drillDown', `${dsLabel} - ${label}`, type, targetMonth, null, targetYear, null, 'visits_trend')
                                 .then(() => { window.isDrillingDown = false; })
                                 .catch(() => { window.isDrillingDown = false; });
                         }
@@ -1354,24 +1913,24 @@ function initCharts(data = null) {
                         {
                             label: 'Risiko Gizi',
                             data: risk,
-                            borderColor: '#f59e0b',
-                            backgroundColor: 'rgba(245, 158, 11, 0.10)',
+                            borderColor: '#C2410C',
+                            backgroundColor: 'rgba(194, 65, 12, 0.10)',
                             borderWidth: 3,
                             tension: 0.4,
                             fill: true,
-                            pointBackgroundColor: '#f59e0b',
+                            pointBackgroundColor: '#C2410C',
                             pointRadius: 4,
                             pointHoverRadius: 7,
                         },
                         {
                             label: 'Stunting / Gizi Buruk',
                             data: stunting,
-                            borderColor: '#ef4444',
-                            backgroundColor: 'rgba(239, 68, 68, 0.10)',
+                            borderColor: '#B91C1C',
+                            backgroundColor: 'rgba(185, 28, 28, 0.10)',
                             borderWidth: 3,
                             tension: 0.4,
                             fill: true,
-                            pointBackgroundColor: '#ef4444',
+                            pointBackgroundColor: '#B91C1C',
                             pointRadius: 4,
                             pointHoverRadius: 7,
                         }
@@ -1409,7 +1968,7 @@ function initCharts(data = null) {
                             ?? { name: 'Balita', type: 'balita' };
 
                         // Kirim bulan + status gizi spesifik ke backend
-                        $wire.call('drillDown', `Balita ${datasetLabel} — ${label}`, type, month)
+                        $wire.call('drillDown', `Balita ${datasetLabel} - ${label}`, type, month, null, null, null, 'nutrition_trend')
                             .then(() => { window.isDrillingDown = false; })
                             .catch(() => { window.isDrillingDown = false; });
                     },
@@ -1448,9 +2007,9 @@ function initCharts(data = null) {
                 const sLabel = String(label).toLowerCase();
                 if (sLabel === 'baik' || sLabel === 'normal') return '#10b981'; // emerald-500
                 if (sLabel === 'gizi baik') return '#0d9488'; // teal-500
-                if (sLabel === 'gizi kurang' || sLabel === 'kurang') return '#f59e0b'; // amber-500
-                if (sLabel.includes('sangat') || sLabel.includes('buruk') || sLabel.includes('pendek')) return '#f43f5e'; // rose-500
-                if (sLabel.includes('risiko') || sLabel.includes('berisiko') || sLabel.includes('lebih') || sLabel.includes('obesitas')) return '#f59e0b'; // amber-500
+                if (sLabel === 'gizi kurang' || sLabel === 'kurang') return '#C2410C';
+                if (sLabel.includes('sangat') || sLabel.includes('buruk') || sLabel.includes('pendek')) return '#B91C1C';
+                if (sLabel.includes('risiko') || sLabel.includes('berisiko') || sLabel.includes('lebih') || sLabel.includes('obesitas')) return '#A16207';
                 return '#94a3b8'; // slate-400
             });
             nutritionDonutChart = new Chart(donutCtx, {
@@ -1476,7 +2035,7 @@ function initCharts(data = null) {
                             const index = firstPoint.index;
                             const label = String(nutLabels[index]);
                             
-                            $wire.call('drillDown', `Balita (${label})`, 'nutrition_status', null, label)
+                            $wire.call('drillDown', `Balita (${label})`, 'nutrition_status', null, label, null, null, 'nutrition_donut')
                                 .then(() => { window.isDrillingDown = false; })
                                 .catch(() => { window.isDrillingDown = false; });
                         }
@@ -1530,7 +2089,7 @@ function initCharts(data = null) {
 
                             const index = activeElements[0].index;
                             const vaccineName = vaxLabels[index];
-                            $wire.call('drillDown', `Imunisasi: ${vaccineName}`, 'balita')
+                            $wire.call('drillDown', `Imunisasi: ${vaccineName}`, 'vaccine', null, vaccineName, null, null, 'vaccine_chart')
                                 .then(() => { window.isDrillingDown = false; })
                                 .catch(() => { window.isDrillingDown = false; });
                         }
@@ -1651,8 +2210,18 @@ function initCharts(data = null) {
                         }
                     },
                     plugins: {
-                        legend: { display: false },
+                        legend: { display: true, position: 'bottom' },
                         tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                            titleColor: '#0f172a',
+                            bodyColor: '#334155',
+                            borderColor: '#e2e8f0',
+                            borderWidth: 1,
+                            padding: 12,
+                            boxPadding: 6,
+                            usePointStyle: true,
                             callbacks: {
                                 label: function(context) {
                                     const label = context.dataset.label || '';
@@ -1666,6 +2235,17 @@ function initCharts(data = null) {
                     }
                 }
             });
+
+            growthCtx.ondblclick = function(evt) {
+                if (!growthChart) return;
+                const elements = growthChart.getElementsAtEventForMode(evt, 'index', { intersect: false }, true);
+                if (elements && elements.length > 0) {
+                    const index = elements[0].index;
+                    const month = index + 1;
+                    const label = growthChart.data.labels[index];
+                    $wire.call('drillDown', 'Grafik Pertumbuhan Balita - ' + label, 'balita', month, null, null, null, 'growth_chart');
+                }
+            };
         } catch (e) {
             console.error("Error loading growthChart:", e);
             showChartError('growthChart');
@@ -1714,7 +2294,7 @@ function initCharts(data = null) {
                             const label = labels[index];
                             const month = index + 1;
                             
-                            $wire.call('drillDown', `Ibu Hamil - ${label}`, 'ibu_hamil', month)
+                            $wire.call('drillDown', `Ibu Hamil - ${label}`, 'ibu_hamil', month, null, null, null, 'visits_trend')
                                 .then(() => { window.isDrillingDown = false; })
                                 .catch(() => { window.isDrillingDown = false; });
                         }
@@ -1770,37 +2350,41 @@ function initCharts(data = null) {
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    onClick: (event, activeElements) => {
-                        if (activeElements.length > 0) {
-                            if (window.isDrillingDown) return;
-                            window.isDrillingDown = true;
+                    onClick: (event, activeElements, chart) => {
+                        if (window.isDrillingDown) return;
 
-                            const firstPoint = activeElements[0];
-                            const index = firstPoint.index;
-                            const label = labels[index];
-                            const month = index + 1;
-                            const datasetIndex = firstPoint.datasetIndex;
+                        const nearest = chart.getElementsAtEventForMode(
+                            event, 'nearest', { intersect: true }, false
+                        );
+                        if (nearest.length === 0) return;
 
-                            const types = [
-                                'lansia_hipertensi',
-                                'lansia_hiperglikemia',
-                                'lansia_hiperkolesterolemia',
-                                'lansia_hiperurisemia'
-                            ];
-                            const datasetLabels = [
-                                'Hipertensi',
-                                'Hiperglikemia',
-                                'Hiperkolesterolemia',
-                                'Hiperurisemia'
-                            ];
+                        window.isDrillingDown = true;
 
-                            const type = types[datasetIndex] || 'lansia';
-                            const datasetLabel = datasetLabels[datasetIndex] || '';
+                        const clicked = nearest[0];
+                        const index = clicked.index;
+                        const label = labels[index];
+                        const month = index + 1;
+                        const datasetIndex = clicked.datasetIndex;
 
-                            $wire.call('drillDown', `Lansia - ${datasetLabel} (${label})`, type, month)
-                                .then(() => { window.isDrillingDown = false; })
-                                .catch(() => { window.isDrillingDown = false; });
-                        }
+                        const types = [
+                            'lansia_hipertensi',
+                            'lansia_hiperglikemia',
+                            'lansia_hiperkolesterolemia',
+                            'lansia_hiperurisemia'
+                        ];
+                        const datasetLabels = [
+                            'Hipertensi',
+                            'Hiperglikemia',
+                            'Hiperkolesterolemia',
+                            'Hiperurisemia'
+                        ];
+
+                        const type = types[datasetIndex] || 'lansia';
+                        const datasetLabel = datasetLabels[datasetIndex] || '';
+
+                        $wire.call('drillDown', `Lansia - ${datasetLabel} (${label})`, type, month, null, null, null, 'visits_trend')
+                            .then(() => { window.isDrillingDown = false; })
+                            .catch(() => { window.isDrillingDown = false; });
                     },
                     scales: {
                         x: { grid: { display: false } },

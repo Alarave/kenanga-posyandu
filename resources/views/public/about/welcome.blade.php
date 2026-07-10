@@ -33,9 +33,9 @@
                 </div>
 
                 {{-- Card Title --}}
-                <h3 class="text-xl font-black text-slate-900 dark:text-white font-jakarta group-hover:text-primary transition-colors duration-300">
+                <h2 class="text-xl font-black text-slate-900 dark:text-white font-jakarta group-hover:text-primary transition-colors duration-300">
                     Wilayah &amp; Sasaran
-                </h3>
+                </h2>
 
                 {{-- Card Description --}}
                 <p class="text-base text-slate-600 dark:text-slate-400 mt-4 leading-relaxed font-medium">
@@ -54,9 +54,9 @@
                 </div>
 
                 {{-- Card Title --}}
-                <h3 class="text-xl font-black text-slate-900 dark:text-white font-jakarta group-hover:text-primary transition-colors duration-300">
+                <h2 class="text-xl font-black text-slate-900 dark:text-white font-jakarta group-hover:text-primary transition-colors duration-300">
                     Integrasi Layanan Primer
-                </h3>
+                </h2>
 
                 {{-- Card Description --}}
                 <p class="text-base text-slate-600 dark:text-slate-400 mt-4 leading-relaxed font-medium">
@@ -75,9 +75,9 @@
                 </div>
 
                 {{-- Card Title --}}
-                <h3 class="text-xl font-black text-slate-900 dark:text-white font-jakarta group-hover:text-primary transition-colors duration-300">
+                <h2 class="text-xl font-black text-slate-900 dark:text-white font-jakarta group-hover:text-primary transition-colors duration-300">
                     Portal Layanan Digital
-                </h3>
+                </h2>
 
                 {{-- Card Description --}}
                 <p class="text-base text-slate-600 dark:text-slate-400 mt-4 leading-relaxed font-medium">

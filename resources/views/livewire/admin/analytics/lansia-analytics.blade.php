@@ -1,83 +1,118 @@
 <div class="space-y-8 animate-fadeIn">
+    <style>
+        .metabolic-card:hover .hover-text-hipertensi { color: #dc2626 !important; }
+        .metabolic-card:hover .hover-text-gula { color: #d97706 !important; }
+        .metabolic-card:hover .hover-text-kolesterol { color: #2563eb !important; }
+        .metabolic-card:hover .hover-text-asam { color: #7c3aed !important; }
+    </style>
+
     {{-- Metabolic Risks Grid (AL-03 to AL-06) --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {{-- Hipertensi --}}
-        <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between hover:shadow-md hover:-translate-y-1 transition-all duration-350 group">
+        <div wire:click="$parent.drillDown('Lansia - Hipertensi', 'lansia_hipertensi', {{ $selectedMonth ?? 'null' }})"
+             class="relative overflow-hidden bg-gradient-to-br from-white to-rose-50/10 rounded-3xl p-6 border border-rose-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-rose-100/40 hover:-translate-y-1 hover:border-rose-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group metabolic-card">
+            
+            {{-- Background Watermark Icon --}}
+            <span class="material-symbols-outlined absolute -bottom-6 -right-6 text-[120px] text-rose-500 opacity-[0.04] transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 pointer-events-none">monitor_heart</span>
+
             <div>
                 <div class="flex items-center justify-between mb-4">
-                    <div class="w-11 h-11 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-100/50 shadow-xs transition-transform duration-300 group-hover:scale-105">
+                    <div class="w-11 h-11 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-200/50 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:bg-rose-100 group-hover:text-rose-750">
                         <span class="material-symbols-outlined text-[24px]">monitor_heart</span>
                     </div>
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-105/60 px-2 py-0.5 rounded-md font-sans">Hipertensi</span>
+                    <span class="text-[10px] font-black text-rose-700 uppercase tracking-widest bg-rose-50 px-2.5 py-1 rounded-lg">Hipertensi</span>
                 </div>
                 <div class="flex items-baseline gap-2">
-                    <span class="text-4xl font-extrabold text-slate-900 tracking-tight">{{ $metabolicRisks['hipertensi'] }}</span>
-                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Lansia</span>
+                    <span class="text-5xl font-black text-rose-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ $metabolicRisks['hipertensi'] }}</span>
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Lansia</span>
                 </div>
-                <p class="text-xs font-semibold text-slate-500 mt-3 leading-relaxed">Lansia dengan tekanan darah &ge; 140/90 mmHg</p>
+                <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Lansia dengan tekanan darah &ge; 140/90 mmHg</p>
             </div>
-            <div class="mt-6 pt-4 border-t border-slate-105 text-[10px] font-black text-slate-400 uppercase tracking-wide">
-                Terdeteksi otomatis rekam medis
+            
+            <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between pr-2">
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider transition-colors duration-300 hover-text-hipertensi">Terdeteksi otomatis rekam medis</span>
+                <span class="material-symbols-outlined text-[14px] !w-auto !overflow-visible text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 hover-text-hipertensi">arrow_forward</span>
             </div>
         </div>
 
         {{-- Hiperglikemia --}}
-        <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between hover:shadow-md hover:-translate-y-1 transition-all duration-350 group">
+        <div wire:click="$parent.drillDown('Lansia - Hiperglikemia', 'lansia_hiperglikemia', {{ $selectedMonth ?? 'null' }})"
+             class="relative overflow-hidden bg-gradient-to-br from-white to-amber-50/10 rounded-3xl p-6 border border-amber-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-amber-100/40 hover:-translate-y-1 hover:border-amber-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group metabolic-card">
+            
+            {{-- Background Watermark Icon --}}
+            <span class="material-symbols-outlined absolute -bottom-6 -right-6 text-[120px] text-amber-500 opacity-[0.04] transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 pointer-events-none">bloodtype</span>
+
             <div>
                 <div class="flex items-center justify-between mb-4">
-                    <div class="w-11 h-11 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-100/50 shadow-xs transition-transform duration-300 group-hover:scale-105">
+                    <div class="w-11 h-11 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200/50 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:bg-amber-100 group-hover:text-amber-750">
                         <span class="material-symbols-outlined text-[24px]">bloodtype</span>
                     </div>
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-105/60 px-2 py-0.5 rounded-md">Gula Darah</span>
+                    <span class="text-[10px] font-black text-amber-700 uppercase tracking-widest bg-amber-50 px-2.5 py-1 rounded-lg">Gula Darah</span>
                 </div>
                 <div class="flex items-baseline gap-2">
-                    <span class="text-4xl font-extrabold text-slate-900 tracking-tight">{{ $metabolicRisks['gula'] }}</span>
-                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Lansia</span>
+                    <span class="text-5xl font-black text-amber-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ $metabolicRisks['gula'] }}</span>
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Lansia</span>
                 </div>
-                <p class="text-xs font-semibold text-slate-500 mt-3 leading-relaxed">Lansia dengan kadar GDS/Gula Darah &ge; 200 mg/dL</p>
+                <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Lansia dengan kadar GDS/Gula Darah &ge; 200 mg/dL</p>
             </div>
-            <div class="mt-6 pt-4 border-t border-slate-105 text-[10px] font-black text-slate-400 uppercase tracking-wide">
-                Kasus hiperglikemia aktif
+            
+            <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between pr-2">
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider transition-colors duration-300 hover-text-gula">Kasus hiperglikemia aktif</span>
+                <span class="material-symbols-outlined text-[14px] !w-auto !overflow-visible text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 hover-text-gula">arrow_forward</span>
             </div>
         </div>
 
         {{-- Kolesterol Tinggi --}}
-        <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between hover:shadow-md hover:-translate-y-1 transition-all duration-350 group">
+        <div wire:click="$parent.drillDown('Lansia - Hiperkolesterolemia', 'lansia_hiperkolesterolemia', {{ $selectedMonth ?? 'null' }})"
+             class="relative overflow-hidden bg-gradient-to-br from-white to-blue-50/10 rounded-3xl p-6 border border-blue-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-blue-100/40 hover:-translate-y-1 hover:border-blue-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group metabolic-card">
+            
+            {{-- Background Watermark Icon --}}
+            <span class="material-symbols-outlined absolute -bottom-6 -right-6 text-[120px] text-blue-500 opacity-[0.04] transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 pointer-events-none">heart_broken</span>
+
             <div>
                 <div class="flex items-center justify-between mb-4">
-                    <div class="w-11 h-11 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100/50 shadow-xs transition-transform duration-300 group-hover:scale-105">
+                    <div class="w-11 h-11 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-200/50 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:bg-blue-100 group-hover:text-blue-750">
                         <span class="material-symbols-outlined text-[24px]">heart_broken</span>
                     </div>
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-105/60 px-2 py-0.5 rounded-md">Kolesterol</span>
+                    <span class="text-[10px] font-black text-blue-700 uppercase tracking-widest bg-blue-50 px-2.5 py-1 rounded-lg">Kolesterol</span>
                 </div>
                 <div class="flex items-baseline gap-2">
-                    <span class="text-4xl font-extrabold text-slate-900 tracking-tight">{{ $metabolicRisks['kolesterol'] }}</span>
-                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Lansia</span>
+                    <span class="text-5xl font-black text-blue-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ $metabolicRisks['kolesterol'] }}</span>
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Lansia</span>
                 </div>
-                <p class="text-xs font-semibold text-slate-500 mt-3 leading-relaxed">Lansia dengan kadar Kolesterol &ge; 200 mg/dL</p>
+                <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Lansia dengan kadar Kolesterol &ge; 200 mg/dL</p>
             </div>
-            <div class="mt-6 pt-4 border-t border-slate-105 text-[10px] font-black text-slate-400 uppercase tracking-wide">
-                Pemeriksaan berkala
+            
+            <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between pr-2">
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider transition-colors duration-300 hover-text-kolesterol">Pemeriksaan berkala</span>
+                <span class="material-symbols-outlined text-[14px] !w-auto !overflow-visible text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 hover-text-kolesterol">arrow_forward</span>
             </div>
         </div>
 
         {{-- Asam Urat Tinggi --}}
-        <div class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between hover:shadow-md hover:-translate-y-1 transition-all duration-350 group">
+        <div wire:click="$parent.drillDown('Lansia - Hiperurisemia', 'lansia_hiperurisemia', {{ $selectedMonth ?? 'null' }})"
+             class="relative overflow-hidden bg-gradient-to-br from-white to-purple-50/10 rounded-3xl p-6 border border-purple-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-purple-100/40 hover:-translate-y-1 hover:border-purple-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group metabolic-card">
+            
+            {{-- Background Watermark Icon --}}
+            <span class="material-symbols-outlined absolute -bottom-6 -right-6 text-[120px] text-purple-500 opacity-[0.04] transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 pointer-events-none">medical_services</span>
+
             <div>
                 <div class="flex items-center justify-between mb-4">
-                    <div class="w-11 h-11 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center border border-purple-100/50 shadow-xs transition-transform duration-300 group-hover:scale-105">
+                    <div class="w-11 h-11 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center border border-purple-200/50 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:bg-purple-100 group-hover:text-purple-750">
                         <span class="material-symbols-outlined text-[24px]">medical_services</span>
                     </div>
-                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-105/60 px-2 py-0.5 rounded-md">Asam Urat</span>
+                    <span class="text-[10px] font-black text-purple-700 uppercase tracking-widest bg-purple-50 px-2.5 py-1 rounded-lg">Asam Urat</span>
                 </div>
                 <div class="flex items-baseline gap-2">
-                    <span class="text-4xl font-extrabold text-slate-900 tracking-tight">{{ $metabolicRisks['asamUrat'] }}</span>
-                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Lansia</span>
+                    <span class="text-5xl font-black text-purple-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ $metabolicRisks['asamUrat'] }}</span>
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Lansia</span>
                 </div>
-                <p class="text-xs font-semibold text-slate-500 mt-3 leading-relaxed">Lansia dengan kadar Asam Urat &ge; 7.0 mg/dL</p>
+                <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Lansia dengan kadar Asam Urat &ge; 7.0 mg/dL</p>
             </div>
-            <div class="mt-6 pt-4 border-t border-slate-105 text-[10px] font-black text-slate-400 uppercase tracking-wide">
-                Deteksi pencegahan gout
+            
+            <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between pr-2">
+                <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider transition-colors duration-300 hover-text-asam">Deteksi pencegahan gout</span>
+                <span class="material-symbols-outlined text-[14px] !w-auto !overflow-visible text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 hover-text-asam">arrow_forward</span>
             </div>
         </div>
     </div>

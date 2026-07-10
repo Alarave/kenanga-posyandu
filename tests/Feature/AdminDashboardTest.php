@@ -63,8 +63,8 @@ test('admin dashboard displays correct statistics for superadmin', function () {
     $response->assertSee('Total Anak');
     $response->assertSee('Total Pemeriksaan');
     $response->assertSee('Total Imunisasi');
-    $response->assertSee('Pemeriksaan Terbaru');
-    $response->assertSee('Imunisasi Terbaru');
+    $response->assertSee('Kunjungan pemeriksaan terbaru');
+    $response->assertSee('Pemberian imunisasi terbaru');
 });
 
 test('admin dashboard displays scoped statistics for admin', function () {
@@ -102,8 +102,8 @@ test('admin dashboard displays scoped statistics for admin', function () {
     $response->assertSee('Total Anak');
     $response->assertSee('Total Pemeriksaan');
     $response->assertSee('Total Imunisasi');
-    $response->assertSee('Pemeriksaan Terbaru');
-    $response->assertSee('Imunisasi Terbaru');
+    $response->assertSee('Kunjungan pemeriksaan terbaru');
+    $response->assertSee('Pemberian imunisasi terbaru');
 });
 
 test('admin dashboard displays balita stunting warning', function () {
@@ -141,8 +141,8 @@ test('admin dashboard displays balita stunting warning', function () {
     $response->assertSee('Total Anak');
     $response->assertSee('Total Pemeriksaan');
     $response->assertSee('Total Imunisasi');
-    $response->assertSee('Pemeriksaan Terbaru');
-    $response->assertSee('Imunisasi Terbaru');
+    $response->assertSee('Kunjungan pemeriksaan terbaru');
+    $response->assertSee('Pemberian imunisasi terbaru');
 });
 
 test('admin dashboard displays bumil trimester and lansia names', function () {

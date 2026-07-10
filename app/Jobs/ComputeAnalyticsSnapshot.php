@@ -118,13 +118,10 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
             ->whereHas('medicalRecords', fn ($q) => $q->where(function ($sq) {
                 $sq->whereIn('nutrition_status', [
                     MedicalRecord::STATUS_BB_U_SANGAT_KURANG,
-                    MedicalRecord::STATUS_BB_U_KURANG,
-                ])->orWhereIn('stunting_status', [
-                    MedicalRecord::STATUS_TB_U_SANGAT_PENDEK,
-                    MedicalRecord::STATUS_TB_U_PENDEK,
-                ])->orWhereIn('wasting_status', [
                     MedicalRecord::STATUS_GIZI_BURUK,
-                    MedicalRecord::STATUS_GIZI_KURANG,
+                ])->orWhereIn('wasting_status', [
+                    MedicalRecord::STATUS_BB_U_SANGAT_KURANG,
+                    MedicalRecord::STATUS_GIZI_BURUK,
                 ]);
             })->whereYear('visit_date', $year)
                 ->when($month, fn ($mq) => $mq->whereMonth('visit_date', $month))
@@ -170,11 +167,13 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
 
             $normal = $group->whereIn('nutrition_status', [MedicalRecord::STATUS_BB_U_NORMAL, MedicalRecord::STATUS_GIZI_BAIK])->count();
             $stunting = $group->where(function ($r) {
-                return in_array($r->nutrition_status, [MedicalRecord::STATUS_BB_U_SANGAT_KURANG, MedicalRecord::STATUS_BB_U_KURANG]) ||
-                       in_array($r->stunting_status, [MedicalRecord::STATUS_TB_U_SANGAT_PENDEK, MedicalRecord::STATUS_TB_U_PENDEK]) ||
-                       in_array($r->wasting_status, [MedicalRecord::STATUS_GIZI_BURUK, MedicalRecord::STATUS_GIZI_KURANG]);
+                return in_array($r->nutrition_status, [MedicalRecord::STATUS_BB_U_SANGAT_KURANG, MedicalRecord::STATUS_GIZI_BURUK]) ||
+                       in_array($r->wasting_status, [MedicalRecord::STATUS_BB_U_SANGAT_KURANG, MedicalRecord::STATUS_GIZI_BURUK]);
             })->count();
-            $risk = $group->whereIn('nutrition_status', [MedicalRecord::STATUS_BB_U_RISIKO_LEBIH, MedicalRecord::STATUS_GIZI_BERISIKO_LEBIH, MedicalRecord::STATUS_GIZI_LEBIH, MedicalRecord::STATUS_GIZI_OBESITAS])->count();
+            $risk = $group->where(function ($r) {
+                return in_array($r->nutrition_status, [MedicalRecord::STATUS_BB_U_RISIKO_LEBIH, MedicalRecord::STATUS_GIZI_BERISIKO_LEBIH, MedicalRecord::STATUS_GIZI_LEBIH, MedicalRecord::STATUS_GIZI_OBESITAS, MedicalRecord::STATUS_BB_U_KURANG, MedicalRecord::STATUS_GIZI_KURANG]) ||
+                       in_array($r->wasting_status, [MedicalRecord::STATUS_BB_U_RISIKO_LEBIH, MedicalRecord::STATUS_GIZI_BERISIKO_LEBIH, MedicalRecord::STATUS_GIZI_LEBIH, MedicalRecord::STATUS_GIZI_OBESITAS, MedicalRecord::STATUS_BB_U_KURANG, MedicalRecord::STATUS_GIZI_KURANG]);
+            })->count();
 
             return (object) [
                 'normal_rate' => round(($normal / $total) * 100, 1),
@@ -239,9 +238,8 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
         $stuntingPerPosyandu = Patient::whereIn('posyandu_id', $posyanduIds)
             ->whereIn('category', ['balita', 'bayi', 'baduta'])
             ->whereHas('medicalRecords', fn ($q) => $q->where(function ($sq) {
-                $sq->whereIn('nutrition_status', [MedicalRecord::STATUS_BB_U_SANGAT_KURANG, MedicalRecord::STATUS_BB_U_KURANG])
-                    ->orWhereIn('stunting_status', [MedicalRecord::STATUS_TB_U_SANGAT_PENDEK, MedicalRecord::STATUS_TB_U_PENDEK])
-                    ->orWhereIn('wasting_status', [MedicalRecord::STATUS_GIZI_BURUK, MedicalRecord::STATUS_GIZI_KURANG]);
+                $sq->whereIn('nutrition_status', [MedicalRecord::STATUS_BB_U_SANGAT_KURANG, MedicalRecord::STATUS_GIZI_BURUK])
+                    ->orWhereIn('wasting_status', [MedicalRecord::STATUS_BB_U_SANGAT_KURANG, MedicalRecord::STATUS_GIZI_BURUK]);
             })
                 ->whereYear('visit_date', $year)
                 ->when($month, fn ($mq) => $mq->whereMonth('visit_date', $month))
@@ -606,14 +604,21 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
         // ── DASH-04: Lansia Demografi ──
         $lansiaList = (clone $patientQuery)->where('category', 'lansia')->get(['birth_date']);
         $lansiaDemografi = ['60_69' => 0, '70_plus' => 0];
+        $totalLansiaAge = 0;
+        $validLansiaCount = 0;
         foreach ($lansiaList as $l) {
             $age = $l->birth_date ? Carbon::parse($l->birth_date)->age : 0;
-            if ($age >= 60 && $age < 70) {
-                $lansiaDemografi['60_69']++;
-            } elseif ($age >= 70) {
-                $lansiaDemografi['70_plus']++;
+            if ($age >= 60) {
+                $totalLansiaAge += $age;
+                $validLansiaCount++;
+                if ($age < 70) {
+                    $lansiaDemografi['60_69']++;
+                } else {
+                    $lansiaDemografi['70_plus']++;
+                }
             }
         }
+        $rataRataUsiaLansia = $validLansiaCount > 0 ? round($totalLansiaAge / $validLansiaCount, 1) : 0;
 
         // ── DASH-02: Bumil Trimester ──
         $bumilRecords = (clone $medicalRecordQuery)
@@ -621,9 +626,13 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
             ->whereHas('patient', fn ($q) => $q->where('category', 'ibu_hamil'))
             ->get(['gestational_age']);
         $bumilTrimester = ['T1' => 0, 'T2' => 0, 'T3' => 0];
+        $totalBumilWeeks = 0;
+        $validBumilCount = 0;
         foreach ($bumilRecords as $record) {
             $weeks = (int) filter_var($record->gestational_age, FILTER_SANITIZE_NUMBER_INT);
             if ($weeks > 0) {
+                $totalBumilWeeks += $weeks;
+                $validBumilCount++;
                 if ($weeks <= 13) {
                     $bumilTrimester['T1']++;
                 } elseif ($weeks <= 27) {
@@ -633,6 +642,7 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
                 }
             }
         }
+        $rataRataUsiaKehamilan = $validBumilCount > 0 ? round($totalBumilWeeks / $validBumilCount, 1) : 0;
 
         // ── DASH-06: Kehadiran Balita ──
         $totalBalitaForHadir = (clone $patientQuery)->whereIn('category', ['balita', 'bayi', 'baduta'])->count();
@@ -806,6 +816,8 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
             // New Dashboard Widgets
             'lansiaDemografi' => $lansiaDemografi,
             'bumilTrimester' => $bumilTrimester,
+            'rataRataUsiaKehamilan' => $rataRataUsiaKehamilan,
+            'rataRataUsiaLansia' => $rataRataUsiaLansia,
             'kehadiranBalita' => $kehadiranBalita,
             'kelahiranBulanIni' => $kelahiranBulanIni,
 

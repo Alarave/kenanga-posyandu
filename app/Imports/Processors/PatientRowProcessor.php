@@ -133,6 +133,14 @@ class PatientRowProcessor
                 return;
             }
         }
+
+        \Illuminate\Support\Facades\Log::info("PatientImport - Row {$rowNum} parsed:", [
+            'name' => $nama,
+            'raw_gender_input' => $jk,
+            'normalized_gender' => $gender,
+            'category_input' => $categoryInput,
+        ]);
+
         $fullAddress = $this->buildAddress($alamat, $rt, $rw);
         $nikClean = preg_replace('/[^0-9]/', '', $nik); // Strip everything except digits
         $hasValidNik = strlen($nikClean) >= 15 && strlen($nikClean) <= 17; // More lenient length check
@@ -210,6 +218,12 @@ class PatientRowProcessor
         $category = $this->normalizeCategory($categoryInput, $resolvedBirthDate, $isPregnant);
 
         if ($existing) {
+            \Illuminate\Support\Facades\Log::info("PatientImport - Existing patient matched (ID {$existing->id}):", [
+                'name' => $existing->full_name,
+                'db_gender_before' => $existing->gender,
+                'incoming_gender' => $gender,
+            ]);
+
             $updateData = [
                 'posyandu_id' => $this->posyanduId, // Update posyandu_id to currently selected posyandu
                 'full_name' => $nama ?: $existing->full_name, // Update name if present
@@ -279,6 +293,12 @@ class PatientRowProcessor
             'rt_domisili' => $rt,
             'dusun_rt_rw' => $rw,
         ];
+
+        \Illuminate\Support\Facades\Log::info("PatientImport - Creating new patient:", [
+            'name' => $nama,
+            'gender' => $gender,
+            'category' => $category,
+        ]);
 
         $patient = Patient::create($createData);
 
@@ -594,8 +614,11 @@ class PatientRowProcessor
     private function normalizeGender(string $jk): ?string
     {
         $original = $jk;
+        // Trim standard whitespaces and uppercase
         $jk = strtoupper(trim($jk));
-        $clean = str_replace([' ', '-', '.', '_', '/', '\\', '|'], '', $jk);
+        
+        // Strip all unicode whitespaces (including NBSP \u{A0}), dashes, dots, underscores, slashes, etc.
+        $clean = preg_replace('/[\s\-\.\_\/\\\|]+/u', '', $jk);
 
         // Exact matches - male
         if (in_array($clean, ['L', 'LK', 'LAKI', 'LAKILAKI', 'MALE', 'M', 'PRIA', 'LAKI2', 'COWOK', 'LAKIILAKI'], true)) {

@@ -33,6 +33,10 @@ class AdminDashboard extends BaseAdminComponent
     // Stats Properties
     public $totalBalita = 0;
 
+    public $totalIbuHamil = 0;
+
+    public $totalLansia = 0;
+
     public $totalPemeriksaan = 0;
 
     public $totalImunisasi = 0;
@@ -66,11 +70,27 @@ class AdminDashboard extends BaseAdminComponent
 
     public $kehadiranBalita = ['hadir' => 0, 'tidak_hadir' => 0, 'persentase' => 0];
 
+    public float $rataRataUsiaKehamilan = 0;
+
+    public float $rataRataUsiaLansia = 0;
+
     public bool $showNutritionModal = false;
 
     public ?string $selectedNutritionStatus = null;
 
     public array $balitasForSelectedStatus = [];
+
+    public bool $showBumilModal = false;
+
+    public ?string $selectedBumilTrimester = null;
+
+    public array $bumilsForSelectedTrimester = [];
+
+    public bool $showLansiaModal = false;
+
+    public ?string $selectedLansiaGroup = null;
+
+    public array $lansiasForSelectedGroup = [];
 
     public bool $showMonthActivityModal = false;
 
@@ -315,6 +335,18 @@ class AdminDashboard extends BaseAdminComponent
                     });
                 }
 
+                if ($this->rataRataUsiaKehamilan == 0 || $this->rataRataUsiaLansia == 0) {
+                    $patientQuery = $this->applyDashboardFilters(Patient::query(), 'patient');
+                    $medicalRecordQuery = $this->applyDashboardFilters(MedicalRecord::query(), 'medical_record');
+                    $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+                    if ($this->rataRataUsiaKehamilan == 0) {
+                        $this->getBumilTrimester($medicalRecordQuery, $latestRecordSubquery);
+                    }
+                    if ($this->rataRataUsiaLansia == 0) {
+                        $this->getLansiaDemografi($patientQuery);
+                    }
+                }
+
                 $loadedFromSnapshot = true;
             } else {
                 $this->computeDashboardStatsRealtime();
@@ -406,6 +438,12 @@ class AdminDashboard extends BaseAdminComponent
         if ($this->selectedNutritionStatus) {
             $this->loadBalitasForSelectedStatus();
         }
+        if ($this->selectedBumilTrimester) {
+            $this->loadBumilsForSelectedTrimester();
+        }
+        if ($this->selectedLansiaGroup) {
+            $this->loadLansiasForSelectedGroup();
+        }
     }
 
     protected function computeDashboardStatsRealtime()
@@ -416,6 +454,8 @@ class AdminDashboard extends BaseAdminComponent
         $currentYear = now()->year;
 
         $this->totalBalita = (clone $patientQuery)->whereIn('category', ['balita', 'bayi', 'baduta'])->count();
+        $this->totalIbuHamil = (clone $patientQuery)->where('category', 'ibu_hamil')->count();
+        $this->totalLansia = (clone $patientQuery)->where('category', 'lansia')->count();
 
         if ($this->filterPeriode === 'semua') {
             $this->kunjunganBaru = (clone $medicalRecordQuery)->whereMonth('visit_date', $currentMonth)->whereYear('visit_date', $currentYear)->count();
@@ -451,12 +491,16 @@ class AdminDashboard extends BaseAdminComponent
 
     protected function getLansiaDemografi(Builder $patientQuery): array
     {
-        $lansia = (clone $patientQuery)->where('category', 'lansia')->get();
+        $lansia = (clone $patientQuery)->where('category', 'lansia')->get(['id', 'birth_date']);
         $group60 = 0;
         $group70 = 0;
+        $totalAge = 0;
+        $validAgeCount = 0;
         foreach ($lansia as $l) {
             if ($l->birth_date) {
                 $age = $l->birth_date->age;
+                $totalAge += $age;
+                $validAgeCount++;
                 if ($age >= 70) {
                     $group70++;
                 } elseif ($age >= 60) {
@@ -464,6 +508,8 @@ class AdminDashboard extends BaseAdminComponent
                 }
             }
         }
+
+        $this->rataRataUsiaLansia = $validAgeCount > 0 ? round($totalAge / $validAgeCount, 1) : 0;
 
         return ['60_69' => $group60, '70_plus' => $group70];
     }
@@ -478,10 +524,14 @@ class AdminDashboard extends BaseAdminComponent
         $t1 = 0;
         $t2 = 0;
         $t3 = 0;
+        $totalWeeks = 0;
+        $validCount = 0;
 
         foreach ($records as $record) {
             $weeks = (int) filter_var($record->gestational_age, FILTER_SANITIZE_NUMBER_INT);
             if ($weeks > 0) {
+                $totalWeeks += $weeks;
+                $validCount++;
                 if ($weeks <= 13) {
                     $t1++;
                 } elseif ($weeks <= 27) {
@@ -491,6 +541,8 @@ class AdminDashboard extends BaseAdminComponent
                 }
             }
         }
+
+        $this->rataRataUsiaKehamilan = $validCount > 0 ? round($totalWeeks / $validCount, 1) : 0;
 
         return ['T1' => $t1, 'T2' => $t2, 'T3' => $t3];
     }
@@ -619,8 +671,8 @@ class AdminDashboard extends BaseAdminComponent
             ->whereIn('id', $latestRecordSubquery)
             ->where('nutrition_status', $this->selectedNutritionStatus)
             ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
-            ->with(['patient', 'patient.posyandu'])
-            ->get();
+            ->with(['patient:id,full_name,birth_date,gender,posyandu_id', 'patient.posyandu:id,name'])
+            ->get(['id', 'patient_id', 'weight', 'height', 'visit_date']);
 
         $this->balitasForSelectedStatus = $records->map(function ($record) {
             return [
@@ -634,6 +686,110 @@ class AdminDashboard extends BaseAdminComponent
                 'visit_date' => Carbon::parse($record->visit_date)->translatedFormat('d M Y'),
             ];
         })->toArray();
+    }
+
+    public function selectBumilTrimester(string $trimester)
+    {
+        $this->selectedBumilTrimester = $trimester;
+        $this->loadBumilsForSelectedTrimester();
+        $this->showBumilModal = true;
+    }
+
+    protected function loadBumilsForSelectedTrimester()
+    {
+        if (!$this->selectedBumilTrimester) {
+            $this->bumilsForSelectedTrimester = [];
+            return;
+        }
+
+        $label = $this->selectedBumilTrimester;
+        
+        $patientQuery = $this->applyDashboardFilters(Patient::query(), 'patient');
+        $medicalRecordQuery = $this->applyDashboardFilters(MedicalRecord::query(), 'medical_record');
+        $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+
+        $records = $medicalRecordQuery
+            ->whereIn('id', $latestRecordSubquery)
+            ->whereHas('patient', function ($q) use ($patientQuery) {
+                $q->where('category', 'ibu_hamil')
+                  ->whereIn('id', $patientQuery->pluck('id'));
+            })
+            ->with(['patient:id,full_name,birth_date,posyandu_id', 'patient.posyandu:id,name'])
+            ->get(['id', 'patient_id', 'gestational_age', 'visit_date']);
+
+        $bumils = [];
+        foreach ($records as $record) {
+            $weeks = (int) filter_var($record->gestational_age, FILTER_SANITIZE_NUMBER_INT);
+            if ($weeks > 0 && $record->patient) {
+                $matched = false;
+                if ((str_contains($label, '1') || str_contains($label, 'I')) && $weeks <= 13) {
+                    $matched = true;
+                } elseif ((str_contains($label, '2') || str_contains($label, 'II')) && $weeks > 13 && $weeks <= 27) {
+                    $matched = true;
+                } elseif ((str_contains($label, '3') || str_contains($label, 'III')) && $weeks > 27) {
+                    $matched = true;
+                }
+
+                if ($matched) {
+                    $bumils[] = [
+                        'id' => $record->patient->id,
+                        'name' => $record->patient->full_name,
+                        'age' => $record->patient->age,
+                        'gestational_age' => $record->gestational_age,
+                        'posyandu_name' => $record->patient->posyandu?->name ?? '-',
+                        'visit_date' => Carbon::parse($record->visit_date)->translatedFormat('d M Y'),
+                    ];
+                }
+            }
+        }
+        $this->bumilsForSelectedTrimester = $bumils;
+    }
+
+    public function selectLansiaGroup(string $group)
+    {
+        $this->selectedLansiaGroup = $group;
+        $this->loadLansiasForSelectedGroup();
+        $this->showLansiaModal = true;
+    }
+
+    protected function loadLansiasForSelectedGroup()
+    {
+        if (!$this->selectedLansiaGroup) {
+            $this->lansiasForSelectedGroup = [];
+            return;
+        }
+
+        $label = $this->selectedLansiaGroup;
+        
+        $patientQuery = $this->applyDashboardFilters(Patient::query(), 'patient');
+        $lansia = $patientQuery
+            ->where('category', 'lansia')
+            ->with(['posyandu:id,name'])
+            ->get(['id', 'full_name', 'birth_date', 'gender', 'posyandu_id']);
+
+        $lansias = [];
+        foreach ($lansia as $l) {
+            if ($l->birth_date) {
+                $age = $l->birth_date->age;
+                $matched = false;
+                if (str_contains($label, '60') && $age >= 60 && $age < 70) {
+                    $matched = true;
+                } elseif (str_contains($label, '70') && $age >= 70) {
+                    $matched = true;
+                }
+
+                if ($matched) {
+                    $lansias[] = [
+                        'id' => $l->id,
+                        'name' => $l->full_name,
+                        'age' => $age,
+                        'gender' => $l->gender === 'L' ? 'Laki-laki' : 'Perempuan',
+                        'posyandu_name' => $l->posyandu?->name ?? '-',
+                    ];
+                }
+            }
+        }
+        $this->lansiasForSelectedGroup = $lansias;
     }
 
     public function selectMonthActivity(string $monthYear)
