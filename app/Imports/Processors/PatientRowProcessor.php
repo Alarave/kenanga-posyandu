@@ -543,8 +543,8 @@ class PatientRowProcessor
             ->first();
 
         $recordData = [
-            'weight' => $weightVal,
-            'height' => $heightVal,
+            'weight' => $weightVal ?? 0,
+            'height' => $heightVal ?? 0,
             'head_circumference' => $lkVal,
             'immunization' => $imunisasi,
             'vitamin_a' => $vitaminA,
