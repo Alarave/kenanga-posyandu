@@ -66,7 +66,7 @@
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6 border-t border-gray-50">
                             <div>
-                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Pedukuhan / Wilayah</p>
+                                <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">wilayah</p>
                                 <p class="text-sm font-bold text-gray-900 flex items-center gap-2">
                                     <span class="material-symbols-outlined text-blue-500" style="font-size:18px;">map</span>
                                     {{ $posyandu->pedukuhan->name ?? '—' }}

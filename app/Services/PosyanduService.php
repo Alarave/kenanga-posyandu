@@ -17,6 +17,10 @@ class PosyanduService
             $data['logo_photo'] = $data['logo_photo']->store('posyandu', 'public');
         }
 
+        // Automatically set Pedukuhan to "Aren Jaya"
+        $arenJaya = \App\Models\Pedukuhan::firstOrCreate(['name' => 'Aren Jaya']);
+        $data['pedukuhan_id'] = $arenJaya->id;
+
         return Posyandu::create($data);
     }
 
@@ -31,6 +35,10 @@ class PosyanduService
             }
             $data['logo_photo'] = $data['logo_photo']->store('posyandu', 'public');
         }
+
+        // Automatically set Pedukuhan to "Aren Jaya"
+        $arenJaya = \App\Models\Pedukuhan::firstOrCreate(['name' => 'Aren Jaya']);
+        $data['pedukuhan_id'] = $arenJaya->id;
 
         $posyandu->update($data);
 
