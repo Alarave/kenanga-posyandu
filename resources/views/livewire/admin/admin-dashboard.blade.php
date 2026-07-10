@@ -1096,6 +1096,7 @@
                     </tbody>
                 </table>
             </div>
+        </div>
     </div>
 
     {{-- Right Side: 4 Columns --}}
