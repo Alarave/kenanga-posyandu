@@ -309,9 +309,9 @@ class Analytics extends BaseAdminComponent
                     'nik' => $p->id_number ?? '-',
                     'posyandu' => $p->posyandu?->name ?? '-',
                     'nutrition_status' => 'Umur: ' . (int) Carbon::parse($p->birth_date)->diffInMonths($determinationDate) . ' Bulan',
-                    'visit_date' => 'Terdaftar',
-                    'weight' => '-',
-                    'height' => '-',
+                    'visit_date' => $latest && $latest->visit_date ? $latest->visit_date->format('d/m/Y') : 'Terdaftar',
+                    'weight' => $latest && $latest->weight ? $latest->weight . ' kg' : '-',
+                    'height' => $latest && $latest->height ? $latest->height . ' cm' : '-',
                     'patient_id' => $p->id,
                     'category_warga' => 'Balita', 
                     'kategori_gizi' => '-', 
@@ -344,21 +344,26 @@ class Analytics extends BaseAdminComponent
                 };
             });
 
-            $this->drillDownData = $filteredPatients->map(fn ($p) => [
-                'name' => $p->full_name ?? '-',
-                'nik' => $p->id_number ?? '-',
-                'posyandu' => $p->posyandu?->name ?? '-',
-                'nutrition_status' => 'Umur: '.$p->age.' Tahun',
-                'visit_date' => 'Terdaftar',
-                'weight' => '-',
-                'height' => '-',
-                'patient_id' => $p->id,
-                'category_warga' => 'Lansia', 
-                'kategori_gizi' => '-', 
-                'status_info' => '-', 
-                'month_name' => '-', 
-                'age_months' => $p->birth_date ? (int) $p->birth_date->diffInMonths(now()) : 0, 
-            ])->values()->toArray();
+            $determinationDate = Carbon::create($targetYear, $month ?? $this->selectedMonth ?? 12, 1)->endOfMonth();
+
+            $this->drillDownData = $filteredPatients->map(function ($p) use ($determinationDate) {
+                $latest = $p->medicalRecords()->where('visit_date', '<=', $determinationDate)->latest('visit_date')->first();
+                return [
+                    'name' => $p->full_name ?? '-',
+                    'nik' => $p->id_number ?? '-',
+                    'posyandu' => $p->posyandu?->name ?? '-',
+                    'nutrition_status' => 'Umur: '.$p->age.' Tahun',
+                    'visit_date' => $latest && $latest->visit_date ? $latest->visit_date->format('d/m/Y') : 'Terdaftar',
+                    'weight' => $latest && $latest->weight ? $latest->weight . ' kg' : '-',
+                    'height' => $latest && $latest->height ? $latest->height . ' cm' : '-',
+                    'patient_id' => $p->id,
+                    'category_warga' => 'Lansia', 
+                    'kategori_gizi' => '-', 
+                    'status_info' => '-', 
+                    'month_name' => '-', 
+                    'age_months' => $p->birth_date ? (int) $p->birth_date->diffInMonths(now()) : 0, 
+                ];
+            })->values()->toArray();
 
             return;
         }
