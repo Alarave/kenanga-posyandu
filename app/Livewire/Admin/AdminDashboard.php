@@ -479,7 +479,7 @@ class AdminDashboard extends BaseAdminComponent
 
     protected function getLansiaDemografi(Builder $patientQuery): array
     {
-        $lansia = (clone $patientQuery)->where('category', 'lansia')->get();
+        $lansia = (clone $patientQuery)->where('category', 'lansia')->get(['id', 'birth_date']);
         $group60 = 0;
         $group70 = 0;
         $totalAge = 0;
@@ -659,8 +659,8 @@ class AdminDashboard extends BaseAdminComponent
             ->whereIn('id', $latestRecordSubquery)
             ->where('nutrition_status', $this->selectedNutritionStatus)
             ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
-            ->with(['patient', 'patient.posyandu'])
-            ->get();
+            ->with(['patient:id,full_name,birth_date,gender,posyandu_id', 'patient.posyandu:id,name'])
+            ->get(['id', 'patient_id', 'weight', 'height', 'visit_date']);
 
         $this->balitasForSelectedStatus = $records->map(function ($record) {
             return [
@@ -702,8 +702,8 @@ class AdminDashboard extends BaseAdminComponent
                 $q->where('category', 'ibu_hamil')
                   ->whereIn('id', $patientQuery->pluck('id'));
             })
-            ->with(['patient', 'patient.posyandu'])
-            ->get();
+            ->with(['patient:id,full_name,birth_date,posyandu_id', 'patient.posyandu:id,name'])
+            ->get(['id', 'patient_id', 'gestational_age', 'visit_date']);
 
         $bumils = [];
         foreach ($records as $record) {
@@ -752,8 +752,8 @@ class AdminDashboard extends BaseAdminComponent
         $patientQuery = $this->applyDashboardFilters(Patient::query(), 'patient');
         $lansia = $patientQuery
             ->where('category', 'lansia')
-            ->with('posyandu')
-            ->get();
+            ->with(['posyandu:id,name'])
+            ->get(['id', 'full_name', 'birth_date', 'gender', 'posyandu_id']);
 
         $lansias = [];
         foreach ($lansia as $l) {
