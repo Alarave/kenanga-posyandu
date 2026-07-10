@@ -150,6 +150,7 @@
                         @else
                             <img src="{{ asset('storage/' . $gallery->photo) }}" 
                                  alt="{{ $gallery->title }}"
+                                 onerror="this.onerror=null; this.src='https://placehold.co/600x600/e2e8f0/0f766e?text=Media+Posyandu';"
                                  class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105">
                             
                             {{-- Photo Indicator Badge --}}
@@ -258,6 +259,7 @@
                 <div class="bg-slate-50/50 flex items-center justify-center p-2 relative overflow-hidden">
                     <img :src="activeMedia" 
                          x-show="activeType !== 'video'" 
+                         onerror="this.onerror=null; this.src='https://placehold.co/600x600/e2e8f0/0f766e?text=Media+Posyandu';"
                          class="w-auto h-auto max-w-full max-h-[55vh] object-contain rounded-xl select-none shadow-sm">
                     
                     <video :src="activeMedia" 
