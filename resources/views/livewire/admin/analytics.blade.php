@@ -1073,7 +1073,7 @@
                                         $statusStr = strtolower(trim($row['nutrition_status'] ?? ''));
                                         $tagStyle = '';
                                         $tagClass = '';
-                                        if ($statusStr === 'gizi buruk' || $statusStr === 'buruk') {
+                                        if ($statusStr === 'gizi buruk' || $statusStr === 'buruk' || str_contains($statusStr, 'belum') || str_contains($statusStr, 'anemia') || str_contains($statusStr, 'risiko')) {
                                             $tagStyle = 'background-color: #FEE2E2; color: #B91C1C; border-color: rgba(185, 28, 28, 0.2);';
                                         } elseif ($statusStr === 'gizi kurang' || $statusStr === 'kurang') {
                                             $tagStyle = 'background-color: #FFEDD5; color: #C2410C; border-color: rgba(194, 65, 12, 0.2);';
