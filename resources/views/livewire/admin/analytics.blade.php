@@ -490,13 +490,54 @@
                                     <span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span> Balita & Anak
                                 </h4>
                                 <div class="grid grid-cols-2 gap-2">
-                                    <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
-                                        <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Prevalensi Stunting</p>
-                                        <p class="text-base font-black text-slate-800 mt-0.5">{{ $stuntingRate }}%</p>
+                                    {{-- Prevalensi Stunting --}}
+                                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center gap-3">
+                                        <div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center">
+                                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                                <circle cx="18" cy="18" r="15.915" fill="none" class="stroke-emerald-500" stroke-width="4.5"></circle>
+                                                <circle cx="18" cy="18" r="15.915" fill="none" class="stroke-rose-500" stroke-width="4.5"
+                                                        stroke-dasharray="{{ $stuntingRate }} {{ 100 - $stuntingRate }}" stroke-dashoffset="0"></circle>
+                                            </svg>
+                                            <span class="absolute text-[9px] font-black text-slate-800">{{ $stuntingRate }}%</span>
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-wider truncate">Stunting</p>
+                                            <div class="mt-1 space-y-0.5">
+                                                <div class="flex items-center justify-between text-[8px] font-bold text-rose-600">
+                                                    <span>Stunting:</span>
+                                                    <span>{{ $stuntingRate }}%</span>
+                                                </div>
+                                                <div class="flex items-center justify-between text-[8px] font-bold text-emerald-600">
+                                                    <span>Normal:</span>
+                                                    <span>{{ round(100 - $stuntingRate, 1) }}%</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
-                                        <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Imunisasi Dasar</p>
-                                        <p class="text-base font-black text-slate-800 mt-0.5">{{ $cakupanImunisasi }}%</p>
+                                    
+                                    {{-- Imunisasi Dasar --}}
+                                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center gap-3">
+                                        <div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center">
+                                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                                <circle cx="18" cy="18" r="15.915" fill="none" class="stroke-slate-200" stroke-width="4.5"></circle>
+                                                <circle cx="18" cy="18" r="15.915" fill="none" class="stroke-teal-500" stroke-width="4.5"
+                                                        stroke-dasharray="{{ $cakupanImunisasi }} {{ 100 - $cakupanImunisasi }}" stroke-dashoffset="0"></circle>
+                                            </svg>
+                                            <span class="absolute text-[9px] font-black text-slate-800">{{ $cakupanImunisasi }}%</span>
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-wider truncate">Imunisasi</p>
+                                            <div class="mt-1 space-y-0.5">
+                                                <div class="flex items-center justify-between text-[8px] font-bold text-teal-600">
+                                                    <span>Lengkap:</span>
+                                                    <span>{{ $cakupanImunisasi }}%</span>
+                                                </div>
+                                                <div class="flex items-center justify-between text-[8px] font-bold text-slate-500">
+                                                    <span>Belum:</span>
+                                                    <span>{{ round(100 - $cakupanImunisasi, 1) }}%</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -507,13 +548,54 @@
                                     <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Ibu Hamil
                                 </h4>
                                 <div class="grid grid-cols-2 gap-2">
-                                    <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
-                                        <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Risiko Hipertensi</p>
-                                        <p class="text-base font-black text-slate-800 mt-0.5">{{ $hypertensionRiskRate }}%</p>
+                                    {{-- Risiko Hipertensi --}}
+                                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center gap-3">
+                                        <div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center">
+                                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                                <circle cx="18" cy="18" r="15.915" fill="none" class="stroke-emerald-500" stroke-width="4.5"></circle>
+                                                <circle cx="18" cy="18" r="15.915" fill="none" class="stroke-rose-500" stroke-width="4.5"
+                                                        stroke-dasharray="{{ $hypertensionRiskRate }} {{ 100 - $hypertensionRiskRate }}" stroke-dashoffset="0"></circle>
+                                            </svg>
+                                            <span class="absolute text-[9px] font-black text-slate-800">{{ $hypertensionRiskRate }}%</span>
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-wider truncate">Hipertensi</p>
+                                            <div class="mt-1 space-y-0.5">
+                                                <div class="flex items-center justify-between text-[8px] font-bold text-rose-600">
+                                                    <span>Hipertensi:</span>
+                                                    <span>{{ $hypertensionRiskRate }}%</span>
+                                                </div>
+                                                <div class="flex items-center justify-between text-[8px] font-bold text-emerald-600">
+                                                    <span>Normal:</span>
+                                                    <span>{{ round(100 - $hypertensionRiskRate, 1) }}%</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
-                                        <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Kepatuhan Fe</p>
-                                        <p class="text-base font-black text-slate-800 mt-0.5">{{ $feComplianceRate }}%</p>
+                                    
+                                    {{-- Kepatuhan Fe --}}
+                                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center gap-3">
+                                        <div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center">
+                                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                                <circle cx="18" cy="18" r="15.915" fill="none" class="stroke-slate-200" stroke-width="4.5"></circle>
+                                                <circle cx="18" cy="18" r="15.915" fill="none" class="stroke-teal-500" stroke-width="4.5"
+                                                        stroke-dasharray="{{ $feComplianceRate }} {{ 100 - $feComplianceRate }}" stroke-dashoffset="0"></circle>
+                                            </svg>
+                                            <span class="absolute text-[9px] font-black text-slate-800">{{ $feComplianceRate }}%</span>
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-wider truncate">Tablet Fe</p>
+                                            <div class="mt-1 space-y-0.5">
+                                                <div class="flex items-center justify-between text-[8px] font-bold text-teal-600">
+                                                    <span>Patuh:</span>
+                                                    <span>{{ $feComplianceRate }}%</span>
+                                                </div>
+                                                <div class="flex items-center justify-between text-[8px] font-bold text-slate-500">
+                                                    <span>Belum:</span>
+                                                    <span>{{ round(100 - $feComplianceRate, 1) }}%</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -524,13 +606,54 @@
                                     <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span> Lanjut Usia
                                 </h4>
                                 <div class="grid grid-cols-2 gap-2">
-                                    <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
-                                        <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Hipertensi</p>
-                                        <p class="text-base font-black text-slate-800 mt-0.5">{{ $lansiaHypertensionRate }}%</p>
+                                    {{-- Lansia Hipertensi --}}
+                                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center gap-3">
+                                        <div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center">
+                                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                                <circle cx="18" cy="18" r="15.915" fill="none" class="stroke-emerald-500" stroke-width="4.5"></circle>
+                                                <circle cx="18" cy="18" r="15.915" fill="none" class="stroke-rose-500" stroke-width="4.5"
+                                                        stroke-dasharray="{{ $lansiaHypertensionRate }} {{ 100 - $lansiaHypertensionRate }}" stroke-dashoffset="0"></circle>
+                                            </svg>
+                                            <span class="absolute text-[9px] font-black text-slate-800">{{ $lansiaHypertensionRate }}%</span>
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-wider truncate">Hipertensi</p>
+                                            <div class="mt-1 space-y-0.5">
+                                                <div class="flex items-center justify-between text-[8px] font-bold text-rose-600">
+                                                    <span>Hipertensi:</span>
+                                                    <span>{{ $lansiaHypertensionRate }}%</span>
+                                                </div>
+                                                <div class="flex items-center justify-between text-[8px] font-bold text-emerald-600">
+                                                    <span>Normal:</span>
+                                                    <span>{{ round(100 - $lansiaHypertensionRate, 1) }}%</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
-                                        <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Hiperglikemia</p>
-                                        <p class="text-base font-black text-slate-800 mt-0.5">{{ $lansiaHyperglycemiaRate }}%</p>
+                                    
+                                    {{-- Lansia Hiperglikemia --}}
+                                    <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center gap-3">
+                                        <div class="relative w-12 h-12 flex-shrink-0 flex items-center justify-center">
+                                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                                <circle cx="18" cy="18" r="15.915" fill="none" class="stroke-emerald-500" stroke-width="4.5"></circle>
+                                                <circle cx="18" cy="18" r="15.915" fill="none" class="stroke-rose-500" stroke-width="4.5"
+                                                        stroke-dasharray="{{ $lansiaHyperglycemiaRate }} {{ 100 - $lansiaHyperglycemiaRate }}" stroke-dashoffset="0"></circle>
+                                            </svg>
+                                            <span class="absolute text-[9px] font-black text-slate-800">{{ $lansiaHyperglycemiaRate }}%</span>
+                                        </div>
+                                        <div class="min-w-0 flex-1">
+                                            <p class="text-[9px] font-black text-slate-500 uppercase tracking-wider truncate">Diabetes</p>
+                                            <div class="mt-1 space-y-0.5">
+                                                <div class="flex items-center justify-between text-[8px] font-bold text-rose-600">
+                                                    <span>Diabetes:</span>
+                                                    <span>{{ $lansiaHyperglycemiaRate }}%</span>
+                                                </div>
+                                                <div class="flex items-center justify-between text-[8px] font-bold text-emerald-600">
+                                                    <span>Normal:</span>
+                                                    <span>{{ round(100 - $lansiaHyperglycemiaRate, 1) }}%</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
