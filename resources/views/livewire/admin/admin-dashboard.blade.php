@@ -969,66 +969,78 @@
             </div>
         </div>
 
-        {{-- Recent Activity --}}
-        <div class="widget-card off-screen-widget">
-            <div class="widget-header">
+        {{-- Riwayat Aktivitas & Imunisasi Tabbed Widget --}}
+        <div class="widget-card off-screen-widget" x-data="{ activeTab: 'pemeriksaan' }">
+            <div class="widget-header flex-col sm:flex-row gap-4 items-start sm:items-center">
                 <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined text-[20px]">history</span>
+                    <div class="w-9 h-9 rounded-xl bg-teal-50 dark:bg-teal-950/20 flex items-center justify-center shrink-0">
+                        <template x-if="activeTab === 'pemeriksaan'">
+                            <span class="material-symbols-outlined text-[20px] text-teal-600">history</span>
+                        </template>
+                        <template x-if="activeTab === 'imunisasi'">
+                            <span class="material-symbols-outlined text-[20px] text-indigo-600 dark:text-indigo-400">vaccines</span>
+                        </template>
                     </div>
                     <div>
-                        <h3 class="font-bold text-slate-900 text-sm">Pemeriksaan Terbaru</h3>
-                        <p class="text-xs text-slate-500 mt-0.5">Kunjungan pemeriksaan terbaru</p>
+                        <h3 class="font-bold text-slate-900 dark:text-white text-sm">Riwayat Aktivitas</h3>
+                        <p class="text-xs text-slate-500 mt-0.5" x-show="activeTab === 'pemeriksaan'">Kunjungan pemeriksaan terbaru</p>
+                        <p class="text-xs text-slate-500 mt-0.5" x-show="activeTab === 'imunisasi'" x-cloak>Pemberian imunisasi terbaru</p>
                     </div>
                 </div>
-                <a href="{{ route('admin.medical-records.index') }}"
-                    class="text-xs font-semibold text-teal-600 hover:text-teal-700 hover:underline transition-colors">
-                    Lihat Semua →
-                </a>
+                
+                {{-- Tab Switcher --}}
+                <div class="flex bg-slate-105 dark:bg-slate-800 p-1 rounded-xl text-xs font-bold text-slate-600 dark:text-slate-350 sm:ml-auto select-none border border-slate-200/50 dark:border-slate-700">
+                    <button type="button" 
+                        @click="activeTab = 'pemeriksaan'" 
+                        :class="activeTab === 'pemeriksaan' ? 'bg-white dark:bg-slate-700 text-teal-600 dark:text-teal-400 shadow-xs' : 'hover:text-slate-900 dark:hover:text-white'"
+                        class="px-4 py-1.5 rounded-lg transition-all cursor-pointer">
+                        Pemeriksaan
+                    </button>
+                    <button type="button" 
+                        @click="activeTab = 'imunisasi'" 
+                        :class="activeTab === 'imunisasi' ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-xs' : 'hover:text-slate-900 dark:hover:text-white'"
+                        class="px-4 py-1.5 rounded-lg transition-all cursor-pointer">
+                        Imunisasi
+                    </button>
+                </div>
             </div>
-            <div class="overflow-x-auto">
+
+            {{-- Tab 1: Pemeriksaan --}}
+            <div x-show="activeTab === 'pemeriksaan'" class="overflow-x-auto">
                 <table class="w-full text-left">
                     <thead>
-                        <tr style="background:#f9fafb; border-bottom:1px solid rgba(0,0,0,0.05);">
-                            <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                Pasien</th>
-                            <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                Waktu Visit</th>
-                            <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                Unit Posyandu</th>
-                            <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                Petugas</th>
+                        <tr style="background:#f9fafb; border-bottom:1px solid rgba(0,0,0,0.05);" class="dark:bg-slate-900/60 dark:border-slate-800">
+                            <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Pasien</th>
+                            <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Waktu Visit</th>
+                            <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Unit Posyandu</th>
+                            <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Petugas</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($recentActivities as $activity)
-                            <tr class="table-row-hover transition-colors"
-                                style="border-bottom:1px solid rgba(0,0,0,0.04);">
+                            <tr class="table-row-hover transition-colors dark:hover:bg-slate-800/40" style="border-bottom:1px solid rgba(0,0,0,0.04);" wire:key="activity-row-{{ $activity->id }}">
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-3">
-                                        <div
-                                            class="w-9 h-9 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center font-bold text-xs shrink-0">
+                                        <div class="w-9 h-9 rounded-xl bg-teal-50 dark:bg-teal-950/40 text-teal-700 dark:text-teal-350 flex items-center justify-center font-bold text-xs shrink-0">
                                             {{ strtoupper(substr($activity->patient->full_name, 0, 2)) }}
                                         </div>
                                         <div>
-                                            <span class="block text-sm font-semibold text-slate-800">
-                                                <a href="{{ route('admin.patients.show', $activity->patient->id) }}"
-                                                    class="hover:text-teal-600 transition-colors">
+                                            <span class="block text-sm font-semibold text-slate-800 dark:text-slate-200">
+                                                <a href="{{ route('admin.patients.show', $activity->patient->id) }}" class="hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
                                                     {{ $activity->patient->full_name }}
                                                 </a>
                                             </span>
-                                            <span
-                                                class="text-xs text-slate-400">{{ $activity->patient->category }}</span>
+                                            <span class="text-xs text-slate-400 capitalize">{{ str_replace('_', ' ', $activity->patient->category) }}</span>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 text-sm text-slate-600">
+                                <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-350">
                                     {{ $activity->visit_date->translatedFormat('d M Y') }}
                                 </td>
                                 <td class="px-6 py-4">
                                     <span class="badge badge-blue">{{ $activity->patient->posyandu->name }}</span>
                                 </td>
-                                <td class="px-6 py-4 text-sm text-slate-600">
+                                <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-350">
                                     {{ $activity->user->name ?? '-' }}
                                 </td>
                             </tr>
@@ -1036,63 +1048,42 @@
                     </tbody>
                 </table>
             </div>
-        </div>
 
-        {{-- Recent Immunizations --}}
-        <div class="widget-card off-screen-widget">
-            <div class="widget-header">
-                <div class="flex items-center gap-3">
-                    <div
-                        class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0">
-                        <span class="material-symbols-outlined text-[20px]">vaccines</span>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-slate-900 text-sm">Imunisasi Terbaru</h3>
-                        <p class="text-xs text-slate-500 mt-0.5">Pemberian imunisasi terbaru</p>
-                    </div>
-                </div>
-            </div>
-            <div class="overflow-x-auto">
+            {{-- Tab 2: Imunisasi --}}
+            <div x-show="activeTab === 'imunisasi'" x-cloak class="overflow-x-auto">
                 <table class="w-full text-left">
                     <thead>
-                        <tr style="background:#f9fafb; border-bottom:1px solid rgba(0,0,0,0.05);">
-                            <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                Balita</th>
-                            <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                Tanggal Imunisasi</th>
-                            <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                Jenis Imunisasi</th>
-                            <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                                Petugas</th>
+                        <tr style="background:#f9fafb; border-bottom:1px solid rgba(0,0,0,0.05);" class="dark:bg-slate-900/60 dark:border-slate-800">
+                            <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Balita</th>
+                            <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Tanggal Imunisasi</th>
+                            <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Jenis Imunisasi</th>
+                            <th class="px-6 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wider">Petugas</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($recentImmunizations as $vaxRecord)
-                            <tr class="table-row-hover transition-colors"
-                                style="border-bottom:1px solid rgba(0,0,0,0.04);">
+                            <tr class="table-row-hover transition-colors dark:hover:bg-slate-800/40" style="border-bottom:1px solid rgba(0,0,0,0.04);" wire:key="vax-row-{{ $vaxRecord['id'] }}">
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-3">
-                                        <div
-                                            class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center font-bold text-xs shrink-0">
-                                            {{ strtoupper(substr($vaxRecord->patient->full_name, 0, 2)) }}
+                                        <div class="w-9 h-9 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 text-indigo-700 dark:text-indigo-350 flex items-center justify-center font-bold text-xs shrink-0">
+                                            {{ strtoupper(substr($vaxRecord['patient']['full_name'] ?? $vaxRecord['patient']['name'] ?? 'Balita', 0, 2)) }}
                                         </div>
                                         <div>
-                                            <span
-                                                class="block text-sm font-semibold text-slate-800">{{ $vaxRecord->patient->full_name }}</span>
-                                            <span class="text-xs text-slate-400">ID:
-                                                {{ $vaxRecord->patient->id }}</span>
+                                            <span class="block text-sm font-semibold text-slate-800 dark:text-slate-200">{{ $vaxRecord['patient']['full_name'] ?? $vaxRecord['patient']['name'] }}</span>
+                                            <span class="text-xs text-slate-400">ID: {{ $vaxRecord['patient']['id'] }}</span>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 text-sm text-slate-600">
-                                    {{ $vaxRecord->visit_date->translatedFormat('d M Y') }}
+                                <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-350">
+                                    {{ \Carbon\Carbon::parse($vaxRecord['visit_date'])->translatedFormat('d M Y') }}
                                 </td>
                                 <td class="px-6 py-4">
-                                    <span
-                                        class="badge badge-teal">{{ $vaxRecord->vaccine_name && $vaxRecord->vaccine_name !== 'Tidak ada' ? $vaxRecord->vaccine_name : $vaxRecord->immunization }}</span>
+                                    <span class="badge badge-teal">
+                                        {{ $vaxRecord['vaccine_name'] && $vaxRecord['vaccine_name'] !== 'Tidak ada' ? $vaxRecord['vaccine_name'] : ($vaxRecord['immunization'] ?? 'Imunisasi') }}
+                                    </span>
                                 </td>
-                                <td class="px-6 py-4 text-sm text-slate-600">
-                                    {{ $vaxRecord->user->name ?? '-' }}
+                                <td class="px-6 py-4 text-sm text-slate-600 dark:text-slate-350">
+                                    {{ $vaxRecord['user']['name'] ?? '-' }}
                                 </td>
                             </tr>
                         @empty
@@ -1105,7 +1096,6 @@
                     </tbody>
                 </table>
             </div>
-        </div>
     </div>
 
     {{-- Right Side: 4 Columns --}}
@@ -1153,38 +1143,7 @@
                                 class="text-sm text-slate-700 font-medium truncate">{{ $upcomingSchedule->location ?: 'Pusat Posyandu' }}</span>
                         </div>
 
-                        @if (\Carbon\Carbon::parse($upcomingSchedule->start_time)->isToday())
-                            <div class="pt-3 border-t border-slate-100 mt-3">
-                                <p class="text-[11px] font-bold text-teal-600 mb-2.5 uppercase tracking-wider">Target
-                                    Imunisasi Hari Ini</p>
-                                <div class="space-y-2">
-                                    @forelse($missingImmunizations->take(3) as $item)
-                                        <div
-                                            class="flex items-center justify-between bg-white border border-slate-100 p-2 rounded-lg shadow-sm">
-                                            <div class="flex items-center gap-2 overflow-hidden">
-                                                <div
-                                                    class="w-6 h-6 rounded bg-orange-50 text-orange-600 flex shrink-0 items-center justify-center font-bold text-[10px]">
-                                                    {{ strtoupper(substr($item['patient']->full_name, 0, 2)) }}
-                                                </div>
-                                                <div class="min-w-0">
-                                                    <p class="text-xs font-semibold text-slate-800 truncate">
-                                                        {{ $item['patient']->full_name }}</p>
-                                                    <p class="text-[10px] text-slate-500 truncate">
-                                                        {{ $item['next_vaccine'] }}</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @empty
-                                        <p class="text-xs text-slate-400 italic">Tidak ada target khusus.</p>
-                                    @endforelse
-                                    @if (count($missingImmunizations) > 3)
-                                        <p class="text-[10px] text-center text-teal-600 font-medium mt-1">
-                                            + {{ count($missingImmunizations) - 3 }} warga lainnya
-                                        </p>
-                                    @endif
-                                </div>
-                            </div>
-                        @endif
+
 
                         <a href="{{ route('admin.schedules.index') }}"
                             class="w-full h-11 bg-teal-600 text-white rounded-xl font-semibold text-sm flex items-center justify-center hover:bg-teal-700 transition-colors gap-2">
