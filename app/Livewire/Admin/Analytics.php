@@ -297,6 +297,25 @@ class Analytics extends BaseAdminComponent
         $statusFilter = $this->drillDownStatusFilter;
         $targetPosyandu = $this->drillDownPosyandu ?? $this->selectedPosyandu;
 
+        if ($type === 'kader') {
+            $kaders = User::role('kader')->get();
+            $this->drillDownData = $kaders->map(fn ($k) => [
+                'name' => $k->name ?? '-',
+                'nik' => $k->email ?? '-',
+                'posyandu' => $k->posyandu?->name ?? 'Semua Unit',
+                'nutrition_status' => $k->phone_number ? 'No. HP: ' . $k->phone_number : '-',
+                'visit_date' => $k->created_at ? $k->created_at->format('d/m/Y') : '-',
+                'weight' => '-',
+                'height' => '-',
+                'patient_id' => null,
+                'category_warga' => 'Kader',
+                'kategori_gizi' => '-',
+                'status_info' => 'Kader Aktif',
+                'month_name' => '-',
+            ])->values()->toArray();
+            return;
+        }
+
         if (str_starts_with($type, 'balita_age_')) {
             $patients = $this->applyPosyanduScope(Patient::query(), $targetPosyandu)
                 ->whereIn('category', ['balita', 'bayi', 'baduta'])
@@ -588,6 +607,9 @@ class Analytics extends BaseAdminComponent
                 ),
 
             'balita' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta'])),
+            'balita_vaccines' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+                ->whereNotNull('vaccine_name')
+                ->where('vaccine_name', '!=', ''),
             'ibu_hamil' => $query->whereHas('patient', fn ($q) => $q->where('category', 'ibu_hamil')),
             'lansia' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')),
             'nutrition_status' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))

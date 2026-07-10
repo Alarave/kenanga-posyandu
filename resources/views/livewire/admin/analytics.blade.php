@@ -372,31 +372,99 @@
     @if($activeTab === 'overview')
         {{-- ================= OVERVIEW TAB ================= --}}
         <div class="space-y-4 sm:space-y-6 animate-fadeIn">
-            {{-- Stats Grid: 2 cols mobile, 4 cols desktop --}}
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
-                @php
-                    $overviewCards = [
-                        ['label' => 'Total Kunjungan', 'val' => number_format($totalKunjungan), 'unit' => 'Pemeriksaan', 'icon' => 'analytics', 'color' => 'slate', 'desc' => 'Total rekam medis terdaftar'],
-                        ['label' => 'Balita & Anak', 'val' => number_format($totalBalita), 'unit' => 'Jiwa', 'icon' => 'child_care', 'color' => 'teal', 'desc' => 'Kategori Balita, Bayi & Baduta'],
-                        ['label' => 'Ibu Hamil', 'val' => number_format($totalIbuHamil), 'unit' => 'Jiwa', 'icon' => 'pregnant_woman', 'color' => 'rose', 'desc' => 'Ibu mengandung terdaftar'],
-                        ['label' => 'Lansia', 'val' => number_format($totalLansia), 'unit' => 'Jiwa', 'icon' => 'elderly', 'color' => 'indigo', 'desc' => 'Kategori Lanjut Usia'],
-                    ];
-                @endphp
-
-                @foreach($overviewCards as $c)
-                <div class="kpi-card kpi-{{ $c['color'] }}">
-                    <div class="relative z-10 flex items-center justify-between mb-3">
-                        <div class="kpi-icon-wrap">
-                            <span class="material-symbols-outlined text-[22px] text-white">{{ $c['icon'] }}</span>
+            {{-- Stats Grid: 1 col mobile, 4 cols desktop --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {{-- Total Kunjungan --}}
+                <div wire:click="drillDown('Overview - Total Kunjungan', 'all')"
+                     class="relative overflow-hidden bg-gradient-to-br from-white to-slate-50 rounded-3xl p-6 border border-slate-200 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-slate-200/40 hover:-translate-y-1 hover:border-slate-350 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group">
+                    <span class="material-symbols-outlined absolute -bottom-6 -right-6 text-[120px] text-slate-500 opacity-[0.04] transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 pointer-events-none">analytics</span>
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-11 h-11 rounded-2xl bg-slate-50 text-slate-650 flex items-center justify-center border border-slate-200/50 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:bg-slate-100">
+                                <span class="material-symbols-outlined text-[24px]">analytics</span>
+                            </div>
+                            <span class="text-[10px] font-black text-slate-700 uppercase tracking-widest bg-slate-100 px-2.5 py-1 rounded-lg">Pemeriksaan</span>
                         </div>
-                        <span class="kpi-unit">{{ $c['unit'] }}</span>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-5xl font-black text-slate-800 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ number_format($totalKunjungan) }}</span>
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Kunjungan</span>
+                        </div>
+                        <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Total rekam medis terdaftar di posyandu tahun terpilih.</p>
                     </div>
-                    <p class="kpi-number relative z-10">{{ $c['val'] }}</p>
-                    <p class="kpi-label relative z-10">{{ $c['label'] }}</p>
-                    <p class="kpi-desc relative z-10">{{ $c['desc'] }}</p>
-                    <div class="kpi-accent-bar"></div>
+                    <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between pr-2">
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Lihat Detail Kunjungan</span>
+                        <span class="material-symbols-outlined text-[14px] text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100">arrow_forward</span>
+                    </div>
                 </div>
-                @endforeach
+
+                {{-- Balita & Anak --}}
+                <div wire:click="drillDown('Overview - Balita & Anak', 'balita')"
+                     class="relative overflow-hidden bg-gradient-to-br from-white to-teal-50/10 rounded-3xl p-6 border border-teal-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-teal-100/40 hover:-translate-y-1 hover:border-teal-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group">
+                    <span class="material-symbols-outlined absolute -bottom-6 -right-6 text-[120px] text-teal-500 opacity-[0.04] transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 pointer-events-none">child_care</span>
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-11 h-11 rounded-2xl bg-teal-50 text-teal-650 flex items-center justify-center border border-teal-200/50 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:bg-teal-100">
+                                <span class="material-symbols-outlined text-[24px]">child_care</span>
+                            </div>
+                            <span class="text-[10px] font-black text-teal-700 uppercase tracking-widest bg-teal-50 px-2.5 py-1 rounded-lg">Jiwa</span>
+                        </div>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-5xl font-black text-teal-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ number_format($totalBalita) }}</span>
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Terdaftar</span>
+                        </div>
+                        <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Kategori Balita, Bayi, Baduta &amp; Anak Sekolah.</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between pr-2">
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Lihat Daftar Balita</span>
+                        <span class="material-symbols-outlined text-[14px] text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100">arrow_forward</span>
+                    </div>
+                </div>
+
+                {{-- Ibu Hamil --}}
+                <div wire:click="drillDown('Overview - Ibu Hamil', 'ibu_hamil')"
+                     class="relative overflow-hidden bg-gradient-to-br from-white to-rose-50/10 rounded-3xl p-6 border border-rose-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-rose-100/40 hover:-translate-y-1 hover:border-rose-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group">
+                    <span class="material-symbols-outlined absolute -bottom-6 -right-6 text-[120px] text-rose-500 opacity-[0.04] transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 pointer-events-none">pregnant_woman</span>
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-11 h-11 rounded-2xl bg-rose-50 text-rose-650 flex items-center justify-center border border-rose-200/50 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:bg-rose-100">
+                                <span class="material-symbols-outlined text-[24px]">pregnant_woman</span>
+                            </div>
+                            <span class="text-[10px] font-black text-rose-700 uppercase tracking-widest bg-rose-50 px-2.5 py-1 rounded-lg">Jiwa</span>
+                        </div>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-5xl font-black text-rose-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ number_format($totalIbuHamil) }}</span>
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Terdaftar</span>
+                        </div>
+                        <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Ibu mengandung aktif terdaftar dan terpantau.</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between pr-2">
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Lihat Daftar Ibu Hamil</span>
+                        <span class="material-symbols-outlined text-[14px] text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100">arrow_forward</span>
+                    </div>
+                </div>
+
+                {{-- Lansia --}}
+                <div wire:click="drillDown('Overview - Lansia', 'lansia')"
+                     class="relative overflow-hidden bg-gradient-to-br from-white to-indigo-50/10 rounded-3xl p-6 border border-indigo-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-indigo-100/40 hover:-translate-y-1 hover:border-indigo-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group">
+                    <span class="material-symbols-outlined absolute -bottom-6 -right-6 text-[120px] text-indigo-500 opacity-[0.04] transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 pointer-events-none">elderly</span>
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-11 h-11 rounded-2xl bg-indigo-50 text-indigo-650 flex items-center justify-center border border-indigo-200/50 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:bg-indigo-100">
+                                <span class="material-symbols-outlined text-[24px]">elderly</span>
+                            </div>
+                            <span class="text-[10px] font-black text-indigo-700 uppercase tracking-widest bg-indigo-50 px-2.5 py-1 rounded-lg">Jiwa</span>
+                        </div>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-5xl font-black text-indigo-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ number_format($totalLansia) }}</span>
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Terdaftar</span>
+                        </div>
+                        <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Kelompok Lanjut Usia aktif binaan posyandu.</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between pr-2">
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Lihat Daftar Lansia</span>
+                        <span class="material-symbols-outlined text-[14px] text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100">arrow_forward</span>
+                    </div>
+                </div>
             </div>
 
             {{-- Widget 3: Rangkuman Indikator Kesehatan Utama (Horizontal Layout, Below Main KPIs, No Donut Charts) --}}
@@ -661,36 +729,104 @@
                 </div>
             </div>
         </div>
-    @endif
+        @endif
 
-    @if($activeTab === 'balita')
+        @if($activeTab === 'balita')
         {{-- ================= BALITA TAB ================= --}}
         <div class="space-y-8 animate-fadeIn">
-            {{-- Stats Grid: 2 cols mobile, 4 cols desktop --}}
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
-                @php
-                    $balitaCards = [
-                        ['label' => 'Total Balita', 'val' => number_format($totalBalita), 'unit' => 'Jiwa', 'icon' => 'child_care', 'color' => 'teal', 'desc' => 'Tumbuh kembang aktif terpantau'],
-                        ['label' => 'Prevalensi Stunting', 'val' => $stuntingRate . '%', 'unit' => 'Persentase', 'icon' => 'trending_down', 'color' => 'red', 'desc' => $stuntingRate >= 14 ? 'Butuh perhatian khusus' : 'Kategori aman & terkendali'],
-                        ['label' => 'Cakupan Imunisasi', 'val' => $cakupanImunisasi . '%', 'unit' => 'Target 100%', 'icon' => 'vaccines', 'color' => 'blue', 'desc' => 'Persentase dosis imunisasi dasar'],
-                        ['label' => 'Kader Lapangan', 'val' => $kaderAktif, 'unit' => 'Personel', 'icon' => 'badge', 'color' => 'amber', 'desc' => 'Kader aktif membina balita'],
-                    ];
-                @endphp
-
-                @foreach($balitaCards as $c)
-                <div class="kpi-card kpi-{{ $c['color'] }}">
-                    <div class="relative z-10 flex items-center justify-between mb-3">
-                        <div class="kpi-icon-wrap">
-                            <span class="material-symbols-outlined text-[22px] text-white">{{ $c['icon'] }}</span>
+            {{-- Stats Grid: 1 col mobile, 4 cols desktop --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {{-- Total Balita --}}
+                <div wire:click="drillDown('Balita - Terdaftar', 'balita')"
+                     class="relative overflow-hidden bg-gradient-to-br from-white to-teal-50/10 rounded-3xl p-6 border border-teal-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-teal-100/40 hover:-translate-y-1 hover:border-teal-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group">
+                    <span class="material-symbols-outlined absolute -bottom-6 -right-6 text-[120px] text-teal-500 opacity-[0.04] transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 pointer-events-none">child_care</span>
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-11 h-11 rounded-2xl bg-teal-50 text-teal-650 flex items-center justify-center border border-teal-200/50 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:bg-teal-100">
+                                <span class="material-symbols-outlined text-[24px]">child_care</span>
+                            </div>
+                            <span class="text-[10px] font-black text-teal-700 uppercase tracking-widest bg-teal-50 px-2.5 py-1 rounded-lg">Jiwa</span>
                         </div>
-                        <span class="kpi-unit">{{ $c['unit'] }}</span>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-5xl font-black text-teal-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ number_format($totalBalita) }}</span>
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Balita</span>
+                        </div>
+                        <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Tumbuh kembang aktif terpantau di seluruh posyandu.</p>
                     </div>
-                    <p class="kpi-number relative z-10">{{ $c['val'] }}</p>
-                    <p class="kpi-label relative z-10">{{ $c['label'] }}</p>
-                    <p class="kpi-desc relative z-10">{{ $c['desc'] }}</p>
-                    <div class="kpi-accent-bar"></div>
+                    <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between pr-2">
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Lihat Daftar Balita</span>
+                        <span class="material-symbols-outlined text-[14px] text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100">arrow_forward</span>
+                    </div>
                 </div>
-                @endforeach
+
+                {{-- Prevalensi Stunting --}}
+                <div wire:click="drillDown('Balita - Kasus Stunting', 'stunting')"
+                     class="relative overflow-hidden bg-gradient-to-br from-white to-red-50/10 rounded-3xl p-6 border border-red-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-red-100/40 hover:-translate-y-1 hover:border-red-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group">
+                    <span class="material-symbols-outlined absolute -bottom-6 -right-6 text-[120px] text-red-500 opacity-[0.04] transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 pointer-events-none">trending_down</span>
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-11 h-11 rounded-2xl bg-red-50 text-red-650 flex items-center justify-center border border-red-200/50 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:bg-red-100">
+                                <span class="material-symbols-outlined text-[24px]">trending_down</span>
+                            </div>
+                            <span class="text-[10px] font-black text-red-700 uppercase tracking-widest bg-red-50 px-2.5 py-1 rounded-lg">Stunting</span>
+                        </div>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-5xl font-black text-red-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ $stuntingRate }}%</span>
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Prevalensi</span>
+                        </div>
+                        <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">{{ $stuntingRate >= 14 ? 'Butuh perhatian dan intervensi khusus.' : 'Kategori aman & terkendali.' }}</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between pr-2">
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Lihat Kasus Stunting</span>
+                        <span class="material-symbols-outlined text-[14px] text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100">arrow_forward</span>
+                    </div>
+                </div>
+
+                {{-- Cakupan Imunisasi --}}
+                <div wire:click="drillDown('Balita - Imunisasi', 'balita_vaccines')"
+                     class="relative overflow-hidden bg-gradient-to-br from-white to-blue-50/10 rounded-3xl p-6 border border-blue-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-blue-100/40 hover:-translate-y-1 hover:border-blue-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group">
+                    <span class="material-symbols-outlined absolute -bottom-6 -right-6 text-[120px] text-blue-500 opacity-[0.04] transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 pointer-events-none">vaccines</span>
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-11 h-11 rounded-2xl bg-blue-50 text-blue-650 flex items-center justify-center border border-blue-200/50 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:bg-blue-100">
+                                <span class="material-symbols-outlined text-[24px]">vaccines</span>
+                            </div>
+                            <span class="text-[10px] font-black text-blue-700 uppercase tracking-widest bg-blue-50 px-2.5 py-1 rounded-lg">Cakupan</span>
+                        </div>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-5xl font-black text-blue-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ $cakupanImunisasi }}%</span>
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Imunisasi</span>
+                        </div>
+                        <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Persentase penerimaan dosis imunisasi dasar lengkap.</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between pr-2">
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Lihat Data Imunisasi</span>
+                        <span class="material-symbols-outlined text-[14px] text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100">arrow_forward</span>
+                    </div>
+                </div>
+
+                {{-- Kader Lapangan --}}
+                <div wire:click="drillDown('Kader Lapangan - Posyandu', 'kader')"
+                     class="relative overflow-hidden bg-gradient-to-br from-white to-amber-50/10 rounded-3xl p-6 border border-amber-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-amber-100/40 hover:-translate-y-1 hover:border-amber-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group">
+                    <span class="material-symbols-outlined absolute -bottom-6 -right-6 text-[120px] text-amber-500 opacity-[0.04] transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 pointer-events-none">badge</span>
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-11 h-11 rounded-2xl bg-amber-50 text-amber-650 flex items-center justify-center border border-amber-200/50 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:bg-amber-100">
+                                <span class="material-symbols-outlined text-[24px]">badge</span>
+                            </div>
+                            <span class="text-[10px] font-black text-amber-700 uppercase tracking-widest bg-amber-50 px-2.5 py-1 rounded-lg">Kader</span>
+                        </div>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-5xl font-black text-amber-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ $kaderAktif }}</span>
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Personel</span>
+                        </div>
+                        <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Kader aktif yang bertugas membina warga posyandu.</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between pr-2">
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Lihat Daftar Kader</span>
+                        <span class="material-symbols-outlined text-[14px] text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100">arrow_forward</span>
+                    </div>
+                </div>
             </div>
 
             {{-- Prevalensi Pertumbuhan Balita — Full Width Card --}}
