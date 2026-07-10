@@ -412,13 +412,13 @@
                             <span class="material-symbols-outlined text-[20px]">download</span>
                         </button>
                         {{-- Tombol Download Excel Data Detail --}}
-                        <button wire:click="exportVisitsTrendExcel"
+                        <button wire:click="exportChartData('visits_trend')"
                                 wire:loading.attr="disabled"
-                                wire:target="exportVisitsTrendExcel"
+                                wire:target="exportChartData('visits_trend')"
                                 class="p-2.5 text-emerald-600 hover:text-emerald-800 rounded-xl bg-emerald-50 border border-emerald-300 hover:bg-emerald-100 transition-colors shadow-xs cursor-pointer flex items-center justify-center disabled:opacity-50 disabled:cursor-wait"
                                 title="Unduh Data Excel (.xlsx)">
-                            <span wire:loading.remove wire:target="exportVisitsTrendExcel" class="material-symbols-outlined text-[20px]">table_chart</span>
-                            <svg wire:loading wire:target="exportVisitsTrendExcel" class="animate-spin h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24">
+                            <span wire:loading.remove wire:target="exportChartData('visits_trend')" class="material-symbols-outlined text-[20px]">table_chart</span>
+                            <svg wire:loading wire:target="exportChartData('visits_trend')" class="animate-spin h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24">
                                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                                 <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                             </svg>
@@ -474,9 +474,22 @@
                         <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Prevalensi Pertumbuhan Balita</h3>
                         <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Tren bulanan persentase status gizi balita: Normal, Risiko, dan Stunting/Gizi Buruk</p>
                     </div>
-                    <button onclick="downloadChart(nutritionTrendChart, 'tren_status_gizi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
-                        <span class="material-symbols-outlined text-[20px]">download</span>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <button onclick="downloadChart(nutritionTrendChart, 'tren_status_gizi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                            <span class="material-symbols-outlined text-[20px]">download</span>
+                        </button>
+                        <button wire:click="exportChartData('nutrition_trend')"
+                                wire:loading.attr="disabled"
+                                wire:target="exportChartData('nutrition_trend')"
+                                class="p-2.5 text-emerald-600 hover:text-emerald-800 rounded-xl bg-emerald-50 border border-emerald-300 hover:bg-emerald-100 transition-colors shadow-xs cursor-pointer flex items-center justify-center disabled:opacity-50 disabled:cursor-wait"
+                                title="Unduh Data Excel (.xlsx)">
+                            <span wire:loading.remove wire:target="exportChartData('nutrition_trend')" class="material-symbols-outlined text-[20px]">table_chart</span>
+                            <svg wire:loading wire:target="exportChartData('nutrition_trend')" class="animate-spin h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 {{-- Legend badges --}}
@@ -512,9 +525,22 @@
                         <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Status Gizi Balita (Pemeriksaan Terbaru)</h3>
                         <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Distribusi persentase status gizi balita berdasarkan hasil pemeriksaan status gizi terbaru</p>
                     </div>
-                    <button onclick="downloadChart(nutritionDonutChart, 'distribusi_status_gizi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
-                        <span class="material-symbols-outlined text-[20px]">download</span>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <button onclick="downloadChart(nutritionDonutChart, 'distribusi_status_gizi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                            <span class="material-symbols-outlined text-[20px]">download</span>
+                        </button>
+                        <button wire:click="exportChartData('nutrition_donut')"
+                                wire:loading.attr="disabled"
+                                wire:target="exportChartData('nutrition_donut')"
+                                class="p-2.5 text-emerald-600 hover:text-emerald-800 rounded-xl bg-emerald-50 border border-emerald-300 hover:bg-emerald-100 transition-colors shadow-xs cursor-pointer flex items-center justify-center disabled:opacity-50 disabled:cursor-wait"
+                                title="Unduh Data Excel (.xlsx)">
+                            <span wire:loading.remove wire:target="exportChartData('nutrition_donut')" class="material-symbols-outlined text-[20px]">table_chart</span>
+                            <svg wire:loading wire:target="exportChartData('nutrition_donut')" class="animate-spin h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
@@ -581,9 +607,22 @@
                         <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Capaian Imunisasi Per Jenis Vaksin</h3>
                         <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Jumlah balita yang menerima setiap jenis imunisasi dasar pada periode yang dipilih</p>
                     </div>
-                    <button onclick="downloadChart(vaccineChart, 'capaian_imunisasi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
-                        <span class="material-symbols-outlined text-[20px]">download</span>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <button onclick="downloadChart(vaccineChart, 'capaian_imunisasi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                            <span class="material-symbols-outlined text-[20px]">download</span>
+                        </button>
+                        <button wire:click="exportChartData('vaccine_chart')"
+                                wire:loading.attr="disabled"
+                                wire:target="exportChartData('vaccine_chart')"
+                                class="p-2.5 text-emerald-600 hover:text-emerald-800 rounded-xl bg-emerald-50 border border-emerald-300 hover:bg-emerald-100 transition-colors shadow-xs cursor-pointer flex items-center justify-center disabled:opacity-50 disabled:cursor-wait"
+                                title="Unduh Data Excel (.xlsx)">
+                            <span wire:loading.remove wire:target="exportChartData('vaccine_chart')" class="material-symbols-outlined text-[20px]">table_chart</span>
+                            <svg wire:loading wire:target="exportChartData('vaccine_chart')" class="animate-spin h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 {{-- Cakupan badge --}}
@@ -618,9 +657,22 @@
                         <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Grafik Pertumbuhan Keseluruhan Balita & Anak</h3>
                         <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Rata-rata berat badan (kg) dan tinggi badan (cm) per bulan sepanjang tahun</p>
                     </div>
-                    <button onclick="downloadChart(growthChart, 'pertumbuhan_balita')" class="p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
-                        <span class="material-symbols-outlined text-[20px]">download</span>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <button onclick="downloadChart(growthChart, 'pertumbuhan_balita')" class="p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                            <span class="material-symbols-outlined text-[20px]">download</span>
+                        </button>
+                        <button wire:click="exportChartData('growth_chart')"
+                                wire:loading.attr="disabled"
+                                wire:target="exportChartData('growth_chart')"
+                                class="p-2.5 text-emerald-600 hover:text-emerald-800 rounded-xl bg-emerald-50 border border-emerald-300 hover:bg-emerald-100 transition-colors shadow-xs cursor-pointer flex items-center justify-center disabled:opacity-50 disabled:cursor-wait"
+                                title="Unduh Data Excel (.xlsx)">
+                            <span wire:loading.remove wire:target="exportChartData('growth_chart')" class="material-symbols-outlined text-[20px]">table_chart</span>
+                            <svg wire:loading wire:target="exportChartData('growth_chart')" class="animate-spin h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
                 <div class="relative h-96">
                     <canvas id="growthChart" wire:ignore></canvas>
@@ -648,7 +700,7 @@
                     <h3 class="text-lg font-bold text-slate-900 mb-6">Prevalensi Stunting per Wilayah Posyandu</h3>
                     <div class="space-y-6">
                         @forelse($stuntingByPosyandu as $item)
-                        <div class="cursor-pointer hover:bg-slate-50 p-2 -mx-2 rounded-lg transition-colors" wire:dblclick="drillDown('Stunting - {{ $item['name'] ?? '' }}', 'balita_stunting_buruk', null, null, null, {{ $item['id'] ?? 'null' }})">
+                        <div class="cursor-pointer hover:bg-slate-50 p-2 -mx-2 rounded-lg transition-colors" wire:dblclick="drillDown('Stunting - {{ $item['name'] ?? '' }}', 'balita_stunting_buruk', null, null, null, {{ $item['id'] ?? 'null' }}, 'stunting_posyandu')">
                             <div class="flex justify-between items-end mb-2 text-xs font-bold text-slate-700">
                                 <span>{{ $item['name'] }} ({{ $item['stunting'] }}/{{ $item['total'] }} Balita)</span>
                                 <span class="font-extrabold text-slate-900">{{ $item['rate'] }}%</span>
@@ -668,15 +720,15 @@
                     <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-slate-200 shadow-xs">
                         <h3 class="text-lg font-bold text-slate-900 mb-6 text-center">Segmentasi Usia Terpantau</h3>
                         <div class="grid grid-cols-3 gap-4">
-                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center cursor-pointer hover:bg-slate-100 transition-colors" wire:dblclick="drillDown('Segmentasi Usia: 0-12 Bulan', 'balita_age_0_12')">
+                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center cursor-pointer hover:bg-slate-100 transition-colors" wire:dblclick="drillDown('Segmentasi Usia: 0-12 Bulan', 'balita_age_0_12', null, null, null, null, 'age_segmentation')">
                                 <span class="block text-2xl font-black text-slate-900">{{ $usia0_12 }}</span>
                                 <span class="text-xs md:text-sm font-bold text-slate-600 uppercase tracking-wider">0–12 Bulan</span>
                             </div>
-                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center cursor-pointer hover:bg-slate-100 transition-colors" wire:dblclick="drillDown('Segmentasi Usia: 12-24 Bulan', 'balita_age_12_24')">
+                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center cursor-pointer hover:bg-slate-100 transition-colors" wire:dblclick="drillDown('Segmentasi Usia: 12-24 Bulan', 'balita_age_12_24', null, null, null, null, 'age_segmentation')">
                                 <span class="block text-2xl font-black text-slate-900">{{ $usia12_24 }}</span>
                                 <span class="text-xs md:text-sm font-bold text-slate-600 uppercase tracking-wider">12–24 Bulan</span>
                             </div>
-                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center cursor-pointer hover:bg-slate-100 transition-colors" wire:dblclick="drillDown('Segmentasi Usia: >24 Bulan', 'balita_age_24plus')">
+                            <div class="p-4 bg-slate-50 border border-slate-200 rounded-2xl text-center cursor-pointer hover:bg-slate-100 transition-colors" wire:dblclick="drillDown('Segmentasi Usia: >24 Bulan', 'balita_age_24plus', null, null, null, null, 'age_segmentation')">
                                 <span class="block text-2xl font-black text-slate-900">{{ $usia24plus }}</span>
                                 <span class="text-xs md:text-sm font-bold text-slate-600 uppercase tracking-wider">>24 Bulan</span>
                             </div>
@@ -1008,55 +1060,137 @@
 
                 <div class="overflow-x-auto border border-slate-200 rounded-2xl">
                     <table class="w-full text-left">
-                        <thead>
-                            <tr class="bg-slate-100 border-b border-slate-200">
-                                <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Nama Pasien</th>
-                                <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Unit Posyandu</th>
-                                <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Status / Keterangan</th>
-                                <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Tanggal Kunjungan</th>
-                                <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">BB</th>
-                                <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">TB</th>
-                                <th class="px-6 py-4 text-right text-xs font-bold text-slate-700 uppercase tracking-wider">Aksi</th>
-                            </tr>
-                        </thead>
+                                                <thead>
+                              <tr class="bg-slate-100 border-b border-slate-200">
+                                @if ($drillDownChartSource === 'visits_trend')
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Nama Warga</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Unit Posyandu</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Kategori Warga</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Tanggal Kunjungan</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">BB (kg)</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">TB (cm)</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Status / Info</th>
+                                  <th class="px-6 py-4 text-right text-xs font-bold text-slate-700 uppercase tracking-wider">Aksi</th>
+                                @elseif ($drillDownChartSource === 'nutrition_trend')
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Nama Warga</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Unit Posyandu</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Kategori Gizi</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Status / Info</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Tanggal Kunjungan</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">BB (kg)</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">TB (cm)</th>
+                                  <th class="px-6 py-4 text-right text-xs font-bold text-slate-700 uppercase tracking-wider">Aksi</th>
+                                @elseif ($drillDownChartSource === 'nutrition_donut')
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Nama Warga</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Unit Posyandu</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Status / Info</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Tanggal Kunjungan</th>
+                                  <th class="px-6 py-4 text-right text-xs font-bold text-slate-700 uppercase tracking-wider">Aksi</th>
+                                @elseif ($drillDownChartSource === 'vaccine_chart')
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Nama Warga</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Unit Posyandu</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Tanggal Kunjungan</th>
+                                  <th class="px-6 py-4 text-right text-xs font-bold text-slate-700 uppercase tracking-wider">Aksi</th>
+                                @elseif ($drillDownChartSource === 'growth_chart')
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Nama Warga</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Unit Posyandu</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Status / Info</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Tanggal Kunjungan</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">BB (kg)</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">TB (cm)</th>
+                                  <th class="px-6 py-4 text-right text-xs font-bold text-slate-700 uppercase tracking-wider">Aksi</th>
+                                @elseif ($drillDownChartSource === 'stunting_posyandu')
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Nama Warga</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Status / Info (Gizi Buruk)</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Tanggal Kunjungan</th>
+                                  <th class="px-6 py-4 text-right text-xs font-bold text-slate-700 uppercase tracking-wider">Aksi</th>
+                                @elseif ($drillDownChartSource === 'age_segmentation')
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Nama Warga</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Umur (Bulan)</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Status / Info</th>
+                                  <th class="px-6 py-4 text-right text-xs font-bold text-slate-700 uppercase tracking-wider">Aksi</th>
+                                @else
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Nama Warga</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Unit Posyandu</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Status / Info</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Tanggal Kunjungan</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">BB</th>
+                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">TB</th>
+                                  <th class="px-6 py-4 text-right text-xs font-bold text-slate-700 uppercase tracking-wider">Aksi</th>
+                                @endif
+                              </tr></thead>
                         <tbody class="divide-y divide-slate-200">
                             @forelse($drillDownData as $row)
-                            <tr class="hover:bg-slate-50 text-slate-800">
-                                <td class="px-6 py-4">
-                                    <div>
-                                        <span class="block font-bold text-slate-900">{{ $row['name'] }}</span>
-                                        <span class="text-[10px] text-slate-500 uppercase block font-semibold">NIK: {{ $row['nik'] }}</span>
-                                    </div>
-                                </td>
-                                <td class="px-6 py-4 text-xs font-bold text-slate-700">{{ $row['posyandu'] }}</td>
-                                <td class="px-6 py-4">
-                                    @php
-                                        $statusStr = strtolower(trim($row['nutrition_status'] ?? ''));
-                                        $tagStyle = '';
-                                        $tagClass = '';
-                                        if ($statusStr === 'gizi buruk' || $statusStr === 'buruk') {
-                                            $tagStyle = 'background-color: #FEE2E2; color: #B91C1C; border-color: rgba(185, 28, 28, 0.2);';
-                                        } elseif ($statusStr === 'gizi kurang' || $statusStr === 'kurang') {
-                                            $tagStyle = 'background-color: #FFEDD5; color: #C2410C; border-color: rgba(194, 65, 12, 0.2);';
-                                        } elseif (str_contains($statusStr, 'lebih') || str_contains($statusStr, 'obesitas')) {
-                                            $tagStyle = 'background-color: #FEF9C3; color: #A16207; border-color: rgba(161, 98, 7, 0.2);';
-                                        } else {
-                                            $tagClass = 'bg-teal-50 text-teal-700 border-teal-100'; // Default
-                                        }
-                                    @endphp
-                                    <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold border {{ $tagClass }}" style="{{ $tagStyle }}">
-                                        {{ $row['nutrition_status'] }}
-                                    </span>
-                                </td>
-                                <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['visit_date'] }}</td>
-                                <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['weight'] ?? '-' }}</td>
-                                <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['height'] ?? '-' }}</td>
-                                <td class="px-6 py-4 text-right">
-                                    <a href="{{ route('admin.patients.show', $row['patient_id']) }}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-slate-100 text-slate-500 hover:bg-teal-600 hover:text-white transition-all shadow-xs">
-                                        <span class="material-symbols-outlined text-[18px]">visibility</span>
-                                    </a>
-                                </td>
-                            </tr>
+                                                          <tr class="hover:bg-slate-50 text-slate-800">
+                                  <td class="px-6 py-4">
+                                      <div>
+                                          <span class="block font-bold text-slate-900">{{ $row['name'] }}</span>
+                                      </div>
+                                  </td>
+
+                                  @php
+                                      $statusStr = strtolower(trim($row['status_info'] ?? $row['nutrition_status'] ?? ''));
+                                      $tagStyle = '';
+                                      $tagClass = '';
+                                      if (str_contains($statusStr, 'gizi buruk') || str_contains($statusStr, 'sangat kurang')) {
+                                          $tagStyle = 'background-color: #FEE2E2; color: #B91C1C; border-color: rgba(185, 28, 28, 0.2);';
+                                      } elseif (str_contains($statusStr, 'gizi kurang')) {
+                                          $tagStyle = 'background-color: #FFEDD5; color: #C2410C; border-color: rgba(194, 65, 12, 0.2);';
+                                      } elseif (str_contains($statusStr, 'lebih') || str_contains($statusStr, 'obesitas')) {
+                                          $tagStyle = 'background-color: #FEF9C3; color: #A16207; border-color: rgba(161, 98, 7, 0.2);';
+                                      } else {
+                                          $tagClass = 'bg-teal-50 text-teal-700 border-teal-100'; // Default
+                                      }
+                                      $statusHtml = '<span class="inline-flex px-3 py-1 rounded-full text-xs font-bold border ' . $tagClass . '" style="' . $tagStyle . '">' . ($row['status_info'] ?? $row['nutrition_status'] ?? '-') . '</span>';
+                                  @endphp
+
+                                @if ($drillDownChartSource === 'visits_trend')
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-700">{{ $row['posyandu'] }}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-700">{{ $row['category_warga'] ?? '-' }}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['visit_date'] }}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['weight'] ?? '-' }}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['height'] ?? '-' }}</td>
+                                  <td class="px-6 py-4">{!! $statusHtml !!}</td>
+                                @elseif ($drillDownChartSource === 'nutrition_trend')
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-700">{{ $row['posyandu'] }}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-700">{{ $row['kategori_gizi'] ?? '-' }}</td>
+                                  <td class="px-6 py-4">{!! $statusHtml !!}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['visit_date'] }}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['weight'] ?? '-' }}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['height'] ?? '-' }}</td>
+                                @elseif ($drillDownChartSource === 'nutrition_donut')
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-700">{{ $row['posyandu'] }}</td>
+                                  <td class="px-6 py-4">{!! $statusHtml !!}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['visit_date'] }}</td>
+                                @elseif ($drillDownChartSource === 'vaccine_chart')
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-700">{{ $row['posyandu'] }}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['visit_date'] }}</td>
+                                @elseif ($drillDownChartSource === 'growth_chart')
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-700">{{ $row['posyandu'] }}</td>
+                                  <td class="px-6 py-4">{!! $statusHtml !!}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['visit_date'] }}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['weight'] ?? '-' }}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['height'] ?? '-' }}</td>
+                                @elseif ($drillDownChartSource === 'stunting_posyandu')
+                                  <td class="px-6 py-4">{!! $statusHtml !!}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['visit_date'] }}</td>
+                                @elseif ($drillDownChartSource === 'age_segmentation')
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-700">{{ $row['age_months'] ?? '-' }}</td>
+                                  <td class="px-6 py-4">{!! $statusHtml !!}</td>
+                                @else
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-700">{{ $row['posyandu'] }}</td>
+                                  <td class="px-6 py-4">{!! $statusHtml !!}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['visit_date'] }}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['weight'] ?? '-' }}</td>
+                                  <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['height'] ?? '-' }}</td>
+                                @endif
+
+                                  <td class="px-6 py-4 text-right">
+                                      <a href="{{ route('admin.patients.show', $row['patient_id']) }}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-slate-100 text-slate-500 hover:bg-teal-600 hover:text-white transition-all shadow-xs">
+                                          <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                      </a>
+                                  </td>
+                              </tr>
                             @empty
                             <tr>
                                 <td colspan="7" class="px-6 py-10 text-center text-sm text-slate-500 font-bold bg-white">Tidak ada data detail untuk periode/filter ini</td>
@@ -1394,7 +1528,7 @@ function initCharts(data = null) {
                                 else if (datasetLabel.includes('Lansia')) type = 'lansia';
                             }
 
-                            $wire.call('drillDown', `${dsLabel} - ${label}`, type, targetMonth, null, targetYear)
+                            $wire.call('drillDown', `${dsLabel} - ${label}`, type, targetMonth, null, targetYear, null, 'visits_trend')
                                 .then(() => { window.isDrillingDown = false; })
                                 .catch(() => { window.isDrillingDown = false; });
                         }
@@ -1493,7 +1627,7 @@ function initCharts(data = null) {
                             ?? { name: 'Balita', type: 'balita' };
 
                         // Kirim bulan + status gizi spesifik ke backend
-                        $wire.call('drillDown', `Balita ${datasetLabel} — ${label}`, type, month)
+                        $wire.call('drillDown', `Balita ${datasetLabel} - ${label}`, type, month, null, null, null, 'nutrition_trend')
                             .then(() => { window.isDrillingDown = false; })
                             .catch(() => { window.isDrillingDown = false; });
                     },
@@ -1560,7 +1694,7 @@ function initCharts(data = null) {
                             const index = firstPoint.index;
                             const label = String(nutLabels[index]);
                             
-                            $wire.call('drillDown', `Balita (${label})`, 'nutrition_status', null, label)
+                            $wire.call('drillDown', `Balita (${label})`, 'nutrition_status', null, label, null, null, 'nutrition_donut')
                                 .then(() => { window.isDrillingDown = false; })
                                 .catch(() => { window.isDrillingDown = false; });
                         }
@@ -1614,7 +1748,7 @@ function initCharts(data = null) {
 
                             const index = activeElements[0].index;
                             const vaccineName = vaxLabels[index];
-                            $wire.call('drillDown', `Imunisasi: ${vaccineName}`, 'balita')
+                            $wire.call('drillDown', `Imunisasi: ${vaccineName}`, 'vaccine', null, vaccineName, null, null, 'vaccine_chart')
                                 .then(() => { window.isDrillingDown = false; })
                                 .catch(() => { window.isDrillingDown = false; });
                         }
@@ -1768,7 +1902,7 @@ function initCharts(data = null) {
                     const index = elements[0].index;
                     const month = index + 1;
                     const label = growthChart.data.labels[index];
-                    $wire.call('drillDown', 'Grafik Pertumbuhan Balita - ' + label, 'balita', month);
+                    $wire.call('drillDown', 'Grafik Pertumbuhan Balita - ' + label, 'balita', month, null, null, null, 'growth_chart');
                 }
             };
         } catch (e) {
@@ -1819,7 +1953,7 @@ function initCharts(data = null) {
                             const label = labels[index];
                             const month = index + 1;
                             
-                            $wire.call('drillDown', `Ibu Hamil - ${label}`, 'ibu_hamil', month)
+                            $wire.call('drillDown', `Ibu Hamil - ${label}`, 'ibu_hamil', month, null, null, null, 'visits_trend')
                                 .then(() => { window.isDrillingDown = false; })
                                 .catch(() => { window.isDrillingDown = false; });
                         }
@@ -1907,7 +2041,7 @@ function initCharts(data = null) {
                         const type = types[datasetIndex] || 'lansia';
                         const datasetLabel = datasetLabels[datasetIndex] || '';
 
-                        $wire.call('drillDown', `Lansia - ${datasetLabel} (${label})`, type, month)
+                        $wire.call('drillDown', `Lansia - ${datasetLabel} (${label})`, type, month, null, null, null, 'visits_trend')
                             .then(() => { window.isDrillingDown = false; })
                             .catch(() => { window.isDrillingDown = false; });
                     },

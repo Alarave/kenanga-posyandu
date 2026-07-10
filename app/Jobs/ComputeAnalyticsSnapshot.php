@@ -118,13 +118,10 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
             ->whereHas('medicalRecords', fn ($q) => $q->where(function ($sq) {
                 $sq->whereIn('nutrition_status', [
                     MedicalRecord::STATUS_BB_U_SANGAT_KURANG,
-                    MedicalRecord::STATUS_BB_U_KURANG,
-                ])->orWhereIn('stunting_status', [
-                    MedicalRecord::STATUS_TB_U_SANGAT_PENDEK,
-                    MedicalRecord::STATUS_TB_U_PENDEK,
-                ])->orWhereIn('wasting_status', [
                     MedicalRecord::STATUS_GIZI_BURUK,
-                    MedicalRecord::STATUS_GIZI_KURANG,
+                ])->orWhereIn('wasting_status', [
+                    MedicalRecord::STATUS_BB_U_SANGAT_KURANG,
+                    MedicalRecord::STATUS_GIZI_BURUK,
                 ]);
             })->whereYear('visit_date', $year)
                 ->when($month, fn ($mq) => $mq->whereMonth('visit_date', $month))
@@ -170,11 +167,13 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
 
             $normal = $group->whereIn('nutrition_status', [MedicalRecord::STATUS_BB_U_NORMAL, MedicalRecord::STATUS_GIZI_BAIK])->count();
             $stunting = $group->where(function ($r) {
-                return in_array($r->nutrition_status, [MedicalRecord::STATUS_BB_U_SANGAT_KURANG, MedicalRecord::STATUS_BB_U_KURANG]) ||
-                       in_array($r->stunting_status, [MedicalRecord::STATUS_TB_U_SANGAT_PENDEK, MedicalRecord::STATUS_TB_U_PENDEK]) ||
-                       in_array($r->wasting_status, [MedicalRecord::STATUS_GIZI_BURUK, MedicalRecord::STATUS_GIZI_KURANG]);
+                return in_array($r->nutrition_status, [MedicalRecord::STATUS_BB_U_SANGAT_KURANG, MedicalRecord::STATUS_GIZI_BURUK]) ||
+                       in_array($r->wasting_status, [MedicalRecord::STATUS_BB_U_SANGAT_KURANG, MedicalRecord::STATUS_GIZI_BURUK]);
             })->count();
-            $risk = $group->whereIn('nutrition_status', [MedicalRecord::STATUS_BB_U_RISIKO_LEBIH, MedicalRecord::STATUS_GIZI_BERISIKO_LEBIH, MedicalRecord::STATUS_GIZI_LEBIH, MedicalRecord::STATUS_GIZI_OBESITAS])->count();
+            $risk = $group->where(function ($r) {
+                return in_array($r->nutrition_status, [MedicalRecord::STATUS_BB_U_RISIKO_LEBIH, MedicalRecord::STATUS_GIZI_BERISIKO_LEBIH, MedicalRecord::STATUS_GIZI_LEBIH, MedicalRecord::STATUS_GIZI_OBESITAS, MedicalRecord::STATUS_BB_U_KURANG, MedicalRecord::STATUS_GIZI_KURANG]) ||
+                       in_array($r->wasting_status, [MedicalRecord::STATUS_BB_U_RISIKO_LEBIH, MedicalRecord::STATUS_GIZI_BERISIKO_LEBIH, MedicalRecord::STATUS_GIZI_LEBIH, MedicalRecord::STATUS_GIZI_OBESITAS, MedicalRecord::STATUS_BB_U_KURANG, MedicalRecord::STATUS_GIZI_KURANG]);
+            })->count();
 
             return (object) [
                 'normal_rate' => round(($normal / $total) * 100, 1),
@@ -239,9 +238,8 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
         $stuntingPerPosyandu = Patient::whereIn('posyandu_id', $posyanduIds)
             ->whereIn('category', ['balita', 'bayi', 'baduta'])
             ->whereHas('medicalRecords', fn ($q) => $q->where(function ($sq) {
-                $sq->whereIn('nutrition_status', [MedicalRecord::STATUS_BB_U_SANGAT_KURANG, MedicalRecord::STATUS_BB_U_KURANG])
-                    ->orWhereIn('stunting_status', [MedicalRecord::STATUS_TB_U_SANGAT_PENDEK, MedicalRecord::STATUS_TB_U_PENDEK])
-                    ->orWhereIn('wasting_status', [MedicalRecord::STATUS_GIZI_BURUK, MedicalRecord::STATUS_GIZI_KURANG]);
+                $sq->whereIn('nutrition_status', [MedicalRecord::STATUS_BB_U_SANGAT_KURANG, MedicalRecord::STATUS_GIZI_BURUK])
+                    ->orWhereIn('wasting_status', [MedicalRecord::STATUS_BB_U_SANGAT_KURANG, MedicalRecord::STATUS_GIZI_BURUK]);
             })
                 ->whereYear('visit_date', $year)
                 ->when($month, fn ($mq) => $mq->whereMonth('visit_date', $month))
