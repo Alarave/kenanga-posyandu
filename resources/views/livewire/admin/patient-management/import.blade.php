@@ -183,10 +183,10 @@
                     <p class="text-base font-black text-slate-800">Kategori Balita</p>
                     <p class="text-xs font-bold text-slate-500 mt-2 leading-relaxed">
                         Wajib: <strong>NIK, nama_anak, tgl_lahir, jk</strong>.<br>
-                        Orang tua & Lahir: ayah, ibu, NIK_ibu, BB_lahir, PB_lahir, kepemilikan_buku_kia.<br>
-                        Antropometri: BERAT, TINGGI, LILA, lingkar_kepala, CARA UKUR.<br>
-                        Nutrisi & Imunisasi: vitamin, Imunisasi, asi_eksklusif, mpasi, imunisasi_dasar_lengkap, obat_cacing.<br>
-                        Lainnya: kpsp_status, skrining tbc, pmt, keluhan, riwayat_sakit, dll.
+                        Orang Tua: <strong>ayah, ibu, NIK_ibu</strong>.<br>
+                        Kelahiran: <strong>tempat_lahir, BB_lahir, PB_lahir</strong>.<br>
+                        Lainnya: <strong>kepemilikan_buku_kia</strong> (1=Ya / 0=Tidak), <strong>phone_number</strong>.<br>
+                        Alamat: <strong>RT, RW, desa_kelurahan, kecamatan, ALAMAT</strong>.
                     </p>
                 </div>
             </div>
@@ -199,10 +199,9 @@
                 <div>
                     <p class="text-base font-black text-slate-800">Kategori Ibu Hamil</p>
                     <p class="text-xs font-bold text-slate-500 mt-2 leading-relaxed">
-                        Wajib: <strong>NIK, nama, tgl_lahir, jk, suami, apakah_hamil</strong>.<br>
-                        Detil Hamil: anak_ke, jarak_kehamilan, bb_awal, tb_awal, hpl, cara_bersalin.<br>
-                        ANC (Periksa): usia_kehamilan, BERAT, LILA, tensi, plotting, skrining_tbc.<br>
-                        Lainnya: konsumsi tablet fe, pmt kek, kelas ibu hamil, nifas, vit A, dll.
+                        Wajib: <strong>NIK, nama, tgl_lahir, jk</strong>.<br>
+                        Lainnya: <strong>suami, apakah_hamil</strong> (Ya/Tidak).<br>
+                        Alamat: <strong>tempat_lahir, phone_number, RT, RW, desa_kelurahan, kecamatan, ALAMAT</strong>.
                     </p>
                 </div>
             </div>
@@ -216,10 +215,8 @@
                     <p class="text-base font-black text-slate-800">Kategori Lansia</p>
                     <p class="text-xs font-bold text-slate-500 mt-2 leading-relaxed">
                         Wajib: <strong>NIK, nama, tgl_lahir, jk</strong>.<br>
-                        Riwayat & Perilaku: <strong>riwayat_penyakit_keluarga, perilaku_berisiko</strong>.<br>
-                        Data Fisik: BERAT, TINGGI, IMT, <strong>lingkar_perut, tekanan_darah</strong>.<br>
-                        Lab & Skrining: gds, asam_urat, kolesterol, tes_mata, tes_telinga, skrining_puma, skrining_tbc, skrining_jiwa.<br>
-                        Lainnya: kontrasepsi, edukasi, rujuk.
+                        Kontak & Domisili: <strong>tempat_lahir, phone_number</strong>.<br>
+                        Alamat: <strong>RT, RW, desa_kelurahan, kecamatan, ALAMAT</strong>.
                     </p>
                 </div>
             </div>
