@@ -1129,7 +1129,8 @@
                                   </td>
 
                                   @php
-                                      $statusStr = strtolower(trim($row['status_info'] ?? $row['nutrition_status'] ?? ''));
+                                      $statusText = ($row['status_info'] ?? '') !== '-' ? ($row['status_info'] ?? '') : ($row['nutrition_status'] ?? '-');
+                                      $statusStr = strtolower(trim($statusText));
                                       $tagStyle = '';
                                       $tagClass = '';
                                       if (str_contains($statusStr, 'gizi buruk') || str_contains($statusStr, 'sangat kurang')) {
@@ -1141,7 +1142,7 @@
                                       } else {
                                           $tagClass = 'bg-teal-50 text-teal-700 border-teal-100'; // Default
                                       }
-                                      $statusHtml = '<span class="inline-flex px-3 py-1 rounded-full text-xs font-bold border ' . $tagClass . '" style="' . $tagStyle . '">' . ($row['status_info'] ?? $row['nutrition_status'] ?? '-') . '</span>';
+                                      $statusHtml = '<span class="inline-flex px-3 py-1 rounded-full text-xs font-bold border ' . $tagClass . '" style="' . $tagStyle . '">' . $statusText . '</span>';
                                   @endphp
 
                                 @if ($drillDownChartSource === 'visits_trend')

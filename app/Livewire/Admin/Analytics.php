@@ -353,7 +353,12 @@ class Analytics extends BaseAdminComponent
                 'weight' => '-',
                 'height' => '-',
                 'patient_id' => $p->id,
-             'category_warga' => 'Balita', 'kategori_gizi' => '-', 'status_info' => '-', 'month_name' => '-', 'age_months' => (int) Carbon::parse($p->birth_date)->diffInMonths($determinationDate), ])->values()->toArray();
+                'category_warga' => 'Lansia', 
+                'kategori_gizi' => '-', 
+                'status_info' => '-', 
+                'month_name' => '-', 
+                'age_months' => $p->birth_date ? (int) $p->birth_date->diffInMonths(now()) : 0, 
+            ])->values()->toArray();
 
             return;
         }
@@ -536,7 +541,7 @@ class Analytics extends BaseAdminComponent
                 if (stripos($gizi, 'gizi buruk') !== false || stripos($gizi, 'stunting') !== false) return 'Stunting';
                 return '-';
             })(),
-            'status_info' => $r->nutrition_status ?: '-',
+            'status_info' => in_array($r->patient?->category, ['balita', 'bayi', 'baduta']) ? ($r->nutrition_status ?: '-') : '-',
             'month_name' => $r->visit_date ? match($r->visit_date->month) {
                 1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni',
                 7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
