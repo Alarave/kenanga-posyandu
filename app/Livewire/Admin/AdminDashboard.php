@@ -28,6 +28,10 @@ class AdminDashboard extends BaseAdminComponent
     // Stats Properties
     public $totalBalita = 0;
 
+    public $totalIbuHamil = 0;
+
+    public $totalLansia = 0;
+
     public $totalPemeriksaan = 0;
 
     public $totalImunisasi = 0;
@@ -438,6 +442,8 @@ class AdminDashboard extends BaseAdminComponent
         $currentYear = now()->year;
 
         $this->totalBalita = (clone $patientQuery)->whereIn('category', ['balita', 'bayi', 'baduta'])->count();
+        $this->totalIbuHamil = (clone $patientQuery)->where('category', 'ibu_hamil')->count();
+        $this->totalLansia = (clone $patientQuery)->where('category', 'lansia')->count();
 
         if ($this->filterPeriode === 'semua') {
             $this->kunjunganBaru = (clone $medicalRecordQuery)->whereMonth('visit_date', $currentMonth)->whereYear('visit_date', $currentYear)->count();

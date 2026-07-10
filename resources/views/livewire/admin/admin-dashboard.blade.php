@@ -310,6 +310,24 @@
                 'link' => route('admin.patients.index', ['category' => 'balita']),
             ],
             [
+                'label' => 'Total Ibu Hamil',
+                'value' => $totalIbuHamil,
+                'icon' => 'pregnant_woman',
+                'bg' => '#fdf2f8',
+                'fg' => '#db2777',
+                'unit' => 'bumil',
+                'link' => route('admin.patients.index', ['category' => 'ibu_hamil']),
+            ],
+            [
+                'label' => 'Total Lansia',
+                'value' => $totalLansia,
+                'icon' => 'elderly',
+                'bg' => '#fff7ed',
+                'fg' => '#ea580c',
+                'unit' => 'lansia',
+                'link' => route('admin.patients.index', ['category' => 'lansia']),
+            ],
+            [
                 'label' => 'Total Pemeriksaan',
                 'value' => $totalPemeriksaan,
                 'icon' => 'medical_services',
@@ -330,7 +348,7 @@
         ];
     @endphp
 
-    <section class="grid grid-cols-1 md:grid-cols-3 gap-4">
+    <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         @foreach ($stats as $s)
             @if (isset($s['link']) && $s['link'])
                 <a href="{{ $s['link'] }}" class="kpi-card block cursor-pointer">
