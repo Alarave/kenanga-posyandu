@@ -209,167 +209,7 @@
             <span class="material-symbols-outlined text-[18px] sm:text-[22px] {{ $activeTab === 'overview' ? 'text-teal-600' : 'text-slate-400' }}">dashboard</span>
             <span class="hidden xs:inline sm:inline">Overview</span>
             <span class="inline xs:hidden sm:hidden">Ov.</span>
-            @if($activeTab === 'overview')<span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-teal-500 ml-0.5 sm:ml-1"></span>@endif
-        </button>
-        <button wire:click="$set('activeTab', 'balita')" @class([
-            'analytics-tab-btn flex-1 shrink-0 min-w-max py-3.5 sm:py-4 px-4 sm:px-7 rounded-xl text-sm sm:text-[15px] transition-all duration-200 flex items-center justify-center gap-2 sm:gap-2.5 cursor-pointer',
-            'bg-white text-teal-850 border border-teal-100/80 shadow-md font-black tracking-tight' => $activeTab === 'balita',
-            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-extrabold' => $activeTab !== 'balita'
-        ]) style="min-width: max-content; flex-shrink: 0;">
-            <span class="material-symbols-outlined text-[18px] sm:text-[22px] {{ $activeTab === 'balita' ? 'text-teal-600' : 'text-slate-400' }}">child_care</span>
-            Balita
-            @if($activeTab === 'balita')<span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-teal-500 ml-0.5 sm:ml-1"></span>@endif
-        </button>
-        <button wire:click="$set('activeTab', 'pregnancy')" @class([
-            'analytics-tab-btn flex-1 shrink-0 min-w-max py-3.5 sm:py-4 px-4 sm:px-7 rounded-xl text-sm sm:text-[15px] transition-all duration-200 flex items-center justify-center gap-2 sm:gap-2.5 cursor-pointer',
-            'bg-white text-rose-850 border border-rose-100/80 shadow-md font-black tracking-tight' => $activeTab === 'pregnancy',
-            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-extrabold' => $activeTab !== 'pregnancy'
-        ]) style="min-width: max-content; flex-shrink: 0;">
-            <span class="material-symbols-outlined text-[18px] sm:text-[22px] {{ $activeTab === 'pregnancy' ? 'text-rose-500' : 'text-slate-400' }}">pregnant_woman</span>
-            Hamil
-            @if($activeTab === 'pregnancy')<span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-rose-500 ml-0.5 sm:ml-1"></span>@endif
-        </button>
-        <button wire:click="$set('activeTab', 'lansia')" @class([
-            'analytics-tab-btn flex-1 shrink-0 min-w-max py-3.5 sm:py-4 px-4 sm:px-7 rounded-xl text-sm sm:text-[15px] transition-all duration-200 flex items-center justify-center gap-2 sm:gap-2.5 cursor-pointer',
-            'bg-white text-indigo-850 border border-indigo-100/80 shadow-md font-black tracking-tight' => $activeTab === 'lansia',
-            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-extrabold' => $activeTab !== 'lansia'
-        ]) style="min-width: max-content; flex-shrink: 0;">
-            <span class="material-symbols-outlined text-[18px] sm:text-[22px] {{ $activeTab === 'lansia' ? 'text-indigo-500' : 'text-slate-400' }}">elderly</span>
-            Lansia
-            @if($activeTab === 'lansia')<span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-indigo-500 ml-0.5 sm:ml-1"></span>@endif
-        </button>
-    </div>
-
-    {{-- ── Unified Control Card (Filter + View Settings) ── --}}
-    <div class="bg-white rounded-2xl shadow-xs border border-slate-200 overflow-hidden">
-
-        {{-- ── Baris 1: Filter Global ── --}}
-        <div class="p-4 sm:p-6">
-            <div class="flex flex-col xl:flex-row gap-4 sm:gap-6 items-start xl:items-end">
-
-                {{-- Label kiri atas --}}
-                <div class="flex-1 w-full">
-                    <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1.5">
-                        <span class="material-symbols-outlined text-[16px] text-teal-600">tune</span>
-                        Filter Parameter Data
-                    </p>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-
-                        {{-- Wilayah Posyandu --}}
-                        @if(auth()->user()->isSuperAdmin())
-                        <div class="flex flex-col gap-1.5">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider pl-1">Wilayah Posyandu</label>
-                            <div class="relative">
-                                <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-teal-600">
-                                    <span class="material-symbols-outlined text-[18px]">location_on</span>
-                                </span>
-                                <select wire:model.live="selectedPosyandu"
-                                    class="w-full h-11 pl-9 pr-4 rounded-xl border border-slate-300 text-sm font-semibold text-slate-800 bg-white focus:ring-4 focus:ring-teal-100 focus:border-teal-600 shadow-xs transition-all hover:border-slate-400 focus:outline-none">
-                                    <option value="">Semua Wilayah</option>
-                                    @foreach(\App\Models\Posyandu::all() as $p)
-                                        <option value="{{ $p->id }}">{{ $p->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        @endif
-
-                        {{-- Tahun --}}
-                        <div class="flex flex-col gap-1.5">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider pl-1">Tahun</label>
-                            <div class="relative">
-                                <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center text-slate-400">
-                                    <span class="material-symbols-outlined text-[18px]">calendar_today</span>
-                                </span>
-                                <select wire:model.live="selectedYear"
-                                    class="w-full h-11 pl-9 pr-4 rounded-xl border border-slate-300 text-sm font-semibold text-slate-800 bg-white focus:ring-4 focus:ring-teal-100 focus:border-teal-600 shadow-xs transition-all hover:border-slate-400 focus:outline-none">
-                                    @foreach($years as $y)
-                                        <option value="{{ $y }}">{{ $y }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        {{-- Bulan --}}
-                        <div class="flex flex-col gap-1.5">
-                            <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider pl-1">Bulan</label>
-                            <div class="relative">
-                                <span class="pointer-events-none absolute inset-y-0 left-3 flex items-center {{ ($activeTab === 'overview' && $viewMode === 'yearly') ? 'text-slate-300' : 'text-slate-400' }}">
-                                    <span class="material-symbols-outlined text-[18px]">event_note</span>
-                                </span>
-                                <select wire:model.live="selectedMonth"
-                                    @if($activeTab === 'overview' && $viewMode === 'yearly') disabled @endif
-                                    class="w-full h-11 pl-9 pr-4 rounded-xl border text-sm font-semibold bg-white focus:ring-4 focus:ring-teal-100 focus:border-teal-600 shadow-xs transition-all focus:outline-none
-                                        {{ ($activeTab === 'overview' && $viewMode === 'yearly')
-                                            ? 'border-slate-100 text-slate-350 bg-slate-50 cursor-not-allowed'
-                                            : 'border-slate-300 text-slate-800 hover:border-slate-400 cursor-pointer' }}">
-                                    <option value="">{{ ($activeTab === 'overview' && $viewMode === 'yearly') ? 'Nonaktif (Mode YoY)' : 'Semua Bulan (Tahunan)' }}</option>
-                                    @foreach(range(1, 12) as $m)
-                                        <option value="{{ $m }}">{{ Carbon\Carbon::create(2000, $m)->translatedFormat('F') }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {{-- Tombol Aksi --}}
-                <div class="flex gap-3 w-full xl:w-auto shrink-0">
-                    <button wire:click="resetFilters"
-                        class="flex-1 xl:flex-none h-11 px-4 flex items-center justify-center gap-2 text-red-500 font-semibold text-sm hover:bg-red-50 rounded-xl transition-all">
-                        <span class="material-symbols-outlined text-[18px]">restart_alt</span>
-                        Reset
-                    </button>
-                    <button wire:click="refreshStats"
-                        wire:loading.attr="disabled"
-                        class="flex-1 xl:flex-none h-11 px-6 inline-flex items-center justify-center gap-2 bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-xs transition-all cursor-pointer focus:outline-none disabled:opacity-60 disabled:cursor-not-allowed">
-                        <span class="material-symbols-outlined text-[18px]" wire:loading.class="animate-spin" wire:target="refreshStats">sync</span>
-                        Perbarui Data
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        {{-- ── Baris 2: Pengaturan Visualisasi (hanya untuk tab Overview) ── --}}
-        @if($activeTab === 'overview')
-        <div class="border-t border-slate-150 bg-slate-50/50 px-6 py-4">
-            <p class="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-1.5">
-                <span class="material-symbols-outlined text-[16px] text-indigo-500">insert_chart</span>
-                Konfigurasi Visualisasi Grafik Overview
-            </p>
-            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-5">
-
-                {{-- Segmented view mode control --}}
-                <div class="flex flex-col gap-1">
-                    <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider pl-1">Mode Tampilan</span>
-                    <div class="inline-flex items-center bg-slate-200/50 rounded-xl p-1 gap-1 border border-slate-200">
-                        <button wire:click="$set('viewMode', 'monthly')" @class([
-                            'inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold tracking-wide transition-all cursor-pointer',
-                            'bg-white text-teal-800 shadow-xs border border-slate-200/50' => $viewMode === 'monthly',
-                            'text-slate-500 hover:text-slate-900 hover:bg-white/40' => $viewMode !== 'monthly',
-                        ])>
-                            <span class="material-symbols-outlined text-[16px]">bar_chart</span>
-                            Tampilan Bulanan
-                        </button>
-                        <button wire:click="$set('viewMode', 'yearly')" @class([
-                            'inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-bold tracking-wide transition-all cursor-pointer',
-                            'bg-white text-indigo-800 shadow-xs border border-slate-200/50' => $viewMode === 'yearly',
-                            'text-slate-500 hover:text-slate-900 hover:bg-white/40' => $viewMode !== 'yearly',
-                        ])>
-                            <span class="material-symbols-outlined text-[16px]">show_chart</span>
-                            Year-over-Year (Tahunan)
-                        </button>
-                    </div>
-                </div>
-
-
-            </div>
-        </div>
-        @endif
-    </div>
-
-    {{-- ── Tab Contents ── --}}
-    @if($activeTab === 'overview')
+            @if($activeTab === 'overview')
         {{-- ================= OVERVIEW TAB ================= --}}
         <div class="space-y-4 sm:space-y-6 animate-fadeIn">
             {{-- Stats Grid: 2 cols mobile, 4 cols desktop --}}
@@ -399,7 +239,46 @@
                 @endforeach
             </div>
 
-            {{-- Widget 3: Rangkuman Indikator Kesehatan Utama (Horizontal Layout, Below Main KPIs, No Donut Charts) --}}
+            {{-- Widget 1: Target vs Realisasi Kehadiran Pasien (Horizontal Layout, Below Main KPIs) --}}
+            <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-slate-200 shadow-xs">
+                <div class="mb-4">
+                    <h3 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                        <span class="material-symbols-outlined text-teal-600 text-[20px]">how_to_reg</span>
+                        Target vs Realisasi Kehadiran Pasien
+                    </h3>
+                    <p class="text-xs text-slate-500 font-semibold mt-0.5">Persentase keaktifan kunjungan warga terdaftar di periode terpilih</p>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    @foreach([
+                        ['label' => 'Balita & Anak', 'visited' => $balitaBerkunjung, 'total' => $totalBalita, 'color' => 'bg-teal-500', 'text' => 'text-teal-700', 'bg' => 'bg-teal-50', 'icon' => 'child_care'],
+                        ['label' => 'Ibu Hamil', 'visited' => $ibuHamilBerkunjung, 'total' => $totalIbuHamil, 'color' => 'bg-rose-500', 'text' => 'text-rose-700', 'bg' => 'bg-rose-50', 'icon' => 'pregnant_woman'],
+                        ['label' => 'Lansia', 'visited' => $lansiaBerkunjung, 'total' => $totalLansia, 'color' => 'bg-indigo-500', 'text' => 'text-indigo-700', 'bg' => 'bg-indigo-50', 'icon' => 'elderly']
+                    ] as $item)
+                        @php
+                            $pct = $item['total'] > 0 ? round(($item['visited'] / $item['total']) * 100, 1) : 0;
+                            $barColor = $pct >= 75 ? 'bg-emerald-500' : ($pct >= 40 ? 'bg-amber-500' : 'bg-rose-500');
+                        @endphp
+                        <div class="space-y-2 p-3 bg-slate-50 rounded-xl border border-slate-100/80">
+                            <div class="flex items-center justify-between text-xs sm:text-sm font-bold text-slate-700">
+                                <span class="flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-[18px] text-slate-400">{{ $item['icon'] }}</span>
+                                    <span>{{ $item['label'] }}</span>
+                                </span>
+                                <span>
+                                    <span class="font-extrabold text-slate-900">{{ $pct }}%</span>
+                                    <span class="text-slate-400 font-semibold">({{ $item['visited'] }} / {{ $item['total'] }})</span>
+                                </span>
+                            </div>
+                            <div class="w-full bg-slate-200 h-3 rounded-full overflow-hidden">
+                                <div class="{{ $barColor }} h-full rounded-full transition-all duration-500" style="width: {{ $pct }}%"></div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+
+            {{-- Widget 3: Rangkuman Indikator Kesehatan Utama (Horizontal Layout, Below Kehadiran, No Donut Charts) --}}
             <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-slate-200 shadow-xs">
                 <div class="mb-4">
                     <h3 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
@@ -409,14 +288,13 @@
                     <p class="text-xs text-slate-500 font-semibold mt-0.5">Ringkasan parameter klinis pasien dari pemeriksaan terbaru</p>
                 </div>
                 
-                {{-- Grid 3 Kolom: Balita, Ibu Hamil, Lansia (Horizontal) --}}
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
                     {{-- Balita --}}
                     <div class="space-y-3">
                         <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
                             <span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span> Balita & Anak
                         </h4>
-                        <div class="grid grid-cols-2 gap-2">
+                        <div class="grid grid-cols-2 gap-6">
                             {{-- Prevalensi Stunting --}}
                             <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col justify-between min-h-[105px]">
                                 <div>
@@ -458,7 +336,7 @@
                         <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
                             <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Ibu Hamil
                         </h4>
-                        <div class="grid grid-cols-2 gap-2">
+                        <div class="grid grid-cols-2 gap-6">
                             {{-- Risiko Hipertensi --}}
                             <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col justify-between min-h-[105px]">
                                 <div>
@@ -500,7 +378,7 @@
                         <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
                             <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span> Lanjut Usia
                         </h4>
-                        <div class="grid grid-cols-2 gap-2">
+                        <div class="grid grid-cols-2 gap-6">
                             {{-- Hipertensi Lansia --}}
                             <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col justify-between min-h-[105px]">
                                 <div>
@@ -539,124 +417,75 @@
                 </div>
             </div>
 
-            {{-- Main Layout Grid: 2 Columns below health indicators --}}
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-                
-                {{-- Kiri: Grafik Tren Kunjungan (Span-2) --}}
-                <div class="lg:col-span-2">
-                    {{-- Widget 2: Combined Monthly Visits Trend --}}
-                    <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-slate-200 shadow-xs">
-                        <div class="flex items-center justify-between gap-4 mb-6">
-                            <div>
-                                <h3 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-teal-600 text-[20px]">insights</span>
-                                    Tren Kunjungan Bulanan Gabungan
-                                </h3>
-                                <p class="text-xs text-slate-500 font-semibold mt-0.5">Perbandingan tren frekuensi kunjungan pasien per kategori di posyandu (Dapat diklik untuk detail)</p>
-                            </div>
-                            <button onclick="downloadChart(visitsTrendChart, 'tren_kunjungan')" class="p-2 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
-                                <span class="material-symbols-outlined text-[18px]">download</span>
-                            </button>
-                        </div>
-                        <div class="relative h-80 sm:h-96">
-                            <canvas id="visitsTrendChart" wire:ignore></canvas>
-                            <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/95 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-300 rounded-2xl" id="error-visitsTrendChart">
-                                <span class="material-symbols-outlined text-rose-600 text-4xl mb-2">error</span>
-                                <p class="text-sm font-extrabold text-slate-800">Gagal memuat data grafik</p>
-                                <button onclick="initCharts()" class="mt-3 px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-slate-700 cursor-pointer">Coba Lagi</button>
-                            </div>
-                        </div>
+            {{-- Widget 4: Live Health Alerts Feed (Full Width, Horizontal Cards Grid) --}}
+            <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-slate-200 shadow-xs flex flex-col">
+                <div class="mb-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                            <span class="material-symbols-outlined text-rose-600 text-[20px] animate-pulse">warning</span>
+                            Live Health Alerts
+                        </h3>
+                        <span class="text-[9px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 px-2 py-0.5 rounded-full border border-rose-200">Kasus Kritis</span>
                     </div>
+                    <p class="text-xs text-slate-500 font-semibold mt-0.5">5 kasus pemeriksaan berisiko kesehatan tinggi terbaru dari seluruh Posyandu</p>
                 </div>
-
-                {{-- Kanan: Kehadiran & Live Health Alerts (Span-1) --}}
-                <div class="space-y-4 sm:space-y-6">
-                    
-                    {{-- Widget 1: Realisasi Kehadiran --}}
-                    <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-slate-200 shadow-xs">
-                        <div class="mb-4">
-                            <h3 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-                                <span class="material-symbols-outlined text-teal-600 text-[20px]">how_to_reg</span>
-                                Target vs Realisasi Kehadiran Pasien
-                            </h3>
-                            <p class="text-xs text-slate-500 font-semibold mt-0.5">Persentase keaktifan kunjungan warga terdaftar di periode terpilih</p>
-                        </div>
-                        
-                        <div class="space-y-4">
-                            @foreach([
-                                ['label' => 'Balita & Anak', 'visited' => $balitaBerkunjung, 'total' => $totalBalita, 'color' => 'bg-teal-500', 'text' => 'text-teal-700', 'bg' => 'bg-teal-50', 'icon' => 'child_care'],
-                                ['label' => 'Ibu Hamil', 'visited' => $ibuHamilBerkunjung, 'total' => $totalIbuHamil, 'color' => 'bg-rose-500', 'text' => 'text-rose-700', 'bg' => 'bg-rose-50', 'icon' => 'pregnant_woman'],
-                                ['label' => 'Lansia', 'visited' => $lansiaBerkunjung, 'total' => $totalLansia, 'color' => 'bg-indigo-500', 'text' => 'text-indigo-700', 'bg' => 'bg-indigo-50', 'icon' => 'elderly']
-                            ] as $item)
-                                @php
-                                    $pct = $item['total'] > 0 ? round(($item['visited'] / $item['total']) * 100, 1) : 0;
-                                    // Dinamis warna bar
-                                    $barColor = $pct >= 75 ? 'bg-emerald-500' : ($pct >= 40 ? 'bg-amber-500' : 'bg-rose-500');
-                                @endphp
-                                <div class="space-y-1.5">
-                                    <div class="flex items-center justify-between text-xs sm:text-sm font-bold text-slate-700">
-                                        <span class="flex items-center gap-2">
-                                            <span class="material-symbols-outlined text-[18px] text-slate-400">{{ $item['icon'] }}</span>
-                                            <span>{{ $item['label'] }}</span>
-                                        </span>
-                                        <span>
-                                            <span class="font-extrabold text-slate-900">{{ $pct }}%</span>
-                                            <span class="text-slate-400 font-semibold">({{ $item['visited'] }} / {{ $item['total'] }})</span>
-                                        </span>
-                                    </div>
-                                    <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-                                        <div class="{{ $barColor }} h-full rounded-full transition-all duration-500" style="width: {{ $pct }}%"></div>
-                                    </div>
+                
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 flex-1">
+                    @forelse($liveHealthAlerts as $alert)
+                        <div class="p-3 rounded-xl border border-rose-100 bg-rose-50/30 flex flex-col justify-between gap-2.5 transition-all hover:bg-rose-50/60 min-h-[120px]">
+                            <div class="space-y-1.5">
+                                <div class="flex items-center justify-between gap-2">
+                                    <a href="/admin/patients/{{ $alert['patient_id'] }}" class="text-xs font-black text-slate-800 hover:text-rose-600 hover:underline truncate">
+                                        {{ $alert['patient_name'] }}
+                                    </a>
+                                    <span class="text-[9px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600 flex-shrink-0">
+                                        {{ $alert['patient_category'] }}
+                                    </span>
                                 </div>
-                            @endforeach
-                        </div>
-                    </div>
-
-                    {{-- Widget 4: Live Health Alerts Feed --}}
-                    <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-slate-200 shadow-xs flex flex-col">
-                        <div class="mb-4">
-                            <div class="flex items-center justify-between">
-                                <h3 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-                                    <span class="material-symbols-outlined text-rose-600 text-[20px] animate-pulse">warning</span>
-                                    Live Health Alerts
-                                </h3>
-                                <span class="text-[9px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 px-2 py-0.5 rounded-full border border-rose-200">Kasus Kritis</span>
+                                
+                                {{-- Reasons pills --}}
+                                <div class="flex flex-wrap gap-1">
+                                    @foreach($alert['reasons'] as $reason)
+                                        <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-rose-100 text-rose-700">{{ $reason }}</span>
+                                    @endforeach
+                                </div>
                             </div>
-                            <p class="text-xs text-slate-500 font-semibold mt-0.5">5 kasus pemeriksaan berisiko kesehatan tinggi terbaru</p>
+                            
+                            <div class="flex items-center justify-between text-[10px] text-slate-400 font-semibold border-t border-rose-100/50 pt-2 mt-1">
+                                <span class="truncate">Pos: {{ $alert['posyandu_name'] }}</span>
+                                <span class="flex-shrink-0">{{ $alert['visit_date'] }}</span>
+                            </div>
                         </div>
-                        
-                        <div class="space-y-3 flex-1">
-                            @forelse($liveHealthAlerts as $alert)
-                                <div class="p-3 rounded-xl border border-rose-100 bg-rose-50/30 flex flex-col gap-1.5 transition-all hover:bg-rose-50/60">
-                                    <div class="flex items-center justify-between">
-                                        <a href="/admin/patients/{{ $alert['patient_id'] }}" class="text-xs font-black text-slate-800 hover:text-rose-600 hover:underline">
-                                            {{ $alert['patient_name'] }}
-                                        </a>
-                                        <span class="text-[9px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600">
-                                            {{ $alert['patient_category'] }}
-                                        </span>
-                                    </div>
-                                    
-                                    {{-- Reasons pills --}}
-                                    <div class="flex flex-wrap gap-1">
-                                        @foreach($alert['reasons'] as $reason)
-                                            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-rose-100 text-rose-700">{{ $reason }}</span>
-                                        @endforeach
-                                    </div>
-                                    
-                                    <div class="flex items-center justify-between text-[10px] text-slate-400 font-semibold border-t border-rose-100/50 pt-1.5 mt-0.5">
-                                        <span>Pos: {{ $alert['posyandu_name'] }}</span>
-                                        <span>{{ $alert['visit_date'] }}</span>
-                                    </div>
-                                </div>
-                            @empty
-                                <div class="flex flex-col items-center justify-center py-8 text-center text-slate-400">
-                                    <span class="material-symbols-outlined text-emerald-500 text-4xl mb-2">check_circle</span>
-                                    <p class="text-xs font-bold text-slate-700">Seluruh Warga Sehat!</p>
-                                    <p class="text-[10px] font-semibold text-slate-400 mt-0.5">Tidak terdeteksi adanya kasus berisiko tinggi baru</p>
-                                </div>
-                            @endforelse
+                    @empty
+                        <div class="col-span-full flex flex-col items-center justify-center py-8 text-center text-slate-400">
+                            <span class="material-symbols-outlined text-emerald-500 text-4xl mb-2">check_circle</span>
+                            <p class="text-xs font-bold text-slate-700">Seluruh Warga Sehat!</p>
+                            <p class="text-[10px] font-semibold text-slate-400 mt-0.5">Tidak terdeteksi adanya kasus berisiko tinggi baru</p>
                         </div>
+                    @endforelse
+                </div>
+            </div>
+
+            {{-- Widget 2: Combined Monthly Visits Trend (Full Width, at the bottom) --}}
+            <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-slate-200 shadow-xs">
+                <div class="flex items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h3 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                            <span class="material-symbols-outlined text-teal-600 text-[20px]">insights</span>
+                            Tren Kunjungan Bulanan Gabungan
+                        </h3>
+                        <p class="text-xs text-slate-500 font-semibold mt-0.5">Perbandingan tren frekuensi kunjungan pasien per kategori di posyandu (Dapat diklik untuk detail)</p>
+                    </div>
+                    <button onclick="downloadChart(visitsTrendChart, 'tren_kunjungan')" class="p-2 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                        <span class="material-symbols-outlined text-[18px]">download</span>
+                    </button>
+                </div>
+                <div class="relative h-80 sm:h-96">
+                    <canvas id="visitsTrendChart" wire:ignore></canvas>
+                    <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/95 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-300 rounded-2xl" id="error-visitsTrendChart">
+                        <span class="material-symbols-outlined text-rose-600 text-4xl mb-2">error</span>
+                        <p class="text-sm font-extrabold text-slate-800">Gagal memuat data grafik</p>
+                        <button onclick="initCharts()" class="mt-3 px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-slate-700 cursor-pointer">Coba Lagi</button>
                     </div>
                 </div>
             </div>
