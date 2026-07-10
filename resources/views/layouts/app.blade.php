@@ -253,6 +253,20 @@
 
             // High-performance Livewire hook fallback
             document.addEventListener('livewire:init', function () {
+                // Intercept session expiration (status 419)
+                Livewire.hook('request', ({ fail }) => {
+                    fail(({ status, preventDefault }) => {
+                        if (status === 419) {
+                            preventDefault();
+                            if (window.showSessionExpiredModal) {
+                                window.showSessionExpiredModal();
+                            } else {
+                                window.location.reload();
+                            }
+                        }
+                    });
+                });
+
                 Livewire.hook('request.respond', function () {
                     document.querySelectorAll('input[type="date"], input[type="datetime-local"]').forEach(updateDateInputClass);
                 });
@@ -264,9 +278,42 @@
                     });
                 });
             });
+
+            // Toggle Session Expired Modal
+            window.showSessionExpiredModal = function () {
+                const modal = document.getElementById('session-expired-modal');
+                if (modal) {
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                }
+            };
         });
     </script>
     
+    {{-- Custom Session Expired Modal --}}
+    <div id="session-expired-modal" class="fixed inset-0 z-[9999] hidden items-center justify-center p-4">
+        <div class="absolute inset-0 bg-slate-900/60 backdrop-blur-md transition-opacity"></div>
+        <div class="relative bg-white dark:bg-slate-900 rounded-3xl p-6 md:p-8 max-w-md w-full border border-slate-100 dark:border-slate-800 shadow-2xl transform transition-all text-center">
+            <div class="w-16 h-16 rounded-full bg-rose-50 dark:bg-rose-950/30 text-rose-500 flex items-center justify-center mx-auto mb-6 shadow-inner">
+                <span class="material-symbols-outlined text-[32px] animate-pulse">lock_clock</span>
+            </div>
+            <h3 class="text-xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-2 font-outfit">Sesi Anda Telah Berakhir</h3>
+            <p class="text-sm text-slate-500 dark:text-slate-400 mb-8 leading-relaxed">
+                Untuk menjaga keamanan data Anda, sesi login Anda telah kedaluwarsa secara otomatis. Silakan masuk kembali atau segarkan halaman ini.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                <a href="{{ route('login') }}" class="inline-flex items-center justify-center gap-2 rounded-2xl bg-teal-600 hover:bg-teal-700 px-5 py-3 text-sm font-bold text-white shadow-lg shadow-teal-600/20 transition-all duration-300 transform hover:-translate-y-0.5">
+                    <span class="material-symbols-outlined text-[18px]">login</span>
+                    Masuk Kembali
+                </a>
+                <button onclick="window.location.reload()" class="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-200 px-5 py-3 text-sm font-bold text-slate-700 transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer">
+                    <span class="material-symbols-outlined text-[18px]">refresh</span>
+                    Segarkan
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Speculation Rules API for instant prerendering on hover -->
     <script type="speculationrules">
     {
