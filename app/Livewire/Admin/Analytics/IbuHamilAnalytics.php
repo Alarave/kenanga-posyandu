@@ -60,6 +60,10 @@ class IbuHamilAnalytics extends Component
         $patients = $this->applyPosyanduScope(\App\Models\Patient::query(), $this->selectedPosyandu)
             ->where('category', 'ibu_hamil')
             ->where('status_mutasi', 'aktif')
+            ->whereHas('medicalRecords', function ($query) {
+                $query->whereYear('visit_date', $this->selectedYear)
+                    ->when($this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $this->selectedMonth));
+            })
             ->with(['medicalRecords' => function ($query) {
                 $query->whereYear('visit_date', $this->selectedYear)
                     ->when($this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $this->selectedMonth));
@@ -146,6 +150,10 @@ class IbuHamilAnalytics extends Component
         $patients = $this->applyPosyanduScope(\App\Models\Patient::query(), $this->selectedPosyandu)
             ->where('category', 'ibu_hamil')
             ->where('status_mutasi', 'aktif')
+            ->whereHas('medicalRecords', function ($query) {
+                $query->whereYear('visit_date', $this->selectedYear)
+                    ->when($this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $this->selectedMonth));
+            })
             ->with(['medicalRecords' => function ($query) {
                 $query->whereYear('visit_date', $this->selectedYear)
                     ->when($this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $this->selectedMonth));
@@ -217,6 +225,10 @@ class IbuHamilAnalytics extends Component
         $patientQuery = $this->applyPosyanduScope(\App\Models\Patient::query(), $this->selectedPosyandu)
             ->where('category', 'ibu_hamil')
             ->where('status_mutasi', 'aktif')
+            ->whereHas('medicalRecords', function ($query) {
+                $query->whereYear('visit_date', $this->selectedYear)
+                    ->when($this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $this->selectedMonth));
+            })
             ->when($this->search, function ($query) {
                 $query->where('full_name', 'like', '%' . $this->search . '%');
             });
