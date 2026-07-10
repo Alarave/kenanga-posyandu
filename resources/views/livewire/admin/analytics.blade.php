@@ -1625,9 +1625,13 @@
                                 @endif
 
                                   <td class="px-6 py-4 text-right">
-                                      <a href="{{ route('admin.patients.show', $row['patient_id']) }}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-slate-100 text-slate-500 hover:bg-teal-600 hover:text-white transition-all shadow-xs">
-                                          <span class="material-symbols-outlined text-[18px]">visibility</span>
-                                      </a>
+                                      @if(!empty($row['patient_id']))
+                                          <a href="{{ route('admin.patients.show', $row['patient_id']) }}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-slate-100 text-slate-500 hover:bg-teal-600 hover:text-white transition-all shadow-xs">
+                                              <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                          </a>
+                                      @else
+                                          <span class="text-xs text-slate-400 font-bold">-</span>
+                                      @endif
                                   </td>
                               </tr>
                             @empty
