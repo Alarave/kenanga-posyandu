@@ -1,6 +1,7 @@
 <div
     x-data="articleEditorUpdate(@js($article->content ?? ''), @js($article->title), @js($article->status), @js($article->category_id), @js($article->category?->name ?? ''), @js($existingCover ? asset('storage/'.$existingCover) : null))"
     x-init="init()"
+    @keydown.window="onWindowKeydown($event)"
     class="min-h-screen bg-[#f8f8f7]"
     @keydown.ctrl.b.window.prevent="formatText('bold')"
     @keydown.ctrl.i.window.prevent="formatText('italic')"
@@ -719,6 +720,24 @@ function articleEditorUpdate(contentJson, title, status, categoryId, categoryNam
         showCategoryError: false,
         showStatusError: false,
         showContentError: false,
+
+        onWindowKeydown(e) {
+            try {
+                const ae = document.activeElement;
+                const isEditable = ae && (
+                    ae.tagName === 'TEXTAREA' ||
+                    ae.tagName === 'INPUT' ||
+                    (ae.getAttribute && ae.getAttribute('contenteditable') === 'true')
+                );
+                if (isEditable && e.key === '/') {
+                    if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+                    if (typeof e.stopPropagation === 'function') e.stopPropagation();
+                    return;
+                }
+            } catch (err) {
+                // ignore
+            }
+        },
 
         init() {
             if (contentJson) {
