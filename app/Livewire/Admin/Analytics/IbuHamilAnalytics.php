@@ -24,7 +24,6 @@ class IbuHamilAnalytics extends Component
 
     public $search = '';
 
-    // AH-01: Validasi Total Ibu Hamil per Trimester
     #[Computed]
     public function trimesterStats()
     {
@@ -54,6 +53,33 @@ class IbuHamilAnalytics extends Component
         }
 
         return ['T1' => $t1, 'T2' => $t2, 'T3' => $t3];
+    }
+
+    #[Computed]
+    public function rataRataUsiaKehamilan()
+    {
+        $records = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
+            ->whereHas('patient', function ($q) {
+                $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
+            })
+            ->whereYear('visit_date', $this->selectedYear)
+            ->when($this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $this->selectedMonth))
+            ->orderBy('visit_date', 'desc')
+            ->orderBy('id', 'desc')
+            ->get()
+            ->unique('patient_id');
+
+        $totalWeeks = 0;
+        $validCount = 0;
+        foreach ($records as $record) {
+            $weeks = (int) filter_var($record->gestational_age, FILTER_SANITIZE_NUMBER_INT);
+            if ($weeks > 0) {
+                $totalWeeks += $weeks;
+                $validCount++;
+            }
+        }
+
+        return $validCount > 0 ? round($totalWeeks / $validCount, 1) : 0;
     }
 
     // AH-02 & AH-03: HPL & Risiko 4T
@@ -336,6 +362,7 @@ class IbuHamilAnalytics extends Component
 
         return view('livewire.admin.analytics.ibu-hamil-analytics', [
             'trimesterStats' => $this->trimesterStats(),
+            'rataRataUsiaKehamilan' => $this->rataRataUsiaKehamilan,
             'riskStats' => $this->riskStats(),
             'anemiaCount' => $anemiaData['anemia'],
             'anemiaStats' => $anemiaData,
