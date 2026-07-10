@@ -37,9 +37,9 @@
 
                     {{-- Text content --}}
                     <div class="mt-5 flex flex-col items-center w-full">
-                        <h4 class="text-lg md:text-xl text-slate-900 dark:text-white font-extrabold font-jakarta group-hover:text-primary transition-colors duration-300 line-clamp-1">
+                        <h3 class="text-lg md:text-xl text-slate-900 dark:text-white font-extrabold font-jakarta group-hover:text-primary transition-colors duration-300 line-clamp-1">
                             {{ $k->name }}
-                        </h4>
+                        </h3>
                         <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-black bg-primary/10 text-primary dark:bg-teal-500/10 dark:text-teal-400 border border-primary/20 dark:border-teal-500/20 uppercase tracking-widest mt-2.5">
                             {{ $k->role }}
                         </span>

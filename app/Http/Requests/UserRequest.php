@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
 class UserRequest extends FormRequest
@@ -22,13 +23,13 @@ class UserRequest extends FormRequest
             'email' => [
                 'required',
                 'email',
-                \Illuminate\Validation\Rule::unique('users', 'email')->ignore($userId),
+                Rule::unique('users', 'email')->ignore($userId),
             ],
             'username' => [
                 'required',
                 'string',
                 'max:255',
-                \Illuminate\Validation\Rule::unique('users', 'username')->ignore($userId),
+                Rule::unique('users', 'username')->ignore($userId),
             ],
             'password' => $userId
                 ? ['nullable', 'confirmed', Password::min(8)->letters()->mixedCase()->numbers()]

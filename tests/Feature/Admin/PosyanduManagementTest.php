@@ -18,9 +18,9 @@ beforeEach(function () {
 describe('akses halaman manajemen posyandu', function () {
     it('superadmin dapat mengakses halaman manajemen posyandu dan melihat isinya', function () {
         $this->actingAs($this->superadmin);
-        
+
         $response = $this->get('/admin/posyandu');
-        
+
         $response->assertStatus(200);
         $response->assertSee('Unit Posyandu');
         $response->assertSee('Kenanga Test Unit');

@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ScheduleRequest;
+use App\Models\Posyandu;
 use App\Models\Schedule;
+use App\Services\ScheduleService;
 use Illuminate\Http\Request;
 
 class ScheduleController extends Controller
@@ -55,15 +57,15 @@ class ScheduleController extends Controller
 
         // Superadmin bisa pilih semua posyandu, lainnya hanya posyandu mereka
         if ($user->isSuperAdmin()) {
-            $posyandus = \App\Models\Posyandu::orderBy('name')->get();
+            $posyandus = Posyandu::orderBy('name')->get();
         } else {
-            $posyandus = \App\Models\Posyandu::where('id', $user->posyandu_id)->get();
+            $posyandus = Posyandu::where('id', $user->posyandu_id)->get();
         }
 
         return view('livewire.admin.schedule-management.create', compact('posyandus'));
     }
 
-    public function store(ScheduleRequest $request, \App\Services\ScheduleService $scheduleService)
+    public function store(ScheduleRequest $request, ScheduleService $scheduleService)
     {
         $scheduleService->createSchedule($request->validated(), auth()->user());
 
@@ -78,19 +80,19 @@ class ScheduleController extends Controller
 
     public function edit(Schedule $schedule)
     {
-        $posyandus = \App\Models\Posyandu::all();
+        $posyandus = Posyandu::all();
 
         return view('livewire.admin.schedule-management.update', compact('schedule', 'posyandus'));
     }
 
-    public function update(ScheduleRequest $request, Schedule $schedule, \App\Services\ScheduleService $scheduleService)
+    public function update(ScheduleRequest $request, Schedule $schedule, ScheduleService $scheduleService)
     {
         $scheduleService->updateSchedule($schedule, $request->validated());
 
         return redirect()->route('admin.schedules.index')->with('success', 'Jadwal berhasil diperbarui.');
     }
 
-    public function destroy(Schedule $schedule, \App\Services\ScheduleService $scheduleService)
+    public function destroy(Schedule $schedule, ScheduleService $scheduleService)
     {
         $scheduleService->deleteSchedule($schedule);
 

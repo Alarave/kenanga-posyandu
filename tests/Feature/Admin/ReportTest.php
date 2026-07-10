@@ -4,6 +4,7 @@ use App\Models\MedicalRecord;
 use App\Models\Patient;
 use App\Models\Posyandu;
 use App\Models\User;
+use App\Services\ReportService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
 
@@ -194,7 +195,7 @@ describe('laporan individu ibu hamil', function () {
             'upper_arm_circumference' => 24.0,
         ]);
 
-        $reportService = app(App\Services\ReportService::class);
+        $reportService = app(ReportService::class);
         $reportData = $reportService->generateIndividualReportData($patient, now()->month, now()->year, now()->month, now()->year);
 
         expect($reportData['svg_charts'])->toHaveKey('weight_gain');

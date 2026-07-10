@@ -2,8 +2,11 @@
 
 namespace App\Services;
 
+use App\Models\Posyandu;
 use App\Models\User;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 
 class UserService
@@ -27,11 +30,11 @@ class UserService
         if (preg_match('/^(admin|kader)([12])$/', $data['role'], $matches)) {
             $data['role'] = $matches[1];
             $code = $matches[2] == '1' ? 'PSY003' : 'PSY002';
-            $posyandu = \App\Models\Posyandu::where('unique_code', $code)->first();
+            $posyandu = Posyandu::where('unique_code', $code)->first();
             $data['posyandu_id'] = $posyandu ? $posyandu->id : ($matches[2] == '1' ? 1 : 2);
         }
 
-        if (isset($data['image']) && $data['image'] instanceof \Illuminate\Http\UploadedFile) {
+        if (isset($data['image']) && $data['image'] instanceof UploadedFile) {
             $path = $data['image']->store('kaders', 'public');
             $data['image'] = basename($path);
         }
@@ -57,14 +60,14 @@ class UserService
         if (isset($data['role']) && preg_match('/^(admin|kader)([12])$/', $data['role'], $matches)) {
             $data['role'] = $matches[1];
             $code = $matches[2] == '1' ? 'PSY003' : 'PSY002';
-            $posyandu = \App\Models\Posyandu::where('unique_code', $code)->first();
+            $posyandu = Posyandu::where('unique_code', $code)->first();
             $data['posyandu_id'] = $posyandu ? $posyandu->id : ($matches[2] == '1' ? 1 : 2);
             $newRole = $data['role'];
         }
 
-        if (isset($data['image']) && $data['image'] instanceof \Illuminate\Http\UploadedFile) {
+        if (isset($data['image']) && $data['image'] instanceof UploadedFile) {
             if ($user->image && ! str_starts_with($user->image, 'assets/')) {
-                \Illuminate\Support\Facades\Storage::disk('public')->delete('kaders/'.$user->image);
+                Storage::disk('public')->delete('kaders/'.$user->image);
             }
             $path = $data['image']->store('kaders', 'public');
             $data['image'] = basename($path);
@@ -160,7 +163,7 @@ class UserService
     public function deleteUser(User $user): void
     {
         if ($user->image && ! str_starts_with($user->image, 'assets/')) {
-            \Illuminate\Support\Facades\Storage::disk('public')->delete('kaders/'.$user->image);
+            Storage::disk('public')->delete('kaders/'.$user->image);
         }
 
         $userName = $user->name;

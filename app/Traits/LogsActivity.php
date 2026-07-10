@@ -3,9 +3,10 @@
 namespace App\Traits;
 
 use App\Models\ActivityLog;
+use Illuminate\Database\Eloquent\Model;
 
 /**
- * @mixin \Illuminate\Database\Eloquent\Model
+ * @mixin Model
  */
 trait LogsActivity
 {

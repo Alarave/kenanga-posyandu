@@ -33,7 +33,13 @@
     @endphp
 
     @php
-        $badgeStyle = match($activityLog->action_type) {
+        $normalizedAction = match(true) {
+            str_contains($activityLog->action_type, 'create') => 'create',
+            str_contains($activityLog->action_type, 'update') => 'update',
+            str_contains($activityLog->action_type, 'delete') => 'delete',
+            default => $activityLog->action_type,
+        };
+        $badgeStyle = match($normalizedAction) {
             'create' => 'bg-emerald-50 text-emerald-700 border-emerald-100/85',
             'update' => 'bg-amber-50 text-amber-700 border-amber-100/85',
             'delete', 'login_failed' => 'bg-rose-50 text-rose-700 border-rose-100/85',
@@ -50,7 +56,7 @@
         <div class="flex items-center gap-3">
             <div class="inline-flex items-center px-4 py-2 rounded-xl border {{ $badgeStyle }} shadow-sm">
                 <span class="w-2 h-2 rounded-full bg-current mr-2 animate-pulse"></span>
-                <span class="text-xs font-black uppercase tracking-wider">{{ $activityLog->action_type }}</span>
+                <span class="text-xs font-black uppercase tracking-wider">{{ $normalizedAction }}</span>
             </div>
         </div>
     </div>

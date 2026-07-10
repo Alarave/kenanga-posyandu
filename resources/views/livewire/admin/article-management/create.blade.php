@@ -723,6 +723,18 @@ function articleEditor() {
         isDirty: false,
         isSaving: false,
         blocks: [],
+        focusedIndex: -1,
+        hoveredIndex: -1,
+        activeBlockId: null,
+        blockMenuAt: null,
+        menuStyle: '',
+        nextId: 1,
+        pendingInsertIndex: 0,
+        showFormatBar: false,
+        formatBarStyle: '',
+        showCategoryError: false,
+        showStatusError: false,
+        showContentError: false,
          init() {
             this.blocks = [{ id: this.nextId++, type: 'paragraph', content: '' }];
         },
@@ -906,6 +918,11 @@ function articleEditor() {
                 const el = this.getBlockEl(block.id);
                 const isEmpty = !el || el.innerText.trim() === '';
 
+                // IMPORTANT: Save current block content BEFORE doing anything with Enter
+                if (el) {
+                    block.content = el.innerHTML;
+                }
+
                 if ((block.type === 'numbered' || block.type === 'bullet') && isEmpty) {
                     event.preventDefault();
                     this.blocks[index] = { ...block, type: 'paragraph', content: '' };
@@ -1018,6 +1035,14 @@ function articleEditor() {
         },
 
         handleBlur(index) {
+            // Save block content to ensure data is not lost
+            const block = this.blocks[index];
+            if (block) {
+                const el = this.getBlockEl(block.id);
+                if (el) {
+                    block.content = el.innerHTML;
+                }
+            }
             setTimeout(() => { if (this.focusedIndex === index) this.focusedIndex = -1; }, 150);
         },
 

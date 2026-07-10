@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Database\Seeder;
 
 class RolesAndPermissionsSeeder extends Seeder
@@ -12,8 +14,8 @@ class RolesAndPermissionsSeeder extends Seeder
     public function run(): void
     {
         // ── Create Roles ──────────────────────────────────────────────
-        $admin = \App\Models\Role::firstOrCreate(['name' => 'admin'], ['display_name' => 'Administrator']);
-        $kader = \App\Models\Role::firstOrCreate(['name' => 'kader'], ['display_name' => 'Kader Posyandu']);
+        $admin = Role::firstOrCreate(['name' => 'admin'], ['display_name' => 'Administrator']);
+        $kader = Role::firstOrCreate(['name' => 'kader'], ['display_name' => 'Kader Posyandu']);
 
         // ── Define Permissions ────────────────────────────────────────
         $permissions = [
@@ -32,7 +34,7 @@ class RolesAndPermissionsSeeder extends Seeder
         ];
 
         foreach ($permissions as $name => $displayName) {
-            $permission = \App\Models\Permission::firstOrCreate(
+            $permission = Permission::firstOrCreate(
                 ['name' => $name],
                 ['description' => $displayName]
             );

@@ -44,7 +44,7 @@ class Patient extends Model
         });
 
         static::saved(function ($patient) {
-            \App\Models\AnalyticsSnapshot::where(function ($q) use ($patient) {
+            AnalyticsSnapshot::where(function ($q) use ($patient) {
                 if ($patient->posyandu_id) {
                     $q->where('posyandu_id', $patient->posyandu_id)->orWhereNull('posyandu_id');
                 } else {
@@ -54,7 +54,7 @@ class Patient extends Model
         });
 
         static::deleted(function ($patient) {
-            \App\Models\AnalyticsSnapshot::where(function ($q) use ($patient) {
+            AnalyticsSnapshot::where(function ($q) use ($patient) {
                 if ($patient->posyandu_id) {
                     $q->where('posyandu_id', $patient->posyandu_id)->orWhereNull('posyandu_id');
                 } else {

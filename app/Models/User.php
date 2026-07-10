@@ -4,9 +4,11 @@ namespace App\Models;
 
 use App\Traits\LogsActivity;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -310,19 +312,19 @@ class User extends Authenticatable implements MustVerifyEmail
         });
 
         static::saved(function ($user) {
-            \Illuminate\Support\Facades\Cache::forget('about_page_kaders');
+            Cache::forget('about_page_kaders');
         });
 
         static::deleted(function ($user) {
-            \Illuminate\Support\Facades\Cache::forget('about_page_kaders');
+            Cache::forget('about_page_kaders');
         });
     }
 
     /**
      * Scope a query to apply standard filters.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeFilter($query, array $filters)
     {

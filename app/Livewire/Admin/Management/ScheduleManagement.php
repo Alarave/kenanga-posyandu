@@ -130,7 +130,7 @@ class ScheduleManagement extends BaseAdminComponent
     private function getStats(Builder $query): array
     {
         $now = now();
-        
+
         $statusCounts = (clone $query)
             ->select('status', \DB::raw('count(*) as count'))
             ->groupBy('status')
@@ -140,7 +140,7 @@ class ScheduleManagement extends BaseAdminComponent
             ->whereMonth('start_time', $now->month)
             ->whereYear('start_time', $now->year)
             ->count();
-        
+
         return [
             'total_month' => $totalMonth,
             'completed' => $statusCounts->get('completed', 0),

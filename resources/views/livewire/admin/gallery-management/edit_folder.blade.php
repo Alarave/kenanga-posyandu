@@ -26,7 +26,7 @@
                          onclick="triggerFileInput(event)">
                         
                         <div id="imagePreview" class="{{ $folder->cover_photo ? '' : 'hidden' }} relative max-w-full group/preview">
-                            <img src="{{ $folder->cover_photo ? asset('storage/' . $folder->cover_photo) : '' }}" alt="Preview" class="h-44 rounded-2xl shadow-lg border-4 border-white object-cover mx-auto transition-transform duration-500 group-hover/preview:scale-[1.02]">
+                            <img src="{{ $folder->cover_photo ? asset('storage/' . $folder->cover_photo) : '' }}" alt="Preview" onerror="this.onerror=null; this.src='https://placehold.co/600x450/e2e8f0/0f766e?text=Posyandu+Kenanga';" class="h-44 rounded-2xl shadow-lg border-4 border-white object-cover mx-auto transition-transform duration-500 group-hover/preview:scale-[1.02]">
                             <button type="button" onclick="clearPreview(event)" class="absolute -top-2 -right-2 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center shadow-lg transition-all active:scale-90 z-20" title="Hapus Foto Sampul">
                                 <span class="material-symbols-outlined text-[16px]">close</span>
                             </button>

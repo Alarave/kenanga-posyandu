@@ -20,7 +20,7 @@ class MedicalRecord extends Model
 
         static::saved(function ($record) {
             $posyanduId = $record->patient?->posyandu_id;
-            \App\Models\AnalyticsSnapshot::where(function ($q) use ($posyanduId) {
+            AnalyticsSnapshot::where(function ($q) use ($posyanduId) {
                 if ($posyanduId) {
                     $q->where('posyandu_id', $posyanduId)->orWhereNull('posyandu_id');
                 } else {
@@ -31,7 +31,7 @@ class MedicalRecord extends Model
 
         static::deleted(function ($record) {
             $posyanduId = $record->patient?->posyandu_id;
-            \App\Models\AnalyticsSnapshot::where(function ($q) use ($posyanduId) {
+            AnalyticsSnapshot::where(function ($q) use ($posyanduId) {
                 if ($posyanduId) {
                     $q->where('posyandu_id', $posyanduId)->orWhereNull('posyandu_id');
                 } else {

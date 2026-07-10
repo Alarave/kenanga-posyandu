@@ -15,7 +15,7 @@
                 <div class="flex-1 min-w-0">
                     <div class="flex items-baseline gap-1">
                         <span class="text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight font-jakarta">{{ count($kaders) }}</span>
-                        <span class="text-sm font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">Kader</span>
+                        <span class="text-sm font-bold text-slate-600 dark:text-slate-400 uppercase tracking-widest">Kader</span>
                     </div>
                     <span class="block text-xs font-black text-primary uppercase tracking-widest mt-1">Kader Aktif</span>
                     <span class="block text-sm text-slate-650 dark:text-slate-350 font-bold mt-0.5">Terlatih &amp; Berdedikasi</span>
@@ -30,9 +30,9 @@
                 <div class="flex-1 min-w-0">
                     <div class="flex items-baseline gap-1">
                         <span class="text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight font-jakarta">{{ $sasaranCount }}</span>
-                        <span class="text-sm font-bold text-teal-600 dark:text-teal-400 uppercase tracking-widest">Warga</span>
+                        <span class="text-sm font-bold text-teal-700 dark:text-teal-400 uppercase tracking-widest">Warga</span>
                     </div>
-                    <span class="block text-xs font-black text-teal-600 dark:text-teal-455 uppercase tracking-widest mt-1">Warga Sasaran</span>
+                    <span class="block text-xs font-black text-teal-700 dark:text-teal-300 uppercase tracking-widest mt-1">Warga Sasaran</span>
                     <span class="block text-sm text-slate-650 dark:text-slate-350 font-bold mt-0.5">Balita, Ibu Hamil &amp; Lansia</span>
                 </div>
             </div>
@@ -45,9 +45,9 @@
                 <div class="flex-1 min-w-0">
                     <div class="flex items-baseline gap-1">
                         <span class="text-4xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight font-jakarta">{{ $posyanduCount }}</span>
-                        <span class="text-sm font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest">Unit</span>
+                        <span class="text-sm font-bold text-amber-700 dark:text-amber-400 uppercase tracking-widest">Unit</span>
                     </div>
-                    <span class="block text-xs font-black text-amber-600 dark:text-amber-455 uppercase tracking-widest mt-1">Unit Posyandu</span>
+                    <span class="block text-xs font-black text-amber-700 dark:text-amber-300 uppercase tracking-widest mt-1">Unit Posyandu</span>
                     <span class="block text-sm text-slate-650 dark:text-slate-350 font-bold mt-0.5">Integrasi Layanan Primer (ILP)</span>
                 </div>
             </div>

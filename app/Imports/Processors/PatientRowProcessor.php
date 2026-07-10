@@ -129,6 +129,7 @@ class PatientRowProcessor
             } else {
                 $this->errors[] = "Baris {$rowNum}: Jenis kelamin '{$jk}' tidak dikenali untuk '{$nama}'. Baris dilewati. (Gunakan L, Laki-laki, MALE, P, Perempuan, FEMALE).";
                 $this->skipped++;
+
                 return;
             }
         }
@@ -360,7 +361,7 @@ class PatientRowProcessor
                     }
                 }
             }
-            
+
             // B. If no parent matches, or parent name is empty, reuse the first candidate with the same name to prevent duplication
             return $candidatesByName->first();
         }
@@ -371,6 +372,7 @@ class PatientRowProcessor
     private function normalizeName(string $name): string
     {
         $name = strtolower($name);
+
         return preg_replace('/[^a-z0-9]/', '', $name); // Keep only alphanumeric
     }
 
@@ -411,8 +413,8 @@ class PatientRowProcessor
         if ($tensi !== '') {
             $parts = explode('/', $tensi);
             if (count($parts) === 2) {
-                $systolic = is_numeric(trim($parts[0])) ? (int)trim($parts[0]) : null;
-                $diastolic = is_numeric(trim($parts[1])) ? (int)trim($parts[1]) : null;
+                $systolic = is_numeric(trim($parts[0])) ? (int) trim($parts[0]) : null;
+                $diastolic = is_numeric(trim($parts[1])) ? (int) trim($parts[1]) : null;
             }
         }
 
@@ -552,15 +554,15 @@ class PatientRowProcessor
 
             // Custom parse for mixed separator formats like d/m-yy, d/m-yyyy, d-m-yy, etc.
             if (preg_match('/^\s*(\d{1,2})\s*[\/\-\.]\s*(\d{1,2})\s*[\/\-\.]\s*(\d{2,4})\s*$/', $str, $matches)) {
-                $day = (int)$matches[1];
-                $month = (int)$matches[2];
-                $year = (int)$matches[3];
+                $day = (int) $matches[1];
+                $month = (int) $matches[2];
+                $year = (int) $matches[3];
 
                 if ($year < 100) {
                     $currentYear = (int) date('Y');
                     $currentShort = $currentYear % 100;
                     $threshold = $currentShort + 10; // e.g. 36 if current year is 2026
-                    
+
                     if ($year <= $threshold) {
                         $year += 2000;
                     } else {
@@ -638,10 +640,18 @@ class PatientRowProcessor
         // Handle "L/P" or "P/L" type combined values — take the first character
         if (strlen($clean) >= 1) {
             $first = $clean[0];
-            if ($first === 'L') return 'L';
-            if ($first === 'P') return 'P';
-            if ($first === 'M') return 'L'; // M = Male
-            if ($first === 'F') return 'P'; // F = Female
+            if ($first === 'L') {
+                return 'L';
+            }
+            if ($first === 'P') {
+                return 'P';
+            }
+            if ($first === 'M') {
+                return 'L';
+            } // M = Male
+            if ($first === 'F') {
+                return 'P';
+            } // F = Female
         }
 
         return null;

@@ -1,6 +1,10 @@
 @extends('layouts.admin-layout')
 
 @section('admin-content')
+@php
+    $photoCount = $folder->galleries()->where('type', 'image')->count();
+    $videoCount = $folder->galleries()->where('type', 'video')->count();
+@endphp
 <div class="space-y-8 p-6 md:p-8 pt-6 sm:pt-8" 
      x-data="{ 
          mediaFilter: 'all', 
@@ -21,6 +25,11 @@
              this.activeDate = date;
              this.isEditing = false;
              this.lightboxOpen = true;
+         },
+         closeLightbox() {
+             this.lightboxOpen = false;
+             this.activeMedia = '';
+             this.isEditing = false;
          }
      }">
     
@@ -41,9 +50,9 @@
                         Semua Folder
                     </a>
                 </div>
-                <h1 class="text-2xl md:text-3xl font-black tracking-tight leading-tight text-white flex items-center gap-2.5">
-                    <span class="material-symbols-outlined text-[28px] text-teal-400">folder_open</span>
-                    {{ $folder->name }}
+                <h1 class="text-2xl md:text-3xl font-black tracking-tight leading-tight text-white flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-[28px] text-teal-400 mt-1 flex-shrink-0">folder_open</span>
+                    <span class="break-words">{{ $folder->name }}</span>
                 </h1>
                 <p class="text-sm text-white/80 font-medium max-w-2xl leading-relaxed">
                     {{ $folder->description ?? 'Tidak ada deskripsi folder.' }}
@@ -54,6 +63,14 @@
                     </span>
                     <span class="px-3 py-1 bg-teal-500/20 text-teal-300 rounded-full text-[9px] font-black uppercase tracking-widest border border-teal-500/20">
                         Kader: {{ $folder->user->full_name ?? 'Petugas Posyandu' }}
+                    </span>
+                    <span class="px-3 py-1 bg-white/10 text-white rounded-full text-[9px] font-black uppercase tracking-widest border border-white/10 flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[12px] leading-none">image</span>
+                        {{ $photoCount }} Foto
+                    </span>
+                    <span class="px-3 py-1 bg-white/10 text-white rounded-full text-[9px] font-black uppercase tracking-widest border border-white/10 flex items-center gap-1.5">
+                        <span class="material-symbols-outlined text-[12px] leading-none">videocam</span>
+                        {{ $videoCount }} Video
                     </span>
                 </div>
             </div>
@@ -105,108 +122,111 @@
             </a>
         </div>
     @else
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             @foreach($galleries as $gallery)
                 @php
                     $isVideo = ($gallery->type === 'video');
                 @endphp
                 <div x-show="mediaFilter === 'all' || (mediaFilter === 'photo' && !{{ $isVideo ? 'true' : 'false' }}) || (mediaFilter === 'video' && {{ $isVideo ? 'true' : 'false' }})"
-                     class="bg-white rounded-[2.25rem] overflow-hidden group hover:shadow-[0_20px_40px_rgba(13,148,136,0.1)] border border-slate-100 transition-all duration-500 flex flex-col h-full relative cursor-pointer"
-                     x-data="{ playing: false }"
-                     @click="openLightbox('{{ $gallery->id }}', '{{ asset('storage/' . $gallery->photo) }}', '{{ $gallery->type }}', {{ \Illuminate\Support\Js::from($gallery->title) }}, {{ \Illuminate\Support\Js::from($gallery->description ?? '') }}, '{{ \Carbon\Carbon::parse($gallery->created_at)->translatedFormat('d M Y, H:i') }}')">
+                     class="bg-white rounded-[2.25rem] overflow-hidden group hover:shadow-[0_20px_40px_rgba(13,148,136,0.06)] border border-slate-100 transition-all duration-300 flex flex-col h-full hover:-translate-y-1 relative">
                     
                     {{-- Media Card Container --}}
-                    <div class="aspect-square relative overflow-hidden bg-slate-100 flex items-center justify-center w-full h-full">
+                    <div class="aspect-[4/3] w-full relative overflow-hidden bg-slate-900 flex items-center justify-center rounded-t-[2rem] cursor-pointer"
+                         x-data="{ videoSrc: '', playing: false }"
+                         @mouseenter="videoSrc = '{{ asset('storage/' . $gallery->photo) }}'; $nextTick(() => { if ($refs.vid) { $refs.vid.play(); playing = true; } })" 
+                         @mouseleave="if ($refs.vid) { $refs.vid.pause(); } videoSrc = ''; playing = false"
+                         @click="openLightbox('{{ $gallery->id }}', '{{ asset('storage/' . $gallery->photo) }}', '{{ $gallery->type }}', {{ \Illuminate\Support\Js::from($gallery->title) }}, {{ \Illuminate\Support\Js::from($gallery->description ?? '') }}, '{{ \Carbon\Carbon::parse($gallery->created_at)->translatedFormat('d M Y, H:i') }}')">
+                        
                         @if($isVideo)
-                            <div class="w-full h-full relative bg-slate-950 flex items-center justify-center overflow-hidden" x-data="{ videoSrc: '' }">
-                                {{-- Placeholder Poster/Icon shown before hover to save network and CPU --}}
-                                <div x-show="!videoSrc" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-900 text-white/50 z-10 transition-opacity duration-300">
-                                    <span class="material-symbols-outlined text-[40px] text-indigo-400/80" style="font-variation-settings: 'FILL' 1;">play_circle</span>
-                                    <span class="text-[7px] font-black uppercase tracking-[0.25em] text-indigo-300/60 mt-1.5">Sorot untuk memutar</span>
-                                </div>
-                                
-                                <video x-ref="vid" :src="videoSrc" 
-                                       preload="none"
-                                       muted loop playsinline class="w-full h-full object-cover transition-all duration-500"
-                                       x-show="videoSrc"
-                                       @mouseenter="videoSrc = '{{ asset('storage/' . $gallery->photo) }}'; $nextTick(() => { $refs.vid.play(); playing = true; })" 
-                                       @mouseleave="$refs.vid.pause(); videoSrc = ''; playing = false"></video>
-                            </div>
+                            {{-- Video Player --}}
+                            <video x-ref="vid" :src="videoSrc" 
+                                   preload="none"
+                                   muted loop playsinline 
+                                   class="w-full h-full object-cover transition-all duration-500"
+                                   x-show="playing"></video>
                             
-                            {{-- Video Indicator Badge (Always Visible) --}}
-                            <div class="absolute top-4 right-4 z-20 transition-opacity duration-300" :class="playing ? 'opacity-0' : 'opacity-100'">
-                                <div class="bg-indigo-600/90 text-white backdrop-blur-md px-2.5 py-1 rounded-full flex items-center gap-1.5 border border-indigo-400/20 shadow-md">
-                                    <span class="material-symbols-outlined text-[12px] leading-none">videocam</span>
-                                    <span class="text-[8px] font-black uppercase tracking-widest leading-none">Video</span>
-                                </div>
-                            </div>
-                            
-                            {{-- Play Icon Overlay (Always Visible When Not Hovered) --}}
-                            <div class="absolute inset-0 bg-black/25 flex items-center justify-center pointer-events-none transition-opacity duration-300" :class="playing ? 'opacity-0' : 'opacity-100'">
-                                <div class="w-12 h-12 rounded-full bg-white/20 backdrop-blur-md border border-white/40 flex items-center justify-center shadow-lg text-white">
-                                    <span class="material-symbols-outlined text-[24px] fill-current">play_arrow</span>
-                                </div>
+                            {{-- Video Thumbnail placeholder --}}
+                            <div x-show="!playing" class="absolute inset-0 flex flex-col items-center justify-center bg-slate-950 text-white/70">
+                                <span class="material-symbols-outlined text-[44px] text-indigo-400" style="font-variation-settings: 'FILL' 1;">play_circle</span>
+                                <span class="text-[8px] font-black uppercase tracking-[0.2em] text-indigo-200 mt-2">Sorot untuk memutar</span>
                             </div>
                         @else
                             <img src="{{ asset('storage/' . $gallery->photo) }}" 
                                  alt="{{ $gallery->title }}"
-                                 class="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105">
-                            
-                            {{-- Photo Indicator Badge --}}
-                            <div class="absolute top-4 right-4 z-20">
-                                <div class="bg-teal-600/90 text-white backdrop-blur-md px-2.5 py-1 rounded-full flex items-center gap-1.5 border border-teal-400/20 shadow-md">
-                                    <span class="material-symbols-outlined text-[12px] leading-none">image</span>
-                                    <span class="text-[8px] font-black uppercase tracking-widest leading-none">Foto</span>
-                                </div>
-                            </div>
+                                 onerror="this.onerror=null; this.src='https://placehold.co/600x400/e2e8f0/0f766e?text=Media+Posyandu';"
+                                 class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
                         @endif
-                        {{-- Action Buttons on Hover --}}
-                        <div class="absolute top-4 left-4 z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-2">
-                            <!-- Edit Button --> 
-                            <button type="button" @click.stop="openLightbox('{{ $gallery->id }}', '{{ asset('storage/' . $gallery->photo) }}', '{{ $gallery->type }}', {{ \Illuminate\Support\Js::from($gallery->title) }}, {{ \Illuminate\Support\Js::from($gallery->description ?? '') }}, '{{ \Carbon\Carbon::parse($gallery->created_at)->translatedFormat('d M Y, H:i') }}'); isEditing = true"
-                                    class="w-8 h-8 bg-indigo-600 hover:bg-indigo-750 text-white rounded-xl flex items-center justify-center shadow-lg transition-all active:scale-90"
-                                    title="Edit Media">
+                    </div>
+
+                    {{-- Card Info --}}
+                    <div class="p-5 flex-1 flex flex-col justify-between gap-4">
+                        {{-- Top Info Row: Type & Date --}}
+                        <div class="flex items-center justify-between text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                            @if($isVideo)
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-100">
+                                    <span class="material-symbols-outlined text-[12px] leading-none">videocam</span>
+                                    Video
+                                </span>
+                            @else
+                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-teal-50 text-teal-600 border border-teal-100">
+                                    <span class="material-symbols-outlined text-[12px] leading-none">image</span>
+                                    Foto
+                                </span>
+                            @endif
+                            
+                            <span class="flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[14px]">schedule</span>
+                                {{ \Carbon\Carbon::parse($gallery->created_at)->translatedFormat('d M Y') }}
+                            </span>
+                        </div>
+
+                        {{-- Title & Desc --}}
+                        <div class="space-y-1.5 flex-1">
+                            <h3 class="text-sm font-black text-slate-900 leading-snug line-clamp-1 group-hover:text-teal-600 transition-colors">
+                                {{ $gallery->title }}
+                            </h3>
+                            <p class="text-xs text-slate-500 font-semibold leading-relaxed line-clamp-2">
+                                {{ $gallery->description ?? 'Tidak ada keterangan.' }}
+                            </p>
+                        </div>
+
+                        {{-- Actions Row --}}
+                        <div class="flex items-center gap-2 pt-3 border-t border-slate-100">
+                            <button type="button" 
+                                    @click="openLightbox('{{ $gallery->id }}', '{{ asset('storage/' . $gallery->photo) }}', '{{ $gallery->type }}', {{ \Illuminate\Support\Js::from($gallery->title) }}, {{ \Illuminate\Support\Js::from($gallery->description ?? '') }}, '{{ \Carbon\Carbon::parse($gallery->created_at)->translatedFormat('d M Y, H:i') }}')"
+                                    class="flex-1 h-9 rounded-xl bg-teal-50 text-teal-600 hover:bg-teal-600 hover:text-white font-bold text-[11px] uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 active:scale-95">
+                                <span class="material-symbols-outlined text-[16px]">visibility</span>
+                                Detail
+                            </button>
+                            
+                            <button type="button"
+                                    @click.stop="openLightbox('{{ $gallery->id }}', '{{ asset('storage/' . $gallery->photo) }}', '{{ $gallery->type }}', {{ \Illuminate\Support\Js::from($gallery->title) }}, {{ \Illuminate\Support\Js::from($gallery->description ?? '') }}, '{{ \Carbon\Carbon::parse($gallery->created_at)->translatedFormat('d M Y, H:i') }}'); isEditing = true"
+                                    class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-600 hover:bg-indigo-600 hover:text-white transition-all flex items-center justify-center active:scale-95"
+                                    title="Edit">
                                 <span class="material-symbols-outlined text-[16px]">edit</span>
                             </button>
 
-                            <!-- Delete Button -->
-                            <form action="{{ route('admin.gallery.media.destroy', [$folder->id, $gallery->id]) }}" method="POST" 
+                            <form action="{{ route('admin.gallery.media.destroy', [$folder->id, $gallery->id]) }}" 
+                                  method="POST" 
+                                  class="inline-block"
                                   onsubmit="return confirm('Yakin ingin menghapus item media ini?');">
                                 @csrf @method('DELETE')
-                                <button type="submit" @click.stop
-                                        class="w-8 h-8 bg-red-500 hover:bg-red-650 text-white rounded-xl flex items-center justify-center shadow-lg transition-all active:scale-90"
-                                        title="Hapus Media">
+                                <button type="submit" 
+                                        @click.stop
+                                        class="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-600 hover:text-white transition-all flex items-center justify-center active:scale-95"
+                                        title="Hapus">
                                     <span class="material-symbols-outlined text-[16px]">delete</span>
                                 </button>
                             </form>
                         </div>
-
-                        {{-- Gradient Overlay on Hover --}}
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent opacity-0 group-hover:opacity-100 transition-all duration-300 z-10 flex flex-col justify-end p-5">
-                            {{-- Bottom Info Row --}}
-                            <div class="space-y-1 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
-                                <h4 class="text-xs font-black text-white line-clamp-1 leading-snug" title="{{ $gallery->title }}">
-                                    {{ $gallery->title }}
-                                </h4>
-                                @if($gallery->description)
-                                    <p class="text-[9px] font-bold text-slate-300 line-clamp-1">
-                                        {{ $gallery->description }}
-                                    </p>
-                                @else
-                                    <p class="text-[9px] font-bold text-slate-400 italic">
-                                        Ketuk untuk memperbesar...
-                                    </p>
-                                @endif
-                            </div>
-                        </div>
-
                     </div>
+
                 </div>
             @endforeach
         </div>
 
         <div class="mt-12">
-            {{ $galleries->links() }}
+            <x-layouts.ui.pagination :paginator="$galleries" label="media" />
         </div>
     @endif
 
@@ -218,10 +238,10 @@
          x-transition:leave="transition ease-in duration-200"
          x-transition:leave-start="opacity-100"
          x-transition:leave-end="opacity-0"
-         class="fixed inset-0 z-50 flex flex-col items-center justify-between bg-teal-950/70 backdrop-blur-md p-4 sm:p-8"
+         class="fixed inset-0 z-50 flex flex-col items-center justify-between bg-teal-950/75 backdrop-blur-md p-4 sm:p-8"
          style="display: none;"
-         @keydown.escape.window="lightboxOpen = false"
-         @click="lightboxOpen = false">
+         @keydown.escape.window="closeLightbox()"
+         @click="closeLightbox()">
         
         {{-- Top Row: Type Badge, Edit/Delete, and Close Button --}}
         <div class="w-full flex items-center justify-between z-50" @click.stop>
@@ -244,7 +264,7 @@
                     </button>
                 </form>
 
-                <button @click="lightboxOpen = false" class="w-12 h-12 rounded-full bg-teal-600 hover:bg-teal-700 text-white flex items-center justify-center transition-all shadow-lg shadow-teal-900/20 active:scale-95">
+                <button @click="closeLightbox()" class="w-12 h-12 rounded-full bg-teal-600 hover:bg-teal-700 text-white flex items-center justify-center transition-all shadow-lg shadow-teal-900/20 active:scale-95">
                     <span class="material-symbols-outlined text-[24px]">close</span>
                 </button>
             </div>
@@ -258,6 +278,7 @@
                 <div class="bg-slate-50/50 flex items-center justify-center p-2 relative overflow-hidden">
                     <img :src="activeMedia" 
                          x-show="activeType !== 'video'" 
+                         onerror="this.onerror=null; this.src='https://placehold.co/600x600/e2e8f0/0f766e?text=Media+Posyandu';"
                          class="w-auto h-auto max-w-full max-h-[55vh] object-contain rounded-xl select-none shadow-sm">
                     
                     <video :src="activeMedia" 
@@ -301,7 +322,6 @@
                         </form>
                     </div>
                 </div>
-
             </div>
         </div>
 

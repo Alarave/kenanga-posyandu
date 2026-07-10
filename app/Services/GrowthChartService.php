@@ -6,6 +6,7 @@ use App\Models\Patient;
 use App\Models\WhoHeightForAge;
 use App\Models\WhoWeightForAge;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 /**
  * Service untuk memproses data grafik pertumbuhan anak sesuai standar WHO.
@@ -25,7 +26,7 @@ class GrowthChartService
             : $patient->medicalRecords()->reorder('visit_date', 'asc')->get();
 
         // Ambil referensi WHO 0-60 bulan
-        $references = \Illuminate\Support\Facades\Cache::rememberForever("who_wfa_{$gender}", function () use ($gender) {
+        $references = Cache::rememberForever("who_wfa_{$gender}", function () use ($gender) {
             return WhoWeightForAge::where('gender', $gender)
                 ->where('age_months', '<=', 60)
                 ->orderBy('age_months')
@@ -77,7 +78,7 @@ class GrowthChartService
             ? $patient->medicalRecords->where('height', '>', 0)->sortBy('visit_date')->values()
             : $patient->medicalRecords()->where('height', '>', 0)->reorder('visit_date', 'asc')->get();
 
-        $references = \Illuminate\Support\Facades\Cache::rememberForever("who_hfa_{$gender}", function () use ($gender) {
+        $references = Cache::rememberForever("who_hfa_{$gender}", function () use ($gender) {
             return WhoHeightForAge::where('gender', $gender)
                 ->where('age_months', '<=', 60)
                 ->orderBy('age_months')

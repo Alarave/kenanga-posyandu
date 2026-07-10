@@ -3,13 +3,14 @@
 use App\Models\Patient;
 use App\Models\Posyandu;
 use App\Models\User;
+use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
     // Seed roles and permissions
-    $this->seed(\Database\Seeders\RolesAndPermissionsSeeder::class);
+    $this->seed(RolesAndPermissionsSeeder::class);
 
     // Create posyandus
     $this->posyandu1 = Posyandu::factory()->create(['name' => 'Posyandu A']);

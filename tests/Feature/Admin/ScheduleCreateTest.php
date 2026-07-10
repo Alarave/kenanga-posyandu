@@ -2,14 +2,16 @@
 
 use App\Livewire\Admin\Management\ScheduleCreate;
 use App\Models\Posyandu;
+use App\Models\Schedule;
 use App\Models\User;
+use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
 
 test('superadmin can create schedule', function () {
-    $this->seed(\Database\Seeders\RolesAndPermissionsSeeder::class);
+    $this->seed(RolesAndPermissionsSeeder::class);
     $posyandu = Posyandu::factory()->create([
         'name' => 'KENANGA 1',
     ]);
@@ -35,7 +37,7 @@ test('superadmin can create schedule', function () {
 });
 
 test('admin can create schedule without explicitly setting posyandu_id', function () {
-    $this->seed(\Database\Seeders\RolesAndPermissionsSeeder::class);
+    $this->seed(RolesAndPermissionsSeeder::class);
     $posyandu = Posyandu::factory()->create([
         'name' => 'KENANGA 1',
     ]);
@@ -60,7 +62,7 @@ test('admin can create schedule without explicitly setting posyandu_id', functio
 });
 
 test('superadmin can create monthly recurring schedules', function () {
-    $this->seed(\Database\Seeders\RolesAndPermissionsSeeder::class);
+    $this->seed(RolesAndPermissionsSeeder::class);
     $posyandu = Posyandu::factory()->create([
         'name' => 'KENANGA 1',
     ]);
@@ -102,5 +104,5 @@ test('superadmin can create monthly recurring schedules', function () {
     ]);
 
     // Assert that exactly 3 schedules were created
-    $this->assertEquals(3, \App\Models\Schedule::count());
+    $this->assertEquals(3, Schedule::count());
 });

@@ -223,8 +223,8 @@
 
     {{-- Enhanced Pagination --}}
     @if($articles->hasPages())
-    <div class="flex justify-center pt-12">
-        {{ $articles->links() }}
+    <div class="pt-12">
+        <x-layouts.ui.pagination :paginator="$articles" label="artikel" />
     </div>
     @endif
 </div>

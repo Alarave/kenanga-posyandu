@@ -2,11 +2,18 @@
 
 namespace App\Services;
 
+use App\Exports\IndividualReportExport;
 use App\Exports\MonthlyReportExport;
 use App\Models\MedicalRecord;
 use App\Models\Patient;
 use App\Models\Posyandu;
 use App\Models\Schedule;
+use App\Models\User;
+use App\Models\WhoHeightForAge;
+use App\Models\WhoWeightForAge;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\DB;
 
 class ReportService
@@ -148,7 +155,7 @@ class ReportService
                 'lulus' => ['L' => 0, 'P' => 0],
             ],
             'kader' => [
-                'total' => \App\Models\User::where('posyandu_id', $posyanduId)->where('role', 'kader')->count(),
+                'total' => User::where('posyandu_id', $posyanduId)->where('role', 'kader')->count(),
                 'trained' => 0,
                 'active' => 0,
             ],
@@ -177,7 +184,7 @@ class ReportService
             ->get();
 
         foreach ($records as $record) {
-            $age = (int) \Carbon\Carbon::parse($record->birth_date)->diffInMonths(\Carbon\Carbon::parse($record->visit_date));
+            $age = (int) Carbon::parse($record->birth_date)->diffInMonths(Carbon::parse($record->visit_date));
             if ($age > 59) {
                 continue;
             }
@@ -322,7 +329,7 @@ class ReportService
         $filePath = 'exports/'.$fileName;
 
         // Generate PDF using dompdf
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.monthly-report-pdf', [
+        $pdf = Pdf::loadView('reports.monthly-report-pdf', [
             'reportData' => $reportData,
         ]);
 
@@ -523,7 +530,7 @@ class ReportService
     /**
      * Generate individual SVG charts for weight and height using WHO Standards
      */
-    public function generateIndividualSvgCharts(Patient $patient, \Illuminate\Database\Eloquent\Collection $records): array
+    public function generateIndividualSvgCharts(Patient $patient, Collection $records): array
     {
         if ($patient->category === 'lansia') {
             return $this->generateLansiaSvgCharts($patient, $records);
@@ -547,8 +554,8 @@ class ReportService
         $gender = ($patient->gender === 'L' || $patient->gender === 'M' || strtoupper($patient->gender) === 'LAKI-LAKI') ? 'M' : 'F';
 
         // Get WHO References
-        $weightRefs = \App\Models\WhoWeightForAge::where('gender', $gender)->where('age_months', '<=', 60)->orderBy('age_months')->get();
-        $heightRefs = \App\Models\WhoHeightForAge::where('gender', $gender)->where('age_months', '<=', 60)->orderBy('age_months')->get();
+        $weightRefs = WhoWeightForAge::where('gender', $gender)->where('age_months', '<=', 60)->orderBy('age_months')->get();
+        $heightRefs = WhoHeightForAge::where('gender', $gender)->where('age_months', '<=', 60)->orderBy('age_months')->get();
 
         $generateSvg = function (string $type, $refs) use ($patient, $records, $width, $height, $paddingLeft, $paddingRight, $paddingTop, $paddingBottom, $chartW, $chartH) {
             $minY = $type === 'weight' ? 0 : 40;
@@ -677,7 +684,7 @@ class ReportService
         }
 
         // Generate PDF using dompdf
-        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('reports.individual-report-pdf', [
+        $pdf = Pdf::loadView('reports.individual-report-pdf', [
             'reportData' => $reportData,
         ]);
 
@@ -705,7 +712,7 @@ class ReportService
 
         $filePath = $directory.'/'.$fileName;
 
-        $export = new \App\Exports\IndividualReportExport($reportData);
+        $export = new IndividualReportExport($reportData);
         $export->export($filePath);
 
         return $filePath;
@@ -717,8 +724,8 @@ class ReportService
     private function getMonthsRange(int $startMonth, int $startYear, int $endMonth, int $endYear): array
     {
         $months = [];
-        $current = \Carbon\Carbon::create($startYear, $startMonth, 1);
-        $end = \Carbon\Carbon::create($endYear, $endMonth, 1);
+        $current = Carbon::create($startYear, $startMonth, 1);
+        $end = Carbon::create($endYear, $endMonth, 1);
 
         while ($current->lte($end)) {
             $months[] = [
@@ -737,7 +744,7 @@ class ReportService
     /**
      * Generate individual SVG charts for Lansia metabolic metrics
      */
-    public function generateLansiaSvgCharts(Patient $patient, \Illuminate\Database\Eloquent\Collection $records): array
+    public function generateLansiaSvgCharts(Patient $patient, Collection $records): array
     {
         $width = 540;
         $height = 200;
@@ -815,7 +822,7 @@ class ReportService
                     // Vertical grid line
                     $svg .= '<line x1="'.$cx.'" y1="'.$paddingTop.'" x2="'.$cx.'" y2="'.($height - $paddingBottom).'" stroke="#f8fafc" stroke-dasharray="2 2" stroke-width="1" />';
                     // X axis label
-                    $dateStr = $rec->visit_date ? \Carbon\Carbon::parse($rec->visit_date)->translatedFormat('d M') : '-';
+                    $dateStr = $rec->visit_date ? Carbon::parse($rec->visit_date)->translatedFormat('d M') : '-';
                     $svg .= '<text x="'.$cx.'" y="'.($height - $paddingBottom + 12).'" fill="#64748b" font-size="7" text-anchor="middle">'.$dateStr.'</text>';
                 }
 
@@ -911,7 +918,7 @@ class ReportService
                     // Vertical grid line
                     $svg .= '<line x1="'.$cx.'" y1="'.$paddingTop.'" x2="'.$cx.'" y2="'.($height - $paddingBottom).'" stroke="#f8fafc" stroke-dasharray="2 2" stroke-width="1" />';
                     // X axis label
-                    $dateStr = $rec->visit_date ? \Carbon\Carbon::parse($rec->visit_date)->translatedFormat('d M') : '-';
+                    $dateStr = $rec->visit_date ? Carbon::parse($rec->visit_date)->translatedFormat('d M') : '-';
                     $svg .= '<text x="'.$cx.'" y="'.($height - $paddingBottom + 12).'" fill="#64748b" font-size="7" text-anchor="middle">'.$dateStr.'</text>';
                 }
 
@@ -960,7 +967,7 @@ class ReportService
     /**
      * Generate individual SVG charts for pregnant women (Ibu Hamil)
      */
-    public function generateIbuHamilSvgCharts(Patient $patient, \Illuminate\Database\Eloquent\Collection $records): array
+    public function generateIbuHamilSvgCharts(Patient $patient, Collection $records): array
     {
         $width = 540;
         $height = 200;
@@ -1034,7 +1041,7 @@ class ReportService
                     // Vertical grid line
                     $svg .= '<line x1="'.$cx.'" y1="'.$paddingTop.'" x2="'.$cx.'" y2="'.($height - $paddingBottom).'" stroke="#f8fafc" stroke-dasharray="2 2" stroke-width="1" />';
                     // X axis label (gestational age and date)
-                    $dateStr = $rec->visit_date ? \Carbon\Carbon::parse($rec->visit_date)->translatedFormat('d M') : '-';
+                    $dateStr = $rec->visit_date ? Carbon::parse($rec->visit_date)->translatedFormat('d M') : '-';
                     $ageLabel = $rec->gestational_age ?: '';
 
                     if ($ageLabel) {
@@ -1138,7 +1145,7 @@ class ReportService
                     // Vertical grid line
                     $svg .= '<line x1="'.$cx.'" y1="'.$paddingTop.'" x2="'.$cx.'" y2="'.($height - $paddingBottom).'" stroke="#f8fafc" stroke-dasharray="2 2" stroke-width="1" />';
                     // X axis label
-                    $dateStr = $rec->visit_date ? \Carbon\Carbon::parse($rec->visit_date)->translatedFormat('d M') : '-';
+                    $dateStr = $rec->visit_date ? Carbon::parse($rec->visit_date)->translatedFormat('d M') : '-';
                     $ageLabel = $rec->gestational_age ?: '';
 
                     if ($ageLabel) {

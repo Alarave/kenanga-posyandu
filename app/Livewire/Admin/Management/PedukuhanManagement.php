@@ -3,7 +3,9 @@
 namespace App\Livewire\Admin\Management;
 
 use App\Livewire\Shared\BaseAdminComponent;
+use App\Models\Patient;
 use App\Models\Pedukuhan;
+use App\Models\Posyandu;
 use Livewire\Attributes\Layout;
 
 #[Layout('layouts.admin-layout')]
@@ -25,8 +27,8 @@ class PedukuhanManagement extends BaseAdminComponent
             })
             ->latest();
 
-        $totalPosyandu = \App\Models\Posyandu::count();
-        $totalWarga = \App\Models\Patient::count();
+        $totalPosyandu = Posyandu::count();
+        $totalWarga = Patient::count();
 
         return view('livewire.admin.pedukuhan-management.index', [
             'pedukuhans' => $query->paginate(10),

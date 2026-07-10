@@ -200,43 +200,43 @@
     </section>
 
     {{-- ── Tab Navigation ── --}}
-    <div class="flex overflow-x-auto whitespace-nowrap bg-slate-100/80 backdrop-blur-sm p-1 sm:p-1.5 rounded-xl sm:rounded-2xl border border-slate-200/80 shadow-sm gap-0.5 sm:gap-1 scrollbar-none w-full">
+    <div class="flex overflow-x-auto whitespace-nowrap bg-slate-100/80 backdrop-blur-sm p-1.5 sm:p-2 rounded-2xl border border-slate-200/80 shadow-sm gap-1 sm:gap-2 scrollbar-none w-full">
         <button wire:click="$set('activeTab', 'overview')" @class([
-            'analytics-tab-btn flex-1 shrink-0 min-w-max py-2.5 sm:py-3 px-3 sm:px-5 rounded-lg sm:rounded-xl text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer',
-            'bg-white text-teal-800 border border-teal-100/80 shadow-md font-extrabold tracking-tight' => $activeTab === 'overview',
-            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-semibold' => $activeTab !== 'overview'
+            'analytics-tab-btn flex-1 shrink-0 min-w-max py-3.5 sm:py-4 px-4 sm:px-7 rounded-xl text-sm sm:text-[15px] transition-all duration-200 flex items-center justify-center gap-2 sm:gap-2.5 cursor-pointer',
+            'bg-white text-teal-850 border border-teal-100/80 shadow-md font-black tracking-tight' => $activeTab === 'overview',
+            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-extrabold' => $activeTab !== 'overview'
         ]) style="min-width: max-content; flex-shrink: 0;">
-            <span class="material-symbols-outlined text-[16px] sm:text-[18px] {{ $activeTab === 'overview' ? 'text-teal-600' : 'text-slate-400' }}">dashboard</span>
+            <span class="material-symbols-outlined text-[18px] sm:text-[22px] {{ $activeTab === 'overview' ? 'text-teal-600' : 'text-slate-400' }}">dashboard</span>
             <span class="hidden xs:inline sm:inline">Overview</span>
             <span class="inline xs:hidden sm:hidden">Ov.</span>
-            @if($activeTab === 'overview')<span class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-teal-500 ml-0.5 sm:ml-1"></span>@endif
+            @if($activeTab === 'overview')<span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-teal-500 ml-0.5 sm:ml-1"></span>@endif
         </button>
         <button wire:click="$set('activeTab', 'balita')" @class([
-            'analytics-tab-btn flex-1 shrink-0 min-w-max py-2.5 sm:py-3 px-3 sm:px-5 rounded-lg sm:rounded-xl text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer',
-            'bg-white text-teal-800 border border-teal-100/80 shadow-md font-extrabold tracking-tight' => $activeTab === 'balita',
-            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-semibold' => $activeTab !== 'balita'
+            'analytics-tab-btn flex-1 shrink-0 min-w-max py-3.5 sm:py-4 px-4 sm:px-7 rounded-xl text-sm sm:text-[15px] transition-all duration-200 flex items-center justify-center gap-2 sm:gap-2.5 cursor-pointer',
+            'bg-white text-teal-850 border border-teal-100/80 shadow-md font-black tracking-tight' => $activeTab === 'balita',
+            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-extrabold' => $activeTab !== 'balita'
         ]) style="min-width: max-content; flex-shrink: 0;">
-            <span class="material-symbols-outlined text-[16px] sm:text-[18px] {{ $activeTab === 'balita' ? 'text-teal-600' : 'text-slate-400' }}">child_care</span>
+            <span class="material-symbols-outlined text-[18px] sm:text-[22px] {{ $activeTab === 'balita' ? 'text-teal-600' : 'text-slate-400' }}">child_care</span>
             Balita
-            @if($activeTab === 'balita')<span class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-teal-500 ml-0.5 sm:ml-1"></span>@endif
+            @if($activeTab === 'balita')<span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-teal-500 ml-0.5 sm:ml-1"></span>@endif
         </button>
         <button wire:click="$set('activeTab', 'pregnancy')" @class([
-            'analytics-tab-btn flex-1 shrink-0 min-w-max py-2.5 sm:py-3 px-3 sm:px-5 rounded-lg sm:rounded-xl text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer',
-            'bg-white text-rose-800 border border-rose-100/80 shadow-md font-extrabold tracking-tight' => $activeTab === 'pregnancy',
-            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-semibold' => $activeTab !== 'pregnancy'
+            'analytics-tab-btn flex-1 shrink-0 min-w-max py-3.5 sm:py-4 px-4 sm:px-7 rounded-xl text-sm sm:text-[15px] transition-all duration-200 flex items-center justify-center gap-2 sm:gap-2.5 cursor-pointer',
+            'bg-white text-rose-850 border border-rose-100/80 shadow-md font-black tracking-tight' => $activeTab === 'pregnancy',
+            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-extrabold' => $activeTab !== 'pregnancy'
         ]) style="min-width: max-content; flex-shrink: 0;">
-            <span class="material-symbols-outlined text-[16px] sm:text-[18px] {{ $activeTab === 'pregnancy' ? 'text-rose-500' : 'text-slate-400' }}">pregnant_woman</span>
+            <span class="material-symbols-outlined text-[18px] sm:text-[22px] {{ $activeTab === 'pregnancy' ? 'text-rose-500' : 'text-slate-400' }}">pregnant_woman</span>
             Hamil
-            @if($activeTab === 'pregnancy')<span class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-rose-500 ml-0.5 sm:ml-1"></span>@endif
+            @if($activeTab === 'pregnancy')<span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-rose-500 ml-0.5 sm:ml-1"></span>@endif
         </button>
         <button wire:click="$set('activeTab', 'lansia')" @class([
-            'analytics-tab-btn flex-1 shrink-0 min-w-max py-2.5 sm:py-3 px-3 sm:px-5 rounded-lg sm:rounded-xl text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer',
-            'bg-white text-indigo-800 border border-indigo-100/80 shadow-md font-extrabold tracking-tight' => $activeTab === 'lansia',
-            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-semibold' => $activeTab !== 'lansia'
+            'analytics-tab-btn flex-1 shrink-0 min-w-max py-3.5 sm:py-4 px-4 sm:px-7 rounded-xl text-sm sm:text-[15px] transition-all duration-200 flex items-center justify-center gap-2 sm:gap-2.5 cursor-pointer',
+            'bg-white text-indigo-850 border border-indigo-100/80 shadow-md font-black tracking-tight' => $activeTab === 'lansia',
+            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-extrabold' => $activeTab !== 'lansia'
         ]) style="min-width: max-content; flex-shrink: 0;">
-            <span class="material-symbols-outlined text-[16px] sm:text-[18px] {{ $activeTab === 'lansia' ? 'text-indigo-500' : 'text-slate-400' }}">elderly</span>
+            <span class="material-symbols-outlined text-[18px] sm:text-[22px] {{ $activeTab === 'lansia' ? 'text-indigo-500' : 'text-slate-400' }}">elderly</span>
             Lansia
-            @if($activeTab === 'lansia')<span class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-indigo-500 ml-0.5 sm:ml-1"></span>@endif
+            @if($activeTab === 'lansia')<span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-indigo-500 ml-0.5 sm:ml-1"></span>@endif
         </button>
     </div>
 
@@ -399,23 +399,264 @@
                 @endforeach
             </div>
 
-            {{-- Combined Trend Line Chart --}}
-            <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-slate-200 shadow-xs">
-                <div class="flex items-center justify-between gap-4 mb-6">
-                    <div>
-                        <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Tren Kunjungan Bulanan Gabungan</h3>
-                        <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Perbandingan tren frekuensi kunjungan pasien per kategori di posyandu (Dapat diklik untuk detail)</p>
-                    </div>
-                    <button onclick="downloadChart(visitsTrendChart, 'tren_kunjungan')" class="p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
-                        <span class="material-symbols-outlined text-[20px]">download</span>
-                    </button>
+            {{-- Widget 3: Rangkuman Indikator Kesehatan Utama (Horizontal Layout, Below Main KPIs, No Donut Charts) --}}
+            <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-slate-200 shadow-xs">
+                <div class="mb-4">
+                    <h3 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                        <span class="material-symbols-outlined text-teal-600 text-[20px]">clinical_notes</span>
+                        Indikator Kesehatan Utama
+                    </h3>
+                    <p class="text-xs text-slate-500 font-semibold mt-0.5">Ringkasan parameter klinis pasien dari pemeriksaan terbaru</p>
                 </div>
-                <div class="relative h-96">
-                    <canvas id="visitsTrendChart" wire:ignore></canvas>
-                    <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/95 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-300 rounded-2xl" id="error-visitsTrendChart">
-                        <span class="material-symbols-outlined text-rose-600 text-4xl mb-2">error</span>
-                        <p class="text-sm font-extrabold text-slate-800">Gagal memuat data grafik</p>
-                        <button onclick="initCharts()" class="mt-3 px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-slate-700 cursor-pointer">Coba Lagi</button>
+                
+                {{-- Grid 3 Kolom: Balita, Ibu Hamil, Lansia (Horizontal) --}}
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {{-- Balita --}}
+                    <div class="space-y-3">
+                        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span> Balita & Anak
+                        </h4>
+                        <div class="grid grid-cols-2 gap-2">
+                            {{-- Prevalensi Stunting --}}
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col justify-between min-h-[105px]">
+                                <div>
+                                    <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Prevalensi Stunting</p>
+                                    <p class="text-xl font-black text-slate-800 mt-1">{{ $stuntingRate }}%</p>
+                                </div>
+                                <div class="border-t border-slate-200/60 pt-1.5 mt-2 flex items-center justify-between text-[8px] font-bold">
+                                    <span class="text-rose-600 flex items-center gap-1">
+                                        <span class="w-1 h-1 rounded-full bg-rose-500"></span> Stunting: {{ $stuntingRate }}%
+                                    </span>
+                                    <span class="text-slate-300">|</span>
+                                    <span class="text-emerald-600 flex items-center gap-1">
+                                        <span class="w-1 h-1 rounded-full bg-emerald-500"></span> Normal: {{ round(100 - $stuntingRate, 1) }}%
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            {{-- Imunisasi Dasar --}}
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col justify-between min-h-[105px]">
+                                <div>
+                                    <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Imunisasi Dasar</p>
+                                    <p class="text-xl font-black text-slate-800 mt-1">{{ $cakupanImunisasi }}%</p>
+                                </div>
+                                <div class="border-t border-slate-200/60 pt-1.5 mt-2 flex items-center justify-between text-[8px] font-bold">
+                                    <span class="text-teal-600 flex items-center gap-1">
+                                        <span class="w-1 h-1 rounded-full bg-teal-500"></span> Lengkap: {{ $cakupanImunisasi }}%
+                                    </span>
+                                    <span class="text-slate-300">|</span>
+                                    <span class="text-slate-500 flex items-center gap-1">
+                                        <span class="w-1 h-1 rounded-full bg-slate-400"></span> Belum: {{ round(100 - $cakupanImunisasi, 1) }}%
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Ibu Hamil --}}
+                    <div class="space-y-3">
+                        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Ibu Hamil
+                        </h4>
+                        <div class="grid grid-cols-2 gap-2">
+                            {{-- Risiko Hipertensi --}}
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col justify-between min-h-[105px]">
+                                <div>
+                                    <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Risiko Hipertensi</p>
+                                    <p class="text-xl font-black text-slate-800 mt-1">{{ $hypertensionRiskRate }}%</p>
+                                </div>
+                                <div class="border-t border-slate-200/60 pt-1.5 mt-2 flex items-center justify-between text-[8px] font-bold">
+                                    <span class="text-rose-600 flex items-center gap-1">
+                                        <span class="w-1 h-1 rounded-full bg-rose-500"></span> Risiko: {{ $hypertensionRiskRate }}%
+                                    </span>
+                                    <span class="text-slate-300">|</span>
+                                    <span class="text-emerald-600 flex items-center gap-1">
+                                        <span class="w-1 h-1 rounded-full bg-emerald-500"></span> Normal: {{ round(100 - $hypertensionRiskRate, 1) }}%
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            {{-- Kepatuhan Fe --}}
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col justify-between min-h-[105px]">
+                                <div>
+                                    <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Kepatuhan Tablet Fe</p>
+                                    <p class="text-xl font-black text-slate-800 mt-1">{{ $feComplianceRate }}%</p>
+                                </div>
+                                <div class="border-t border-slate-200/60 pt-1.5 mt-2 flex items-center justify-between text-[8px] font-bold">
+                                    <span class="text-teal-600 flex items-center gap-1">
+                                        <span class="w-1 h-1 rounded-full bg-teal-500"></span> Patuh: {{ $feComplianceRate }}%
+                                    </span>
+                                    <span class="text-slate-300">|</span>
+                                    <span class="text-slate-500 flex items-center gap-1">
+                                        <span class="w-1 h-1 rounded-full bg-slate-400"></span> Belum: {{ round(100 - $feComplianceRate, 1) }}%
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Lansia --}}
+                    <div class="space-y-3">
+                        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
+                            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span> Lanjut Usia
+                        </h4>
+                        <div class="grid grid-cols-2 gap-2">
+                            {{-- Hipertensi Lansia --}}
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col justify-between min-h-[105px]">
+                                <div>
+                                    <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Hipertensi Lansia</p>
+                                    <p class="text-xl font-black text-slate-800 mt-1">{{ $lansiaHypertensionRate }}%</p>
+                                </div>
+                                <div class="border-t border-slate-200/60 pt-1.5 mt-2 flex items-center justify-between text-[8px] font-bold">
+                                    <span class="text-rose-600 flex items-center gap-1">
+                                        <span class="w-1 h-1 rounded-full bg-rose-500"></span> Risiko: {{ $lansiaHypertensionRate }}%
+                                    </span>
+                                    <span class="text-slate-300">|</span>
+                                    <span class="text-emerald-600 flex items-center gap-1">
+                                        <span class="w-1 h-1 rounded-full bg-emerald-500"></span> Normal: {{ round(100 - $lansiaHypertensionRate, 1) }}%
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            {{-- Diabetes Lansia --}}
+                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col justify-between min-h-[105px]">
+                                <div>
+                                    <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Diabetes Lansia</p>
+                                    <p class="text-xl font-black text-slate-800 mt-1">{{ $lansiaHyperglycemiaRate }}%</p>
+                                </div>
+                                <div class="border-t border-slate-200/60 pt-1.5 mt-2 flex items-center justify-between text-[8px] font-bold">
+                                    <span class="text-rose-600 flex items-center gap-1">
+                                        <span class="w-1 h-1 rounded-full bg-rose-500"></span> Risiko: {{ $lansiaHyperglycemiaRate }}%
+                                    </span>
+                                    <span class="text-slate-300">|</span>
+                                    <span class="text-emerald-600 flex items-center gap-1">
+                                        <span class="w-1 h-1 rounded-full bg-emerald-500"></span> Normal: {{ round(100 - $lansiaHyperglycemiaRate, 1) }}%
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {{-- Main Layout Grid: 2 Columns below health indicators --}}
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+                
+                {{-- Kiri: Grafik Tren Kunjungan (Span-2) --}}
+                <div class="lg:col-span-2">
+                    {{-- Widget 2: Combined Monthly Visits Trend --}}
+                    <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-slate-200 shadow-xs">
+                        <div class="flex items-center justify-between gap-4 mb-6">
+                            <div>
+                                <h3 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-teal-600 text-[20px]">insights</span>
+                                    Tren Kunjungan Bulanan Gabungan
+                                </h3>
+                                <p class="text-xs text-slate-500 font-semibold mt-0.5">Perbandingan tren frekuensi kunjungan pasien per kategori di posyandu (Dapat diklik untuk detail)</p>
+                            </div>
+                            <button onclick="downloadChart(visitsTrendChart, 'tren_kunjungan')" class="p-2 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                                <span class="material-symbols-outlined text-[18px]">download</span>
+                            </button>
+                        </div>
+                        <div class="relative h-80 sm:h-96">
+                            <canvas id="visitsTrendChart" wire:ignore></canvas>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/95 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-300 rounded-2xl" id="error-visitsTrendChart">
+                                <span class="material-symbols-outlined text-rose-600 text-4xl mb-2">error</span>
+                                <p class="text-sm font-extrabold text-slate-800">Gagal memuat data grafik</p>
+                                <button onclick="initCharts()" class="mt-3 px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-slate-700 cursor-pointer">Coba Lagi</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Kanan: Kehadiran & Live Health Alerts (Span-1) --}}
+                <div class="space-y-4 sm:space-y-6">
+                    
+                    {{-- Widget 1: Realisasi Kehadiran --}}
+                    <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-slate-200 shadow-xs">
+                        <div class="mb-4">
+                            <h3 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                                <span class="material-symbols-outlined text-teal-600 text-[20px]">how_to_reg</span>
+                                Target vs Realisasi Kehadiran Pasien
+                            </h3>
+                            <p class="text-xs text-slate-500 font-semibold mt-0.5">Persentase keaktifan kunjungan warga terdaftar di periode terpilih</p>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            @foreach([
+                                ['label' => 'Balita & Anak', 'visited' => $balitaBerkunjung, 'total' => $totalBalita, 'color' => 'bg-teal-500', 'text' => 'text-teal-700', 'bg' => 'bg-teal-50', 'icon' => 'child_care'],
+                                ['label' => 'Ibu Hamil', 'visited' => $ibuHamilBerkunjung, 'total' => $totalIbuHamil, 'color' => 'bg-rose-500', 'text' => 'text-rose-700', 'bg' => 'bg-rose-50', 'icon' => 'pregnant_woman'],
+                                ['label' => 'Lansia', 'visited' => $lansiaBerkunjung, 'total' => $totalLansia, 'color' => 'bg-indigo-500', 'text' => 'text-indigo-700', 'bg' => 'bg-indigo-50', 'icon' => 'elderly']
+                            ] as $item)
+                                @php
+                                    $pct = $item['total'] > 0 ? round(($item['visited'] / $item['total']) * 100, 1) : 0;
+                                    // Dinamis warna bar
+                                    $barColor = $pct >= 75 ? 'bg-emerald-500' : ($pct >= 40 ? 'bg-amber-500' : 'bg-rose-500');
+                                @endphp
+                                <div class="space-y-1.5">
+                                    <div class="flex items-center justify-between text-xs sm:text-sm font-bold text-slate-700">
+                                        <span class="flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-[18px] text-slate-400">{{ $item['icon'] }}</span>
+                                            <span>{{ $item['label'] }}</span>
+                                        </span>
+                                        <span>
+                                            <span class="font-extrabold text-slate-900">{{ $pct }}%</span>
+                                            <span class="text-slate-400 font-semibold">({{ $item['visited'] }} / {{ $item['total'] }})</span>
+                                        </span>
+                                    </div>
+                                    <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                                        <div class="{{ $barColor }} h-full rounded-full transition-all duration-500" style="width: {{ $pct }}%"></div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    {{-- Widget 4: Live Health Alerts Feed --}}
+                    <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-slate-200 shadow-xs flex flex-col">
+                        <div class="mb-4">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-rose-600 text-[20px] animate-pulse">warning</span>
+                                    Live Health Alerts
+                                </h3>
+                                <span class="text-[9px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 px-2 py-0.5 rounded-full border border-rose-200">Kasus Kritis</span>
+                            </div>
+                            <p class="text-xs text-slate-500 font-semibold mt-0.5">5 kasus pemeriksaan berisiko kesehatan tinggi terbaru</p>
+                        </div>
+                        
+                        <div class="space-y-3 flex-1">
+                            @forelse($liveHealthAlerts as $alert)
+                                <div class="p-3 rounded-xl border border-rose-100 bg-rose-50/30 flex flex-col gap-1.5 transition-all hover:bg-rose-50/60">
+                                    <div class="flex items-center justify-between">
+                                        <a href="/admin/patients/{{ $alert['patient_id'] }}" class="text-xs font-black text-slate-800 hover:text-rose-600 hover:underline">
+                                            {{ $alert['patient_name'] }}
+                                        </a>
+                                        <span class="text-[9px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600">
+                                            {{ $alert['patient_category'] }}
+                                        </span>
+                                    </div>
+                                    
+                                    {{-- Reasons pills --}}
+                                    <div class="flex flex-wrap gap-1">
+                                        @foreach($alert['reasons'] as $reason)
+                                            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-rose-100 text-rose-700">{{ $reason }}</span>
+                                        @endforeach
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between text-[10px] text-slate-400 font-semibold border-t border-rose-100/50 pt-1.5 mt-0.5">
+                                        <span>Pos: {{ $alert['posyandu_name'] }}</span>
+                                        <span>{{ $alert['visit_date'] }}</span>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="flex flex-col items-center justify-center py-8 text-center text-slate-400">
+                                    <span class="material-symbols-outlined text-emerald-500 text-4xl mb-2">check_circle</span>
+                                    <p class="text-xs font-bold text-slate-700">Seluruh Warga Sehat!</p>
+                                    <p class="text-[10px] font-semibold text-slate-400 mt-0.5">Tidak terdeteksi adanya kasus berisiko tinggi baru</p>
+                                </div>
+                            @endforelse
+                        </div>
                     </div>
                 </div>
             </div>
@@ -999,6 +1240,52 @@
                 </div>
                 @endif
 
+                {{-- Ibu Hamil Category Tabs --}}
+                @if(in_array($drillDownType, ['pregnancy_high_risk', 'pregnancy_kek', 'pregnancy_anemia', 'pregnancy_tablet_fe']))
+                <div class="flex flex-wrap gap-2 p-1.5 bg-slate-100 rounded-2xl w-fit">
+                    <button wire:click="switchDrillDownCategory('pregnancy_high_risk')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'pregnancy_high_risk' ? 'bg-white text-amber-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                        Risiko Tinggi &amp; 4T
+                    </button>
+                    <button wire:click="switchDrillDownCategory('pregnancy_kek')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'pregnancy_kek' ? 'bg-white text-purple-650 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+                        Kasus KEK
+                    </button>
+                    <button wire:click="switchDrillDownCategory('pregnancy_anemia')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'pregnancy_anemia' ? 'bg-white text-rose-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                        Kasus Anemia
+                    </button>
+                    <button wire:click="switchDrillDownCategory('pregnancy_tablet_fe')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'pregnancy_tablet_fe' ? 'bg-white text-teal-650 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-teal-500"></span>
+                        Pemberian Tablet Fe
+                    </button>
+                </div>
+                @endif
+
+                {{-- Ibu Hamil ANC K1-K6 Category Tabs --}}
+                @if(in_array($drillDownType, ['pregnancy_k1', 'pregnancy_k2', 'pregnancy_k3', 'pregnancy_k4', 'pregnancy_k5', 'pregnancy_k6']))
+                <div class="flex flex-wrap gap-2 p-1.5 bg-slate-100 rounded-2xl w-fit">
+                    @foreach([
+                        'pregnancy_k1' => 'K1',
+                        'pregnancy_k2' => 'K2',
+                        'pregnancy_k3' => 'K3',
+                        'pregnancy_k4' => 'K4',
+                        'pregnancy_k5' => 'K5',
+                        'pregnancy_k6' => 'K6'
+                    ] as $key => $lbl)
+                    <button wire:click="switchDrillDownCategory('{{ $key }}')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 {{ $drillDownType === $key ? 'bg-white text-indigo-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full {{ $drillDownType === $key ? 'bg-indigo-500' : 'bg-slate-400' }}"></span>
+                        {{ $lbl }}
+                    </button>
+                    @endforeach
+                </div>
+                @endif
+
                 <div class="overflow-x-auto border border-slate-200 rounded-2xl">
                     <table class="w-full text-left">
                                                 <thead>
@@ -1062,10 +1349,11 @@
                               </tr></thead>
                         <tbody class="divide-y divide-slate-200">
                             @forelse($drillDownData as $row)
-                                                          <tr class="hover:bg-slate-50 text-slate-800">
+                            <tr class="hover:bg-slate-50 text-slate-800">
                                   <td class="px-6 py-4">
                                       <div>
                                           <span class="block font-bold text-slate-900">{{ $row['name'] }}</span>
+                                          <span class="text-[10px] text-slate-500 uppercase block font-semibold">NIK: {{ $row['nik'] }}</span>
                                       </div>
                                   </td>
 
@@ -1074,14 +1362,66 @@
                                       $statusStr = strtolower(trim($statusText));
                                       $tagStyle = '';
                                       $tagClass = '';
-                                      if (str_contains($statusStr, 'gizi buruk') || str_contains($statusStr, 'sangat kurang')) {
-                                          $tagStyle = 'background-color: #FEE2E2; color: #B91C1C; border-color: rgba(185, 28, 28, 0.2);';
-                                      } elseif (str_contains($statusStr, 'gizi kurang')) {
-                                          $tagStyle = 'background-color: #FFEDD5; color: #C2410C; border-color: rgba(194, 65, 12, 0.2);';
-                                      } elseif (str_contains($statusStr, 'lebih') || str_contains($statusStr, 'obesitas')) {
-                                          $tagStyle = 'background-color: #FEF9C3; color: #A16207; border-color: rgba(161, 98, 7, 0.2);';
+                                      
+                                      $isDanger = false;
+                                      $isWarning = false;
+                                      $isSuccess = false;
+                                      $customStyle = '';
+
+                                      if (str_contains($statusStr, 'gizi buruk') || $statusStr === 'buruk') {
+                                          $customStyle = 'background-color: #FEE2E2; color: #B91C1C; border-color: rgba(185, 28, 28, 0.15);';
+                                      } elseif (str_contains($statusStr, 'gizi kurang') || $statusStr === 'kurang') {
+                                          $customStyle = 'background-color: #FFEDD5; color: #C2410C; border-color: rgba(194, 65, 12, 0.15);';
+                                      } elseif (str_contains($statusStr, 'gizi lebih') || str_contains($statusStr, 'lebih') || str_contains($statusStr, 'obesitas')) {
+                                          $customStyle = 'background-color: #FEF9C3; color: #A16207; border-color: rgba(161, 98, 7, 0.15);';
+                                      } elseif (str_contains($statusStr, 'gizi baik') || $statusStr === 'baik' || str_contains($statusStr, 'normal')) {
+                                          $customStyle = 'background-color: #DCFCE7; color: #15803D; border-color: rgba(21, 128, 61, 0.15);';
+                                      } elseif (str_contains($statusStr, 'sangat kurang') || str_contains($statusStr, 'belum') || str_contains($statusStr, 'anemia') || str_contains($statusStr, 'risiko')) {
+                                          $isDanger = true;
+                                      }
+                                      
+                                      // Specific clinical measurement warning checks
+                                      if (str_contains($statusStr, 'tb:')) {
+                                          preg_match('/tb:\s*([\d\.]+)/', $statusStr, $matches);
+                                          if (isset($matches[1]) && (float)$matches[1] < 145) {
+                                              $isDanger = true;
+                                          }
+                                      }
+                                      if (str_contains($statusStr, 'lila:')) {
+                                          preg_match('/lila:\s*([\d\.]+)/', $statusStr, $matches);
+                                          if (isset($matches[1]) && (float)$matches[1] < 23.5) {
+                                              $isDanger = true;
+                                          }
+                                      }
+                                      if (str_contains($statusStr, 'hb:')) {
+                                          preg_match('/hb:\s*([\d\.]+)/', $statusStr, $matches);
+                                          if (isset($matches[1]) && (float)$matches[1] < 11) {
+                                              $isDanger = true;
+                                          }
+                                      }
+                                      if (str_contains($statusStr, 'umur:')) {
+                                          preg_match('/umur:\s*([\d\.]+)/', $statusStr, $matches);
+                                          if (isset($matches[1])) {
+                                              $ageVal = (float)$matches[1];
+                                              if ($ageVal < 20 || $ageVal > 35) {
+                                                  $isDanger = true;
+                                              }
+                                          }
+                                      }
+                                      if (str_contains($statusStr, 'menerima')) {
+                                          $isSuccess = true;
+                                      }
+
+                                      if ($customStyle !== '') {
+                                          $tagStyle = $customStyle;
+                                      } elseif ($isDanger) {
+                                          $tagStyle = 'background-color: #FEF2F2; color: #DC2626; border-color: rgba(220, 38, 38, 0.15);';
+                                      } elseif ($isWarning) {
+                                          $tagStyle = 'background-color: #FFFBEB; color: #D97706; border-color: rgba(217, 119, 6, 0.15);';
+                                      } elseif ($isSuccess) {
+                                          $tagClass = 'bg-emerald-50 text-emerald-700 border-emerald-100';
                                       } else {
-                                          $tagClass = 'bg-teal-50 text-teal-700 border-teal-100'; // Default
+                                          $tagClass = 'bg-slate-50 text-slate-650 border-slate-200';
                                       }
                                       $statusHtml = '<span class="inline-flex px-3 py-1 rounded-full text-xs font-bold border ' . $tagClass . '" style="' . $tagStyle . '">' . $statusText . '</span>';
                                   @endphp

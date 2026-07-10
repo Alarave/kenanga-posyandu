@@ -4,6 +4,7 @@ namespace App\Livewire\Admin;
 
 use App\Jobs\ComputeAnalyticsSnapshot;
 use App\Livewire\Shared\BaseAdminComponent;
+use App\Models\AnalyticsSnapshot;
 use App\Models\MedicalRecord;
 use App\Models\Patient;
 use App\Models\Posyandu;
@@ -138,12 +139,13 @@ class Analytics extends BaseAdminComponent
     // ── ANA-16: Nutrition status filter ──
     public string $filterNutritionStatus = ''; // '' = all, 'Gizi Baik', 'Gizi Kurang', etc.
 
-    // ── ANA-22: Drill-down from chart click ──
     public bool $showDrillDown = false;
 
     public string $drillDownTitle = '';
 
     public array $drillDownData = [];
+
+    public array $liveHealthAlerts = [];
 
     public function mount(): void
     {
@@ -260,11 +262,23 @@ class Analytics extends BaseAdminComponent
             'lansia_hiperglikemia' => 'Hiperglikemia',
             'lansia_hiperkolesterolemia' => 'Hiperkolesterolemia',
             'lansia_hiperurisemia' => 'Hiperurisemia',
+            'pregnancy_high_risk' => 'Risiko Tinggi & 4T',
+            'pregnancy_anemia' => 'Kasus Anemia',
+            'pregnancy_tablet_fe' => 'Pemberian Tablet Fe',
+            'pregnancy_kek' => 'Kasus KEK',
+            'pregnancy_k1' => 'Kunjungan K1',
+            'pregnancy_k2' => 'Kunjungan K2',
+            'pregnancy_k3' => 'Kunjungan K3',
+            'pregnancy_k4' => 'Kunjungan K4',
+            'pregnancy_k5' => 'Kunjungan K5',
+            'pregnancy_k6' => 'Kunjungan K6',
             default => 'Data',
         };
 
         if (str_starts_with($newType, 'lansia_')) {
             $this->drillDownTitle = "Detail: Lansia - {$typeName} ({$labelMonth})";
+        } elseif (str_starts_with($newType, 'pregnancy_')) {
+            $this->drillDownTitle = "Detail: Ibu Hamil - {$typeName} ({$labelMonth})";
         } else {
             $this->drillDownTitle = "Detail: Balita {$typeName} — {$labelMonth}";
         }
@@ -409,6 +423,53 @@ class Analytics extends BaseAdminComponent
             return;
         }
 
+        if (in_array($type, ['pregnancy_k1', 'pregnancy_k2', 'pregnancy_k3', 'pregnancy_k4', 'pregnancy_k5', 'pregnancy_k6'])) {
+            $n = (int) substr($type, -1);
+            
+            $query = $this->applyPosyanduScope(MedicalRecord::query(), $targetPosyandu)
+                ->with(['patient.posyandu'])
+                ->whereYear('visit_date', $targetYear)
+                ->when($month ?? $this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $month ?? $this->selectedMonth))
+                ->whereHas('patient', function ($pQ) use ($n, $targetYear, $month) {
+                    $pQ->where('category', 'ibu_hamil')
+                       ->where('status_mutasi', 'aktif')
+                       ->whereHas('medicalRecords', function ($mrQ) use ($targetYear, $month) {
+                           $mrQ->whereYear('visit_date', $targetYear)
+                               ->when($month ?? $this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $month ?? $this->selectedMonth));
+                       }, '>=', $n);
+                })
+                ->orderBy('visit_date', 'desc')
+                ->orderBy('id', 'desc');
+
+            $records = $query->get()->unique('patient_id');
+
+            $this->drillDownData = $records->map(function ($r) use ($targetYear, $month) {
+                $totalVisits = $r->patient->medicalRecords()
+                    ->whereYear('visit_date', $targetYear)
+                    ->when($month ?? $this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $month ?? $this->selectedMonth))
+                    ->count();
+
+                return [
+                    'name' => $r->patient?->full_name ?? '-',
+                    'nik' => $r->patient?->id_number ?? '-',
+                    'posyandu' => $r->patient?->posyandu?->name ?? '-',
+                    'nutrition_status' => "Total Kunjungan: {$totalVisits} Kali",
+                    'visit_date' => $r->visit_date?->format('d/m/Y') ?? '-',
+                    'patient_id' => $r->patient_id,
+                    'category_warga' => 'Ibu Hamil',
+                    'kategori_gizi' => '-',
+                    'status_info' => '-',
+                    'month_name' => $r->visit_date ? match($r->visit_date->month) {
+                        1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni',
+                        7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
+                        default => '-'
+                    } : '-',
+                ];
+            })->values()->toArray();
+
+            return;
+        }
+
         $query = $this->applyPosyanduScope(MedicalRecord::query(), $targetPosyandu)
             ->with(['patient.posyandu'])
             ->whereYear('visit_date', $targetYear);
@@ -509,10 +570,41 @@ class Analytics extends BaseAdminComponent
                 ->where('cholesterol', '>=', 200),
             'lansia_hiperurisemia' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
                 ->where('uric_acid', '>=', 7.0),
+            'pregnancy_high_risk' => $query->whereHas('patient', function ($q) {
+                    $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
+                })
+                ->where(fn ($q) => $q
+                    ->whereHas('patient', function ($pQuery) {
+                        $twentyYearsAgo = now()->subYears(20)->toDateString();
+                        $thirtyFiveYearsAgo = now()->subYears(35)->toDateString();
+                        $pQuery->where('birth_date', '>', $twentyYearsAgo)
+                               ->orWhere('birth_date', '<', $thirtyFiveYearsAgo);
+                    })
+                    ->orWhere('height', '<', 145)
+                ),
+            'pregnancy_anemia' => $query->whereHas('patient', function ($q) {
+                    $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
+                })
+                ->whereNotNull('hemoglobin')
+                ->where('hemoglobin', '<', 11),
+            'pregnancy_tablet_fe' => $query->whereHas('patient', function ($q) {
+                    $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
+                }),
+            'pregnancy_kek' => $query->whereHas('patient', function ($q) {
+                    $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
+                })
+                ->whereNotNull('upper_arm_circumference')
+                ->where('upper_arm_circumference', '>', 0)
+                ->where('upper_arm_circumference', '<', 23.5),
             default => null,
         };
 
-        $this->drillDownData = $query->latest('visit_date')->get()->map(fn ($r) => [
+        $records = $query->latest('visit_date')->get();
+        if ($type === 'pregnancy_tablet_fe') {
+            $records = $records->sortBy('nakes_gives_fe_mms');
+        }
+
+        $this->drillDownData = $records->map(fn ($r) => [
             'name' => $r->patient?->full_name ?? '-',
             'nik' => $r->patient?->id_number ?? '-',
             'posyandu' => $r->patient?->posyandu?->name ?? '-',
@@ -521,6 +613,20 @@ class Analytics extends BaseAdminComponent
                 'lansia_hiperglikemia' => 'GDS: '.($r->blood_sugar ?: '-').' mg/dL',
                 'lansia_hiperkolesterolemia' => 'Kolesterol: '.($r->cholesterol ?: '-').' mg/dL',
                 'lansia_hiperurisemia' => 'Asam Urat: '.($r->uric_acid ?: '-').' mg/dL',
+                'pregnancy_high_risk' => (function() use ($r) {
+                    $age = $r->patient?->birth_date?->age;
+                    $reasons = [];
+                    if ($age && ($age < 20 || $age > 35)) {
+                        $reasons[] = "Umur: {$age} Thn";
+                    }
+                    if ($r->height && $r->height < 145) {
+                        $reasons[] = "TB: {$r->height} cm";
+                    }
+                    return count($reasons) > 0 ? implode(' & ', $reasons) : 'Risiko Tinggi';
+                })(),
+                'pregnancy_anemia' => 'Hb: '.($r->hemoglobin ?: '-').' g/dL',
+                'pregnancy_tablet_fe' => $r->nakes_gives_fe_mms ? 'Tablet Fe: Menerima' : 'Tablet Fe: Belum Menerima',
+                'pregnancy_kek' => 'LILA: '.($r->upper_arm_circumference ?: '-').' cm',
                 default => $r->nutrition_status ?: (
                     $r->patient?->category === 'lansia' ? 'Lansia' : (
                         $r->patient?->category === 'ibu_hamil' ? 'Ibu Hamil' : (
@@ -553,8 +659,9 @@ class Analytics extends BaseAdminComponent
                 default => '-'
             } : '-',
             'stunting_status' => $r->stunting_status ?: '-',
-        ])->toArray();
+        ])->values()->toArray();
     }
+
 
     public function closeDrillDown(): void
     {
@@ -568,7 +675,7 @@ class Analytics extends BaseAdminComponent
      */
     public function refreshStats(): void
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
         $posyanduId = $user->isSuperAdmin() ? null : $user->posyandu_id;
 
@@ -580,7 +687,7 @@ class Analytics extends BaseAdminComponent
 
     protected function loadData(): void
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
         $posyanduId = $user->isSuperAdmin() ? null : $user->posyandu_id;
         $key = "year_{$this->selectedYear}".($this->selectedMonth ? "_month_{$this->selectedMonth}" : '');
@@ -589,7 +696,7 @@ class Analytics extends BaseAdminComponent
         $isCustomFilterActive = $this->selectedMonth || $this->selectedPosyandu || $this->compareMode || $this->viewMode === 'yearly';
 
         if (! $isCustomFilterActive) {
-            $snapshot = \App\Models\AnalyticsSnapshot::where('posyandu_id', $posyanduId)
+            $snapshot = AnalyticsSnapshot::where('posyandu_id', $posyanduId)
                 ->where('key', $key)
                 ->first();
 
@@ -683,7 +790,7 @@ class Analytics extends BaseAdminComponent
         // ANA-15: apply search when set
         if ($this->tableSearch) {
             $searchTerm = '%'.strtolower($this->tableSearch).'%';
-            $blindIndex = \App\Models\Patient::generateBlindIndex($this->tableSearch);
+            $blindIndex = Patient::generateBlindIndex($this->tableSearch);
             $medicalRecordQuery->whereHas('patient', function ($q) use ($searchTerm, $blindIndex) {
                 $q->whereRaw('LOWER(full_name) LIKE ?', [$searchTerm])
                     ->orWhere('id_number_hash', $blindIndex);
@@ -710,11 +817,13 @@ class Analytics extends BaseAdminComponent
             ->latest('visit_date')
             ->limit(5)
             ->get();
+
+        $this->loadLiveHealthAlerts();
     }
 
     protected function fetchAnalyticsData(): array
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
         $patientQuery = $this->applyPosyanduScope(Patient::query(), $this->selectedPosyandu);
         $medicalRecordQuery = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu);
@@ -1490,6 +1599,86 @@ public function exportChartData(string $chartType)
         return response()->streamDownload(function () use ($export) {
             $export->export('php://output');
         }, str_replace(' ', '_', strtolower($title)) . "_{$targetYear}.xlsx");
+    }
+
+    protected function loadLiveHealthAlerts(): void
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $posyanduId = $user->isSuperAdmin() ? $this->selectedPosyandu : $user->posyandu_id;
+
+        $alertQuery = MedicalRecord::query()
+            ->with(['patient.posyandu'])
+            ->where(function ($q) {
+                // Balita risk
+                $q->where(function ($sub) {
+                    $sub->whereHas('patient', fn ($pq) => $pq->whereIn('category', ['balita', 'bayi', 'baduta']))
+                        ->where(fn ($sq) => $sq->whereIn('nutrition_status', ['Gizi Buruk', 'Berat Badan Sangat Kurang', 'Sangat Kurang'])
+                                                ->orWhereIn('wasting_status', ['Gizi Buruk', 'Sangat Kurang'])
+                                                ->orWhereIn('stunting_status', ['Pendek', 'Sangat Pendek']));
+                })
+                // Ibu Hamil risk
+                ->orWhere(function ($sub) {
+                    $sub->whereHas('patient', fn ($pq) => $pq->where('category', 'ibu_hamil'))
+                        ->where(fn ($sq) => $sq->where('systolic_bp', '>=', 140)
+                                                ->orWhere('diastolic_bp', '>=', 90)
+                                                ->orWhere(fn ($aq) => $aq->whereNotNull('hemoglobin')->where('hemoglobin', '<', 11)->where('hemoglobin', '>', 0))
+                                                ->orWhere(fn ($lq) => $lq->whereNotNull('upper_arm_circumference')->where('upper_arm_circumference', '>', 0)->where('upper_arm_circumference', '<', 23.5)));
+                })
+                // Lansia risk
+                ->orWhere(function ($sub) {
+                    $sub->whereHas('patient', fn ($pq) => $pq->where('category', 'lansia'))
+                        ->where(fn ($sq) => $sq->where('systolic_bp', '>=', 140)
+                                                ->orWhere('diastolic_bp', '>=', 90)
+                                                ->orWhere('blood_sugar', '>=', 200)
+                                                ->orWhere('cholesterol', '>=', 200)
+                                                ->orWhere('uric_acid', '>=', 7.0));
+                });
+            });
+
+        $alertQuery = $this->applyPosyanduScope($alertQuery, $posyanduId);
+
+        $this->liveHealthAlerts = $alertQuery->orderBy('visit_date', 'desc')
+            ->orderBy('id', 'desc')
+            ->limit(5)
+            ->get()
+            ->map(function ($r) {
+                $reasons = [];
+                $category = $r->patient?->category;
+
+                if (in_array($category, ['balita', 'bayi', 'baduta'])) {
+                    $gizi = $r->nutrition_status;
+                    $wasting = $r->wasting_status;
+                    $stunting = $r->stunting_status;
+                    if (in_array($gizi, ['Gizi Buruk', 'Berat Badan Sangat Kurang', 'Sangat Kurang'])) $reasons[] = "BB/U: " . $gizi;
+                    if (in_array($wasting, ['Gizi Buruk', 'Sangat Kurang'])) $reasons[] = "Wasting: " . $wasting;
+                    if (in_array($stunting, ['Pendek', 'Sangat Pendek'])) $reasons[] = "Stunting: " . $stunting;
+                } elseif ($category === 'ibu_hamil') {
+                    if ($r->systolic_bp >= 140 || $r->diastolic_bp >= 90) $reasons[] = "Tensi Tinggi: {$r->systolic_bp}/{$r->diastolic_bp} mmHg";
+                    if ($r->hemoglobin && $r->hemoglobin < 11 && $r->hemoglobin > 0) $reasons[] = "Anemia (Hb: {$r->hemoglobin} g/dL)";
+                    if ($r->upper_arm_circumference && $r->upper_arm_circumference < 23.5 && $r->upper_arm_circumference > 0) $reasons[] = "KEK (LILA: {$r->upper_arm_circumference} cm)";
+                } elseif ($category === 'lansia') {
+                    if ($r->systolic_bp >= 140 || $r->diastolic_bp >= 90) $reasons[] = "Tensi Tinggi: {$r->systolic_bp}/{$r->diastolic_bp} mmHg";
+                    if ($r->blood_sugar >= 200) $reasons[] = "Gula Darah: {$r->blood_sugar} mg/dL";
+                    if ($r->cholesterol >= 200) $reasons[] = "Kolesterol: {$r->cholesterol} mg/dL";
+                    if ($r->uric_acid >= 7.0) $reasons[] = "Asam Urat: {$r->uric_acid} mg/dL";
+                }
+
+                return [
+                    'id' => $r->id,
+                    'patient_id' => $r->patient_id,
+                    'patient_name' => $r->patient?->full_name ?? 'Warga Tanpa Nama',
+                    'patient_category' => match($category) {
+                        'balita', 'bayi', 'baduta' => 'Balita',
+                        'ibu_hamil' => 'Ibu Hamil',
+                        'lansia' => 'Lansia',
+                        default => ucfirst($category ?? '-')
+                    },
+                    'posyandu_name' => $r->patient?->posyandu?->name ?? '-',
+                    'visit_date' => $r->visit_date ? $r->visit_date->format('d M Y') : '-',
+                    'reasons' => $reasons,
+                ];
+            })->toArray();
     }
 
     public function render()

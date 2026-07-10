@@ -3,6 +3,9 @@
 namespace App\Livewire\Admin\Analytics;
 
 use App\Livewire\Traits\HasPosyanduScope;
+use App\Models\MedicalRecord;
+use App\Models\Patient;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Reactive;
 use Livewire\Component;
 
@@ -19,11 +22,13 @@ class IbuHamilAnalytics extends Component
     #[Reactive]
     public $selectedPosyandu;
 
+    public $search = '';
+
     // AH-01: Validasi Total Ibu Hamil per Trimester
-    #[\Livewire\Attributes\Computed]
+    #[Computed]
     public function trimesterStats()
     {
-        $records = $this->applyPosyanduScope(\App\Models\MedicalRecord::query(), $this->selectedPosyandu)
+        $records = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
             ->whereHas('patient', function ($q) {
                 $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
             })
@@ -52,12 +57,16 @@ class IbuHamilAnalytics extends Component
     }
 
     // AH-02 & AH-03: HPL & Risiko 4T
-    #[\Livewire\Attributes\Computed]
+    #[Computed]
     public function riskStats()
     {
-        $patients = $this->applyPosyanduScope(\App\Models\Patient::query(), $this->selectedPosyandu)
+        $patients = $this->applyPosyanduScope(Patient::query(), $this->selectedPosyandu)
             ->where('category', 'ibu_hamil')
             ->where('status_mutasi', 'aktif')
+            ->whereHas('medicalRecords', function ($query) {
+                $query->whereYear('visit_date', $this->selectedYear)
+                    ->when($this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $this->selectedMonth));
+            })
             ->with(['medicalRecords' => function ($query) {
                 $query->whereYear('visit_date', $this->selectedYear)
                     ->when($this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $this->selectedMonth));
@@ -91,10 +100,10 @@ class IbuHamilAnalytics extends Component
     }
 
     // AH-06: Anemia
-    #[\Livewire\Attributes\Computed]
+    #[Computed]
     public function anemiaStats()
     {
-        $records = $this->applyPosyanduScope(\App\Models\MedicalRecord::query(), $this->selectedPosyandu)
+        $records = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
             ->whereHas('patient', function ($q) {
                 $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
             })
@@ -105,14 +114,22 @@ class IbuHamilAnalytics extends Component
             ->get()
             ->unique('patient_id');
 
-        return $records->whereNotNull('hemoglobin')->where('hemoglobin', '<', 11)->count();
+        $anemia = $records->whereNotNull('hemoglobin')->where('hemoglobin', '<', 11)->count();
+        $totalWithHb = $records->whereNotNull('hemoglobin')->count();
+        $normal = $totalWithHb - $anemia;
+
+        return [
+            'anemia' => $anemia,
+            'normal' => $normal,
+            'total' => $totalWithHb,
+        ];
     }
 
     // AH-04: TTD Status
-    #[\Livewire\Attributes\Computed]
+    #[Computed]
     public function ttdStats()
     {
-        $records = $this->applyPosyanduScope(\App\Models\MedicalRecord::query(), $this->selectedPosyandu)
+        $records = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
             ->whereHas('patient', function ($q) {
                 $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
             })
@@ -130,12 +147,16 @@ class IbuHamilAnalytics extends Component
     }
 
     // AH-05: K1-K6 Kunjungan
-    #[\Livewire\Attributes\Computed]
+    #[Computed]
     public function ancStats()
     {
-        $patients = $this->applyPosyanduScope(\App\Models\Patient::query(), $this->selectedPosyandu)
+        $patients = $this->applyPosyanduScope(Patient::query(), $this->selectedPosyandu)
             ->where('category', 'ibu_hamil')
             ->where('status_mutasi', 'aktif')
+            ->whereHas('medicalRecords', function ($query) {
+                $query->whereYear('visit_date', $this->selectedYear)
+                    ->when($this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $this->selectedMonth));
+            })
             ->with(['medicalRecords' => function ($query) {
                 $query->whereYear('visit_date', $this->selectedYear)
                     ->when($this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $this->selectedMonth));
@@ -174,14 +195,154 @@ class IbuHamilAnalytics extends Component
         return ['k1' => $k1, 'k2' => $k2, 'k3' => $k3, 'k4' => $k4, 'k5' => $k5, 'k6' => $k6];
     }
 
+    // AH-07: Kekurangan Energi Kronis (KEK) berdasarkan LILA
+    #[\Livewire\Attributes\Computed]
+    public function kekStats()
+    {
+        $records = $this->applyPosyanduScope(\App\Models\MedicalRecord::query(), $this->selectedPosyandu)
+            ->whereHas('patient', function ($q) {
+                $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
+            })
+            ->whereYear('visit_date', $this->selectedYear)
+            ->when($this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $this->selectedMonth))
+            ->orderBy('visit_date', 'desc')
+            ->orderBy('id', 'desc')
+            ->get()
+            ->unique('patient_id');
+
+        $totalWithLila = $records->whereNotNull('upper_arm_circumference')->where('upper_arm_circumference', '>', 0)->count();
+        $kek = $records->whereNotNull('upper_arm_circumference')->where('upper_arm_circumference', '>', 0)->where('upper_arm_circumference', '<', 23.5)->count();
+        $normal = $totalWithLila - $kek;
+
+        return [
+            'kek' => $kek,
+            'normal' => $normal,
+            'total' => $totalWithLila,
+        ];
+    }
+
+    // Daftar Warga Ibu Hamil untuk Tabel Pemantauan Klinis
+    #[\Livewire\Attributes\Computed]
+    public function maternalTableData()
+    {
+        $patientQuery = $this->applyPosyanduScope(\App\Models\Patient::query(), $this->selectedPosyandu)
+            ->where('category', 'ibu_hamil')
+            ->where('status_mutasi', 'aktif')
+            ->whereHas('medicalRecords', function ($query) {
+                $query->whereYear('visit_date', $this->selectedYear)
+                    ->when($this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $this->selectedMonth));
+            })
+            ->when($this->search, function ($query) {
+                $query->where('full_name', 'like', '%' . $this->search . '%');
+            });
+
+        $patients = $patientQuery
+            ->with(['posyandu', 'medicalRecords' => function ($query) {
+                $query->whereYear('visit_date', $this->selectedYear)
+                    ->when($this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $this->selectedMonth))
+                    ->orderBy('visit_date', 'desc')
+                    ->orderBy('id', 'desc');
+            }])
+            ->get();
+
+        return $patients->map(function ($p) {
+            $latestRecord = $p->medicalRecords->first();
+            $age = $p->birth_date ? $p->birth_date->age : '-';
+            
+            $hpl = '-';
+            $weeks = 0;
+            if ($latestRecord && $latestRecord->gestational_age) {
+                $weeks = (int) filter_var($latestRecord->gestational_age, FILTER_SANITIZE_NUMBER_INT);
+                if ($weeks > 0 && $weeks < 40) {
+                    $remainingWeeks = 40 - $weeks;
+                    $hpl = \Carbon\Carbon::parse($latestRecord->visit_date)->addWeeks($remainingWeeks)->translatedFormat('d M Y');
+                } elseif ($weeks >= 40) {
+                    $hpl = 'Siap Melahirkan';
+                }
+            }
+
+            $isHighRisk = false;
+            $riskReasons = [];
+            if ($p->birth_date) {
+                $ageVal = $p->birth_date->age;
+                if ($ageVal < 20) {
+                    $isHighRisk = true;
+                    $riskReasons[] = 'Usia < 20';
+                } elseif ($ageVal > 35) {
+                    $isHighRisk = true;
+                    $riskReasons[] = 'Usia > 35';
+                }
+            }
+            if ($latestRecord && $latestRecord->height && $latestRecord->height < 145) {
+                $isHighRisk = true;
+                $riskReasons[] = 'Tinggi < 145 cm';
+            }
+
+            $isAnemia = false;
+            $hbVal = '-';
+            if ($latestRecord && $latestRecord->hemoglobin) {
+                $hbVal = (float) $latestRecord->hemoglobin;
+                if ($hbVal < 11) {
+                    $isAnemia = true;
+                }
+            }
+
+            $isKek = false;
+            $lilaVal = '-';
+            if ($latestRecord && $latestRecord->upper_arm_circumference) {
+                $lilaVal = (float) $latestRecord->upper_arm_circumference;
+                if ($lilaVal < 23.5 && $lilaVal > 0) {
+                    $isKek = true;
+                }
+            }
+
+            $isHypertension = false;
+            $bpVal = '-';
+            if ($latestRecord && ($latestRecord->systolic_bp || $latestRecord->diastolic_bp)) {
+                $sys = (int) $latestRecord->systolic_bp;
+                $dias = (int) $latestRecord->diastolic_bp;
+                $bpVal = "{$sys}/{$dias}";
+                if ($sys >= 140 || $dias >= 90) {
+                    $isHypertension = true;
+                }
+            }
+
+            $ancCount = $p->medicalRecords->count();
+
+            return [
+                'id' => $p->id,
+                'name' => $p->full_name,
+                'age' => $age,
+                'gestational_age' => $weeks ? "{$weeks} minggu" : '-',
+                'hpl' => $hpl,
+                'lila' => $lilaVal,
+                'is_kek' => $isKek,
+                'hb' => $hbVal,
+                'is_anemia' => $isAnemia,
+                'bp' => $bpVal,
+                'is_hypertension' => $isHypertension,
+                'anc_count' => $ancCount,
+                'is_high_risk' => $isHighRisk,
+                'risk_reasons' => implode(', ', $riskReasons),
+                'posyandu_name' => $p->posyandu?->name ?? '-',
+                'ttd_received' => $latestRecord ? ($latestRecord->nakes_gives_fe_mms ? 'Ya' : 'Tidak') : '-',
+            ];
+        });
+    }
+
     public function render()
     {
+        $anemiaData = $this->anemiaStats();
+
         return view('livewire.admin.analytics.ibu-hamil-analytics', [
             'trimesterStats' => $this->trimesterStats(),
             'riskStats' => $this->riskStats(),
-            'anemiaCount' => $this->anemiaStats(),
+            'anemiaCount' => $anemiaData['anemia'],
+            'anemiaStats' => $anemiaData,
             'ttdStats' => $this->ttdStats(),
+            'kekStats' => $this->kekStats(),
             'ancStats' => $this->ancStats(),
+            'maternalTableData' => $this->maternalTableData(),
         ]);
     }
 }

@@ -4,10 +4,14 @@ namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PatientRequest;
+use App\Imports\PatientImport;
 use App\Models\Patient;
+use App\Models\Pedukuhan;
+use App\Models\Posyandu;
 use App\Services\ActivityLogService;
 use App\Services\PatientService;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class PatientController extends Controller
 {
@@ -27,7 +31,7 @@ class PatientController extends Controller
             return view('livewire.admin.patient-management.select-category');
         }
 
-        $pedukuhans = \App\Models\Pedukuhan::all();
+        $pedukuhans = Pedukuhan::all();
         $posyandus = $this->getAvailablePosyandus();
 
         return view('livewire.admin.patient-management.create', compact('pedukuhans', 'posyandus'));
@@ -44,14 +48,14 @@ class PatientController extends Controller
             $this->patientService->createPatient($request->validated(), auth()->user());
 
             return redirect()->route('admin.patients.index')->with('success', 'Data warga berhasil disimpan.');
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return redirect()->back()
                 ->withInput()
                 ->withErrors($e->errors());
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Gagal menyimpan data: ' . $e->getMessage());
+                ->with('error', 'Gagal menyimpan data: '.$e->getMessage());
         }
     }
 
@@ -93,7 +97,7 @@ class PatientController extends Controller
     {
         $this->authorize('update', $patient);
 
-        $pedukuhans = \App\Models\Pedukuhan::all();
+        $pedukuhans = Pedukuhan::all();
         $posyandus = $this->getAvailablePosyandus();
 
         return view('livewire.admin.patient-management.update', compact('patient', 'pedukuhans', 'posyandus'));
@@ -110,14 +114,14 @@ class PatientController extends Controller
             $this->patientService->updatePatient($patient, $request->validated(), auth()->user());
 
             return redirect()->route('admin.patients.index')->with('success', 'Data warga berhasil diperbarui.');
-        } catch (\Illuminate\Validation\ValidationException $e) {
+        } catch (ValidationException $e) {
             return redirect()->back()
                 ->withInput()
                 ->withErrors($e->errors());
         } catch (\Exception $e) {
             return redirect()->back()
                 ->withInput()
-                ->with('error', 'Gagal memperbarui data: ' . $e->getMessage());
+                ->with('error', 'Gagal memperbarui data: '.$e->getMessage());
         }
     }
 
@@ -130,9 +134,10 @@ class PatientController extends Controller
 
         try {
             $this->patientService->deletePatient($patient);
+
             return redirect()->route('admin.patients.index')->with('success', 'Data warga berhasil dihapus.');
         } catch (\Exception $e) {
-            return redirect()->route('admin.patients.index')->with('error', 'Gagal menghapus data: ' . $e->getMessage());
+            return redirect()->route('admin.patients.index')->with('error', 'Gagal menghapus data: '.$e->getMessage());
         }
     }
 
@@ -169,7 +174,7 @@ class PatientController extends Controller
         $posyanduId = $user->isSuperAdmin() ? (int) $request->posyandu_id : $user->posyandu_id;
 
         try {
-            $import = new \App\Imports\PatientImport($posyanduId, $user->id);
+            $import = new PatientImport($posyanduId, $user->id);
             $import->import($request->file('file'));
 
             $this->logImportActivity($import, $posyanduId);
@@ -206,6 +211,7 @@ class PatientController extends Controller
         return response()->stream(function () use ($rows) {
             $file = fopen('php://output', 'w');
             fwrite($file, "\xEF\xBB\xBF"); // BOM UTF-8
+            fwrite($file, "sep=,\n"); // Force Excel to use comma separator
             foreach ($rows as $row) {
                 fputcsv($file, $row);
             }
@@ -221,8 +227,8 @@ class PatientController extends Controller
         $user = auth()->user();
 
         return $user->isSuperAdmin()
-            ? \App\Models\Posyandu::orderBy('name')->get()
-            : \App\Models\Posyandu::where('id', $user->posyandu_id)->get();
+            ? Posyandu::orderBy('name')->get()
+            : Posyandu::where('id', $user->posyandu_id)->get();
     }
 
     /**
@@ -230,7 +236,7 @@ class PatientController extends Controller
      */
     private function logImportActivity($import, int $posyanduId): void
     {
-        $posyandu = \App\Models\Posyandu::find($posyanduId);
+        $posyandu = Posyandu::find($posyanduId);
 
         $this->activityLogService->log(
             'create_patient',
@@ -279,17 +285,7 @@ class PatientController extends Controller
                     'NIK', 'nama', 'tgl_lahir', 'jk', 'suami',
                     'tempat_lahir', 'phone_number', 'RT', 'RW', 'ALAMAT',
                     'apakah_hamil', 'TANGGAL UKUR', 'BERAT', 'TINGGI', 'LILA',
-                ],
-                [
-                    '3275014102920002', 'SITI AMINAH', '1992-02-14', 'P', 'BUDI SANTOSO',
-                    'Bekasi', '082345678901', '5', '11', 'JL. CENDRAWASIH NO. 12',
-                    'Ya', '2026-03-15', '65.2', '160.0', '24.5',
-                ],
-                [
-                    '3275014102920005', 'HANIFAH', '1995-05-20', 'P', 'AGUS WIDODO',
-                    'Jakarta', '082345678902', '3', '11', 'JL. MERPATI NO. 5',
-                    'Ya', '2026-03-15', '60.0', '158.0', '23.8',
-                ],
+                ]
             ];
         }
 
@@ -299,17 +295,7 @@ class PatientController extends Controller
                     'NIK', 'nama', 'tgl_lahir', 'jk', 'tempat_lahir',
                     'phone_number', 'RT', 'RW', 'ALAMAT', 'riwayat_penyakit',
                     'TANGGAL UKUR', 'BERAT', 'TINGGI',
-                ],
-                [
-                    '3275010101500003', 'KARTOSUWIRYO', '1950-01-01', 'L', 'Solo',
-                    '085678901234', '2', '11', 'JL. MATARAMAN NO. 45', 'Hipertensi, Asam Urat',
-                    '2026-03-15', '70.0', '165.0',
-                ],
-                [
-                    '3275014101550004', 'SUHARTINI', '1955-08-12', 'P', 'Yogyakarta',
-                    '085678901235', '4', '11', 'JL. DUKUH NO. 8', 'Diabetes',
-                    '2026-03-15', '55.5', '150.0',
-                ],
+                ]
             ];
         }
 
@@ -320,19 +306,7 @@ class PatientController extends Controller
                 'tempat_lahir', 'phone_number', 'RT', 'RW', 'ALAMAT',
                 'TANGGAL UKUR', 'BERAT', 'TINGGI', 'LILA', 'lingkar_kepala',
                 'CARA UKUR', 'vitamin', 'Imunisasi',
-            ],
-            [
-                '3275010608224411', 'A. ZAFRAN. U.R', '2022-08-06', 'L', 'RYAN. R. R',
-                'Jakarta', '081234567890', '4', '11', 'JL. P. NUSANTARA',
-                '2026-03-15', '12.5', '85.0', '14.5', '48.0',
-                'Berdiri', 'Ya', 'DPT-HB-Hib 3',
-            ],
-            [
-                '3275015101220001', 'AISYAH HANIN.K', '2022-01-11', 'P', 'YUNIAR. P',
-                'Bekasi', '081234567891', '3', '11', 'JL. P. MADURA',
-                '2026-03-15', '11.0', '82.0', '13.8', '47.5',
-                'Berdiri', '', 'Campak MR',
-            ],
+            ]
         ];
     }
 }

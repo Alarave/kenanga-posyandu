@@ -1,17 +1,19 @@
 <?php
 
 /**
- * @var Tests\TestCase $this
+ * @var TestCase $this
  *
- * @property \App\Models\User $user
- * @property \App\Services\ActivityLogService $service
+ * @property User $user
+ * @property ActivityLogService $service
  */
 
 use App\Models\ActivityLog;
 use App\Models\User;
 use App\Services\ActivityLogService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Tests\TestCase;
 
 uses(RefreshDatabase::class);
 
@@ -122,7 +124,7 @@ describe('log method', function () {
         $log = $this->service->log('login', 'User berhasil login');
 
         expect($log->created_at)->not->toBeNull()
-            ->and($log->created_at)->toBeInstanceOf(\Illuminate\Support\Carbon::class);
+            ->and($log->created_at)->toBeInstanceOf(Carbon::class);
     });
 });
 
