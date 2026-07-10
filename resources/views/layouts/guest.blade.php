@@ -105,16 +105,6 @@
         </div>
 
     </div>
-    
-    <!-- Speculation Rules API for instant prerendering on hover -->
-    <script type="speculationrules">
-    {
-      "prerender": [{
-        "where": { "href_matches": "/*" },
-        "eagerness": "moderate"
-      }]
-    }
-    </script>
 </body>
 
 </html>
