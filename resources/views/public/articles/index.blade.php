@@ -352,7 +352,7 @@
         font-family: 'Plus Jakarta Sans', sans-serif;
         font-size: 10px;
         font-weight: 900;
-        color: #0d9488;
+        color: #0f766e;
         text-transform: uppercase;
         letter-spacing: 0.2em;
     }
@@ -361,7 +361,7 @@
         width: 6px;
         height: 6px;
         border-radius: 50%;
-        background: #0d9488;
+        background: #0f766e;
         animation: blink-dot 2s ease-in-out infinite;
     }
 
@@ -539,7 +539,7 @@
         display: inline-block;
         padding: 3px 10px;
         background: rgba(13,148,136,0.08);
-        color: #0d9488;
+        color: #0f766e;
         font-family: 'Plus Jakarta Sans', sans-serif;
         font-size: 9px;
         font-weight: 800;
@@ -589,7 +589,7 @@
         gap: 12px;
         font-size: 10px;
         font-weight: 700;
-        color: #94a3b8;
+        color: #475569;
         text-transform: uppercase;
         letter-spacing: 0.1em;
     }
@@ -750,7 +750,9 @@
     }
 
     .page-nav-btn.disabled {
-        opacity: 0.35;
+        background: #f1f5f9;
+        border-color: #e2e8f0;
+        color: #57687e;
         pointer-events: none;
         cursor: default;
     }
@@ -889,14 +891,14 @@
     .popular-num {
         font-size: 32px;
         font-weight: 900;
-        color: #e2e8f0;
+        color: #475569;
         line-height: 1;
         min-width: 36px;
         transition: color 250ms;
         flex-shrink: 0;
     }
 
-    .popular-item:hover .popular-num { color: #eef2ff; }
+    .popular-item:hover .popular-num { color: #0d9488; }
 
     .popular-meta {
         display: flex;
@@ -917,7 +919,7 @@
     .popular-cat {
         font-size: 10px;
         font-weight: 700;
-        color: #94a3b8;
+        color: #0f766e;
         text-transform: uppercase;
         letter-spacing: 0.1em;
     }

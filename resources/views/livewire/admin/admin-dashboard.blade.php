@@ -360,6 +360,386 @@
 @endforeach
 </section>
 
+    {{-- ── 3 Visual Scorecards (Diagram Lingkaran/Doughnut) ── --}}
+    <section class="grid grid-cols-1 lg:grid-cols-3 gap-6 my-6 no-print">
+        <!-- Card 1: Kondisi Gizi Balita -->
+        <div class="widget-card p-5 relative overflow-hidden bg-white border border-slate-100 rounded-2xl shadow-sm transition-all duration-300 hover:shadow-md">
+            <div class="absolute -right-8 -top-8 w-32 h-32 bg-indigo-50/50 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="relative z-10">
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-sm">Kondisi Gizi Balita</h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Distribusi status gizi balita</p>
+                    </div>
+                    <div class="w-9 h-9 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
+                        <span class="material-symbols-outlined text-[18px]">donut_large</span>
+                    </div>
+                </div>
+
+                @php
+                    $ndLabels = $nutritionStatusDistribution['labels'] ?? [];
+                    $ndData = $nutritionStatusDistribution['data'] ?? [];
+                    $chartTotal = array_sum($ndData);
+                @endphp
+
+                <div x-data="{
+                    chart: null,
+                    hiddenItems: [],
+                    isEmpty: false,
+                    init() {
+                        if (typeof Chart === 'undefined') { setTimeout(() => this.init(), 100); return; }
+                        const nd = $wire.nutritionStatusDistribution;
+                        if (!nd || !nd.labels || !nd.data || nd.data.length === 0) {
+                            this.isEmpty = true;
+                            return;
+                        }
+                        this.isEmpty = nd.data.every(v => parseInt(v) === 0);
+                        if (this.isEmpty) return;
+                
+                        const colors = nd.labels.map(label => {
+                            if (label.includes('Normal') || label.includes('Baik')) return '#10b981'; // Emerald
+                            if (label.includes('Kurang') && !label.includes('Sangat')) return '#f59e0b'; // Amber
+                            if (label.includes('Risiko') || label.includes('Berisiko')) return '#f59e0b';
+                            if (label.includes('Sangat') || label.includes('Buruk') || label.includes('Pendek')) return '#ef4444'; // Red
+                            if (label.includes('Lebih') || label.includes('Obesitas')) return '#6366f1'; // Indigo
+                            return '#94a3b8';
+                        });
+                
+                        this.chart = new Chart(this.$refs.canvas, {
+                            type: 'doughnut',
+                            data: {
+                                labels: nd.labels,
+                                datasets: [{
+                                    data: nd.data,
+                                    backgroundColor: colors,
+                                    borderWidth: 2,
+                                    borderColor: '#ffffff',
+                                    hoverOffset: 6
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                cutout: '75%',
+                                animation: { duration: 800, easing: 'easeOutQuart' },
+                                onClick: (event, activeElements) => {
+                                    if (activeElements && activeElements.length > 0) {
+                                        const index = activeElements[0].index;
+                                        const label = nd.labels[index];
+                                        $wire.selectNutritionStatus(label);
+                                    }
+                                },
+                                plugins: {
+                                    legend: { display: false },
+                                    tooltip: {
+                                        cornerRadius: 8,
+                                        padding: 8,
+                                        bodyFont: { family: '\'Public Sans\', sans-serif', size: 11 }
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    toggleVisibility(index) {
+                        if (!this.chart) return;
+                        this.chart.toggleDataVisibility(index);
+                        this.chart.update();
+                        if (this.hiddenItems.includes(index)) {
+                            this.hiddenItems = this.hiddenItems.filter(i => i !== index);
+                        } else {
+                            this.hiddenItems.push(index);
+                        }
+                    }
+                }" wire:ignore class="relative flex justify-center mb-5 h-44">
+                    <canvas x-show="!isEmpty" x-ref="canvas"></canvas>
+                    <div x-show="!isEmpty" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                        <span class="text-3xl font-black text-slate-800 leading-none" style="font-variant-numeric:tabular-nums;">{{ $chartTotal }}</span>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1">Balita</span>
+                    </div>
+                    <template x-if="isEmpty">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-400">
+                            <span class="material-symbols-outlined text-[28px] mb-1.5 opacity-50">pie_chart</span>
+                            <span class="text-xs font-semibold">Belum ada data</span>
+                        </div>
+                    </template>
+                </div>
+
+                {{-- Legend --}}
+                <div class="space-y-2 pt-3 border-t border-slate-100 max-h-48 overflow-y-auto pr-1">
+                    @foreach ($ndLabels as $index => $label)
+                        @php
+                            $count = $ndData[$index] ?? 0;
+                            $percentage = $chartTotal > 0 ? round(($count / $chartTotal) * 100, 1) : 0;
+                            $color = match (true) {
+                                str_contains($label, 'Normal') || str_contains($label, 'Baik') => '#10b981',
+                                str_contains($label, 'Kurang') && !str_contains($label, 'Sangat') => '#f59e0b',
+                                str_contains($label, 'Risiko') || str_contains($label, 'Berisiko') => '#f59e0b',
+                                str_contains($label, 'Sangat') || str_contains($label, 'Buruk') || str_contains($label, 'Pendek') => '#ef4444',
+                                str_contains($label, 'Lebih') || str_contains($label, 'Obesitas') => '#6366f1',
+                                default => '#94a3b8',
+                            };
+                        @endphp
+                        <div class="flex items-center gap-2 text-xs" :class="hiddenItems.includes({{ $index }}) ? 'opacity-40' : ''">
+                            <span class="w-2 h-2 rounded-full shrink-0 cursor-pointer" style="background:{{ $color }}" @click="toggleVisibility({{ $index }})"></span>
+                            <span class="text-slate-650 flex-1 truncate font-medium cursor-pointer hover:text-indigo-600 hover:underline" wire:click="selectNutritionStatus('{{ $label }}')">
+                                {{ $label }}
+                            </span>
+                            <div class="flex items-center gap-2 shrink-0">
+                                <span class="text-slate-400 text-[10px]">{{ $count }} Anak</span>
+                                <span class="font-bold text-slate-700 w-8 text-right">{{ $percentage }}%</span>
+                                <button wire:click="selectNutritionStatus('{{ $label }}')" class="w-5 h-5 flex items-center justify-center rounded bg-slate-50 hover:bg-indigo-50 text-slate-400 hover:text-indigo-650 transition-colors" title="Detail Balita">
+                                    <span class="material-symbols-outlined text-[13px]">visibility</span>
+                                </button>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Rata-rata Usia Kehamilan (Bumil) -->
+        <div class="widget-card p-5 relative overflow-hidden bg-white border border-slate-100 rounded-2xl shadow-sm transition-all duration-300 hover:shadow-md">
+            <div class="absolute -right-8 -top-8 w-32 h-32 bg-pink-50/50 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="relative z-10">
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-sm">Usia Kehamilan</h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Proporsi ibu hamil per trimester</p>
+                    </div>
+                    <div class="w-9 h-9 rounded-xl bg-pink-50 flex items-center justify-center text-pink-600">
+                        <span class="material-symbols-outlined text-[18px]">pregnant_woman</span>
+                    </div>
+                </div>
+
+                @php
+                    $totalBumil = array_sum($bumilTrimester);
+                    $isEmptyBumil = $totalBumil === 0;
+                @endphp
+
+                <div x-data="{
+                    chart: null,
+                    hiddenItems: [],
+                    isEmpty: {{ $isEmptyBumil ? 'true' : 'false' }},
+                    init() {
+                        if (typeof Chart === 'undefined') { setTimeout(() => this.init(), 100); return; }
+                        if (this.isEmpty) return;
+                        const data = [
+                            {{ $bumilTrimester['T1'] ?? 0 }},
+                            {{ $bumilTrimester['T2'] ?? 0 }},
+                            {{ $bumilTrimester['T3'] ?? 0 }}
+                        ];
+                        const labels = ['Trimester 1', 'Trimester 2', 'Trimester 3'];
+                        const colors = ['#f472b6', '#db2777', '#9d174d']; // Soft, Med, Dark Pink
+                
+                        this.chart = new Chart(this.$refs.canvas, {
+                            type: 'doughnut',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    data: data,
+                                    backgroundColor: colors,
+                                    borderWidth: 2,
+                                    borderColor: '#ffffff',
+                                    hoverOffset: 6
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                cutout: '75%',
+                                animation: { duration: 800, easing: 'easeOutQuart' },
+                                plugins: {
+                                    legend: { display: false },
+                                    tooltip: {
+                                        cornerRadius: 8,
+                                        padding: 8,
+                                        bodyFont: { family: '\'Public Sans\', sans-serif', size: 11 }
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    toggleVisibility(index) {
+                        if (!this.chart) return;
+                        this.chart.toggleDataVisibility(index);
+                        this.chart.update();
+                        if (this.hiddenItems.includes(index)) {
+                            this.hiddenItems = this.hiddenItems.filter(i => i !== index);
+                        } else {
+                            this.hiddenItems.push(index);
+                        }
+                    }
+                }" wire:ignore class="relative flex justify-center mb-5 h-44">
+                    <canvas x-show="!isEmpty" x-ref="canvas"></canvas>
+                    <div x-show="!isEmpty" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                        <span class="text-3xl font-black text-slate-800 leading-none" style="font-variant-numeric:tabular-nums;">{{ $rataRataUsiaKehamilan }}</span>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1 text-center">Minggu<br>(Rata-rata)</span>
+                    </div>
+                    <template x-if="isEmpty">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-400">
+                            <span class="material-symbols-outlined text-[28px] mb-1.5 opacity-50">pie_chart</span>
+                            <span class="text-xs font-semibold">Belum ada data</span>
+                        </div>
+                    </template>
+                </div>
+
+                {{-- Legend --}}
+                <div class="space-y-2 pt-3 border-t border-slate-100 max-h-48 overflow-y-auto pr-1">
+                    @foreach ([
+                        'T1' => ['label' => 'Trimester 1', 'sub' => '0–13 mg', 'color' => '#f472b6'],
+                        'T2' => ['label' => 'Trimester 2', 'sub' => '14–27 mg', 'color' => '#db2777'],
+                        'T3' => ['label' => 'Trimester 3', 'sub' => '28+ mg', 'color' => '#9d174d'],
+                    ] as $key => $info)
+                        @php
+                            $count = $bumilTrimester[$key] ?? 0;
+                            $percentage = $totalBumil > 0 ? round(($count / $totalBumil) * 100, 1) : 0;
+                        @endphp
+                        <div class="flex flex-col gap-1 text-xs">
+                            <div class="flex items-center gap-2" :class="hiddenItems.includes({{ array_search($key, ['T1', 'T2', 'T3']) }}) ? 'opacity-40' : ''">
+                                <span class="w-2 h-2 rounded-full shrink-0 cursor-pointer" style="background:{{ $info['color'] }}" @click="toggleVisibility({{ array_search($key, ['T1', 'T2', 'T3']) }})"></span>
+                                <span class="text-slate-650 flex-1 truncate font-medium">{{ $info['label'] }} <span class="text-[10px] text-slate-400 font-normal">({{ $info['sub'] }})</span></span>
+                                <div class="flex items-center gap-2 shrink-0">
+                                    <span class="text-slate-400 text-[10px]">{{ $count }} Bumil</span>
+                                    <span class="font-bold text-slate-700 w-8 text-right">{{ $percentage }}%</span>
+                                </div>
+                            </div>
+                            @if(count($bumilTrimesterNames[$key] ?? []) > 0)
+                            <div class="pl-4 flex flex-wrap gap-1 mt-0.5">
+                                @foreach($bumilTrimesterNames[$key] as $warga)
+                                    <a href="{{ route('admin.patients.show', $warga['id']) }}" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-pink-50 hover:bg-pink-100 text-pink-700 text-[9px] transition-colors border border-pink-100/50">
+                                        <span class="font-medium truncate max-w-[80px]">{{ $warga['name'] }}</span>
+                                        <span class="text-pink-400 text-[8px]">({{ $warga['gestational_age'] }})</span>
+                                    </a>
+                                @endforeach
+                            </div>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Demografi Lansia -->
+        <div class="widget-card p-5 relative overflow-hidden bg-white border border-slate-100 rounded-2xl shadow-sm transition-all duration-300 hover:shadow-md">
+            <div class="absolute -right-8 -top-8 w-32 h-32 bg-orange-50/50 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="relative z-10">
+                <div class="flex items-center justify-between mb-5">
+                    <div>
+                        <h3 class="font-bold text-slate-800 text-sm">Demografi Lansia</h3>
+                        <p class="text-xs text-slate-400 mt-0.5">Proporsi kelompok usia lansia</p>
+                    </div>
+                    <div class="w-9 h-9 rounded-xl bg-orange-50 flex items-center justify-center text-orange-650">
+                        <span class="material-symbols-outlined text-[18px]">elderly</span>
+                    </div>
+                </div>
+
+                @php
+                    $totalLansia = $lansiaDemografi['60_69'] + $lansiaDemografi['70_plus'];
+                    $isEmptyLansia = $totalLansia === 0;
+                @endphp
+
+                <div x-data="{
+                    chart: null,
+                    hiddenItems: [],
+                    isEmpty: {{ $isEmptyLansia ? 'true' : 'false' }},
+                    init() {
+                        if (typeof Chart === 'undefined') { setTimeout(() => this.init(), 100); return; }
+                        if (this.isEmpty) return;
+                        const data = [
+                            {{ $lansiaDemografi['60_69'] ?? 0 }},
+                            {{ $lansiaDemografi['70_plus'] ?? 0 }}
+                        ];
+                        const labels = ['60–69 Tahun', '70+ Tahun'];
+                        const colors = ['#f97316', '#ef4444']; // Orange, Red
+                
+                        this.chart = new Chart(this.$refs.canvas, {
+                            type: 'doughnut',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    data: data,
+                                    backgroundColor: colors,
+                                    borderWidth: 2,
+                                    borderColor: '#ffffff',
+                                    hoverOffset: 6
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                cutout: '75%',
+                                animation: { duration: 800, easing: 'easeOutQuart' },
+                                plugins: {
+                                    legend: { display: false },
+                                    tooltip: {
+                                        cornerRadius: 8,
+                                        padding: 8,
+                                        bodyFont: { family: '\'Public Sans\', sans-serif', size: 11 }
+                                    }
+                                }
+                            }
+                        });
+                    },
+                    toggleVisibility(index) {
+                        if (!this.chart) return;
+                        this.chart.toggleDataVisibility(index);
+                        this.chart.update();
+                        if (this.hiddenItems.includes(index)) {
+                            this.hiddenItems = this.hiddenItems.filter(i => i !== index);
+                        } else {
+                            this.hiddenItems.push(index);
+                        }
+                    }
+                }" wire:ignore class="relative flex justify-center mb-5 h-44">
+                    <canvas x-show="!isEmpty" x-ref="canvas"></canvas>
+                    <div x-show="!isEmpty" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                        <span class="text-3xl font-black text-slate-800 leading-none" style="font-variant-numeric:tabular-nums;">{{ $rataRataUsiaLansia }}</span>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mt-1 text-center">Tahun<br>(Rata-rata)</span>
+                    </div>
+                    <template x-if="isEmpty">
+                        <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-400">
+                            <span class="material-symbols-outlined text-[28px] mb-1.5 opacity-50">pie_chart</span>
+                            <span class="text-xs font-semibold">Belum ada data</span>
+                        </div>
+                    </template>
+                </div>
+
+                {{-- Legend --}}
+                <div class="space-y-2 pt-3 border-t border-slate-100 max-h-48 overflow-y-auto pr-1">
+                    @foreach ([
+                        '60_69' => ['label' => '60–69 Tahun', 'color' => '#f97316', 'namesKey' => '60_69'],
+                        '70_plus' => ['label' => '70+ Tahun', 'color' => '#ef4444', 'namesKey' => '70_plus'],
+                    ] as $key => $info)
+                        @php
+                            $count = $lansiaDemografi[$key] ?? 0;
+                            $percentage = $totalLansia > 0 ? round(($count / $totalLansia) * 100, 1) : 0;
+                        @endphp
+                        <div class="flex flex-col gap-1 text-xs">
+                            <div class="flex items-center gap-2" :class="hiddenItems.includes({{ array_search($key, ['60_69', '70_plus']) }}) ? 'opacity-40' : ''">
+                                <span class="w-2 h-2 rounded-full shrink-0 cursor-pointer" style="background:{{ $info['color'] }}" @click="toggleVisibility({{ array_search($key, ['60_69', '70_plus']) }})"></span>
+                                <span class="text-slate-650 flex-1 truncate font-medium">{{ $info['label'] }}</span>
+                                <div class="flex items-center gap-2 shrink-0">
+                                    <span class="text-slate-400 text-[10px]">{{ $count }} Lansia</span>
+                                    <span class="font-bold text-slate-700 w-8 text-right">{{ $percentage }}%</span>
+                                </div>
+                            </div>
+                            @if(count($lansiaDemografiNames[$info['namesKey']] ?? []) > 0)
+                            <div class="pl-4 flex flex-wrap gap-1 mt-0.5">
+                                @foreach($lansiaDemografiNames[$info['namesKey']] as $warga)
+                                    <a href="{{ route('admin.patients.show', $warga['id']) }}" class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-orange-50 hover:bg-orange-100 text-orange-700 text-[9px] transition-colors border border-orange-100/50">
+                                        <span class="font-medium truncate max-w-[85px]">{{ $warga['name'] }}</span>
+                                        <span class="text-orange-400 text-[8px]">({{ $warga['age'] }} thn)</span>
+                                    </a>
+                                @endforeach
+                            </div>
+                            @endif
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+    </section>
+
 {{-- ── Main Grid ── --}}
 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
@@ -853,358 +1233,7 @@
                         <span class="text-xl font-bold text-rose-700">{{ $kehadiranBalita['tidak_hadir'] }}</span>
                         <span class="text-[10px] font-semibold text-rose-600 uppercase mt-1">Tidak Hadir</span>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- Ibu Hamil Trimester Widget --}}
-        <div class="widget-card p-5 relative overflow-hidden off-screen-widget">
-            <div class="absolute -right-8 -top-8 w-32 h-32 bg-pink-50 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="relative z-10">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center gap-2.5">
-                        <div class="w-9 h-9 rounded-xl bg-pink-500 text-white flex items-center justify-center">
-                            <span class="material-symbols-outlined text-[18px]">pregnant_woman</span>
-                        </div>
-                        <div>
-                            <span class="font-bold text-slate-900 text-sm block">Bumil per Trimester</span>
-                            <span class="text-[10px] text-slate-400">Ibu hamil terdaftar aktif</span>
-                        </div>
-                    </div>
-                    @php $totalBumil = array_sum($bumilTrimester); @endphp
-                    <div class="text-right">
-                        <span class="text-xl font-bold text-pink-600">{{ $totalBumil }}</span>
-                        <span class="text-[10px] text-slate-400 block">Total Bumil</span>
-                    </div>
-                </div>
-
-                {{-- Ringkasan Risiko --}}
-                @php $risikoCount = count($bumilRisikoTinggi ?? []); @endphp
-                @if($risikoCount > 0)
-                <div class="flex items-center gap-2 mb-4 p-2.5 rounded-xl bg-red-50 border border-red-200">
-                    <span class="material-symbols-outlined text-red-500 text-[16px]">warning</span>
-                    <span class="text-xs font-semibold text-red-700">{{ $risikoCount }} bumil terdeteksi risiko tinggi</span>
-                </div>
-                @else
-                <div class="flex items-center gap-2 mb-4 p-2.5 rounded-xl bg-emerald-50 border border-emerald-200">
-                    <span class="material-symbols-outlined text-emerald-500 text-[16px]">check_circle</span>
-                    <span class="text-xs font-semibold text-emerald-700">Tidak ada bumil risiko tinggi</span>
-                </div>
-                @endif
-
-                <div class="space-y-3">
-                    @foreach ([
-                        'T1' => ['label' => 'Trimester 1', 'sub' => '0–13 minggu', 'color' => 'bg-pink-300'],
-                        'T2' => ['label' => 'Trimester 2', 'sub' => '14–27 minggu', 'color' => 'bg-pink-500'],
-                        'T3' => ['label' => 'Trimester 3', 'sub' => '28+ minggu', 'color' => 'bg-pink-700'],
-                    ] as $key => $info)
-                        @php
-                            $count = $bumilTrimester[$key];
-                            $percent = $totalBumil > 0 ? round(($count / $totalBumil) * 100, 1) : 0;
-                        @endphp
-                        <div>
-                            <div class="flex justify-between items-center text-xs mb-1">
-                                <div>
-                                    <span class="font-semibold text-slate-700">{{ $info['label'] }}</span>
-                                    <span class="text-slate-400 ml-1">{{ $info['sub'] }}</span>
-                                </div>
-                                <div class="flex items-center gap-2">
-                                    <span class="text-slate-500">{{ $count }} orang</span>
-                                    <span class="font-bold text-pink-600 w-10 text-right">{{ $percent }}%</span>
-                                </div>
-                            </div>
-                            <div class="w-full bg-slate-100 rounded-full h-2">
-                                <div class="{{ $info['color'] }} h-2 rounded-full transition-all duration-500" style="width: {{ $percent }}%"></div>
-                            </div>
-                            @if(count($bumilTrimesterNames[$key]) > 0)
-                            <div class="mt-2 flex flex-wrap gap-1">
-                                @foreach($bumilTrimesterNames[$key] as $warga)
-                                    <a href="{{ route('admin.patients.show', $warga['id']) }}" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-pink-50 hover:bg-pink-100 text-pink-700 hover:text-pink-800 text-[10px] transition-colors border border-pink-100/50">
-                                        <span class="w-1.5 h-1.5 rounded-full bg-pink-400"></span>
-                                        <span class="font-medium truncate max-w-[120px]">{{ $warga['name'] }}</span>
-                                        <span class="text-pink-400 text-[9px] font-normal">({{ $warga['gestational_age'] }})</span>
-                                    </a>
-                                @endforeach
-                            </div>
-                            @endif
-                        </div>
-                    @endforeach
-                </div>
-
-                @if($totalBumil > 0)
-                <div class="mt-4 pt-3 border-t border-slate-100 flex justify-between text-[10px] text-slate-400">
-                    <span>T3 perlu perhatian lebih</span>
-                    <span class="font-semibold text-pink-500">{{ $bumilTrimester['T3'] }} orang menuju persalinan</span>
-                </div>
-                @endif
-            </div>
-        </div>
-
-        {{-- Demografi Lansia Widget --}}
-        <div class="widget-card p-5 relative overflow-hidden off-screen-widget">
-            <div class="absolute -right-8 -top-8 w-32 h-32 bg-orange-50 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="relative z-10">
-                @php
-                    $totalLansia = $lansiaDemografi['60_69'] + $lansiaDemografi['70_plus'];
-                    $pct60 = $totalLansia > 0 ? round(($lansiaDemografi['60_69'] / $totalLansia) * 100, 1) : 0;
-                    $pct70 = $totalLansia > 0 ? round(($lansiaDemografi['70_plus'] / $totalLansia) * 100, 1) : 0;
-                @endphp
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center gap-2.5">
-                        <div class="w-9 h-9 rounded-xl bg-orange-500 text-white flex items-center justify-center">
-                            <span class="material-symbols-outlined text-[18px]">elderly</span>
-                        </div>
-                        <div>
-                            <span class="font-bold text-slate-900 text-sm block">Demografi Lansia</span>
-                            <span class="text-[10px] text-slate-400">Usia 60 tahun ke atas</span>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <span class="text-xl font-bold text-orange-600">{{ $totalLansia }}</span>
-                        <span class="text-[10px] text-slate-400 block">Total Lansia</span>
-                    </div>
-                </div>
-
-                {{-- Kartu dua kelompok --}}
-                <div class="grid grid-cols-2 gap-3 mb-4">
-                    <div class="p-3 rounded-xl bg-orange-50 border border-orange-200 flex flex-col justify-center items-center text-center">
-                        <span class="text-2xl font-bold text-orange-700">{{ $lansiaDemografi['60_69'] }}</span>
-                        <span class="text-[10px] font-semibold text-orange-600 uppercase mt-1">60–69 Tahun</span>
-                        <span class="text-[10px] text-orange-400 mt-0.5">{{ $pct60 }}% dari total</span>
-                    </div>
-                    <div class="p-3 rounded-xl bg-red-50 border border-red-200 flex flex-col justify-center items-center text-center">
-                        <span class="text-2xl font-bold text-red-700">{{ $lansiaDemografi['70_plus'] }}</span>
-                        <span class="text-[10px] font-semibold text-red-600 uppercase mt-1">70+ Tahun</span>
-                        <span class="text-[10px] text-red-400 mt-0.5">{{ $pct70 }}% dari total</span>
-                    </div>
-                </div>
-
-                {{-- Progress proporsi --}}
-                <div class="mb-3">
-                    <div class="flex justify-between text-[10px] text-slate-500 mb-1">
-                        <span>Proporsi kelompok usia</span>
-                    </div>
-                    <div class="w-full h-2.5 rounded-full overflow-hidden flex">
-                        <div class="bg-orange-400 h-full transition-all duration-500" style="width: {{ $pct60 }}%"></div>
-                        <div class="bg-red-500 h-full transition-all duration-500" style="width: {{ $pct70 }}%"></div>
-                    </div>
-                    <div class="flex justify-between text-[10px] mt-1">
-                        <span class="text-orange-500 font-semibold">● 60–69 thn</span>
-                        <span class="text-red-500 font-semibold">70+ thn ●</span>
-                    </div>
-                </div>
-
-                {{-- Daftar Lansia --}}
-                @if($totalLansia > 0)
-                <div class="mt-3 mb-3 pt-3 border-t border-slate-100 space-y-2">
-                    <span class="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Daftar Lansia</span>
-                    
-                    @if(count($lansiaDemografiNames['60_69']) > 0)
-                    <div>
-                        <span class="text-[9px] font-semibold text-orange-600 block mb-1">60–69 Tahun:</span>
-                        <div class="flex flex-wrap gap-1">
-                            @foreach($lansiaDemografiNames['60_69'] as $warga)
-                                <a href="{{ route('admin.patients.show', $warga['id']) }}" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-orange-50 hover:bg-orange-100 text-orange-700 hover:text-orange-800 text-[10px] transition-colors border border-orange-100/50">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-orange-400"></span>
-                                    <span class="font-medium truncate max-w-[120px]">{{ $warga['name'] }}</span>
-                                    <span class="text-orange-400 text-[9px] font-normal">({{ $warga['age'] }} thn)</span>
-                                </a>
-                            @endforeach
-                        </div>
-                    </div>
-                    @endif
-
-                    @if(count($lansiaDemografiNames['70_plus']) > 0)
-                    <div>
-                        <span class="text-[9px] font-semibold text-red-600 block mb-1">70+ Tahun:</span>
-                        <div class="flex flex-wrap gap-1">
-                            @foreach($lansiaDemografiNames['70_plus'] as $warga)
-                                <a href="{{ route('admin.patients.show', $warga['id']) }}" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-50 hover:bg-red-100 text-red-700 hover:text-red-800 text-[10px] transition-colors border border-red-100/50">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span>
-                                    <span class="font-medium truncate max-w-[120px]">{{ $warga['name'] }}</span>
-                                    <span class="text-red-400 text-[9px] font-normal">({{ $warga['age'] }} thn)</span>
-                                </a>
-                            @endforeach
-                        </div>
-                    </div>
-                    @endif
-                </div>
-                @endif
-
-                {{-- Keterangan risiko --}}
-                @if($lansiaDemografi['70_plus'] > 0)
-                <div class="flex flex-col gap-2 p-2.5 rounded-xl bg-red-50 border border-red-200">
-                    <div class="flex items-center gap-2">
-                        <span class="material-symbols-outlined text-red-500 text-[16px]">monitor_heart</span>
-                        <span class="text-xs font-semibold text-red-700">{{ $lansiaDemografi['70_plus'] }} lansia (70+ thn) perlu pemantauan intensif:</span>
-                    </div>
-                    <div class="flex flex-wrap gap-1 pl-6">
-                        @foreach($lansiaDemografiNames['70_plus'] as $warga)
-                            <a href="{{ route('admin.patients.show', $warga['id']) }}" class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-100 hover:bg-red-200 text-red-800 hover:text-red-900 text-[10px] transition-colors border border-red-200/50">
-                                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                                <span class="font-medium truncate max-w-[120px]">{{ $warga['name'] }}</span>
-                                <span class="text-red-500 text-[9px] font-normal">({{ $warga['age'] }} thn)</span>
-                            </a>
-                        @endforeach
-                    </div>
-                </div>
-                @else
-                <div class="flex items-center gap-2 p-2.5 rounded-xl bg-emerald-50 border border-emerald-200">
-                    <span class="material-symbols-outlined text-emerald-500 text-[16px]">check_circle</span>
-                    <span class="text-xs font-semibold text-emerald-700">Semua lansia di kelompok risiko rendah</span>
-                </div>
-                @endif
-            </div>
-        </div>
-
-        {{-- Nutrition Status Widget --}}
-        <div class="widget-card p-5 relative overflow-hidden off-screen-widget">
-            <div class="absolute -right-8 -top-8 w-32 h-32 bg-indigo-50 rounded-full blur-3xl pointer-events-none">
-            </div>
-            <div class="relative z-10">
-                <div class="flex items-center justify-between mb-5">
-                    <div>
-                        <h3 class="font-bold text-slate-900 text-sm">Kondisi Gizi</h3>
-                        <p class="text-xs text-slate-500 mt-0.5">Distribusi status gizi balita</p>
-                    </div>
-                    <div class="w-9 h-9 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600">
-                        <span class="material-symbols-outlined text-[18px]">donut_large</span>
-                    </div>
-                </div>
-
-                @php
-                    $ndLabels = $nutritionStatusDistribution['labels'];
-                    $ndData = $nutritionStatusDistribution['data'];
-                    $chartTotal = array_sum($ndData);
-                @endphp
-
-                {{-- Chart --}}
-                <div x-data="{
-                    chart: null,
-                    hiddenItems: [],
-                    isEmpty: false,
-                    init() {
-                        if (typeof Chart === 'undefined') { setTimeout(() => this.init(), 100); return; }
-                        const nd = $wire.nutritionStatusDistribution;
-                        if (!nd || !nd.labels || !nd.data || nd.data.length === 0) {
-                            this.isEmpty = true;
-                            return;
-                        }
-                        this.isEmpty = nd.data.every(v => parseInt(v) === 0);
-                        if (this.isEmpty) return;
-                
-                        const colors = nd.labels.map(label => {
-                            if (label.includes('Normal') || label.includes('Baik')) return '#059669';
-                            if (label.includes('Kurang') && !label.includes('Sangat')) return '#C2410C';
-                            if (label.includes('Risiko') || label.includes('Berisiko')) return '#C2410C';
-                            if (label.includes('Sangat') || label.includes('Buruk') || label.includes('Pendek')) return '#B91C1C';
-                            if (label.includes('Lebih') || label.includes('Obesitas')) return '#A16207'; // Gizi Lebih
-                            return '#94a3b8';
-                        });
-                
-                        this.chart = new Chart(this.$refs.canvas, {
-                            type: 'doughnut',
-                            data: {
-                                labels: nd.labels,
-                                datasets: [{
-                                    data: nd.data,
-                                    backgroundColor: colors,
-                                    borderWidth: 3,
-                                    borderColor: '#ffffff',
-                                    hoverOffset: 8
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                cutout: '80%',
-                                animation: { duration: 800, easing: 'easeOutQuart' },
-                                onClick: (event, activeElements) => {
-                                    if (activeElements && activeElements.length > 0) {
-                                        const index = activeElements[0].index;
-                                        const label = nd.labels[index];
-                                        $wire.selectNutritionStatus(label);
-                                    }
-                                },
-                                plugins: {
-                                    legend: { display: false },
-                                    tooltip: {
-                                        cornerRadius: 10,
-                                        padding: 10,
-                                        bodyFont: { family: '\'Public Sans\', sans-serif', size: 12 },
-                                        titleFont: { family: '\'Public Sans\', sans-serif', size: 12, weight: 'bold' }
-                                    }
-                                }
-                            }
-                        });
-                    },
-                    toggleVisibility(index) {
-                        if (!this.chart) return;
-                        this.chart.toggleDataVisibility(index);
-                        this.chart.update();
-                        if (this.hiddenItems.includes(index)) {
-                            this.hiddenItems = this.hiddenItems.filter(i => i !== index);
-                        } else {
-                            this.hiddenItems.push(index);
-                        }
-                    }
-                }" wire:ignore class="relative flex justify-center mb-5">
-                    <canvas x-show="!isEmpty" x-ref="canvas" width="180" height="180"
-                        style="max-width:180px;max-height:180px;"></canvas>
-                    <div x-show="!isEmpty"
-                        class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                        <span class="text-2xl font-bold text-slate-900 leading-none"
-                            style="font-variant-numeric:tabular-nums;">{{ $chartTotal }}</span>
-                        <span class="text-xs font-medium text-slate-400 mt-1">Total</span>
-                    </div>
-                    <template x-if="isEmpty">
-                        <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-400">
-                            <span class="material-symbols-outlined text-[32px] mb-2 opacity-50">pie_chart</span>
-                            <span class="text-xs font-medium">Belum ada data</span>
-                        </div>
-                    </template>
-                </div>
-
-                {{-- Legend --}}
-                <div class="space-y-2.5 pt-4 border-t border-slate-100">
-                    @foreach ($ndLabels as $index => $label)
-                        @php
-                            $count = $ndData[$index] ?? 0;
-                            $percentage = $chartTotal > 0 ? round(($count / $chartTotal) * 100, 1) : 0;
-                            $color = match (true) {
-                                str_contains($label, 'Normal') || str_contains($label, 'Baik') => '#059669',
-                                str_contains($label, 'Kurang') && !str_contains($label, 'Sangat') => '#f59e0b',
-                                str_contains($label, 'Risiko') || str_contains($label, 'Berisiko') => '#f59e0b',
-                                str_contains($label, 'Sangat') ||
-                                    str_contains($label, 'Buruk') ||
-                                    str_contains($label, 'Pendek')
-                                    => '#ef4444',
-                                str_contains($label, 'Lebih') || str_contains($label, 'Obesitas') => '#f59e0b',
-                                default => '#94a3b8',
-                            };
-                        @endphp
-                        <div class="flex items-center gap-2 transition-opacity duration-200 hover:opacity-80"
-                             :class="hiddenItems.includes({{ $index }}) ? 'opacity-40 grayscale' : ''">
-                            <span class="w-2 h-2 rounded-full shrink-0 cursor-pointer"
-                                style="background:{{ $color }}" @click="toggleVisibility({{ $index }})"></span>
-                            <span
-                                class="text-xs text-slate-600 flex-1 truncate select-none cursor-pointer hover:text-indigo-600 hover:underline"
-                                wire:click="selectNutritionStatus('{{ $label }}')">{{ $label }}</span>
-                            <div class="flex items-center gap-2 shrink-0">
-                                <div class="w-12 h-1.5 bg-slate-100 rounded-full overflow-hidden cursor-pointer" @click="toggleVisibility({{ $index }})">
-                                    <div class="h-full rounded-full transition-all duration-500"
-                                        style="background:{{ $color }}; width:{{ $percentage }}%;">
-                                    </div>
-                                </div>
-                                <span class="text-xs font-semibold text-slate-700 w-8 text-right select-none cursor-pointer"
-                                    style="font-variant-numeric:tabular-nums;" @click="toggleVisibility({{ $index }})">{{ $percentage }}%</span>
-                                <button wire:click="selectNutritionStatus('{{ $label }}')" class="w-6 h-6 flex items-center justify-center rounded bg-slate-50 hover:bg-indigo-50 text-slate-400 hover:text-indigo-600 transition-colors" title="Lihat daftar balita">
-                                    <span class="material-symbols-outlined text-[14px]">visibility</span>
-                                </button>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
+                        {{-- Sidebar widgets relocated to row charts --}}                </div>
             </div>
         </div>
     </div>

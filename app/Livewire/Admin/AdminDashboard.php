@@ -61,6 +61,10 @@ class AdminDashboard extends BaseAdminComponent
 
     public $kehadiranBalita = ['hadir' => 0, 'tidak_hadir' => 0, 'persentase' => 0];
 
+    public float $rataRataUsiaKehamilan = 0;
+
+    public float $rataRataUsiaLansia = 0;
+
     public bool $showNutritionModal = false;
 
     public ?string $selectedNutritionStatus = null;
@@ -303,6 +307,18 @@ class AdminDashboard extends BaseAdminComponent
                     });
                 }
 
+                if ($this->rataRataUsiaKehamilan == 0 || $this->rataRataUsiaLansia == 0) {
+                    $patientQuery = $this->applyDashboardFilters(Patient::query(), 'patient');
+                    $medicalRecordQuery = $this->applyDashboardFilters(MedicalRecord::query(), 'medical_record');
+                    $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+                    if ($this->rataRataUsiaKehamilan == 0) {
+                        $this->getBumilTrimester($medicalRecordQuery, $latestRecordSubquery);
+                    }
+                    if ($this->rataRataUsiaLansia == 0) {
+                        $this->getLansiaDemografi($patientQuery);
+                    }
+                }
+
                 $loadedFromSnapshot = true;
             } else {
                 $this->computeDashboardStatsRealtime();
@@ -442,9 +458,13 @@ class AdminDashboard extends BaseAdminComponent
         $lansia = (clone $patientQuery)->where('category', 'lansia')->get();
         $group60 = 0;
         $group70 = 0;
+        $totalAge = 0;
+        $validAgeCount = 0;
         foreach ($lansia as $l) {
             if ($l->birth_date) {
                 $age = $l->birth_date->age;
+                $totalAge += $age;
+                $validAgeCount++;
                 if ($age >= 70) {
                     $group70++;
                 } elseif ($age >= 60) {
@@ -452,6 +472,8 @@ class AdminDashboard extends BaseAdminComponent
                 }
             }
         }
+
+        $this->rataRataUsiaLansia = $validAgeCount > 0 ? round($totalAge / $validAgeCount, 1) : 0;
 
         return ['60_69' => $group60, '70_plus' => $group70];
     }
@@ -466,10 +488,14 @@ class AdminDashboard extends BaseAdminComponent
         $t1 = 0;
         $t2 = 0;
         $t3 = 0;
+        $totalWeeks = 0;
+        $validCount = 0;
 
         foreach ($records as $record) {
             $weeks = (int) filter_var($record->gestational_age, FILTER_SANITIZE_NUMBER_INT);
             if ($weeks > 0) {
+                $totalWeeks += $weeks;
+                $validCount++;
                 if ($weeks <= 13) {
                     $t1++;
                 } elseif ($weeks <= 27) {
@@ -479,6 +505,8 @@ class AdminDashboard extends BaseAdminComponent
                 }
             }
         }
+
+        $this->rataRataUsiaKehamilan = $validCount > 0 ? round($totalWeeks / $validCount, 1) : 0;
 
         return ['T1' => $t1, 'T2' => $t2, 'T3' => $t3];
     }

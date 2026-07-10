@@ -604,14 +604,21 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
         // ── DASH-04: Lansia Demografi ──
         $lansiaList = (clone $patientQuery)->where('category', 'lansia')->get(['birth_date']);
         $lansiaDemografi = ['60_69' => 0, '70_plus' => 0];
+        $totalLansiaAge = 0;
+        $validLansiaCount = 0;
         foreach ($lansiaList as $l) {
             $age = $l->birth_date ? Carbon::parse($l->birth_date)->age : 0;
-            if ($age >= 60 && $age < 70) {
-                $lansiaDemografi['60_69']++;
-            } elseif ($age >= 70) {
-                $lansiaDemografi['70_plus']++;
+            if ($age >= 60) {
+                $totalLansiaAge += $age;
+                $validLansiaCount++;
+                if ($age < 70) {
+                    $lansiaDemografi['60_69']++;
+                } else {
+                    $lansiaDemografi['70_plus']++;
+                }
             }
         }
+        $rataRataUsiaLansia = $validLansiaCount > 0 ? round($totalLansiaAge / $validLansiaCount, 1) : 0;
 
         // ── DASH-02: Bumil Trimester ──
         $bumilRecords = (clone $medicalRecordQuery)
@@ -619,9 +626,13 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
             ->whereHas('patient', fn ($q) => $q->where('category', 'ibu_hamil'))
             ->get(['gestational_age']);
         $bumilTrimester = ['T1' => 0, 'T2' => 0, 'T3' => 0];
+        $totalBumilWeeks = 0;
+        $validBumilCount = 0;
         foreach ($bumilRecords as $record) {
             $weeks = (int) filter_var($record->gestational_age, FILTER_SANITIZE_NUMBER_INT);
             if ($weeks > 0) {
+                $totalBumilWeeks += $weeks;
+                $validBumilCount++;
                 if ($weeks <= 13) {
                     $bumilTrimester['T1']++;
                 } elseif ($weeks <= 27) {
@@ -631,6 +642,7 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
                 }
             }
         }
+        $rataRataUsiaKehamilan = $validBumilCount > 0 ? round($totalBumilWeeks / $validBumilCount, 1) : 0;
 
         // ── DASH-06: Kehadiran Balita ──
         $totalBalitaForHadir = (clone $patientQuery)->whereIn('category', ['balita', 'bayi', 'baduta'])->count();
@@ -804,6 +816,8 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
             // New Dashboard Widgets
             'lansiaDemografi' => $lansiaDemografi,
             'bumilTrimester' => $bumilTrimester,
+            'rataRataUsiaKehamilan' => $rataRataUsiaKehamilan,
+            'rataRataUsiaLansia' => $rataRataUsiaLansia,
             'kehadiranBalita' => $kehadiranBalita,
             'kelahiranBulanIni' => $kelahiranBulanIni,
 
