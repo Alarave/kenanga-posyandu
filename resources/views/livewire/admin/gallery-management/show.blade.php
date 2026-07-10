@@ -50,9 +50,9 @@
                         Semua Folder
                     </a>
                 </div>
-                <h1 class="text-2xl md:text-3xl font-black tracking-tight leading-tight text-white flex items-center gap-2.5">
-                    <span class="material-symbols-outlined text-[28px] text-teal-400">folder_open</span>
-                    {{ $folder->name }}
+                <h1 class="text-2xl md:text-3xl font-black tracking-tight leading-tight text-white flex items-start gap-2.5">
+                    <span class="material-symbols-outlined text-[28px] text-teal-400 mt-1 flex-shrink-0">folder_open</span>
+                    <span class="break-words">{{ $folder->name }}</span>
                 </h1>
                 <p class="text-sm text-white/80 font-medium max-w-2xl leading-relaxed">
                     {{ $folder->description ?? 'Tidak ada deskripsi folder.' }}
