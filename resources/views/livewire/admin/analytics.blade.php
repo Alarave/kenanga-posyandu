@@ -1497,8 +1497,8 @@
                                 @else
                                   <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Nama Warga</th>
                                   <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Unit Posyandu</th>
-                                  <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Status / Info</th>
                                   @if ($drillDownType !== 'kader')
+                                    <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Status / Info</th>
                                     <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Tanggal Kunjungan</th>
                                     <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">BB</th>
                                     <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">TB</th>
@@ -1620,8 +1620,8 @@
                                   <td class="px-6 py-4">{!! $statusHtml !!}</td>
                                 @else
                                   <td class="px-6 py-4 text-xs font-bold text-slate-700">{{ $row['posyandu'] }}</td>
-                                  <td class="px-6 py-4">{!! $statusHtml !!}</td>
                                   @if ($drillDownType !== 'kader')
+                                    <td class="px-6 py-4">{!! $statusHtml !!}</td>
                                     <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['visit_date'] }}</td>
                                     <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['weight'] ?? '-' }}</td>
                                     <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['height'] ?? '-' }}</td>
@@ -1642,7 +1642,7 @@
                               </tr>
                             @empty
                             <tr>
-                                <td colspan="{{ $drillDownType === 'kader' ? 3 : 7 }}" class="px-6 py-10 text-center text-sm text-slate-500 font-bold bg-white">Tidak ada data detail untuk periode/filter ini</td>
+                                <td colspan="{{ $drillDownType === 'kader' ? 2 : 7 }}" class="px-6 py-10 text-center text-sm text-slate-500 font-bold bg-white">Tidak ada data detail untuk periode/filter ini</td>
                             </tr>
                             @endforelse
                         </tbody>
