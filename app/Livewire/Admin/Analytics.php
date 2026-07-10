@@ -298,12 +298,16 @@ class Analytics extends BaseAdminComponent
         $targetPosyandu = $this->drillDownPosyandu ?? $this->selectedPosyandu;
 
         if ($type === 'kader') {
-            $kaders = User::role('kader')->get();
+            $user = Auth::user();
+            $kaders = User::where('is_active', true)
+                ->where('role', 'kader')
+                ->when(! $user->isSuperAdmin() && $user->posyandu_id, fn ($q) => $q->where('posyandu_id', $user->posyandu_id))
+                ->get();
             $this->drillDownData = $kaders->map(fn ($k) => [
                 'name' => $k->name ?? '-',
-                'nik' => $k->email ?? '-',
+                'nik' => $k->nik ?? '-',
                 'posyandu' => $k->posyandu?->name ?? 'Semua Unit',
-                'nutrition_status' => $k->phone_number ? 'No. HP: ' . $k->phone_number : '-',
+                'nutrition_status' => $k->hp ? 'No. HP: ' . $k->hp : '-',
                 'visit_date' => $k->created_at ? $k->created_at->format('d/m/Y') : '-',
                 'weight' => '-',
                 'height' => '-',
@@ -950,7 +954,7 @@ class Analytics extends BaseAdminComponent
             ->count();
 
         $kaderAktif = User::where('is_active', true)
-            ->whereIn('role', ['staff', 'medical', 'admin', 'kader'])
+            ->where('role', 'kader')
             ->when(! $user->isSuperAdmin() && $user->posyandu_id, fn ($q) => $q->where('posyandu_id', $user->posyandu_id))
             ->count();
 
