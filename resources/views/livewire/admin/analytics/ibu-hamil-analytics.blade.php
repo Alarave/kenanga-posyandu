@@ -4,10 +4,11 @@
             .pregnancy-card:hover .hover-text-amber { color: #d97706 !important; }
             .pregnancy-card:hover .hover-text-rose { color: #dc2626 !important; }
             .pregnancy-card:hover .hover-text-teal { color: #0d9488 !important; }
+            .pregnancy-card:hover .hover-text-purple { color: #7c3aed !important; }
         </style>
 
         {{-- Stats Grid Ibu Hamil --}}
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {{-- AH-02 & 03: Pregnancy Safety --}}
             <div wire:click="$parent.drillDown('Ibu Hamil - Risiko Tinggi &amp; 4T', 'pregnancy_high_risk', {{ $selectedMonth ?? 'null' }})"
                  class="relative overflow-hidden bg-gradient-to-br from-white to-emerald-50/10 rounded-3xl p-6 border border-emerald-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-emerald-100/40 hover:-translate-y-1 hover:border-emerald-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group pregnancy-card">
@@ -40,6 +41,41 @@
                     <div class="flex items-center gap-2">
                         <span class="text-amber-700 font-extrabold bg-amber-50 px-2.5 py-0.5 rounded-lg">{{ $riskStats['highRisk'] }} Ibu</span>
                         <span class="material-symbols-outlined text-[14px] !w-auto !overflow-visible text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 hover-text-teal">arrow_forward</span>
+                    </div>
+                </div>
+            </div>
+
+            {{-- AH-07: KEK (Kekurangan Energi Kronis) --}}
+            <div wire:click="$parent.drillDown('Ibu Hamil - Kasus KEK', 'pregnancy_kek', {{ $selectedMonth ?? 'null' }})"
+                 class="relative overflow-hidden bg-gradient-to-br from-white to-purple-50/10 rounded-3xl p-6 border border-purple-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-purple-100/40 hover:-translate-y-1 hover:border-purple-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group pregnancy-card">
+                
+                {{-- Background Watermark Icon --}}
+                <span class="material-symbols-outlined absolute -bottom-6 -right-6 text-[120px] text-purple-500 opacity-[0.04] transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 pointer-events-none">straighten</span>
+
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center border border-purple-200/50 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:bg-purple-100 group-hover:text-purple-750">
+                            <span class="material-symbols-outlined text-[26px]">straighten</span>
+                        </div>
+                        <span class="text-[10px] font-black text-purple-700 uppercase tracking-widest bg-purple-50 px-2.5 py-1 rounded-lg">Gizi Ibu Hamil</span>
+                    </div>
+                    <div class="flex items-baseline justify-between w-full">
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-5xl font-black text-purple-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ $kekStats['normal'] }}</span>
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Ibu Hamil</span>
+                        </div>
+                        @php
+                            $kekPercentage = $kekStats['total'] > 0 ? round(($kekStats['normal'] / $kekStats['total']) * 100) : 100;
+                        @endphp
+                        <span class="text-xs font-extrabold text-purple-750 bg-purple-100/80 px-2 py-0.5 rounded-md">{{ $kekPercentage }}% Normal</span>
+                    </div>
+                    <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Ibu hamil dengan lingkar lengan atas (LILA) sehat (&ge; 23.5 cm) bebas dari risiko KEK.</p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-slate-100 flex justify-between items-center pr-2">
+                    <span class="text-xs font-bold text-slate-500 transition-colors duration-300 hover-text-purple">Kasus KEK:</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-purple-700 font-extrabold bg-purple-50 px-2.5 py-0.5 rounded-lg">{{ $kekStats['kek'] }} Ibu</span>
+                        <span class="material-symbols-outlined text-[14px] !w-auto !overflow-visible text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 hover-text-purple">arrow_forward</span>
                     </div>
                 </div>
             </div>
@@ -239,6 +275,127 @@
             </div>
             <div class="relative h-85">
                 <canvas id="pregnancyRiskChart" wire:ignore></canvas>
+            </div>
+        </div>
+
+        {{-- Tabel Pemantauan Klinis Ibu Hamil --}}
+        <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-xs mt-6">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Pemantauan Klinis Ibu Hamil</h3>
+                    <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Daftar lengkap perkembangan kesehatan klinis ibu hamil aktif</p>
+                </div>
+                
+                {{-- Search Bar --}}
+                <div class="w-full md:w-72 relative">
+                    <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-[18px]">search</span>
+                    <input type="text" 
+                           wire:model.live.debounce.300ms="search" 
+                           placeholder="Cari nama ibu hamil..." 
+                           class="w-full h-10 pl-10 pr-4 bg-slate-50/50 border border-slate-200 focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 text-xs font-semibold text-slate-700 placeholder-slate-400 rounded-xl transition-all">
+                </div>
+            </div>
+
+            <div class="overflow-x-auto">
+                <table class="w-full text-left">
+                    <thead>
+                        <tr style="background:#f9fafb; border-bottom:1px solid rgba(0,0,0,0.05);" class="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                            <th class="px-6 py-4">Ibu Hamil</th>
+                            <th class="px-6 py-4">Usia Hamil</th>
+                            <th class="px-6 py-4">HPL / Taksiran</th>
+                            <th class="px-6 py-4 text-center">LILA</th>
+                            <th class="px-6 py-4 text-center">Hemoglobin</th>
+                            <th class="px-6 py-4 text-center">Tekanan Darah</th>
+                            <th class="px-6 py-4 text-center">ANC</th>
+                            <th class="px-6 py-4 text-center">Tablet Fe</th>
+                            <th class="px-6 py-4 text-right">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-sm divide-y divide-slate-100">
+                        @forelse($maternalTableData as $row)
+                            <tr class="hover:bg-slate-50/50 transition-colors" wire:key="maternal-row-{{ $row['id'] }}">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-xs shrink-0">
+                                            {{ strtoupper(substr($row['name'], 0, 2)) }}
+                                        </div>
+                                        <div>
+                                            <span class="block text-sm font-semibold text-slate-800">{{ $row['name'] }}</span>
+                                            <span class="text-xs text-slate-400 font-medium">Usia: {{ $row['age'] }} thn | {{ $row['posyandu_name'] }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-slate-700 font-medium">{{ $row['gestational_age'] }}</td>
+                                <td class="px-6 py-4">
+                                    <span class="text-slate-700 font-semibold">{{ $row['hpl'] }}</span>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    @if($row['lila'] === '-')
+                                        <span class="text-slate-300">-</span>
+                                    @else
+                                        <div class="flex flex-col items-center gap-1">
+                                            <span class="font-bold {{ $row['is_kek'] ? 'text-rose-600' : 'text-slate-700' }}">{{ $row['lila'] }} cm</span>
+                                            @if($row['is_kek'])
+                                                <span class="inline-flex px-1.5 py-0.5 rounded bg-rose-50 text-[9px] font-extrabold text-rose-600 border border-rose-100 uppercase tracking-wider">KEK</span>
+                                            @endif
+                                        </div>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    @if($row['hb'] === '-')
+                                        <span class="text-slate-300">-</span>
+                                    @else
+                                        <div class="flex flex-col items-center gap-1">
+                                            <span class="font-bold {{ $row['is_anemia'] ? 'text-rose-600' : 'text-slate-700' }}">{{ $row['hb'] }} g/dL</span>
+                                            @if($row['is_anemia'])
+                                                <span class="inline-flex px-1.5 py-0.5 rounded bg-rose-50 text-[9px] font-extrabold text-rose-600 border border-rose-100 uppercase tracking-wider">Anemia</span>
+                                            @endif
+                                        </div>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    @if($row['bp'] === '-')
+                                        <span class="text-slate-300">-</span>
+                                    @else
+                                        <div class="flex flex-col items-center gap-1">
+                                            <span class="font-bold {{ $row['is_hypertension'] ? 'text-rose-600' : 'text-slate-700' }}">{{ $row['bp'] }} mmHg</span>
+                                            @if($row['is_hypertension'])
+                                                <span class="inline-flex px-1.5 py-0.5 rounded bg-rose-50 text-[9px] font-extrabold text-rose-600 border border-rose-100 uppercase tracking-wider">Hipertensi</span>
+                                            @endif
+                                        </div>
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <div class="flex flex-col items-center gap-1">
+                                        <span class="font-bold text-slate-700">{{ $row['anc_count'] }} kali</span>
+                                        <span class="inline-flex px-1.5 py-0.5 rounded bg-blue-50 text-[9px] font-extrabold text-blue-600 border border-blue-100 uppercase tracking-wider">ANC K{{ min(6, max(1, $row['anc_count'])) }}</span>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 text-center">
+                                    <span class="badge {{ $row['ttd_received'] === 'Ya' ? 'badge-teal' : 'badge-red' }}">{{ $row['ttd_received'] }}</span>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <div class="flex items-center justify-end gap-1.5">
+                                        @if($row['is_high_risk'])
+                                            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-red-50 text-red-500 border border-red-100 hover:bg-red-100 transition-colors cursor-help" title="Risiko Tinggi: {{ $row['risk_reasons'] }}">
+                                                <span class="material-symbols-outlined text-[15px]">warning</span>
+                                            </span>
+                                        @endif
+                                        <a href="{{ route('admin.patients.show', $row['id']) }}" class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-50 text-slate-400 hover:bg-teal-500 hover:text-white transition-all" title="Buka Detail Profil">
+                                            <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="9" class="px-6 py-12 text-center text-slate-400 text-sm">
+                                    Tidak ada data ibu hamil yang ditemukan.
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
