@@ -402,7 +402,7 @@ class PatientRowProcessor
             'desa_kelurahan' => $desaKelurahan ?: null,
             'kecamatan' => $kecamatan ?: null,
             'mother_nik' => $motherNik ?: null,
-            'kia_book_ownership' => $kiaBookOwnership !== '' ? ($this->parseBool($kiaBookOwnership) ? 1 : 0) : null,
+            'kia_book_ownership' => $kiaBookOwnership !== '' ? ($this->parseBool($kiaBookOwnership) ? 1 : 0) : 0,
             'weight_at_birth' => $weightAtBirth !== '' ? $this->parseDecimal($weightAtBirth) : null,
             'height_at_birth' => $heightAtBirth !== '' ? $this->parseDecimal($heightAtBirth) : null,
         ];
