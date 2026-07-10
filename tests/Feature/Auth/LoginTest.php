@@ -67,7 +67,7 @@ describe('login behavior', function () {
 
         $response->assertRedirect('/dashboard');
         $this->assertAuthenticated();
-        
+
         $this->user->refresh();
         $this->assertNotNull($this->user->remember_token);
     });

@@ -4,6 +4,7 @@ namespace App\Livewire\Admin;
 
 use App\Jobs\ComputeAnalyticsSnapshot;
 use App\Livewire\Shared\BaseAdminComponent;
+use App\Models\AnalyticsSnapshot;
 use App\Models\MedicalRecord;
 use App\Models\Patient;
 use App\Models\Posyandu;
@@ -395,7 +396,7 @@ class Analytics extends BaseAdminComponent
      */
     public function refreshStats(): void
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
         $posyanduId = $user->isSuperAdmin() ? null : $user->posyandu_id;
 
@@ -407,7 +408,7 @@ class Analytics extends BaseAdminComponent
 
     protected function loadData(): void
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
         $posyanduId = $user->isSuperAdmin() ? null : $user->posyandu_id;
         $key = "year_{$this->selectedYear}".($this->selectedMonth ? "_month_{$this->selectedMonth}" : '');
@@ -416,7 +417,7 @@ class Analytics extends BaseAdminComponent
         $isCustomFilterActive = $this->selectedMonth || $this->selectedPosyandu || $this->compareMode || $this->viewMode === 'yearly';
 
         if (! $isCustomFilterActive) {
-            $snapshot = \App\Models\AnalyticsSnapshot::where('posyandu_id', $posyanduId)
+            $snapshot = AnalyticsSnapshot::where('posyandu_id', $posyanduId)
                 ->where('key', $key)
                 ->first();
 
@@ -510,7 +511,7 @@ class Analytics extends BaseAdminComponent
         // ANA-15: apply search when set
         if ($this->tableSearch) {
             $searchTerm = '%'.strtolower($this->tableSearch).'%';
-            $blindIndex = \App\Models\Patient::generateBlindIndex($this->tableSearch);
+            $blindIndex = Patient::generateBlindIndex($this->tableSearch);
             $medicalRecordQuery->whereHas('patient', function ($q) use ($searchTerm, $blindIndex) {
                 $q->whereRaw('LOWER(full_name) LIKE ?', [$searchTerm])
                     ->orWhere('id_number_hash', $blindIndex);
@@ -541,7 +542,7 @@ class Analytics extends BaseAdminComponent
 
     protected function fetchAnalyticsData(): array
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
         $patientQuery = $this->applyPosyanduScope(Patient::query(), $this->selectedPosyandu);
         $medicalRecordQuery = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu);

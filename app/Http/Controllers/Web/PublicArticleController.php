@@ -12,7 +12,7 @@ class PublicArticleController extends Controller
 {
     public function index(Request $request)
     {
-        $version = Cache::rememberForever('public_articles_cache_version', fn() => time());
+        $version = Cache::rememberForever('public_articles_cache_version', fn () => time());
         $page = $request->get('page', 1);
         $category = $request->get('category');
         $search = $request->get('search');

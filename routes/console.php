@@ -7,16 +7,18 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
+use App\Jobs\ComputeAnalyticsSnapshot;
+use App\Models\Posyandu;
 use Illuminate\Support\Facades\Schedule;
 
 Schedule::command('posyandu:send-reminders')->dailyAt('08:00');
 
 Schedule::call(function () {
     // Global Snapshot
-    \App\Jobs\ComputeAnalyticsSnapshot::dispatch(null);
+    ComputeAnalyticsSnapshot::dispatch(null);
 
     // Per-Posyandu Snapshots
-    foreach (\App\Models\Posyandu::cursor() as $posyandu) {
-        \App\Jobs\ComputeAnalyticsSnapshot::dispatch($posyandu->id);
+    foreach (Posyandu::cursor() as $posyandu) {
+        ComputeAnalyticsSnapshot::dispatch($posyandu->id);
     }
 })->hourly();

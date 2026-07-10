@@ -1,16 +1,20 @@
 <?php
 
+use App\Models\MedicalRecord;
+use App\Models\Patient;
+use Illuminate\Contracts\Console\Kernel;
+
 require 'vendor/autoload.php';
 $app = require_once __DIR__.'/bootstrap/app.php';
-$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+$kernel = $app->make(Kernel::class);
 $kernel->bootstrap();
 
 $selectedYear = 2026;
 $m = 5;
 
-$patientQuery = \App\Models\Patient::query();
+$patientQuery = Patient::query();
 
-$latestRecordSubqueryLM = \App\Models\MedicalRecord::selectRaw('MAX(id) as id')
+$latestRecordSubqueryLM = MedicalRecord::selectRaw('MAX(id) as id')
     ->whereYear('visit_date', $selectedYear)
     ->whereMonth('visit_date', $m)
     ->groupBy('patient_id');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PosyanduRequest;
 use App\Models\Posyandu;
+use App\Services\PosyanduService;
 use Illuminate\Http\Request;
 
 class PosyanduController extends Controller
@@ -30,7 +31,7 @@ class PosyanduController extends Controller
         return view('livewire.admin.posyandu-management.create');
     }
 
-    public function store(PosyanduRequest $request, \App\Services\PosyanduService $posyanduService)
+    public function store(PosyanduRequest $request, PosyanduService $posyanduService)
     {
         $posyanduService->createPosyandu($request->validated());
 
@@ -50,7 +51,7 @@ class PosyanduController extends Controller
         return view('livewire.admin.posyandu-management.update', compact('posyandu'));
     }
 
-    public function update(PosyanduRequest $request, Posyandu $posyandu, \App\Services\PosyanduService $posyanduService)
+    public function update(PosyanduRequest $request, Posyandu $posyandu, PosyanduService $posyanduService)
     {
         $posyanduService->updatePosyandu($posyandu, $request->validated());
 
@@ -58,7 +59,7 @@ class PosyanduController extends Controller
             ->with('success', 'Posyandu berhasil diperbarui.');
     }
 
-    public function destroy(Posyandu $posyandu, \App\Services\PosyanduService $posyanduService)
+    public function destroy(Posyandu $posyandu, PosyanduService $posyanduService)
     {
         $posyanduService->deletePosyandu($posyandu);
 

@@ -4,13 +4,14 @@ use App\Livewire\Admin\Management\ArticleUpdate;
 use App\Models\Article;
 use App\Models\Category;
 use App\Models\User;
+use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
 
 test('superadmin can access edit article page and see form', function () {
-    $this->seed(\Database\Seeders\RolesAndPermissionsSeeder::class);
+    $this->seed(RolesAndPermissionsSeeder::class);
 
     $superadmin = User::factory()->create([
         'role' => 'superadmin',
@@ -41,7 +42,7 @@ test('superadmin can access edit article page and see form', function () {
 });
 
 test('superadmin can update article content', function () {
-    $this->seed(\Database\Seeders\RolesAndPermissionsSeeder::class);
+    $this->seed(RolesAndPermissionsSeeder::class);
 
     $superadmin = User::factory()->create([
         'role' => 'superadmin',

@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Http\Requests\GalleryRequest;
 use App\Models\Gallery;
 use App\Models\GalleryFolder;
 use App\Services\GalleryService;
+use Illuminate\Http\Request;
 
 class GalleryController extends Controller
 {

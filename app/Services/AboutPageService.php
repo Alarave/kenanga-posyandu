@@ -5,6 +5,10 @@ namespace App\Services;
 use App\DataTransferObjects\CadreData;
 use App\DataTransferObjects\GoalData;
 use App\DataTransferObjects\MissionData;
+use App\Models\Patient;
+use App\Models\Posyandu;
+use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 
 class AboutPageService
 {
@@ -91,7 +95,7 @@ class AboutPageService
      */
     public function getCadres(): array
     {
-        $users = \App\Models\User::whereIn('role', ['superadmin', 'admin', 'kader'])
+        $users = User::whereIn('role', ['superadmin', 'admin', 'kader'])
             ->where('is_active', true)
             ->orderBy('id')
             ->get();
@@ -116,7 +120,7 @@ class AboutPageService
                     if (file_exists($localWebpPath)) {
                         $imagePath = asset('assets/img/kaders/'.$webpName);
                     } else {
-                        $imagePath = \Illuminate\Support\Facades\Storage::url('kaders/'.$imagePath);
+                        $imagePath = Storage::url('kaders/'.$imagePath);
                     }
                 }
             }
@@ -142,7 +146,7 @@ class AboutPageService
      */
     public function getSasaranCount(): int
     {
-        return \App\Models\Patient::count();
+        return Patient::count();
     }
 
     /**
@@ -150,6 +154,6 @@ class AboutPageService
      */
     public function getPosyanduCount(): int
     {
-        return \App\Models\Posyandu::count();
+        return Posyandu::count();
     }
 }

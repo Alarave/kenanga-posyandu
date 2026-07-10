@@ -5,6 +5,7 @@ namespace App\Exports;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -378,10 +379,10 @@ class IndividualReportExport
 
                 // Color status column
                 if ($vax['received']) {
-                    $sheet->getStyle('C'.$row)->getFont()->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('047857')); // Green
+                    $sheet->getStyle('C'.$row)->getFont()->setColor(new Color('047857')); // Green
                     $sheet->getStyle('C'.$row)->getFont()->setBold(true);
                 } elseif ($vax['is_due']) {
-                    $sheet->getStyle('C'.$row)->getFont()->setColor(new \PhpOffice\PhpSpreadsheet\Style\Color('B45309')); // Amber
+                    $sheet->getStyle('C'.$row)->getFont()->setColor(new Color('B45309')); // Amber
                     $sheet->getStyle('C'.$row)->getFont()->setBold(true);
                 }
 

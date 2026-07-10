@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ArticleRequest;
 use App\Models\Article;
+use App\Models\Category;
+use App\Services\ArticleService;
 use Illuminate\Http\Request;
 
 class ArticleController extends Controller
@@ -29,12 +31,12 @@ class ArticleController extends Controller
 
     public function create()
     {
-        $categories = \App\Models\Category::all();
+        $categories = Category::all();
 
         return view('livewire.admin.article-management.create', compact('categories'));
     }
 
-    public function store(ArticleRequest $request, \App\Services\ArticleService $articleService)
+    public function store(ArticleRequest $request, ArticleService $articleService)
     {
         $articleService->createArticle($request->validated(), auth()->id());
 
@@ -48,19 +50,19 @@ class ArticleController extends Controller
 
     public function edit(Article $article)
     {
-        $categories = \App\Models\Category::all();
+        $categories = Category::all();
 
         return view('livewire.admin.article-management.update', compact('article', 'categories'));
     }
 
-    public function update(ArticleRequest $request, Article $article, \App\Services\ArticleService $articleService)
+    public function update(ArticleRequest $request, Article $article, ArticleService $articleService)
     {
         $articleService->updateArticle($article, $request->validated());
 
         return redirect()->route('admin.articles.index')->with('success', 'Artikel berhasil diperbarui.');
     }
 
-    public function destroy(Article $article, \App\Services\ArticleService $articleService)
+    public function destroy(Article $article, ArticleService $articleService)
     {
         $articleService->deleteArticle($article);
 

@@ -1,6 +1,11 @@
 <?php
 
+use App\Http\Middleware\CheckUserStatus;
+use App\Http\Middleware\CompressResponse;
+use App\Http\Middleware\PosyanduScopeMiddleware;
+use App\Http\Middleware\RoleMiddleware;
 use App\Http\Middleware\SecurityHeaders;
+use App\Http\Middleware\SessionTimeout;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -18,14 +23,14 @@ return Application::configure(basePath: dirname(__DIR__))
         // Tambahkan SecurityHeaders sebagai global middleware untuk semua request web
         $middleware->web(append: [
             SecurityHeaders::class,
-            \App\Http\Middleware\CompressResponse::class,
+            CompressResponse::class,
         ]);
 
         $middleware->alias([
-            'role' => \App\Http\Middleware\RoleMiddleware::class,
-            'check.user.status' => \App\Http\Middleware\CheckUserStatus::class,
-            'session.timeout' => \App\Http\Middleware\SessionTimeout::class,
-            'posyandu.scope' => \App\Http\Middleware\PosyanduScopeMiddleware::class,
+            'role' => RoleMiddleware::class,
+            'check.user.status' => CheckUserStatus::class,
+            'session.timeout' => SessionTimeout::class,
+            'posyandu.scope' => PosyanduScopeMiddleware::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

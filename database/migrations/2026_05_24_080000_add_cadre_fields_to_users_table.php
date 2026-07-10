@@ -153,7 +153,7 @@ return new class extends Migration
 
         foreach ($kaders as $k) {
             $username = strtolower(explode(' ', $k['name'])[0]).'_'.rand(100, 999);
-            
+
             // Check if email already exists
             if (! DB::table('users')->where('email', $k['email'])->exists()) {
                 DB::table('users')->insert([

@@ -694,7 +694,7 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
                 return [
                     'patient' => $patient->toArray(),
                     'missing_count' => count($missing),
-                    'next_vaccine' => $missing[0]
+                    'next_vaccine' => $missing[0],
                 ];
             })
             ->filter()

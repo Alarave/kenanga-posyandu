@@ -2,14 +2,17 @@
 
 namespace App\Providers;
 
+use App\Models\Article;
 use App\Models\MedicalRecord;
 use App\Models\Patient;
+use App\Models\Schedule;
 use App\Policies\ActivityLogPolicy;
 use App\Policies\ArticlePolicy;
 use App\Policies\MedicalRecordPolicy;
 use App\Policies\PatientPolicy;
 use App\Policies\ReportPolicy;
 use App\Policies\SchedulePolicy;
+use App\Support\CustomVite;
 use App\View\Components\Layouts\UI\Alert;
 use App\View\Components\Layouts\UI\Breadcrumbs;
 use App\View\Components\Layouts\UI\Button;
@@ -21,8 +24,10 @@ use App\View\Components\Layouts\UI\Navbar;
 use App\View\Components\Layouts\UI\Pagination;
 use App\View\Components\Layouts\UI\ProgressBar;
 use App\View\Components\Layouts\UI\Table;
+use Illuminate\Foundation\Vite;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -35,8 +40,8 @@ class AppServiceProvider extends ServiceProvider
     protected $policies = [
         Patient::class => PatientPolicy::class,
         MedicalRecord::class => MedicalRecordPolicy::class,
-        \App\Models\Schedule::class => SchedulePolicy::class,
-        \App\Models\Article::class => ArticlePolicy::class,
+        Schedule::class => SchedulePolicy::class,
+        Article::class => ArticlePolicy::class,
     ];
 
     /**
@@ -44,8 +49,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(\Illuminate\Foundation\Vite::class, function () {
-            return new \App\Support\CustomVite;
+        $this->app->singleton(Vite::class, function () {
+            return new CustomVite;
         });
     }
 
@@ -60,14 +65,14 @@ class AppServiceProvider extends ServiceProvider
         });
 
         if (config('app.env') !== 'local' || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')) {
-            \Illuminate\Support\Facades\URL::forceScheme('https');
+            URL::forceScheme('https');
         }
 
         // Register model policies
         Gate::policy(Patient::class, PatientPolicy::class);
         Gate::policy(MedicalRecord::class, MedicalRecordPolicy::class);
-        Gate::policy(\App\Models\Schedule::class, SchedulePolicy::class);
-        Gate::policy(\App\Models\Article::class, ArticlePolicy::class);
+        Gate::policy(Schedule::class, SchedulePolicy::class);
+        Gate::policy(Article::class, ArticlePolicy::class);
 
         // Register ability-based policies for non-model resources
         Gate::define('viewActivityLogs', [ActivityLogPolicy::class, 'viewAny']);

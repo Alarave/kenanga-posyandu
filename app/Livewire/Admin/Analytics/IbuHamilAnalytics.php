@@ -3,6 +3,9 @@
 namespace App\Livewire\Admin\Analytics;
 
 use App\Livewire\Traits\HasPosyanduScope;
+use App\Models\MedicalRecord;
+use App\Models\Patient;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Reactive;
 use Livewire\Component;
 
@@ -20,10 +23,10 @@ class IbuHamilAnalytics extends Component
     public $selectedPosyandu;
 
     // AH-01: Validasi Total Ibu Hamil per Trimester
-    #[\Livewire\Attributes\Computed]
+    #[Computed]
     public function trimesterStats()
     {
-        $records = $this->applyPosyanduScope(\App\Models\MedicalRecord::query(), $this->selectedPosyandu)
+        $records = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
             ->whereHas('patient', function ($q) {
                 $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
             })
@@ -52,10 +55,10 @@ class IbuHamilAnalytics extends Component
     }
 
     // AH-02 & AH-03: HPL & Risiko 4T
-    #[\Livewire\Attributes\Computed]
+    #[Computed]
     public function riskStats()
     {
-        $patients = $this->applyPosyanduScope(\App\Models\Patient::query(), $this->selectedPosyandu)
+        $patients = $this->applyPosyanduScope(Patient::query(), $this->selectedPosyandu)
             ->where('category', 'ibu_hamil')
             ->where('status_mutasi', 'aktif')
             ->with(['medicalRecords' => function ($query) {
@@ -91,10 +94,10 @@ class IbuHamilAnalytics extends Component
     }
 
     // AH-06: Anemia
-    #[\Livewire\Attributes\Computed]
+    #[Computed]
     public function anemiaStats()
     {
-        $records = $this->applyPosyanduScope(\App\Models\MedicalRecord::query(), $this->selectedPosyandu)
+        $records = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
             ->whereHas('patient', function ($q) {
                 $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
             })
@@ -109,10 +112,10 @@ class IbuHamilAnalytics extends Component
     }
 
     // AH-04: TTD Status
-    #[\Livewire\Attributes\Computed]
+    #[Computed]
     public function ttdStats()
     {
-        $records = $this->applyPosyanduScope(\App\Models\MedicalRecord::query(), $this->selectedPosyandu)
+        $records = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
             ->whereHas('patient', function ($q) {
                 $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
             })
@@ -130,10 +133,10 @@ class IbuHamilAnalytics extends Component
     }
 
     // AH-05: K1-K6 Kunjungan
-    #[\Livewire\Attributes\Computed]
+    #[Computed]
     public function ancStats()
     {
-        $patients = $this->applyPosyanduScope(\App\Models\Patient::query(), $this->selectedPosyandu)
+        $patients = $this->applyPosyanduScope(Patient::query(), $this->selectedPosyandu)
             ->where('category', 'ibu_hamil')
             ->where('status_mutasi', 'aktif')
             ->with(['medicalRecords' => function ($query) {

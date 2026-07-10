@@ -4,9 +4,14 @@ namespace App\Services;
 
 use App\Models\MedicalRecord;
 use App\Models\Patient;
+use App\Models\Posyandu;
 use App\Models\User;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Service untuk mengelola logika bisnis rekam medis
@@ -55,11 +60,11 @@ class MedicalRecordService
     /**
      * Buat rekam medis baru
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function createRecord(array $data, User $user): MedicalRecord
     {
-        return \Illuminate\Support\Facades\DB::transaction(function () use ($data, $user) {
+        return DB::transaction(function () use ($data, $user) {
             $patient = null;
             if (! empty($data['patient_id'])) {
                 $patient = $this->getPatientOrFail($data['patient_id']);
@@ -71,7 +76,7 @@ class MedicalRecordService
             if (! $patient) {
                 $patientCategory = $data['category'] ?? 'ibu_hamil';
                 $patient = Patient::create([
-                    'posyandu_id' => $user->posyandu_id ?? \App\Models\Posyandu::first()?->id ?? 1,
+                    'posyandu_id' => $user->posyandu_id ?? Posyandu::first()?->id ?? 1,
                     'category' => $patientCategory,
                     'full_name' => $data['full_name'] ?? ($patientCategory === 'lansia' ? 'Lansia Baru' : 'Ibu Hamil Baru'),
                     'id_number' => $data['id_number'] ?? null,
@@ -107,14 +112,14 @@ class MedicalRecordService
     /**
      * Update rekam medis yang sudah ada
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function updateRecord(
         MedicalRecord $medicalRecord,
         array $data,
         User $user
     ): MedicalRecord {
-        return \Illuminate\Support\Facades\DB::transaction(function () use ($medicalRecord, $data, $user) {
+        return DB::transaction(function () use ($medicalRecord, $data, $user) {
             $oldValues = $medicalRecord->toArray();
 
             $patient = null;
@@ -128,7 +133,7 @@ class MedicalRecordService
             if (! $patient) {
                 $patientCategory = $data['category'] ?? 'ibu_hamil';
                 $patient = Patient::create([
-                    'posyandu_id' => $user->posyandu_id ?? \App\Models\Posyandu::first()?->id ?? 1,
+                    'posyandu_id' => $user->posyandu_id ?? Posyandu::first()?->id ?? 1,
                     'category' => $patientCategory,
                     'full_name' => $data['full_name'] ?? ($patientCategory === 'lansia' ? 'Lansia Baru' : 'Ibu Hamil Baru'),
                     'id_number' => $data['id_number'] ?? null,
@@ -199,7 +204,7 @@ class MedicalRecordService
     /**
      * Bangun query untuk memeriksa duplikasi
      *
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
     private function buildDuplicateQuery(
         int $patientId,
@@ -225,7 +230,7 @@ class MedicalRecordService
     /**
      * Dapatkan patient atau throw exception
      *
-     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     * @throws ModelNotFoundException
      */
     private function getPatientOrFail(int $patientId): Patient
     {
@@ -235,7 +240,7 @@ class MedicalRecordService
     /**
      * Verifikasi user memiliki akses ke patient
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     private function verifyPatientAccess(Patient $patient, User $user): void
     {
@@ -464,7 +469,7 @@ class MedicalRecordService
             return $data;
         }
 
-        $visitDate = isset($data['visit_date']) ? \Illuminate\Support\Carbon::parse($data['visit_date']) : now();
+        $visitDate = isset($data['visit_date']) ? Carbon::parse($data['visit_date']) : now();
         $ageInMonths = max(0, (int) $patient->birth_date->diffInMonths($visitDate));
 
         $nutritionResult = $this->nutritionService->calculateAll(

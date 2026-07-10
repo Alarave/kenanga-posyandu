@@ -3,34 +3,45 @@
 // --- CONTROLLERS UMUM ---
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\Web\ArticleController;
+use App\Http\Controllers\Web\ActivityLogController;
 // --- CONTROLLERS ADMIN (LOKASI DI FOLDER 'Web') ---
+use App\Http\Controllers\Web\ArticleController;
 use App\Http\Controllers\Web\GalleryController;
 use App\Http\Controllers\Web\GalleryFolderController;
 use App\Http\Controllers\Web\MedicalRecordController;
 use App\Http\Controllers\Web\PatientController;
 use App\Http\Controllers\Web\PedukuhanController;
 use App\Http\Controllers\Web\PosyanduController;
+use App\Http\Controllers\Web\PublicArticleController;
 use App\Http\Controllers\Web\PublicController;
+use App\Http\Controllers\Web\ReportController;
+// --- LIVEWIRE COMPONENTS ---
 use App\Http\Controllers\Web\ScheduleController;
 use App\Http\Controllers\Web\UserController;
+use App\Livewire\Admin\Management\ArticleCreate;
 use App\Livewire\Admin\Management\ArticleManagement;
-// --- LIVEWIRE COMPONENTS ---
+use App\Livewire\Admin\Management\ArticleShow;
+use App\Livewire\Admin\Management\ArticleUpdate;
 use App\Livewire\Admin\Management\GalleryManagement;
 use App\Livewire\Admin\Management\MedicalRecordManagement;
 use App\Livewire\Admin\Management\PedukuhanManagement;
 use App\Livewire\Admin\Management\PosyanduManagement;
+use App\Livewire\Admin\Management\ScheduleCreate;
 use App\Livewire\Admin\Management\ScheduleManagement;
+use App\Livewire\Admin\Management\ScheduleUpdate;
 use App\Livewire\Admin\Management\UserManagement;
+use App\Livewire\Admin\MedicalRecord\BulkMeasurementEntry;
+use App\Livewire\Admin\PatientManagement\GrowthChart;
 use App\Livewire\Admin\PatientManagement\Index as PatientManagementIndex;
+use App\Livewire\Admin\Settings\RolePermissionManagement;
 use Illuminate\Support\Facades\Route;
 
 // Home Page - Public Home
 Route::get('/', [PublicController::class, 'home'])->name('public.home');
 
 // Public routes
-Route::get('/articles', [App\Http\Controllers\Web\PublicArticleController::class, 'index'])->name('public.articles.index');
-Route::get('/articles/{slug}', [App\Http\Controllers\Web\PublicArticleController::class, 'show'])->name('public.articles.show');
+Route::get('/articles', [PublicArticleController::class, 'index'])->name('public.articles.index');
+Route::get('/articles/{slug}', [PublicArticleController::class, 'show'])->name('public.articles.show');
 Route::get('/about', [PublicController::class, 'about'])->name('public.about');
 Route::get('/contact', [PublicController::class, 'contact'])->name('public.contact');
 
@@ -64,7 +75,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('admin/patients/template', [PatientController::class, 'downloadTemplate'])->name('admin.patients.template');
     Route::get('admin/patients/{patient}', [PatientController::class, 'show'])->name('admin.patients.show');
     Route::get('admin/patients/{patient}/edit', [PatientController::class, 'edit'])->name('admin.patients.edit');
-    Route::get('admin/patients/{patient}/growth-chart', \App\Livewire\Admin\PatientManagement\GrowthChart::class)->name('admin.patients.growth-chart');
+    Route::get('admin/patients/{patient}/growth-chart', GrowthChart::class)->name('admin.patients.growth-chart');
     Route::put('admin/patients/{patient}', [PatientController::class, 'update'])->name('admin.patients.update');
     Route::delete('admin/patients/{patient}', [PatientController::class, 'destroy'])->name('admin.patients.destroy');
 
@@ -79,9 +90,9 @@ Route::middleware(['auth'])->group(function () {
 
     // 3. SCHEDULES
     Route::get('admin/schedules', ScheduleManagement::class)->name('admin.schedules.index');
-    Route::get('admin/schedules/create', \App\Livewire\Admin\Management\ScheduleCreate::class)->name('admin.schedules.create');
+    Route::get('admin/schedules/create', ScheduleCreate::class)->name('admin.schedules.create');
     Route::get('admin/schedules/{schedule}', [ScheduleController::class, 'show'])->name('admin.schedules.show');
-    Route::get('admin/schedules/{schedule}/edit', \App\Livewire\Admin\Management\ScheduleUpdate::class)->name('admin.schedules.edit');
+    Route::get('admin/schedules/{schedule}/edit', ScheduleUpdate::class)->name('admin.schedules.edit');
     Route::put('admin/schedules/{schedule}', [ScheduleController::class, 'update'])->name('admin.schedules.update');
     Route::delete('admin/schedules/{schedule}', [ScheduleController::class, 'destroy'])->name('admin.schedules.destroy');
 
@@ -102,15 +113,15 @@ Route::middleware(['auth'])->group(function () {
 
     // 5. ARTICLES
     Route::get('admin/articles', ArticleManagement::class)->name('admin.articles.index');
-    Route::get('admin/articles/create', \App\Livewire\Admin\Management\ArticleCreate::class)->name('admin.articles.create');
-    Route::get('admin/articles/{article}', \App\Livewire\Admin\Management\ArticleShow::class)->name('admin.articles.show');
-    Route::get('admin/articles/{article}/edit', \App\Livewire\Admin\Management\ArticleUpdate::class)->name('admin.articles.edit');
+    Route::get('admin/articles/create', ArticleCreate::class)->name('admin.articles.create');
+    Route::get('admin/articles/{article}', ArticleShow::class)->name('admin.articles.show');
+    Route::get('admin/articles/{article}/edit', ArticleUpdate::class)->name('admin.articles.edit');
     // PUT and DELETE are handled by the components/service now, but we keep the show route if needed for public view/preview
     Route::delete('admin/articles/{article}', [ArticleController::class, 'destroy'])->name('admin.articles.destroy');
 
     // 6. MEDICAL RECORDS
     Route::get('admin/medical-records', MedicalRecordManagement::class)->name('admin.medical-records.index');
-    Route::get('admin/medical-records/bulk', \App\Livewire\Admin\MedicalRecord\BulkMeasurementEntry::class)->name('admin.medical-records.bulk');
+    Route::get('admin/medical-records/bulk', BulkMeasurementEntry::class)->name('admin.medical-records.bulk');
     Route::get('admin/medical-records/import', [MedicalRecordController::class, 'importForm'])->name('admin.medical-records.import');
     Route::post('admin/medical-records/import', [MedicalRecordController::class, 'import'])->name('admin.medical-records.import.store');
     Route::get('admin/medical-records/template', [MedicalRecordController::class, 'downloadTemplate'])->name('admin.medical-records.template');
@@ -125,7 +136,7 @@ Route::middleware(['auth'])->group(function () {
     // 7. USERS
     Route::middleware(['role:superadmin'])->group(function () {
         // Role & Permission Management
-        Route::get('admin/settings/roles', \App\Livewire\Admin\Settings\RolePermissionManagement::class)->name('admin.settings.roles');
+        Route::get('admin/settings/roles', RolePermissionManagement::class)->name('admin.settings.roles');
 
         Route::get('admin/users', UserManagement::class)->name('admin.users.index');
         Route::get('admin/users/create', [UserController::class, 'create'])->name('admin.users.create');
@@ -140,21 +151,21 @@ Route::middleware(['auth'])->group(function () {
     // 8. ACTIVITY LOGS (CONTROLLER)
     // ---------------------------------------------------------
     Route::middleware(['role:superadmin'])->group(function () {
-        Route::get('admin/activity-logs', [App\Http\Controllers\Web\ActivityLogController::class, 'index'])->name('admin.activity-logs.index');
-        Route::get('admin/activity-logs/{activityLog}', [App\Http\Controllers\Web\ActivityLogController::class, 'show'])->name('admin.activity-logs.show');
-        Route::get('admin/activity-logs/statistics', [App\Http\Controllers\Web\ActivityLogController::class, 'statistics'])->name('admin.activity-logs.statistics');
+        Route::get('admin/activity-logs', [ActivityLogController::class, 'index'])->name('admin.activity-logs.index');
+        Route::get('admin/activity-logs/{activityLog}', [ActivityLogController::class, 'show'])->name('admin.activity-logs.show');
+        Route::get('admin/activity-logs/statistics', [ActivityLogController::class, 'statistics'])->name('admin.activity-logs.statistics');
     });
 
     // ---------------------------------------------------------
     // 9. REPORTS (MONTHLY REPORTS - Livewire)
     // ---------------------------------------------------------
     Route::middleware(['role:superadmin,admin,kader'])->group(function () {
-        Route::get('admin/reports', [\App\Http\Controllers\Web\ReportController::class, 'index'])->name('admin.reports.index');
-        Route::post('admin/reports/export-excel', [\App\Http\Controllers\Web\ReportController::class, 'exportExcel'])->name('admin.reports.export-excel');
-        Route::post('admin/reports/export-pdf', [\App\Http\Controllers\Web\ReportController::class, 'exportPdf'])->name('admin.reports.export-pdf');
-        Route::get('admin/reports/individual/{patient}', [\App\Http\Controllers\Web\ReportController::class, 'showIndividual'])->name('admin.reports.individual');
-        Route::post('admin/reports/individual/{patient}/export-pdf', [\App\Http\Controllers\Web\ReportController::class, 'exportIndividualPdf'])->name('admin.reports.individual.pdf');
-        Route::post('admin/reports/individual/{patient}/export-excel', [\App\Http\Controllers\Web\ReportController::class, 'exportIndividualExcel'])->name('admin.reports.individual.excel');
+        Route::get('admin/reports', [ReportController::class, 'index'])->name('admin.reports.index');
+        Route::post('admin/reports/export-excel', [ReportController::class, 'exportExcel'])->name('admin.reports.export-excel');
+        Route::post('admin/reports/export-pdf', [ReportController::class, 'exportPdf'])->name('admin.reports.export-pdf');
+        Route::get('admin/reports/individual/{patient}', [ReportController::class, 'showIndividual'])->name('admin.reports.individual');
+        Route::post('admin/reports/individual/{patient}/export-pdf', [ReportController::class, 'exportIndividualPdf'])->name('admin.reports.individual.pdf');
+        Route::post('admin/reports/individual/{patient}/export-excel', [ReportController::class, 'exportIndividualExcel'])->name('admin.reports.individual.excel');
     });
 
     // 10. PEDUKUHANS

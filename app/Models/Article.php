@@ -2,10 +2,14 @@
 
 namespace App\Models;
 
+use App\Services\ArticleService;
 use App\Traits\LogsActivity;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class Article extends Model
 {
@@ -36,19 +40,19 @@ class Article extends Model
     protected static function booted()
     {
         static::saved(function ($article) {
-            \Illuminate\Support\Facades\Cache::forget('public_categories_count');
-            \Illuminate\Support\Facades\Cache::forget('popular_articles');
-            \Illuminate\Support\Facades\Cache::forget('featured_article');
-            \Illuminate\Support\Facades\Cache::forget('article_show_' . $article->slug);
-            \Illuminate\Support\Facades\Cache::forever('public_articles_cache_version', time());
+            Cache::forget('public_categories_count');
+            Cache::forget('popular_articles');
+            Cache::forget('featured_article');
+            Cache::forget('article_show_'.$article->slug);
+            Cache::forever('public_articles_cache_version', time());
         });
 
         static::deleted(function ($article) {
-            \Illuminate\Support\Facades\Cache::forget('public_categories_count');
-            \Illuminate\Support\Facades\Cache::forget('popular_articles');
-            \Illuminate\Support\Facades\Cache::forget('featured_article');
-            \Illuminate\Support\Facades\Cache::forget('article_show_' . $article->slug);
-            \Illuminate\Support\Facades\Cache::forever('public_articles_cache_version', time());
+            Cache::forget('public_categories_count');
+            Cache::forget('popular_articles');
+            Cache::forget('featured_article');
+            Cache::forget('article_show_'.$article->slug);
+            Cache::forever('public_articles_cache_version', time());
         });
     }
 
@@ -66,8 +70,6 @@ class Article extends Model
 
     /**
      * Cache untuk plaintext konten artikel agar menghindari redundant JSON parsing.
-     *
-     * @var string|null
      */
     protected ?string $plainTextCache = null;
 
@@ -77,7 +79,7 @@ class Article extends Model
     public function getPlainText(): string
     {
         if ($this->plainTextCache === null) {
-            $this->plainTextCache = \App\Services\ArticleService::getExcerpt($this->content ?? '', 999999);
+            $this->plainTextCache = ArticleService::getExcerpt($this->content ?? '', 999999);
         }
 
         return $this->plainTextCache;
@@ -102,7 +104,7 @@ class Article extends Model
     public function getExcerptAttribute(): string
     {
         $text = $this->getPlainText();
-        $limited = \Illuminate\Support\Str::limit($text, 160);
+        $limited = Str::limit($text, 160);
 
         return $limited ?: 'Tidak ada ringkasan tersedia.';
     }
@@ -110,8 +112,8 @@ class Article extends Model
     /**
      * Scope a query to apply standard filters.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeFilter($query, array $filters)
     {

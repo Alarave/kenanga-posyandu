@@ -2,18 +2,22 @@
 
 use App\Models\MedicalRecord;
 use App\Models\Patient;
+use App\Models\Pedukuhan;
 use App\Models\Posyandu;
 use App\Models\User;
+use App\Models\WhoWeightForAge;
+use App\Services\MedicalRecordService;
+use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
     // Seed roles and permissions
-    $this->seed(\Database\Seeders\RolesAndPermissionsSeeder::class);
+    $this->seed(RolesAndPermissionsSeeder::class);
 
     // Create a pedukuhan manually
-    $pedukuhan = \App\Models\Pedukuhan::create([
+    $pedukuhan = Pedukuhan::create([
         'name' => 'Test Pedukuhan',
         'postal_code' => '12345',
         'geo_location' => '-6.2088,106.8456',
@@ -47,7 +51,7 @@ beforeEach(function () {
     ]);
 
     // Seed WHO reference data for testing
-    \App\Models\WhoWeightForAge::create([
+    WhoWeightForAge::create([
         'gender' => 'M',
         'age_months' => 12,
         'sd_minus3' => 7.7,
@@ -224,7 +228,7 @@ test('medical record does not calculate nutrition status for non-balita categori
 });
 
 test('compareNutritionStatus returns correct trend values', function () {
-    $service = app(\App\Services\MedicalRecordService::class);
+    $service = app(MedicalRecordService::class);
     $reflection = new ReflectionClass($service);
     $method = $reflection->getMethod('compareNutritionStatus');
     $method->setAccessible(true);

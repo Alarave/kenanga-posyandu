@@ -6,13 +6,14 @@ use App\Models\Pedukuhan;
 use App\Models\Posyandu;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 use Livewire\Livewire;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
     // Clear cache to prevent test pollution
-    \Illuminate\Support\Facades\Cache::forget('about_page_kaders');
+    Cache::forget('about_page_kaders');
 
     // Create baseline pedukuhan and posyandu
     $this->pedukuhan = Pedukuhan::factory()->create();

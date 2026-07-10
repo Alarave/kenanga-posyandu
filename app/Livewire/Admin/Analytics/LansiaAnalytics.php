@@ -3,6 +3,9 @@
 namespace App\Livewire\Admin\Analytics;
 
 use App\Livewire\Traits\HasPosyanduScope;
+use App\Models\MedicalRecord;
+use App\Models\Patient;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Reactive;
 use Livewire\Component;
 
@@ -20,10 +23,10 @@ class LansiaAnalytics extends Component
     public $selectedPosyandu;
 
     // AL-01: Kategori Umur
-    #[\Livewire\Attributes\Computed]
+    #[Computed]
     public function ageCategories()
     {
-        $patients = $this->applyPosyanduScope(\App\Models\Patient::query(), $this->selectedPosyandu)
+        $patients = $this->applyPosyanduScope(Patient::query(), $this->selectedPosyandu)
             ->where('category', 'lansia')->where('status_mutasi', 'aktif')->get();
         $pra = 0;
         $lansia = 0;
@@ -45,10 +48,10 @@ class LansiaAnalytics extends Component
     }
 
     // AL-02: IMT
-    #[\Livewire\Attributes\Computed]
+    #[Computed]
     public function imtStats()
     {
-        $records = $this->applyPosyanduScope(\App\Models\MedicalRecord::query(), $this->selectedPosyandu)
+        $records = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
             ->whereHas('patient', function ($q) {
                 $q->where('category', 'lansia')->where('status_mutasi', 'aktif');
             })
@@ -82,10 +85,10 @@ class LansiaAnalytics extends Component
     }
 
     // AL-03 to AL-06: Metabolic Risks
-    #[\Livewire\Attributes\Computed]
+    #[Computed]
     public function metabolicRisks()
     {
-        $records = $this->applyPosyanduScope(\App\Models\MedicalRecord::query(), $this->selectedPosyandu)
+        $records = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
             ->whereHas('patient', function ($q) {
                 $q->where('category', 'lansia')->where('status_mutasi', 'aktif');
             })

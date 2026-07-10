@@ -1,6 +1,7 @@
 <div
     x-data="articleEditor()"
     x-init="init()"
+    @keydown.window="onWindowKeydown($event)"
     class="min-h-screen bg-[#f8f8f7]"
     @click="closeAllMenus($event)"
     @keydown.ctrl.b.window.prevent="formatText('bold')"
@@ -725,6 +726,26 @@ function articleEditor() {
         blocks: [],
          init() {
             this.blocks = [{ id: this.nextId++, type: 'paragraph', content: '' }];
+        },
+
+        onWindowKeydown(e) {
+            try {
+                const ae = document.activeElement;
+                const isEditable = ae && (
+                    ae.tagName === 'TEXTAREA' ||
+                    ae.tagName === 'INPUT' ||
+                    (ae.getAttribute && ae.getAttribute('contenteditable') === 'true')
+                );
+                // If focus is inside an input/textarea/contenteditable and user types '/',
+                // stop other global handlers from intercepting so the character inserts normally.
+                if (isEditable && e.key === '/') {
+                    if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+                    if (typeof e.stopPropagation === 'function') e.stopPropagation();
+                    return;
+                }
+            } catch (err) {
+                // ignore
+            }
         },
 
         handleBlurEvent(e) {

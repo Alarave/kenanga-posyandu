@@ -2,13 +2,18 @@
 
 namespace App\Livewire\Admin;
 
+use App\Jobs\ComputeAnalyticsSnapshot;
 use App\Livewire\Shared\BaseAdminComponent;
+use App\Models\AnalyticsSnapshot;
 use App\Models\MedicalRecord;
 use App\Models\Patient;
 use App\Models\Posyandu;
+use App\Models\Schedule;
+use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AdminDashboard extends BaseAdminComponent
 {
@@ -122,7 +127,7 @@ class AdminDashboard extends BaseAdminComponent
 
     public function applyDashboardFilters(Builder $query, $type = 'patient')
     {
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
         if ($user->isSuperAdmin()) {
             if ($this->filterPosyandu !== 'semua') {
@@ -168,7 +173,7 @@ class AdminDashboard extends BaseAdminComponent
                             ($this->filterPosyandu !== 'semua') ||
                             ($this->filterRisiko !== 'semua');
 
-        /** @var \App\Models\User $user */
+        /** @var User $user */
         $user = Auth::user();
         $posyanduId = $user->isSuperAdmin() ? null : $user->posyandu_id;
         $year = now()->year;
@@ -177,7 +182,7 @@ class AdminDashboard extends BaseAdminComponent
         $loadedFromSnapshot = false;
 
         if (! $hasCustomFilters) {
-            $snapshot = \App\Models\AnalyticsSnapshot::where('posyandu_id', $posyanduId)->where('key', $key)->first();
+            $snapshot = AnalyticsSnapshot::where('posyandu_id', $posyanduId)->where('key', $key)->first();
             if ($snapshot && isset($snapshot->data['dashboard_stats']['lansiaDemografi']) && isset($snapshot->data['dashboard_stats']['recentActivities'])) {
                 $data = $snapshot->data['dashboard_stats'];
                 foreach ($data as $prop => $val) {
@@ -207,10 +212,11 @@ class AdminDashboard extends BaseAdminComponent
                             $record->setRelation('patient', $patient);
                         }
                         if (isset($act['user'])) {
-                            $user = (new \App\Models\User)->forceFill($act['user']);
+                            $user = (new User)->forceFill($act['user']);
                             $user->exists = true;
                             $record->setRelation('user', $user);
                         }
+
                         return $record;
                     });
                 }
@@ -230,10 +236,12 @@ class AdminDashboard extends BaseAdminComponent
                                 if (isset($rec['visit_date'])) {
                                     $record->visit_date = Carbon::parse($rec['visit_date']);
                                 }
+
                                 return $record;
                             });
                             $patient->setRelation('medicalRecords', $records);
                         }
+
                         return $patient;
                     });
                 }
@@ -248,6 +256,7 @@ class AdminDashboard extends BaseAdminComponent
                             }
                             $item['patient'] = $patient;
                         }
+
                         return $item;
                     });
                 }
@@ -272,10 +281,11 @@ class AdminDashboard extends BaseAdminComponent
                             $record->setRelation('patient', $patient);
                         }
                         if (isset($act['user'])) {
-                            $user = (new \App\Models\User)->forceFill($act['user']);
+                            $user = (new User)->forceFill($act['user']);
                             $user->exists = true;
                             $record->setRelation('user', $user);
                         }
+
                         return $record;
                     });
                 }
@@ -295,10 +305,12 @@ class AdminDashboard extends BaseAdminComponent
                                 if (isset($rec['visit_date'])) {
                                     $record->visit_date = Carbon::parse($rec['visit_date']);
                                 }
+
                                 return $record;
                             });
                             $patient->setRelation('medicalRecords', $records);
                         }
+
                         return $patient;
                     });
                 }
@@ -306,14 +318,14 @@ class AdminDashboard extends BaseAdminComponent
                 $loadedFromSnapshot = true;
             } else {
                 $this->computeDashboardStatsRealtime();
-                \App\Jobs\ComputeAnalyticsSnapshot::dispatch($posyanduId, $year);
+                ComputeAnalyticsSnapshot::dispatch($posyanduId, $year);
             }
         } else {
             $this->computeDashboardStatsRealtime();
         }
 
         // Un-snapshotted logic (recent, alerts)
-        $scheduleQuery = clone \App\Models\Schedule::query();
+        $scheduleQuery = clone Schedule::query();
         $scheduleQuery = $this->applyDashboardFilters($scheduleQuery, 'schedule');
         $this->upcomingSchedule = $scheduleQuery->where('start_time', '>=', now())->orderBy('start_time')->first();
 
@@ -499,7 +511,7 @@ class AdminDashboard extends BaseAdminComponent
 
     protected function getNutritionStatusDistribution(Builder $medicalRecordQuery, Builder $latestRecordSubquery): array
     {
-        $distribution = (clone $medicalRecordQuery)->whereIn('id', $latestRecordSubquery)->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))->whereNotNull('nutrition_status')->select('nutrition_status', \Illuminate\Support\Facades\DB::raw('COUNT(*) as total'))->groupBy('nutrition_status')->pluck('total', 'nutrition_status');
+        $distribution = (clone $medicalRecordQuery)->whereIn('id', $latestRecordSubquery)->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))->whereNotNull('nutrition_status')->select('nutrition_status', DB::raw('COUNT(*) as total'))->groupBy('nutrition_status')->pluck('total', 'nutrition_status');
 
         return ['labels' => $distribution->keys()->toArray(), 'data' => $distribution->values()->toArray()];
     }
@@ -642,7 +654,7 @@ class AdminDashboard extends BaseAdminComponent
         try {
             $monthMap = [
                 'jan' => 1, 'peb' => 2, 'feb' => 2, 'mar' => 3, 'apr' => 4, 'mei' => 5, 'jun' => 6,
-                'jul' => 7, 'agu' => 8, 'sep' => 9, 'okt' => 10, 'nop' => 11, 'nov' => 11, 'des' => 12
+                'jul' => 7, 'agu' => 8, 'sep' => 9, 'okt' => 10, 'nop' => 11, 'nov' => 11, 'des' => 12,
             ];
 
             $parts = explode(' ', strtolower($this->selectedMonthYear));
@@ -670,7 +682,7 @@ class AdminDashboard extends BaseAdminComponent
                     'id' => $record->patient->id,
                     'patient_name' => $record->patient->full_name,
                     'category' => ucfirst($record->patient->category === 'balita' ? 'Balita' : ($record->patient->category === 'ibu_hamil' ? 'Ibu Hamil' : 'Lansia')),
-                    'visit_date' => \Carbon\Carbon::parse($record->visit_date)->translatedFormat('d M Y'),
+                    'visit_date' => Carbon::parse($record->visit_date)->translatedFormat('d M Y'),
                     'weight' => $record->weight,
                     'height' => $record->height,
                     'posyandu_name' => $record->patient->posyandu?->name ?? '-',

@@ -1,14 +1,15 @@
 <?php
 
+use App\Livewire\Admin\Management\UserManagement;
 use App\Models\User;
+use Database\Seeders\RolesAndPermissionsSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
-use App\Livewire\Admin\Management\UserManagement;
 
 uses(RefreshDatabase::class);
 
 test('user management counts active admins and kaders as active kaders', function () {
-    $this->seed(\Database\Seeders\RolesAndPermissionsSeeder::class);
+    $this->seed(RolesAndPermissionsSeeder::class);
 
     $superadmin = User::factory()->create([
         'role' => 'superadmin',

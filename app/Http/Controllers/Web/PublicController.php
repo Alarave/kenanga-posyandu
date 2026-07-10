@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\Schedule;
+use App\Services\AboutPageService;
 
 class PublicController extends Controller
 {
@@ -35,7 +36,7 @@ class PublicController extends Controller
     /**
      * Display the about page
      */
-    public function about(\App\Services\AboutPageService $aboutPageService)
+    public function about(AboutPageService $aboutPageService)
     {
         $misis = $aboutPageService->getMissions();
         $tujuans = $aboutPageService->getGoals();

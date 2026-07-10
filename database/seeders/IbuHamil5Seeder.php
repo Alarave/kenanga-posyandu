@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\MedicalRecord;
 use App\Models\Patient;
+use App\Models\Posyandu;
+use App\Models\User;
 use Carbon\Carbon;
 use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
@@ -16,7 +18,7 @@ class IbuHamil5Seeder extends Seeder
     public function run(): void
     {
         $faker = Faker::create('id_ID');
-        $posyanduIds = \App\Models\Posyandu::pluck('id')->toArray();
+        $posyanduIds = Posyandu::pluck('id')->toArray();
         if (empty($posyanduIds)) {
             $posyanduIds = [1];
         }
@@ -43,7 +45,7 @@ class IbuHamil5Seeder extends Seeder
             for ($v = 0; $v < $visitCount; $v++) {
                 MedicalRecord::create([
                     'patient_id' => $patient->id,
-                    'user_id' => \App\Models\User::first()->id ?? 1,
+                    'user_id' => User::first()->id ?? 1,
                     'visit_date' => Carbon::now()->subMonths($v)->subDays(rand(1, 5)),
                     'weight' => rand(50, 80) + (rand(0, 9) / 10),
                     'height' => rand(145, 170),

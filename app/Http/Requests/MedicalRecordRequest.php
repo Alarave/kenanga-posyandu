@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Patient;
 use Illuminate\Foundation\Http\FormRequest;
 
 class MedicalRecordRequest extends FormRequest
@@ -15,7 +16,7 @@ class MedicalRecordRequest extends FormRequest
     {
         $category = $this->input('category');
         $patientId = $this->input('patient_id');
-        $patient = $patientId ? \App\Models\Patient::find($patientId) : null;
+        $patient = $patientId ? Patient::find($patientId) : null;
         $patientCategory = $patient ? $patient->category : $category;
         $isChild = in_array($patientCategory ?? 'balita', ['bayi', 'baduta', 'balita', 'anak_sekolah']);
 
@@ -187,8 +188,8 @@ class MedicalRecordRequest extends FormRequest
                 $patientId = $this->input('patient_id');
 
                 if ($idNumber && $category) {
-                    $hash = \App\Models\Patient::generateBlindIndex($idNumber);
-                    $existing = \App\Models\Patient::where('id_number_hash', $hash)
+                    $hash = Patient::generateBlindIndex($idNumber);
+                    $existing = Patient::where('id_number_hash', $hash)
                         ->when($patientId, function ($q) use ($patientId) {
                             $q->where('id', '!=', $patientId);
                         })

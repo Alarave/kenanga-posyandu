@@ -4,11 +4,12 @@ namespace App\Imports;
 
 use App\Contracts\FileParserInterface;
 use App\Imports\Parsers\CsvFileParser;
+use App\Imports\Parsers\XlsFileParser;
 use App\Imports\Parsers\XlsxFileParser;
 use App\Imports\Processors\PatientRowProcessor;
 use App\Imports\Resolvers\HeaderResolver;
-use Illuminate\Http\UploadedFile;
 use Carbon\Carbon;
+use Illuminate\Http\UploadedFile;
 
 /**
  * PatientImport — Orchestrator (Clean Code, OOP, SRP).
@@ -92,14 +93,14 @@ class PatientImport
 
         foreach ($rows as $index => $row) {
             $rowNum = $index + 1;
-            
+
             // Clean up row cells
             $rowCleaned = array_map(function ($val) {
                 return trim((string) $val);
             }, $row);
 
             // Skip empty rows
-            if (count(array_filter($rowCleaned, fn($v) => $v !== '')) === 0) {
+            if (count(array_filter($rowCleaned, fn ($v) => $v !== '')) === 0) {
                 continue;
             }
 
@@ -130,6 +131,7 @@ class PatientImport
                 $normalizedHeaders = $this->headerResolver->normalizeHeaders($rowCleaned);
                 $currentColMap = $this->headerResolver->buildColumnMap($normalizedHeaders);
                 $this->debugHeaders = $rowCleaned;
+
                 continue; // Skip header row itself
             }
 
@@ -137,6 +139,7 @@ class PatientImport
             if ($currentColMap) {
                 $get = function (string $key) use ($rowCleaned, $currentColMap): string {
                     $idx = $currentColMap[$key] ?? null;
+
                     return $idx !== null ? ($rowCleaned[$idx] ?? '') : '';
                 };
 
@@ -165,7 +168,7 @@ class PatientImport
         return match ($extension) {
             'csv' => new CsvFileParser,
             'xlsx' => new XlsxFileParser,
-            'xls' => new \App\Imports\Parsers\XlsFileParser,
+            'xls' => new XlsFileParser,
             default => throw new \InvalidArgumentException(
                 "Format '{$extension}' tidak didukung. Gunakan CSV, XLSX, atau XLS."
             ),
