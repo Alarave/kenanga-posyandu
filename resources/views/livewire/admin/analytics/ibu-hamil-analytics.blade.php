@@ -297,7 +297,7 @@
             </div>
 
             <div class="overflow-x-auto">
-                <table class="w-full text-left">
+                <table class="w-full min-w-[1150px] text-left">
                     <thead>
                         <tr class="border-b border-slate-200 bg-slate-50/50 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
                             <th class="px-6 py-4">Ibu Hamil</th>
@@ -316,20 +316,20 @@
                             <tr class="hover:bg-slate-50/50 transition-colors" wire:key="maternal-row-{{ $row['id'] }}">
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-3.5">
-                                        <div class="w-10 h-10 rounded-xl bg-pink-50 border border-pink-100 text-pink-500 flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
+                                        <div class="w-10 h-10 rounded-full bg-rose-500 text-white flex items-center justify-center shrink-0 shadow-sm">
                                             <span class="material-symbols-outlined text-[20px]">pregnant_woman</span>
                                         </div>
-                                        <div>
-                                            <span class="block text-sm font-semibold text-slate-800">{{ $row['name'] }}</span>
-                                            <div class="flex items-center gap-1.5 mt-1 flex-wrap">
-                                                <span class="text-xs text-slate-400 font-medium">Usia: {{ $row['age'] }} thn | {{ $row['posyandu_name'] }}</span>
+                                        <div class="flex flex-col gap-0.5">
+                                            <div class="flex items-center gap-2">
+                                                <span class="text-sm font-semibold text-slate-800 tracking-tight whitespace-nowrap">{{ $row['name'] }}</span>
                                                 @if($row['is_high_risk'])
-                                                    <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-50 border border-amber-200 text-[9px] font-black text-amber-700 cursor-help" title="Risiko Tinggi: {{ $row['risk_reasons'] }}">
+                                                    <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-50 border border-amber-200 text-[9px] font-black text-amber-700 cursor-help whitespace-nowrap" title="Risiko Tinggi: {{ $row['risk_reasons'] }}">
                                                         <span class="material-symbols-outlined text-[10px] text-amber-500">warning</span>
                                                         Risti
                                                     </span>
                                                 @endif
                                             </div>
+                                            <span class="text-xs text-slate-400 font-medium whitespace-nowrap">Usia: {{ $row['age'] }} thn &bull; {{ $row['posyandu_name'] }}</span>
                                         </div>
                                     </div>
                                 </td>
