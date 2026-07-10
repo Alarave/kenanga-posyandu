@@ -217,18 +217,24 @@ test('analytics component can drill down on lansia metabolic risks', function ()
     $this->actingAs($admin);
 
     // Test Hipertensi drill down
-    Livewire::test(Analytics::class)
+    $comp1 = Livewire::test(Analytics::class)
         ->call('drillDown', 'Lansia - Hipertensi', 'lansia_hipertensi', now()->month)
         ->assertSee('Mbah Sugeng Hipertensi')
-        ->assertDontSee('Mbah Ngatiman Hiperglikemia')
         ->assertSee('TD: 145/95 mmHg');
 
+    $names1 = collect($comp1->instance()->drillDownData)->pluck('name')->toArray();
+    expect($names1)->toContain('Mbah Sugeng Hipertensi')
+        ->not->toContain('Mbah Ngatiman Hiperglikemia');
+
     // Test Hiperglikemia drill down
-    Livewire::test(Analytics::class)
+    $comp2 = Livewire::test(Analytics::class)
         ->call('drillDown', 'Lansia - Hiperglikemia', 'lansia_hiperglikemia', now()->month)
         ->assertSee('Mbah Ngatiman Hiperglikemia')
-        ->assertDontSee('Mbah Sugeng Hipertensi')
         ->assertSee('GDS: 250 mg/dL');
+
+    $names2 = collect($comp2->instance()->drillDownData)->pluck('name')->toArray();
+    expect($names2)->toContain('Mbah Ngatiman Hiperglikemia')
+        ->not->toContain('Mbah Sugeng Hipertensi');
 });
 
 test('analytics component can drill down on all categories (yearly/YoY mode fallback) and support custom year parameter', function () {
