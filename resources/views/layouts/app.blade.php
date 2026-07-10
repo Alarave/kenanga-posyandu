@@ -210,18 +210,28 @@
     @stack('scripts')
     
     {{-- Global Script to toggle .has-value class on date inputs (supports browser date-placeholder translation) --}}
+    {{-- Global Script to toggle .has-value class on date inputs (supports browser date-placeholder translation) --}}
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            function updateDateInputClass(input) {
-                requestAnimationFrame(function () {
-                    if (input.value) {
-                        input.classList.add('has-value');
-                    } else {
-                        input.classList.remove('has-value');
-                    }
-                });
-            }
+        function updateDateInputClass(input) {
+            requestAnimationFrame(function () {
+                if (input.value) {
+                    input.classList.add('has-value');
+                } else {
+                    input.classList.remove('has-value');
+                }
+            });
+        }
 
+        // Toggle Session Expired Modal
+        window.showSessionExpiredModal = function () {
+            const modal = document.getElementById('session-expired-modal');
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function () {
             // Listen to input and change events
             ['input', 'change'].forEach(function (event) {
                 document.body.addEventListener(event, function (e) {
@@ -250,43 +260,34 @@
                 });
             });
             observer.observe(document.body, { childList: true, subtree: true });
+        });
 
-            // High-performance Livewire hook fallback
-            document.addEventListener('livewire:init', function () {
-                // Intercept session expiration (status 419)
-                Livewire.hook('request', ({ fail }) => {
-                    fail(({ status, preventDefault }) => {
-                        if (status === 419) {
-                            preventDefault();
-                            if (window.showSessionExpiredModal) {
-                                window.showSessionExpiredModal();
-                            } else {
-                                window.location.reload();
-                            }
+        // High-performance Livewire hook fallback
+        document.addEventListener('livewire:init', function () {
+            // Intercept session expiration (status 419)
+            Livewire.hook('request', ({ fail }) => {
+                fail(({ status, preventDefault }) => {
+                    if (status === 419) {
+                        preventDefault();
+                        if (window.showSessionExpiredModal) {
+                            window.showSessionExpiredModal();
+                        } else {
+                            window.location.reload();
                         }
-                    });
-                });
-
-                Livewire.hook('request.respond', function () {
-                    document.querySelectorAll('input[type="date"], input[type="datetime-local"]').forEach(updateDateInputClass);
-                });
-                Livewire.hook('commit', ({ component, commit, respond, succeed, fail }) => {
-                    succeed(function () {
-                        queueMicrotask(function () {
-                            document.querySelectorAll('input[type="date"], input[type="datetime-local"]').forEach(updateDateInputClass);
-                        });
-                    });
+                    }
                 });
             });
 
-            // Toggle Session Expired Modal
-            window.showSessionExpiredModal = function () {
-                const modal = document.getElementById('session-expired-modal');
-                if (modal) {
-                    modal.classList.remove('hidden');
-                    modal.classList.add('flex');
-                }
-            };
+            Livewire.hook('request.respond', function () {
+                document.querySelectorAll('input[type="date"], input[type="datetime-local"]').forEach(updateDateInputClass);
+            });
+            Livewire.hook('commit', ({ component, commit, respond, succeed, fail }) => {
+                succeed(function () {
+                    queueMicrotask(function () {
+                        document.querySelectorAll('input[type="date"], input[type="datetime-local"]').forEach(updateDateInputClass);
+                    });
+                });
+            });
         });
     </script>
     
