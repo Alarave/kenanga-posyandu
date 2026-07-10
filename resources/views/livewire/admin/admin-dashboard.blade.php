@@ -380,6 +380,11 @@
                     $ndLabels = $nutritionStatusDistribution['labels'] ?? [];
                     $ndData = $nutritionStatusDistribution['data'] ?? [];
                     $chartTotal = array_sum($ndData);
+
+                    if (empty($ndLabels)) {
+                        $ndLabels = ['Normal', 'Gizi Kurang', 'Gizi Buruk', 'Gizi Lebih'];
+                        $ndData = [0, 0, 0, 0];
+                    }
                 @endphp
 
                 <div x-data="{
