@@ -325,7 +325,7 @@
                                                 @if($row['is_high_risk'])
                                                     <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-50 border border-amber-200 text-[9px] font-black text-amber-700 cursor-help whitespace-nowrap" title="Risiko Tinggi: {{ $row['risk_reasons'] }}">
                                                         <span class="material-symbols-outlined text-[10px] text-amber-500">warning</span>
-                                                        Risti
+                                                        Risiko
                                                     </span>
                                                 @endif
                                             </div>
