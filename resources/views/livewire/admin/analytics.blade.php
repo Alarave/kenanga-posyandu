@@ -200,43 +200,43 @@
     </section>
 
     {{-- ── Tab Navigation ── --}}
-    <div class="flex overflow-x-auto whitespace-nowrap bg-slate-100/80 backdrop-blur-sm p-1 sm:p-1.5 rounded-xl sm:rounded-2xl border border-slate-200/80 shadow-sm gap-0.5 sm:gap-1 scrollbar-none w-full">
+    <div class="flex overflow-x-auto whitespace-nowrap bg-slate-100/80 backdrop-blur-sm p-1.5 sm:p-2 rounded-2xl border border-slate-200/80 shadow-sm gap-1 sm:gap-2 scrollbar-none w-full">
         <button wire:click="$set('activeTab', 'overview')" @class([
-            'analytics-tab-btn flex-1 shrink-0 min-w-max py-2.5 sm:py-3 px-3 sm:px-5 rounded-lg sm:rounded-xl text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer',
-            'bg-white text-teal-800 border border-teal-100/80 shadow-md font-extrabold tracking-tight' => $activeTab === 'overview',
-            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-semibold' => $activeTab !== 'overview'
+            'analytics-tab-btn flex-1 shrink-0 min-w-max py-3.5 sm:py-4 px-4 sm:px-7 rounded-xl text-sm sm:text-[15px] transition-all duration-200 flex items-center justify-center gap-2 sm:gap-2.5 cursor-pointer',
+            'bg-white text-teal-850 border border-teal-100/80 shadow-md font-black tracking-tight' => $activeTab === 'overview',
+            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-extrabold' => $activeTab !== 'overview'
         ]) style="min-width: max-content; flex-shrink: 0;">
-            <span class="material-symbols-outlined text-[16px] sm:text-[18px] {{ $activeTab === 'overview' ? 'text-teal-600' : 'text-slate-400' }}">dashboard</span>
+            <span class="material-symbols-outlined text-[18px] sm:text-[22px] {{ $activeTab === 'overview' ? 'text-teal-600' : 'text-slate-400' }}">dashboard</span>
             <span class="hidden xs:inline sm:inline">Overview</span>
             <span class="inline xs:hidden sm:hidden">Ov.</span>
-            @if($activeTab === 'overview')<span class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-teal-500 ml-0.5 sm:ml-1"></span>@endif
+            @if($activeTab === 'overview')<span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-teal-500 ml-0.5 sm:ml-1"></span>@endif
         </button>
         <button wire:click="$set('activeTab', 'balita')" @class([
-            'analytics-tab-btn flex-1 shrink-0 min-w-max py-2.5 sm:py-3 px-3 sm:px-5 rounded-lg sm:rounded-xl text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer',
-            'bg-white text-teal-800 border border-teal-100/80 shadow-md font-extrabold tracking-tight' => $activeTab === 'balita',
-            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-semibold' => $activeTab !== 'balita'
+            'analytics-tab-btn flex-1 shrink-0 min-w-max py-3.5 sm:py-4 px-4 sm:px-7 rounded-xl text-sm sm:text-[15px] transition-all duration-200 flex items-center justify-center gap-2 sm:gap-2.5 cursor-pointer',
+            'bg-white text-teal-850 border border-teal-100/80 shadow-md font-black tracking-tight' => $activeTab === 'balita',
+            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-extrabold' => $activeTab !== 'balita'
         ]) style="min-width: max-content; flex-shrink: 0;">
-            <span class="material-symbols-outlined text-[16px] sm:text-[18px] {{ $activeTab === 'balita' ? 'text-teal-600' : 'text-slate-400' }}">child_care</span>
+            <span class="material-symbols-outlined text-[18px] sm:text-[22px] {{ $activeTab === 'balita' ? 'text-teal-600' : 'text-slate-400' }}">child_care</span>
             Balita
-            @if($activeTab === 'balita')<span class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-teal-500 ml-0.5 sm:ml-1"></span>@endif
+            @if($activeTab === 'balita')<span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-teal-500 ml-0.5 sm:ml-1"></span>@endif
         </button>
         <button wire:click="$set('activeTab', 'pregnancy')" @class([
-            'analytics-tab-btn flex-1 shrink-0 min-w-max py-2.5 sm:py-3 px-3 sm:px-5 rounded-lg sm:rounded-xl text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer',
-            'bg-white text-rose-800 border border-rose-100/80 shadow-md font-extrabold tracking-tight' => $activeTab === 'pregnancy',
-            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-semibold' => $activeTab !== 'pregnancy'
+            'analytics-tab-btn flex-1 shrink-0 min-w-max py-3.5 sm:py-4 px-4 sm:px-7 rounded-xl text-sm sm:text-[15px] transition-all duration-200 flex items-center justify-center gap-2 sm:gap-2.5 cursor-pointer',
+            'bg-white text-rose-850 border border-rose-100/80 shadow-md font-black tracking-tight' => $activeTab === 'pregnancy',
+            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-extrabold' => $activeTab !== 'pregnancy'
         ]) style="min-width: max-content; flex-shrink: 0;">
-            <span class="material-symbols-outlined text-[16px] sm:text-[18px] {{ $activeTab === 'pregnancy' ? 'text-rose-500' : 'text-slate-400' }}">pregnant_woman</span>
+            <span class="material-symbols-outlined text-[18px] sm:text-[22px] {{ $activeTab === 'pregnancy' ? 'text-rose-500' : 'text-slate-400' }}">pregnant_woman</span>
             Hamil
-            @if($activeTab === 'pregnancy')<span class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-rose-500 ml-0.5 sm:ml-1"></span>@endif
+            @if($activeTab === 'pregnancy')<span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-rose-500 ml-0.5 sm:ml-1"></span>@endif
         </button>
         <button wire:click="$set('activeTab', 'lansia')" @class([
-            'analytics-tab-btn flex-1 shrink-0 min-w-max py-2.5 sm:py-3 px-3 sm:px-5 rounded-lg sm:rounded-xl text-xs sm:text-sm transition-all duration-200 flex items-center justify-center gap-1.5 sm:gap-2 cursor-pointer',
-            'bg-white text-indigo-800 border border-indigo-100/80 shadow-md font-extrabold tracking-tight' => $activeTab === 'lansia',
-            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-semibold' => $activeTab !== 'lansia'
+            'analytics-tab-btn flex-1 shrink-0 min-w-max py-3.5 sm:py-4 px-4 sm:px-7 rounded-xl text-sm sm:text-[15px] transition-all duration-200 flex items-center justify-center gap-2 sm:gap-2.5 cursor-pointer',
+            'bg-white text-indigo-850 border border-indigo-100/80 shadow-md font-black tracking-tight' => $activeTab === 'lansia',
+            'text-slate-500 hover:text-slate-800 hover:bg-white/60 border border-transparent font-extrabold' => $activeTab !== 'lansia'
         ]) style="min-width: max-content; flex-shrink: 0;">
-            <span class="material-symbols-outlined text-[16px] sm:text-[18px] {{ $activeTab === 'lansia' ? 'text-indigo-500' : 'text-slate-400' }}">elderly</span>
+            <span class="material-symbols-outlined text-[18px] sm:text-[22px] {{ $activeTab === 'lansia' ? 'text-indigo-500' : 'text-slate-400' }}">elderly</span>
             Lansia
-            @if($activeTab === 'lansia')<span class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-indigo-500 ml-0.5 sm:ml-1"></span>@endif
+            @if($activeTab === 'lansia')<span class="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-indigo-500 ml-0.5 sm:ml-1"></span>@endif
         </button>
     </div>
 
@@ -1000,12 +1000,17 @@
                 @endif
 
                 {{-- Ibu Hamil Category Tabs --}}
-                @if(in_array($drillDownType, ['pregnancy_high_risk', 'pregnancy_anemia', 'pregnancy_tablet_fe']))
+                @if(in_array($drillDownType, ['pregnancy_high_risk', 'pregnancy_kek', 'pregnancy_anemia', 'pregnancy_tablet_fe']))
                 <div class="flex flex-wrap gap-2 p-1.5 bg-slate-100 rounded-2xl w-fit">
                     <button wire:click="switchDrillDownCategory('pregnancy_high_risk')" 
                             class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'pregnancy_high_risk' ? 'bg-white text-amber-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
                         <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
                         Risiko Tinggi &amp; 4T
+                    </button>
+                    <button wire:click="switchDrillDownCategory('pregnancy_kek')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'pregnancy_kek' ? 'bg-white text-purple-650 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+                        Kasus KEK
                     </button>
                     <button wire:click="switchDrillDownCategory('pregnancy_anemia')" 
                             class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'pregnancy_anemia' ? 'bg-white text-rose-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
@@ -1116,14 +1121,59 @@
                                       $statusStr = strtolower(trim($statusText));
                                       $tagStyle = '';
                                       $tagClass = '';
+                                      
+                                      $isDanger = false;
+                                      $isWarning = false;
+                                      $isSuccess = false;
+
                                       if (str_contains($statusStr, 'gizi buruk') || str_contains($statusStr, 'sangat kurang') || str_contains($statusStr, 'belum') || str_contains($statusStr, 'anemia') || str_contains($statusStr, 'risiko') || $statusStr === 'buruk') {
-                                          $tagStyle = 'background-color: #FEE2E2; color: #B91C1C; border-color: rgba(185, 28, 28, 0.2);';
+                                          $isDanger = true;
                                       } elseif (str_contains($statusStr, 'gizi kurang') || $statusStr === 'kurang') {
-                                          $tagStyle = 'background-color: #FFEDD5; color: #C2410C; border-color: rgba(194, 65, 12, 0.2);';
+                                          $isWarning = true;
                                       } elseif (str_contains($statusStr, 'lebih') || str_contains($statusStr, 'obesitas')) {
-                                          $tagStyle = 'background-color: #FEF9C3; color: #A16207; border-color: rgba(161, 98, 7, 0.2);';
+                                          $isWarning = true;
+                                      }
+                                      
+                                      // Specific clinical measurement warning checks
+                                      if (str_contains($statusStr, 'tb:')) {
+                                          preg_match('/tb:\s*([\d\.]+)/', $statusStr, $matches);
+                                          if (isset($matches[1]) && (float)$matches[1] < 145) {
+                                              $isDanger = true;
+                                          }
+                                      }
+                                      if (str_contains($statusStr, 'lila:')) {
+                                          preg_match('/lila:\s*([\d\.]+)/', $statusStr, $matches);
+                                          if (isset($matches[1]) && (float)$matches[1] < 23.5) {
+                                              $isDanger = true;
+                                          }
+                                      }
+                                      if (str_contains($statusStr, 'hb:')) {
+                                          preg_match('/hb:\s*([\d\.]+)/', $statusStr, $matches);
+                                          if (isset($matches[1]) && (float)$matches[1] < 11) {
+                                              $isDanger = true;
+                                          }
+                                      }
+                                      if (str_contains($statusStr, 'umur:')) {
+                                          preg_match('/umur:\s*([\d\.]+)/', $statusStr, $matches);
+                                          if (isset($matches[1])) {
+                                              $ageVal = (float)$matches[1];
+                                              if ($ageVal < 20 || $ageVal > 35) {
+                                                  $isDanger = true;
+                                              }
+                                          }
+                                      }
+                                      if (str_contains($statusStr, 'menerima')) {
+                                          $isSuccess = true;
+                                      }
+
+                                      if ($isDanger) {
+                                          $tagStyle = 'background-color: #FEF2F2; color: #DC2626; border-color: rgba(220, 38, 38, 0.15);';
+                                      } elseif ($isWarning) {
+                                          $tagStyle = 'background-color: #FFFBEB; color: #D97706; border-color: rgba(217, 119, 6, 0.15);';
+                                      } elseif ($isSuccess) {
+                                          $tagClass = 'bg-emerald-50 text-emerald-700 border-emerald-100';
                                       } else {
-                                          $tagClass = 'bg-teal-50 text-teal-700 border-teal-100'; // Default
+                                          $tagClass = 'bg-slate-50 text-slate-650 border-slate-200';
                                       }
                                       $statusHtml = '<span class="inline-flex px-3 py-1 rounded-full text-xs font-bold border ' . $tagClass . '" style="' . $tagStyle . '">' . $statusText . '</span>';
                                   @endphp

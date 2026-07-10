@@ -263,6 +263,7 @@ class Analytics extends BaseAdminComponent
             'pregnancy_high_risk' => 'Risiko Tinggi & 4T',
             'pregnancy_anemia' => 'Kasus Anemia',
             'pregnancy_tablet_fe' => 'Pemberian Tablet Fe',
+            'pregnancy_kek' => 'Kasus KEK',
             'pregnancy_k1' => 'Kunjungan K1',
             'pregnancy_k2' => 'Kunjungan K2',
             'pregnancy_k3' => 'Kunjungan K3',
@@ -587,6 +588,12 @@ class Analytics extends BaseAdminComponent
             'pregnancy_tablet_fe' => $query->whereHas('patient', function ($q) {
                     $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
                 }),
+            'pregnancy_kek' => $query->whereHas('patient', function ($q) {
+                    $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
+                })
+                ->whereNotNull('upper_arm_circumference')
+                ->where('upper_arm_circumference', '>', 0)
+                ->where('upper_arm_circumference', '<', 23.5),
             default => null,
         };
 
@@ -617,6 +624,7 @@ class Analytics extends BaseAdminComponent
                 })(),
                 'pregnancy_anemia' => 'Hb: '.($r->hemoglobin ?: '-').' g/dL',
                 'pregnancy_tablet_fe' => $r->nakes_gives_fe_mms ? 'Tablet Fe: Menerima' : 'Tablet Fe: Belum Menerima',
+                'pregnancy_kek' => 'LILA: '.($r->upper_arm_circumference ?: '-').' cm',
                 default => $r->nutrition_status ?: (
                     $r->patient?->category === 'lansia' ? 'Lansia' : (
                         $r->patient?->category === 'ibu_hamil' ? 'Ibu Hamil' : (
