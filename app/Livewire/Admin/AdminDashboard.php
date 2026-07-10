@@ -71,6 +71,18 @@ class AdminDashboard extends BaseAdminComponent
 
     public array $balitasForSelectedStatus = [];
 
+    public bool $showBumilModal = false;
+
+    public ?string $selectedBumilTrimester = null;
+
+    public array $bumilsForSelectedTrimester = [];
+
+    public bool $showLansiaModal = false;
+
+    public ?string $selectedLansiaGroup = null;
+
+    public array $lansiasForSelectedGroup = [];
+
     public bool $showMonthActivityModal = false;
 
     public ?string $selectedMonthYear = null;
@@ -410,6 +422,12 @@ class AdminDashboard extends BaseAdminComponent
         if ($this->selectedNutritionStatus) {
             $this->loadBalitasForSelectedStatus();
         }
+        if ($this->selectedBumilTrimester) {
+            $this->loadBumilsForSelectedTrimester();
+        }
+        if ($this->selectedLansiaGroup) {
+            $this->loadLansiasForSelectedGroup();
+        }
     }
 
     protected function computeDashboardStatsRealtime()
@@ -650,6 +668,110 @@ class AdminDashboard extends BaseAdminComponent
                 'visit_date' => Carbon::parse($record->visit_date)->translatedFormat('d M Y'),
             ];
         })->toArray();
+    }
+
+    public function selectBumilTrimester(string $trimester)
+    {
+        $this->selectedBumilTrimester = $trimester;
+        $this->loadBumilsForSelectedTrimester();
+        $this->showBumilModal = true;
+    }
+
+    protected function loadBumilsForSelectedTrimester()
+    {
+        if (!$this->selectedBumilTrimester) {
+            $this->bumilsForSelectedTrimester = [];
+            return;
+        }
+
+        $label = $this->selectedBumilTrimester;
+        
+        $patientQuery = $this->applyDashboardFilters(Patient::query(), 'patient');
+        $medicalRecordQuery = $this->applyDashboardFilters(MedicalRecord::query(), 'medical_record');
+        $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+
+        $records = $medicalRecordQuery
+            ->whereIn('id', $latestRecordSubquery)
+            ->whereHas('patient', function ($q) use ($patientQuery) {
+                $q->where('category', 'ibu_hamil')
+                  ->whereIn('id', $patientQuery->pluck('id'));
+            })
+            ->with(['patient', 'patient.posyandu'])
+            ->get();
+
+        $bumils = [];
+        foreach ($records as $record) {
+            $weeks = (int) filter_var($record->gestational_age, FILTER_SANITIZE_NUMBER_INT);
+            if ($weeks > 0 && $record->patient) {
+                $matched = false;
+                if ((str_contains($label, '1') || str_contains($label, 'I')) && $weeks <= 13) {
+                    $matched = true;
+                } elseif ((str_contains($label, '2') || str_contains($label, 'II')) && $weeks > 13 && $weeks <= 27) {
+                    $matched = true;
+                } elseif ((str_contains($label, '3') || str_contains($label, 'III')) && $weeks > 27) {
+                    $matched = true;
+                }
+
+                if ($matched) {
+                    $bumils[] = [
+                        'id' => $record->patient->id,
+                        'name' => $record->patient->full_name,
+                        'age' => $record->patient->age,
+                        'gestational_age' => $record->gestational_age,
+                        'posyandu_name' => $record->patient->posyandu?->name ?? '-',
+                        'visit_date' => Carbon::parse($record->visit_date)->translatedFormat('d M Y'),
+                    ];
+                }
+            }
+        }
+        $this->bumilsForSelectedTrimester = $bumils;
+    }
+
+    public function selectLansiaGroup(string $group)
+    {
+        $this->selectedLansiaGroup = $group;
+        $this->loadLansiasForSelectedGroup();
+        $this->showLansiaModal = true;
+    }
+
+    protected function loadLansiasForSelectedGroup()
+    {
+        if (!$this->selectedLansiaGroup) {
+            $this->lansiasForSelectedGroup = [];
+            return;
+        }
+
+        $label = $this->selectedLansiaGroup;
+        
+        $patientQuery = $this->applyDashboardFilters(Patient::query(), 'patient');
+        $lansia = $patientQuery
+            ->where('category', 'lansia')
+            ->with('posyandu')
+            ->get();
+
+        $lansias = [];
+        foreach ($lansia as $l) {
+            if ($l->birth_date) {
+                $age = $l->birth_date->age;
+                $matched = false;
+                if (str_contains($label, '60') && $age >= 60 && $age < 70) {
+                    $matched = true;
+                } elseif (str_contains($label, '70') && $age >= 70) {
+                    $matched = true;
+                }
+
+                if ($matched) {
+                    $lansias[] = [
+                        'id' => $l->id,
+                        'name' => $l->full_name,
+                        'age' => $age,
+                        'gender' => $l->gender === 'L' ? 'Laki-laki' : 'Perempuan',
+                        'posyandu_name' => $l->posyandu?->name ?? '-',
+                    ];
+                }
+            }
+        }
+        $this->lansiasForSelectedGroup = $lansias;
     }
 
     public function selectMonthActivity(string $monthYear)

@@ -553,6 +553,13 @@
                                 maintainAspectRatio: false,
                                 cutout: '75%',
                                 animation: { duration: 800, easing: 'easeOutQuart' },
+                                onClick: (event, activeElements) => {
+                                    if (activeElements && activeElements.length > 0) {
+                                        const index = activeElements[0].index;
+                                        const label = labels[index];
+                                        $wire.selectBumilTrimester(label);
+                                    }
+                                },
                                 plugins: {
                                     legend: { display: false },
                                     tooltip: {
@@ -602,10 +609,15 @@
                         <div class="flex flex-col gap-1 text-xs">
                             <div class="flex items-center gap-2" :class="hiddenItems.includes({{ array_search($key, ['T1', 'T2', 'T3']) }}) ? 'opacity-40' : ''">
                                 <span class="w-2 h-2 rounded-full shrink-0 cursor-pointer" style="background:{{ $info['color'] }}" @click="toggleVisibility({{ array_search($key, ['T1', 'T2', 'T3']) }})"></span>
-                                <span class="text-slate-650 flex-1 truncate font-medium">{{ $info['label'] }} <span class="text-[10px] text-slate-400 font-normal">({{ $info['sub'] }})</span></span>
+                                <span class="text-slate-650 flex-1 truncate font-medium cursor-pointer hover:text-pink-600 hover:underline" wire:click="selectBumilTrimester('{{ $info['label'] }}')">
+                                    {{ $info['label'] }} <span class="text-[10px] text-slate-400 font-normal">({{ $info['sub'] }})</span>
+                                </span>
                                 <div class="flex items-center gap-2 shrink-0">
                                     <span class="text-slate-400 text-[10px]">{{ $count }} Bumil</span>
                                     <span class="font-bold text-slate-700 w-8 text-right">{{ $percentage }}%</span>
+                                    <button wire:click="selectBumilTrimester('{{ $info['label'] }}')" class="w-5 h-5 flex items-center justify-center rounded bg-slate-50 hover:bg-pink-50 text-slate-400 hover:text-pink-600 transition-colors" title="Detail Bumil">
+                                        <span class="material-symbols-outlined text-[13px]">visibility</span>
+                                    </button>
                                 </div>
                             </div>
                             @if(count($bumilTrimesterNames[$key] ?? []) > 0)
@@ -674,6 +686,13 @@
                                 maintainAspectRatio: false,
                                 cutout: '75%',
                                 animation: { duration: 800, easing: 'easeOutQuart' },
+                                onClick: (event, activeElements) => {
+                                    if (activeElements && activeElements.length > 0) {
+                                        const index = activeElements[0].index;
+                                        const label = labels[index];
+                                        $wire.selectLansiaGroup(label);
+                                    }
+                                },
                                 plugins: {
                                     legend: { display: false },
                                     tooltip: {
@@ -722,10 +741,15 @@
                         <div class="flex flex-col gap-1 text-xs">
                             <div class="flex items-center gap-2" :class="hiddenItems.includes({{ array_search($key, ['60_69', '70_plus']) }}) ? 'opacity-40' : ''">
                                 <span class="w-2 h-2 rounded-full shrink-0 cursor-pointer" style="background:{{ $info['color'] }}" @click="toggleVisibility({{ array_search($key, ['60_69', '70_plus']) }})"></span>
-                                <span class="text-slate-650 flex-1 truncate font-medium">{{ $info['label'] }}</span>
+                                <span class="text-slate-650 flex-1 truncate font-medium cursor-pointer hover:text-orange-600 hover:underline" wire:click="selectLansiaGroup('{{ $info['label'] }}')">
+                                    {{ $info['label'] }}
+                                </span>
                                 <div class="flex items-center gap-2 shrink-0">
                                     <span class="text-slate-400 text-[10px]">{{ $count }} Lansia</span>
                                     <span class="font-bold text-slate-700 w-8 text-right">{{ $percentage }}%</span>
+                                    <button wire:click="selectLansiaGroup('{{ $info['label'] }}')" class="w-5 h-5 flex items-center justify-center rounded bg-slate-50 hover:bg-orange-50 text-slate-400 hover:text-orange-650 transition-colors" title="Detail Lansia">
+                                        <span class="material-symbols-outlined text-[13px]">visibility</span>
+                                    </button>
                                 </div>
                             </div>
                             @if(count($lansiaDemografiNames[$info['namesKey']] ?? []) > 0)
@@ -1473,6 +1497,90 @@
                                     <td class="py-3 text-right">
                                         <a href="{{ route('admin.patients.show', $activity['id']) }}" 
                                            class="inline-flex w-7 h-7 items-center justify-center rounded-lg bg-slate-50 text-slate-400 hover:bg-indigo-500 hover:text-white transition-all">
+                                            <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
+        </x-modals.info-modal>
+    </div>
+
+    {{-- ── Daftar Ibu Hamil berdasarkan Trimester Modal ── --}}
+    <div x-data="{ open: @entangle('showBumilModal') }">
+        <x-modals.info-modal title="Daftar Ibu Hamil - {{ $selectedBumilTrimester }}" size="lg">
+            @if(empty($bumilsForSelectedTrimester))
+                <div class="text-center py-6 text-slate-400">
+                    <span class="material-symbols-outlined text-[32px] mb-2 opacity-50">pregnant_woman</span>
+                    <p class="text-xs font-medium">Tidak ada ibu hamil pada kelompok ini.</p>
+                </div>
+            @else
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-100 text-slate-400 text-[10px] font-bold uppercase tracking-wider">
+                                <th class="py-2.5">Nama</th>
+                                <th class="py-2.5">Usia</th>
+                                <th class="py-2.5">Usia Kehamilan</th>
+                                <th class="py-2.5 pl-4">Posyandu</th>
+                                <th class="py-2.5 text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-xs text-slate-600">
+                            @foreach($bumilsForSelectedTrimester as $bumil)
+                                <tr>
+                                    <td class="py-3 font-semibold text-slate-800">{{ $bumil['name'] }}</td>
+                                    <td class="py-3">{{ $bumil['age'] }} tahun</td>
+                                    <td class="py-3 font-medium text-pink-600">{{ $bumil['gestational_age'] }}</td>
+                                    <td class="py-3 pl-4">{{ $bumil['posyandu_name'] }}</td>
+                                    <td class="py-3 text-right">
+                                        <a href="{{ route('admin.patients.show', $bumil['id']) }}" 
+                                           class="inline-flex w-7 h-7 items-center justify-center rounded-lg bg-slate-50 text-slate-400 hover:bg-pink-500 hover:text-white transition-all">
+                                            <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            @endif
+        </x-modals.info-modal>
+    </div>
+
+    {{-- ── Daftar Lansia berdasarkan Usia Modal ── --}}
+    <div x-data="{ open: @entangle('showLansiaModal') }">
+        <x-modals.info-modal title="Daftar Lansia - Kelompok: {{ $selectedLansiaGroup }}" size="lg">
+            @if(empty($lansiasForSelectedGroup))
+                <div class="text-center py-6 text-slate-400">
+                    <span class="material-symbols-outlined text-[32px] mb-2 opacity-50">elderly</span>
+                    <p class="text-xs font-medium">Tidak ada lansia pada kelompok ini.</p>
+                </div>
+            @else
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-slate-100 text-slate-400 text-[10px] font-bold uppercase tracking-wider">
+                                <th class="py-2.5">Nama</th>
+                                <th class="py-2.5">Usia</th>
+                                <th class="py-2.5">Gender</th>
+                                <th class="py-2.5 pl-4">Posyandu</th>
+                                <th class="py-2.5 text-right">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 text-xs text-slate-600">
+                            @foreach($lansiasForSelectedGroup as $lansia)
+                                <tr>
+                                    <td class="py-3 font-semibold text-slate-800">{{ $lansia['name'] }}</td>
+                                    <td class="py-3">{{ $lansia['age'] }} tahun</td>
+                                    <td class="py-3">{{ $lansia['gender'] }}</td>
+                                    <td class="py-3 pl-4">{{ $lansia['posyandu_name'] }}</td>
+                                    <td class="py-3 text-right">
+                                        <a href="{{ route('admin.patients.show', $lansia['id']) }}" 
+                                           class="inline-flex w-7 h-7 items-center justify-center rounded-lg bg-slate-50 text-slate-400 hover:bg-orange-500 hover:text-white transition-all">
                                             <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
                                         </a>
                                     </td>
