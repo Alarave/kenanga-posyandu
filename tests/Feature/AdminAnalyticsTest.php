@@ -214,9 +214,9 @@ test('analytics component can drill down on lansia metabolic risks', function ()
     ]);
 
     $this->actingAs($admin);
-
     // Test Hipertensi drill down
     Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->set('activeTab', 'pregnancy')
         ->call('drillDown', 'Lansia - Hipertensi', 'lansia_hipertensi', now()->month)
         ->assertSee('Mbah Sugeng Hipertensi')
         ->assertDontSee('Mbah Ngatiman Hiperglikemia')
@@ -224,12 +224,12 @@ test('analytics component can drill down on lansia metabolic risks', function ()
 
     // Test Hiperglikemia drill down
     Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->set('activeTab', 'pregnancy')
         ->call('drillDown', 'Lansia - Hiperglikemia', 'lansia_hiperglikemia', now()->month)
         ->assertSee('Mbah Ngatiman Hiperglikemia')
         ->assertDontSee('Mbah Sugeng Hipertensi')
         ->assertSee('GDS: 250 mg/dL');
 });
-
 test('analytics component can drill down on all categories (yearly/YoY mode fallback) and support custom year parameter', function () {
     $pedukuhan = Pedukuhan::factory()->create();
     $posyandu = Posyandu::factory()->create(['pedukuhan_id' => $pedukuhan->id]);
@@ -326,6 +326,7 @@ test('analytics component can drill down on pregnancy risks', function () {
 
     // Test Anemia drill down
     Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->set('activeTab', 'lansia')
         ->call('drillDown', 'Ibu Hamil - Kasus Anemia', 'pregnancy_anemia', now()->month)
         ->assertSee('Ibu Hamil Anemia')
         ->assertDontSee('Ibu Hamil Tinggi Badan Kurang')
@@ -333,6 +334,7 @@ test('analytics component can drill down on pregnancy risks', function () {
 
     // Test High Risk drill down
     Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->set('activeTab', 'lansia')
         ->call('drillDown', 'Ibu Hamil - Risiko Tinggi & 4T', 'pregnancy_high_risk', now()->month)
         ->assertSee('Ibu Hamil Tinggi Badan Kurang')
         ->assertDontSee('Ibu Hamil Anemia')
@@ -340,6 +342,7 @@ test('analytics component can drill down on pregnancy risks', function () {
 
     // Test Tablet Fe drill down
     $testComponent = Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->set('activeTab', 'lansia')
         ->call('drillDown', 'Ibu Hamil - Pemberian Tablet Fe', 'pregnancy_tablet_fe', now()->month);
         
     $testComponent->assertSee('Ibu Hamil Menerima Fe')
@@ -350,8 +353,10 @@ test('analytics component can drill down on pregnancy risks', function () {
     $drillDownData = $testComponent->get('drillDownData');
     expect($drillDownData[0]['nutrition_status'])->toBe('Tablet Fe: Belum Menerima');
     expect($drillDownData[2]['nutrition_status'])->toBe('Tablet Fe: Menerima');
+
     // Test ANC K1 drill down
     Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->set('activeTab', 'lansia')
         ->call('drillDown', 'Ibu Hamil - Kunjungan K1', 'pregnancy_k1', now()->month)
         ->assertSee('Ibu Hamil Anemia')
         ->assertSee('Ibu Hamil Tinggi Badan Kurang')
@@ -360,6 +365,7 @@ test('analytics component can drill down on pregnancy risks', function () {
 
     // Test ANC K2 drill down
     Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->set('activeTab', 'lansia')
         ->call('drillDown', 'Ibu Hamil - Kunjungan K2', 'pregnancy_k2', now()->month)
         ->assertDontSee('Ibu Hamil Anemia')
         ->assertDontSee('Ibu Hamil Tinggi Badan Kurang');

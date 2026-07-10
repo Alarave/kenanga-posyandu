@@ -399,23 +399,189 @@
                 @endforeach
             </div>
 
-            {{-- Combined Trend Line Chart --}}
-            <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-slate-200 shadow-xs">
-                <div class="flex items-center justify-between gap-4 mb-6">
-                    <div>
-                        <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Tren Kunjungan Bulanan Gabungan</h3>
-                        <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Perbandingan tren frekuensi kunjungan pasien per kategori di posyandu (Dapat diklik untuk detail)</p>
+            {{-- New Layout: Grid 3 Kolom responsif (Desktop: 2 kolom utama di kiri, 1 sidebar di kanan) --}}
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+                
+                {{-- Kiri: Analitik Kehadiran & Grafik Tren (Span-2) --}}
+                <div class="lg:col-span-2 space-y-4 sm:space-y-6">
+                    
+                    {{-- Widget 1: Realisasi Kehadiran --}}
+                    <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-slate-200 shadow-xs">
+                        <div class="mb-4">
+                            <h3 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                                <span class="material-symbols-outlined text-teal-600 text-[20px]">how_to_reg</span>
+                                Target vs Realisasi Kehadiran Pasien
+                            </h3>
+                            <p class="text-xs text-slate-500 font-semibold mt-0.5">Persentase keaktifan kunjungan warga terdaftar di periode terpilih</p>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            @foreach([
+                                ['label' => 'Balita & Anak', 'visited' => $balitaBerkunjung, 'total' => $totalBalita, 'color' => 'bg-teal-500', 'text' => 'text-teal-700', 'bg' => 'bg-teal-50', 'icon' => 'child_care'],
+                                ['label' => 'Ibu Hamil', 'visited' => $ibuHamilBerkunjung, 'total' => $totalIbuHamil, 'color' => 'bg-rose-500', 'text' => 'text-rose-700', 'bg' => 'bg-rose-50', 'icon' => 'pregnant_woman'],
+                                ['label' => 'Lansia', 'visited' => $lansiaBerkunjung, 'total' => $totalLansia, 'color' => 'bg-indigo-500', 'text' => 'text-indigo-700', 'bg' => 'bg-indigo-50', 'icon' => 'elderly']
+                            ] as $item)
+                                @php
+                                    $pct = $item['total'] > 0 ? round(($item['visited'] / $item['total']) * 100, 1) : 0;
+                                    // Dinamis warna bar
+                                    $barColor = $pct >= 75 ? 'bg-emerald-500' : ($pct >= 40 ? 'bg-amber-500' : 'bg-rose-500');
+                                @endphp
+                                <div class="space-y-1.5">
+                                    <div class="flex items-center justify-between text-xs sm:text-sm font-bold text-slate-700">
+                                        <span class="flex items-center gap-2">
+                                            <span class="material-symbols-outlined text-[18px] text-slate-400">{{ $item['icon'] }}</span>
+                                            <span>{{ $item['label'] }}</span>
+                                        </span>
+                                        <span>
+                                            <span class="font-extrabold text-slate-900">{{ $pct }}%</span>
+                                            <span class="text-slate-400 font-semibold">({{ $item['visited'] }} / {{ $item['total'] }})</span>
+                                        </span>
+                                    </div>
+                                    <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                                        <div class="{{ $barColor }} h-full rounded-full transition-all duration-500" style="width: {{ $pct }}%"></div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
-                    <button onclick="downloadChart(visitsTrendChart, 'tren_kunjungan')" class="p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
-                        <span class="material-symbols-outlined text-[20px]">download</span>
-                    </button>
+
+                    {{-- Widget 2: Combined Monthly Visits Trend --}}
+                    <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 border border-slate-200 shadow-xs">
+                        <div class="flex items-center justify-between gap-4 mb-6">
+                            <div>
+                                <h3 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-teal-600 text-[20px]">insights</span>
+                                    Tren Kunjungan Bulanan Gabungan
+                                </h3>
+                                <p class="text-xs text-slate-500 font-semibold mt-0.5">Perbandingan tren frekuensi kunjungan pasien per kategori di posyandu (Dapat diklik untuk detail)</p>
+                            </div>
+                            <button onclick="downloadChart(visitsTrendChart, 'tren_kunjungan')" class="p-2 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                                <span class="material-symbols-outlined text-[18px]">download</span>
+                            </button>
+                        </div>
+                        <div class="relative h-80 sm:h-96">
+                            <canvas id="visitsTrendChart" wire:ignore></canvas>
+                            <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/95 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-300 rounded-2xl" id="error-visitsTrendChart">
+                                <span class="material-symbols-outlined text-rose-600 text-4xl mb-2">error</span>
+                                <p class="text-sm font-extrabold text-slate-800">Gagal memuat data grafik</p>
+                                <button onclick="initCharts()" class="mt-3 px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-slate-700 cursor-pointer">Coba Lagi</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="relative h-96">
-                    <canvas id="visitsTrendChart" wire:ignore></canvas>
-                    <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/95 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-300 rounded-2xl" id="error-visitsTrendChart">
-                        <span class="material-symbols-outlined text-rose-600 text-4xl mb-2">error</span>
-                        <p class="text-sm font-extrabold text-slate-800">Gagal memuat data grafik</p>
-                        <button onclick="initCharts()" class="mt-3 px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-slate-700 cursor-pointer">Coba Lagi</button>
+
+                {{-- Kanan: Rangkuman Indikator Kesehatan & Umpan Kasus Risiko (Span-1) --}}
+                <div class="space-y-4 sm:space-y-6">
+                    
+                    {{-- Widget 3: Rangkuman Indikator Kesehatan Utama --}}
+                    <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-slate-200 shadow-xs">
+                        <div class="mb-4">
+                            <h3 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                                <span class="material-symbols-outlined text-teal-600 text-[20px]">clinical_notes</span>
+                                Indikator Kesehatan Utama
+                            </h3>
+                            <p class="text-xs text-slate-500 font-semibold mt-0.5">Ringkasan parameter klinis pasien dari pemeriksaan terbaru</p>
+                        </div>
+                        
+                        <div class="space-y-4">
+                            {{-- Balita --}}
+                            <div>
+                                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-1">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span> Balita & Anak
+                                </h4>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+                                        <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Prevalensi Stunting</p>
+                                        <p class="text-base font-black text-slate-800 mt-0.5">{{ $stuntingRate }}%</p>
+                                    </div>
+                                    <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+                                        <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Imunisasi Dasar</p>
+                                        <p class="text-base font-black text-slate-800 mt-0.5">{{ $cakupanImunisasi }}%</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            {{-- Ibu Hamil --}}
+                            <div>
+                                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-1">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Ibu Hamil
+                                </h4>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+                                        <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Risiko Hipertensi</p>
+                                        <p class="text-base font-black text-slate-800 mt-0.5">{{ $hypertensionRiskRate }}%</p>
+                                    </div>
+                                    <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+                                        <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Kepatuhan Fe</p>
+                                        <p class="text-base font-black text-slate-800 mt-0.5">{{ $feComplianceRate }}%</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {{-- Lansia --}}
+                            <div>
+                                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-1">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span> Lanjut Usia
+                                </h4>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+                                        <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Hipertensi</p>
+                                        <p class="text-base font-black text-slate-800 mt-0.5">{{ $lansiaHypertensionRate }}%</p>
+                                    </div>
+                                    <div class="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+                                        <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Hiperglikemia</p>
+                                        <p class="text-base font-black text-slate-800 mt-0.5">{{ $lansiaHyperglycemiaRate }}%</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Widget 4: Live Health Alerts Feed --}}
+                    <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-slate-200 shadow-xs flex flex-col">
+                        <div class="mb-4">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
+                                    <span class="material-symbols-outlined text-rose-600 text-[20px] animate-pulse">warning</span>
+                                    Live Health Alerts
+                                </h3>
+                                <span class="text-[9px] font-black uppercase tracking-wider bg-rose-50 text-rose-700 px-2 py-0.5 rounded-full border border-rose-200">Kasus Kritis</span>
+                            </div>
+                            <p class="text-xs text-slate-500 font-semibold mt-0.5">5 kasus pemeriksaan berisiko kesehatan tinggi terbaru</p>
+                        </div>
+                        
+                        <div class="space-y-3 flex-1">
+                            @forelse($liveHealthAlerts as $alert)
+                                <div class="p-3 rounded-xl border border-rose-100 bg-rose-50/30 flex flex-col gap-1.5 transition-all hover:bg-rose-50/60">
+                                    <div class="flex items-center justify-between">
+                                        <a href="/admin/patients/{{ $alert['patient_id'] }}" class="text-xs font-black text-slate-800 hover:text-rose-600 hover:underline">
+                                            {{ $alert['patient_name'] }}
+                                        </a>
+                                        <span class="text-[9px] font-extrabold uppercase tracking-wider px-1.5 py-0.5 rounded-md bg-white border border-slate-200 text-slate-600">
+                                            {{ $alert['patient_category'] }}
+                                        </span>
+                                    </div>
+                                    
+                                    {{-- Reasons pills --}}
+                                    <div class="flex flex-wrap gap-1">
+                                        @foreach($alert['reasons'] as $reason)
+                                            <span class="text-[9px] font-bold px-1.5 py-0.5 rounded bg-rose-100 text-rose-700">{{ $reason }}</span>
+                                        @endforeach
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between text-[10px] text-slate-400 font-semibold border-t border-rose-100/50 pt-1.5 mt-0.5">
+                                        <span>Pos: {{ $alert['posyandu_name'] }}</span>
+                                        <span>{{ $alert['visit_date'] }}</span>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="flex flex-col items-center justify-center py-8 text-center text-slate-400">
+                                    <span class="material-symbols-outlined text-emerald-500 text-4xl mb-2">check_circle</span>
+                                    <p class="text-xs font-bold text-slate-700">Seluruh Warga Sehat!</p>
+                                    <p class="text-[10px] font-semibold text-slate-400 mt-0.5">Tidak terdeteksi adanya kasus berisiko tinggi baru</p>
+                                </div>
+                            @endforelse
+                        </div>
                     </div>
                 </div>
             </div>
