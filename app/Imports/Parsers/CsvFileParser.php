@@ -78,7 +78,7 @@ class CsvFileParser implements FileParserInterface
 
         foreach ($lines as $line) {
             $line = trim($line);
-            if ($line === '') {
+            if ($line === '' || str_starts_with(strtolower($line), 'sep=')) {
                 continue;
             }
 

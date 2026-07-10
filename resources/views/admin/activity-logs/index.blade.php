@@ -133,7 +133,7 @@
                         <option value="">Semua Aksi</option>
                         @foreach($actionTypes as $type)
                             <option value="{{ $type }}" {{ request('action_type') == $type ? 'selected' : '' }}>
-                                {{ ucfirst($type) }}
+                                {{ ucwords(str_replace('_', ' ', $type)) }}
                             </option>
                         @endforeach
                     </select>
@@ -212,7 +212,13 @@
                         </td>
                         <td class="px-6 py-5 whitespace-nowrap">
                             @php
-                                $badgeStyle = match($log->action_type) {
+                                $normalizedAction = match(true) {
+                                    str_contains($log->action_type, 'create') => 'create',
+                                    str_contains($log->action_type, 'update') => 'update',
+                                    str_contains($log->action_type, 'delete') => 'delete',
+                                    default => $log->action_type,
+                                };
+                                $badgeStyle = match($normalizedAction) {
                                     'create' => 'bg-emerald-50 text-emerald-700 border-emerald-100/80',
                                     'update' => 'bg-amber-50 text-amber-700 border-amber-100/80',
                                     'delete', 'login_failed' => 'bg-rose-50 text-rose-700 border-rose-100/80',
@@ -222,7 +228,7 @@
                             @endphp
                             <span class="inline-flex items-center px-2.5 py-1 rounded-lg border {{ $badgeStyle }} text-[10px] font-black uppercase tracking-wider">
                                 <span class="w-1.5 h-1.5 rounded-full bg-current mr-1.5"></span>
-                                {{ $log->action_type }}
+                                {{ $normalizedAction }}
                             </span>
                         </td>
                         <td class="px-6 py-5">
