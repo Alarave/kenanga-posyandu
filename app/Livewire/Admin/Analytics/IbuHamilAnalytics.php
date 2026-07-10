@@ -166,8 +166,10 @@ class IbuHamilAnalytics extends Component
             ->get()
             ->unique('patient_id');
 
-        $received = $records->where('nakes_gives_fe_mms', 1)->count();
-        $notReceived = $records->where('nakes_gives_fe_mms', 0)->count();
+        $received = $records->filter(function($r) {
+            return in_array(strtolower(trim($r->nakes_gives_fe_mms)), ['ya', '1', 'true']);
+        })->count();
+        $notReceived = $records->count() - $received;
 
         return ['received' => $received, 'notReceived' => $notReceived];
     }

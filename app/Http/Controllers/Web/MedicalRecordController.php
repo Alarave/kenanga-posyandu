@@ -378,8 +378,8 @@ class MedicalRecordController extends Controller
                     // Detil Kehamilan
                     'pregnancy_number', 'pregnancy_spacing', 'starting_weight', 'starting_height', 'delivery_date', 'delivery_method',
                     // ANC
-                    'TANGGAL UKUR', 'gestational_age', 'BERAT', 'upper_arm_circumference', 'tensi', 'imt_plotting_status', 'lila_plotting_status', 'bp_plotting_status',
-                    'tbc_screening_cough', 'tbc_screening_fever', 'tbc_screening_weight_loss', 'tbc_screening_contact',
+                    'TANGGAL UKUR', 'gestational_age', 'BERAT', 'TINGGI', 'upper_arm_circumference', 'tensi', 'imt_plotting_status', 'lila_plotting_status', 'bp_plotting_status',
+                    'tbc_screening_cough', 'tbc_screening_fever', 'tbc_screening_weight_loss', 'tbc_screening_contact', 'pill_fe',
                     'nakes_gives_fe_mms', 'consumes_fe_mms_regularly', 'nakes_gives_mt_kek', 'mt_package_details', 'consumes_mt_kek_regularly',
                     'counseling_topic', 'joins_pregnant_class', 'anc_referral',
                     // Postpartum

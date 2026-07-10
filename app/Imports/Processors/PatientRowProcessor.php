@@ -107,6 +107,7 @@ class PatientRowProcessor
         $gds = $get('blood_sugar');
         $asamUrat = $get('uric_acid');
         $kolesterol = $get('cholesterol');
+        $pillFe = $get('pill_fe');
 
         // Validate required fields
         if ($nama === '' && $nik === '') {
@@ -244,7 +245,7 @@ class PatientRowProcessor
                 || collect($extraFields)->filter(fn($v) => $v !== null && $v !== '')->isNotEmpty();
 
             if ($hasMedicalData) {
-                $this->saveMedicalRecord($patient, $berat, $tinggi, $lingkarKepala, $vitamin, $imunisasi, $birthDate, $tglUkur, $gender, $rowNum, $customVisitDate, $tensi, $gds, $asamUrat, $kolesterol, $extraFields);
+                $this->saveMedicalRecord($patient, $berat, $tinggi, $lingkarKepala, $vitamin, $imunisasi, $birthDate, $tglUkur, $gender, $rowNum, $customVisitDate, $tensi, $gds, $asamUrat, $kolesterol, $pillFe, $extraFields);
             }
         } catch (\Exception $e) {
             $this->errors[] = "Baris {$rowNum}: Gagal menyimpan '{$nama}' — ".$e->getMessage();
@@ -507,6 +508,7 @@ class PatientRowProcessor
         string $gds = '',
         string $asamUrat = '',
         string $kolesterol = '',
+        string $pillFe = '',
         array $extraFields = []
     ): void {
         $visitDate = $customVisitDate;
@@ -577,7 +579,7 @@ class PatientRowProcessor
                 'patient_id' => $patient->id,
                 'user_id' => $this->userId,
                 'visit_date' => $visitDate->format('Y-m-d'),
-                'pill_fe' => false,
+                'pill_fe' => $pillFe !== '' ? $this->parseBool($pillFe) : false,
                 'complaint' => '—',
                 'diagnosis' => 'Sehat',
             ], $recordData);
