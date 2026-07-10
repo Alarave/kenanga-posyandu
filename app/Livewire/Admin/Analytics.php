@@ -272,6 +272,9 @@ class Analytics extends BaseAdminComponent
             'pregnancy_k4' => 'Kunjungan K4',
             'pregnancy_k5' => 'Kunjungan K5',
             'pregnancy_k6' => 'Kunjungan K6',
+            'pregnancy_trimester_1' => 'Trimester I',
+            'pregnancy_trimester_2' => 'Trimester II',
+            'pregnancy_trimester_3' => 'Trimester III',
             default => 'Data',
         };
 
@@ -419,6 +422,56 @@ class Analytics extends BaseAdminComponent
                 'height' => $r->height ? $r->height . ' cm' : '-',
                 'patient_id' => $r->patient_id,
              'category_warga' => 'Lansia', 'kategori_gizi' => '-', 'status_info' => '-', 'month_name' => $r->visit_date?->format('F') ?? '-', ])->values()->toArray();
+
+            return;
+        }
+
+        if (in_array($type, ['pregnancy_trimester_1', 'pregnancy_trimester_2', 'pregnancy_trimester_3'])) {
+            $query = $this->applyPosyanduScope(MedicalRecord::query(), $targetPosyandu)
+                ->with(['patient.posyandu'])
+                ->whereHas('patient', function ($q) {
+                    $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
+                })
+                ->whereYear('visit_date', $targetYear)
+                ->when($month ?? $this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $month ?? $this->selectedMonth))
+                ->orderBy('visit_date', 'desc')
+                ->orderBy('id', 'desc');
+
+            $records = $query->get()->unique('patient_id');
+
+            $filteredRecords = $records->filter(function ($r) use ($type) {
+                if (! $r->gestational_age) {
+                    return false;
+                }
+                $weeks = (int) filter_var($r->gestational_age, FILTER_SANITIZE_NUMBER_INT);
+                if ($weeks <= 0) return false;
+
+                return match ($type) {
+                    'pregnancy_trimester_1' => $weeks <= 13,
+                    'pregnancy_trimester_2' => $weeks > 13 && $weeks <= 27,
+                    'pregnancy_trimester_3' => $weeks > 27,
+                    default => false,
+                };
+            });
+
+            $this->drillDownData = $filteredRecords->map(fn ($r) => [
+                'name' => $r->patient?->full_name ?? '-',
+                'nik' => $r->patient?->id_number ?? '-',
+                'posyandu' => $r->patient?->posyandu?->name ?? '-',
+                'nutrition_status' => 'Usia Kehamilan: ' . $r->gestational_age,
+                'visit_date' => $r->visit_date?->format('d/m/Y') ?? '-',
+                'weight' => $r->weight ? $r->weight . ' kg' : '-',
+                'height' => $r->height ? $r->height . ' cm' : '-',
+                'patient_id' => $r->patient_id,
+                'category_warga' => 'Ibu Hamil',
+                'kategori_gizi' => '-',
+                'status_info' => '-',
+                'month_name' => $r->visit_date ? match($r->visit_date->month) {
+                    1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni',
+                    7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
+                    default => '-'
+                } : '-',
+            ])->values()->toArray();
 
             return;
         }

@@ -172,47 +172,145 @@
                         </div>
                     </div>
                     
-                    <div class="space-y-6">
-                        @php
-                            $tTotal = array_sum($trimesterStats);
-                            $t1Pct = $tTotal > 0 ? round(($trimesterStats['T1'] / $tTotal) * 100) : 0;
-                            $t2Pct = $tTotal > 0 ? round(($trimesterStats['T2'] / $tTotal) * 100) : 0;
-                            $t3Pct = $tTotal > 0 ? round(($trimesterStats['T3'] / $tTotal) * 100) : 0;
-                        @endphp
-                        <div>
-                            <div class="flex justify-between items-end mb-2">
-                                <div>
-                                    <span class="text-xs font-extrabold text-slate-800">Trimester I <span class="text-[10px] font-bold text-slate-400">(1 - 13 Minggu)</span></span>
-                                    <p class="text-[10px] text-slate-500 font-semibold mt-0.5">Fase krusial pembentukan organ vital janin</p>
+                    @php
+                        $tTotal = array_sum($trimesterStats);
+                        $t1Pct = $tTotal > 0 ? round(($trimesterStats['T1'] / $tTotal) * 100) : 0;
+                        $t2Pct = $tTotal > 0 ? round(($trimesterStats['T2'] / $tTotal) * 100) : 0;
+                        $t3Pct = $tTotal > 0 ? round(($trimesterStats['T3'] / $tTotal) * 100) : 0;
+                    @endphp
+                    
+                    <div class="flex flex-col sm:flex-row items-center gap-6"
+                         wire:key="trimester-chart-container-{{ $selectedYear }}-{{ $selectedMonth ?? 'all' }}-{{ $selectedPosyandu ?? 'all' }}"
+                         x-data="{
+                             chart: null,
+                             t1: {{ $trimesterStats['T1'] ?? 0 }},
+                             t2: {{ $trimesterStats['T2'] ?? 0 }},
+                             t3: {{ $trimesterStats['T3'] ?? 0 }},
+                             initChart() {
+                                 if (this.chart) {
+                                     this.chart.destroy();
+                                 }
+                                 const ctx = document.getElementById('trimesterPieChart').getContext('2d');
+                                 
+                                 const total = this.t1 + this.t2 + this.t3;
+                                 const dataVals = total === 0 ? [1, 1, 1] : [this.t1, this.t2, this.t3];
+                                 const bgColors = total === 0 ? ['#f1f5f9', '#f8fafc', '#e2e8f0'] : ['#f43f5e', '#f59e0b', '#10b981'];
+                                 
+                                 this.chart = new Chart(ctx, {
+                                     type: 'pie',
+                                     data: {
+                                         labels: ['Trimester I', 'Trimester II', 'Trimester III'],
+                                         datasets: [{
+                                             data: dataVals,
+                                             backgroundColor: bgColors,
+                                             borderWidth: 2,
+                                             borderColor: '#ffffff',
+                                             hoverOffset: 6
+                                         }]
+                                     },
+                                     options: {
+                                         responsive: true,
+                                         maintainAspectRatio: false,
+                                         plugins: {
+                                             legend: {
+                                                 display: false
+                                             },
+                                             tooltip: {
+                                                 enabled: total > 0,
+                                                 callbacks: {
+                                                     label: function(context) {
+                                                         const label = context.label || '';
+                                                         const value = total === 0 ? 0 : context.raw;
+                                                         const pct = total === 0 ? 0 : Math.round((value / total) * 100);
+                                                         return ` ${label}: ${value} Ibu (${pct}%)`;
+                                                     }
+                                                 }
+                                             }
+                                         },
+                                         onClick: (event, activeElements) => {
+                                             if (activeElements.length > 0 && total > 0) {
+                                                 const index = activeElements[0].index;
+                                                 const types = ['pregnancy_trimester_1', 'pregnancy_trimester_2', 'pregnancy_trimester_3'];
+                                                 const labels = ['Trimester I (1 - 13 Minggu)', 'Trimester II (14 - 27 Minggu)', 'Trimester III (28 Minggu - Lahir)'];
+                                                 $wire.$parent.drillDown(labels[index], types[index], null);
+                                             }
+                                         }
+                                     }
+                                 });
+                             }
+                         }"
+                         x-init="
+                             $nextTick(() => initChart());
+                         "
+                         wire:ignore
+                    >
+                        {{-- Chart Canvas Container --}}
+                        <div class="relative w-44 h-44 shrink-0 flex items-center justify-center">
+                            <canvas id="trimesterPieChart" class="w-full h-full"></canvas>
+                            @if($tTotal === 0)
+                                <div class="absolute inset-0 flex items-center justify-center bg-white/75 backdrop-blur-xs rounded-full">
+                                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Tidak Ada Data</span>
                                 </div>
-                                <span class="text-xs font-black text-rose-600 bg-rose-50 px-2.5 py-0.5 rounded-lg">{{ $trimesterStats['T1'] }} Ibu ({{ $t1Pct }}%)</span>
-                            </div>
-                            <div class="h-3 w-full bg-slate-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-gradient-to-r from-rose-300 to-rose-500 rounded-full" style="width: {{ $t1Pct }}%"></div>
-                            </div>
+                            @endif
                         </div>
-                        <div>
-                            <div class="flex justify-between items-end mb-2">
-                                <div>
-                                    <span class="text-xs font-extrabold text-slate-800">Trimester II <span class="text-[10px] font-bold text-slate-400">(14 - 27 Minggu)</span></span>
-                                    <p class="text-[10px] text-slate-500 font-semibold mt-0.5">Fase pertumbuhan fisik &amp; gerak aktif janin</p>
+
+                        {{-- Legend & List Breakdown --}}
+                        <div class="flex-1 w-full space-y-3">
+                            {{-- Trimester I --}}
+                            <div @if($trimesterStats['T1'] > 0) wire:click="$parent.drillDown('Trimester I (1 - 13 Minggu)', 'pregnancy_trimester_1', null)" class="p-3 rounded-2xl border border-slate-100 hover:border-rose-250 hover:bg-rose-50/20 cursor-pointer transition-all duration-300 active:scale-[0.98] group" @else class="p-3 rounded-2xl border border-slate-100 opacity-60" @endif>
+                                <div class="flex items-center justify-between gap-3">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-rose-500 shrink-0"></span>
+                                        <div class="flex flex-col">
+                                            <span class="text-xs font-extrabold text-slate-800">Trimester I <span class="text-[9px] font-bold text-slate-400">(1 - 13 Mg)</span></span>
+                                            <span class="text-[9px] text-slate-500 font-semibold mt-0.5">Fase pembentukan organ vital janin</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <span class="text-xs font-black text-rose-600 bg-rose-50 px-2 py-0.5 rounded-lg shrink-0">{{ $trimesterStats['T1'] }} Ibu ({{ $t1Pct }}%)</span>
+                                        @if($trimesterStats['T1'] > 0)
+                                            <span class="material-symbols-outlined text-[14px] text-rose-450 opacity-0 group-hover:opacity-100 transition-all">chevron_right</span>
+                                        @endif
+                                    </div>
                                 </div>
-                                <span class="text-xs font-black text-amber-600 bg-amber-50 px-2.5 py-0.5 rounded-lg">{{ $trimesterStats['T2'] }} Ibu ({{ $t2Pct }}%)</span>
                             </div>
-                            <div class="h-3 w-full bg-slate-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-gradient-to-r from-amber-300 to-amber-500 rounded-full" style="width: {{ $t2Pct }}%"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex justify-between items-end mb-2">
-                                <div>
-                                    <span class="text-xs font-extrabold text-slate-800">Trimester III <span class="text-[10px] font-bold text-slate-400">(28 Minggu - Lahir)</span></span>
-                                    <p class="text-[10px] text-slate-500 font-semibold mt-0.5">Fase pematangan organ &amp; persiapan kelahiran</p>
+
+                            {{-- Trimester II --}}
+                            <div @if($trimesterStats['T2'] > 0) wire:click="$parent.drillDown('Trimester II (14 - 27 Minggu)', 'pregnancy_trimester_2', null)" class="p-3 rounded-2xl border border-slate-100 hover:border-amber-250 hover:bg-amber-50/20 cursor-pointer transition-all duration-300 active:scale-[0.98] group" @else class="p-3 rounded-2xl border border-slate-100 opacity-60" @endif>
+                                <div class="flex items-center justify-between gap-3">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-amber-500 shrink-0"></span>
+                                        <div class="flex flex-col">
+                                            <span class="text-xs font-extrabold text-slate-800">Trimester II <span class="text-[9px] font-bold text-slate-400">(14 - 27 Mg)</span></span>
+                                            <span class="text-[9px] text-slate-500 font-semibold mt-0.5">Fase pertumbuhan &amp; gerak janin</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <span class="text-xs font-black text-amber-600 bg-amber-50 px-2 py-0.5 rounded-lg shrink-0">{{ $trimesterStats['T2'] }} Ibu ({{ $t2Pct }}%)</span>
+                                        @if($trimesterStats['T2'] > 0)
+                                            <span class="material-symbols-outlined text-[14px] text-amber-450 opacity-0 group-hover:opacity-100 transition-all">chevron_right</span>
+                                        @endif
+                                    </div>
                                 </div>
-                                <span class="text-xs font-black text-emerald-600 bg-emerald-50 px-2.5 py-0.5 rounded-lg">{{ $trimesterStats['T3'] }} Ibu ({{ $t3Pct }}%)</span>
                             </div>
-                            <div class="h-3 w-full bg-slate-100 rounded-full overflow-hidden">
-                                <div class="h-full bg-gradient-to-r from-emerald-300 to-emerald-500 rounded-full" style="width: {{ $t3Pct }}%"></div>
+
+                            {{-- Trimester III --}}
+                            <div @if($trimesterStats['T3'] > 0) wire:click="$parent.drillDown('Trimester III (28 Minggu - Lahir)', 'pregnancy_trimester_3', null)" class="p-3 rounded-2xl border border-slate-100 hover:border-emerald-250 hover:bg-emerald-50/20 cursor-pointer transition-all duration-300 active:scale-[0.98] group" @else class="p-3 rounded-2xl border border-slate-100 opacity-60" @endif>
+                                <div class="flex items-center justify-between gap-3">
+                                    <div class="flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 shrink-0"></span>
+                                        <div class="flex flex-col">
+                                            <span class="text-xs font-extrabold text-slate-800">Trimester III <span class="text-[9px] font-bold text-slate-400">(28+ Mg)</span></span>
+                                            <span class="text-[9px] text-slate-500 font-semibold mt-0.5">Fase pematangan &amp; persiapan lahir</span>
+                                        </div>
+                                    </div>
+                                    <div class="flex items-center gap-1">
+                                        <span class="text-xs font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-lg shrink-0">{{ $trimesterStats['T3'] }} Ibu ({{ $t3Pct }}%)</span>
+                                        @if($trimesterStats['T3'] > 0)
+                                            <span class="material-symbols-outlined text-[14px] text-emerald-450 opacity-0 group-hover:opacity-100 transition-all">chevron_right</span>
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

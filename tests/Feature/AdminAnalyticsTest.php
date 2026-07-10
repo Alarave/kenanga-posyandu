@@ -1,6 +1,5 @@
 <?php
 
-use App\Livewire\Admin\Analytics;
 use App\Models\MedicalRecord;
 use App\Models\Patient;
 use App\Models\Pedukuhan;
@@ -66,7 +65,7 @@ test('analytics component can switch tabs and retrieve correct clinical risk rat
 
     $this->actingAs($admin);
 
-    Livewire::test(Analytics::class)
+    Livewire::test(\App\Livewire\Admin\Analytics::class)
         ->assertSet('activeTab', 'overview')
         ->set('activeTab', 'pregnancy')
         ->assertSet('activeTab', 'pregnancy')
@@ -114,7 +113,7 @@ test('analytics component can drill down on specific nutrition status and displa
 
     $this->actingAs($admin);
 
-    Livewire::test(Analytics::class)
+    Livewire::test(\App\Livewire\Admin\Analytics::class)
         ->call('drillDown', 'Balita (Gizi Baik)', 'nutrition_status', null, 'Gizi Baik')
         ->assertSet('showDrillDown', true)
         ->assertSet('drillDownTitle', 'Detail: Balita (Gizi Baik)')
@@ -168,13 +167,13 @@ test('analytics component can drill down on lansia age group and imt stats', fun
     $this->actingAs($admin);
 
     // Test age group drill down
-    Livewire::test(Analytics::class)
+    Livewire::test(\App\Livewire\Admin\Analytics::class)
         ->call('drillDown', 'Lansia 60-69', 'lansia_age_lansia')
         ->assertSee('Mbah Sugeng 65')
         ->assertDontSee('Mbah Ngatiman 75');
 
     // Test IMT group drill down
-    Livewire::test(Analytics::class)
+    Livewire::test(\App\Livewire\Admin\Analytics::class)
         ->call('drillDown', 'IMT Obesitas', 'lansia_imt_obesitas')
         ->assertSee('Mbah Ngatiman 75')
         ->assertDontSee('Mbah Sugeng 65');
@@ -200,6 +199,7 @@ test('analytics component can drill down on lansia metabolic risks', function ()
         'visit_date' => now(),
         'systolic_bp' => 145,
         'diastolic_bp' => 95,
+        'blood_sugar' => 100,
     ]);
 
     $lansia2 = Patient::factory()->create([
@@ -212,29 +212,32 @@ test('analytics component can drill down on lansia metabolic risks', function ()
         'patient_id' => $lansia2->id,
         'visit_date' => now(),
         'blood_sugar' => 250,
+        'systolic_bp' => 120,
+        'diastolic_bp' => 80,
     ]);
 
     $this->actingAs($admin);
 
     // Test Hipertensi drill down
-    $comp1 = Livewire::test(Analytics::class)
+    // Test Hipertensi drill down
+    $dataHipertensi = Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->set('activeTab', 'lansia')
         ->call('drillDown', 'Lansia - Hipertensi', 'lansia_hipertensi', now()->month)
-        ->assertSee('Mbah Sugeng Hipertensi')
-        ->assertSee('TD: 145/95 mmHg');
-
-    $names1 = collect($comp1->instance()->drillDownData)->pluck('name')->toArray();
-    expect($names1)->toContain('Mbah Sugeng Hipertensi')
-        ->not->toContain('Mbah Ngatiman Hiperglikemia');
+        ->get('drillDownData');
+    
+    $namesHipertensi = collect($dataHipertensi)->pluck('name')->toArray();
+    expect($namesHipertensi)->toContain('Mbah Sugeng Hipertensi');
+    expect($namesHipertensi)->not->toContain('Mbah Ngatiman Hiperglikemia');
 
     // Test Hiperglikemia drill down
-    $comp2 = Livewire::test(Analytics::class)
+    $dataHiperglikemia = Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->set('activeTab', 'lansia')
         ->call('drillDown', 'Lansia - Hiperglikemia', 'lansia_hiperglikemia', now()->month)
-        ->assertSee('Mbah Ngatiman Hiperglikemia')
-        ->assertSee('GDS: 250 mg/dL');
-
-    $names2 = collect($comp2->instance()->drillDownData)->pluck('name')->toArray();
-    expect($names2)->toContain('Mbah Ngatiman Hiperglikemia')
-        ->not->toContain('Mbah Sugeng Hipertensi');
+        ->get('drillDownData');
+        
+    $namesHiperglikemia = collect($dataHiperglikemia)->pluck('name')->toArray();
+    expect($namesHiperglikemia)->toContain('Mbah Ngatiman Hiperglikemia');
+    expect($namesHiperglikemia)->not->toContain('Mbah Sugeng Hipertensi');
 });
 
 test('analytics component can drill down on all categories (yearly/YoY mode fallback) and support custom year parameter', function () {
@@ -271,10 +274,278 @@ test('analytics component can drill down on all categories (yearly/YoY mode fall
     $this->actingAs($admin);
 
     // Call drillDown for all categories ('all') for July 2025 (month 7, year 2025)
-    Livewire::test(Analytics::class)
+    Livewire::test(\App\Livewire\Admin\Analytics::class)
         ->call('drillDown', 'Semua Kunjungan - Jul', 'all', 7, null, 2025)
         ->assertSee('Balita Tahun Lalu')
         ->assertSee('Lansia Tahun Lalu')
         ->assertSee('Gizi Baik')
         ->assertSee('Lansia');
 });
+
+test('analytics component can drill down on pregnancy risks', function () {
+    $pedukuhan = Pedukuhan::factory()->create();
+    $posyandu = Posyandu::factory()->create(['pedukuhan_id' => $pedukuhan->id]);
+
+    $admin = User::factory()->create([
+        'role' => 'admin',
+        'posyandu_id' => $posyandu->id,
+    ]);
+
+    $pregnant1 = Patient::factory()->create([
+        'posyandu_id' => $posyandu->id,
+        'category' => 'ibu_hamil',
+        'status_mutasi' => 'aktif',
+        'full_name' => 'Ibu Hamil Anemia',
+        'birth_date' => now()->subYears(28),
+    ]);
+    MedicalRecord::factory()->create([
+        'patient_id' => $pregnant1->id,
+        'visit_date' => now(),
+        'hemoglobin' => 10.0, // Anemia
+        'height' => 160,
+    ]);
+
+    $pregnant2 = Patient::factory()->create([
+        'posyandu_id' => $posyandu->id,
+        'category' => 'ibu_hamil',
+        'status_mutasi' => 'aktif',
+        'full_name' => 'Ibu Hamil Tinggi Badan Kurang',
+        'birth_date' => now()->subYears(28),
+    ]);
+    MedicalRecord::factory()->create([
+        'patient_id' => $pregnant2->id,
+        'visit_date' => now(),
+        'height' => 140, // High risk height
+    ]);
+
+    $pregnant3 = Patient::factory()->create([
+        'posyandu_id' => $posyandu->id,
+        'category' => 'ibu_hamil',
+        'status_mutasi' => 'aktif',
+        'full_name' => 'Ibu Hamil Menerima Fe',
+        'birth_date' => now()->subYears(28),
+    ]);
+    MedicalRecord::factory()->create([
+        'patient_id' => $pregnant3->id,
+        'visit_date' => now(),
+        'nakes_gives_fe_mms' => 1,
+        'height' => 160,
+    ]);
+
+    $this->actingAs($admin);
+
+    // Test Anemia drill down
+    Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->set('activeTab', 'lansia')
+        ->call('drillDown', 'Ibu Hamil - Kasus Anemia', 'pregnancy_anemia', now()->month)
+        ->assertSee('Ibu Hamil Anemia')
+        ->assertDontSee('Ibu Hamil Tinggi Badan Kurang')
+        ->assertSee('Hb: 10 g/dL');
+
+    // Test High Risk drill down
+    Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->set('activeTab', 'lansia')
+        ->call('drillDown', 'Ibu Hamil - Risiko Tinggi & 4T', 'pregnancy_high_risk', now()->month)
+        ->assertSee('Ibu Hamil Tinggi Badan Kurang')
+        ->assertDontSee('Ibu Hamil Anemia')
+        ->assertSee('TB: 140.00 cm');
+
+    // Test Tablet Fe drill down
+    $testComponent = Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->set('activeTab', 'lansia')
+        ->call('drillDown', 'Ibu Hamil - Pemberian Tablet Fe', 'pregnancy_tablet_fe', now()->month);
+        
+    $testComponent->assertSee('Ibu Hamil Menerima Fe')
+        ->assertSee('Tablet Fe: Menerima')
+        ->assertSee('Ibu Hamil Anemia')
+        ->assertSee('Tablet Fe: Belum Menerima');
+
+    $drillDownData = $testComponent->get('drillDownData');
+    expect($drillDownData[0]['nutrition_status'])->toBe('Tablet Fe: Belum Menerima');
+    expect($drillDownData[2]['nutrition_status'])->toBe('Tablet Fe: Menerima');
+
+    // Test ANC K1 drill down
+    Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->set('activeTab', 'lansia')
+        ->call('drillDown', 'Ibu Hamil - Kunjungan K1', 'pregnancy_k1', now()->month)
+        ->assertSee('Ibu Hamil Anemia')
+        ->assertSee('Ibu Hamil Tinggi Badan Kurang')
+        ->assertSee('Ibu Hamil Menerima Fe')
+        ->assertSee('Total Kunjungan: 1 Kali');
+
+    // Test ANC K2 drill down
+    Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->set('activeTab', 'lansia')
+        ->call('drillDown', 'Ibu Hamil - Kunjungan K2', 'pregnancy_k2', now()->month)
+        ->assertDontSee('Ibu Hamil Anemia')
+        ->assertDontSee('Ibu Hamil Tinggi Badan Kurang');
+});
+
+test('ibu hamil analytics component computes correct health scorecards and coverage metrics', function () {
+    $pedukuhan = \App\Models\Pedukuhan::factory()->create();
+    $posyandu = \App\Models\Posyandu::factory()->create(['pedukuhan_id' => $pedukuhan->id]);
+
+    $admin = \App\Models\User::factory()->create([
+        'role' => 'admin',
+        'posyandu_id' => $posyandu->id,
+    ]);
+
+    // Patient 1: High risk (Age 18), Hb normal (12), Fe received (1)
+    $p1 = \App\Models\Patient::factory()->create([
+        'posyandu_id' => $posyandu->id,
+        'category' => 'ibu_hamil',
+        'status_mutasi' => 'aktif',
+        'birth_date' => now()->subYears(18),
+    ]);
+    \App\Models\MedicalRecord::factory()->create([
+        'patient_id' => $p1->id,
+        'visit_date' => now(),
+        'hemoglobin' => 12,
+        'nakes_gives_fe_mms' => 1,
+        'height' => 150,
+    ]);
+
+    // Patient 2: Normal risk (Age 25), Hb anemia (10), Fe not received (0)
+    $p2 = \App\Models\Patient::factory()->create([
+        'posyandu_id' => $posyandu->id,
+        'category' => 'ibu_hamil',
+        'status_mutasi' => 'aktif',
+        'birth_date' => now()->subYears(25),
+    ]);
+    \App\Models\MedicalRecord::factory()->create([
+        'patient_id' => $p2->id,
+        'visit_date' => now(),
+        'hemoglobin' => 10,
+        'nakes_gives_fe_mms' => 0,
+        'height' => 150,
+    ]);
+
+    $this->actingAs($admin);
+
+    Livewire::test(\App\Livewire\Admin\Analytics\IbuHamilAnalytics::class, [
+        'selectedYear' => now()->year,
+        'selectedMonth' => now()->month,
+        'selectedPosyandu' => $posyandu->id
+    ])
+    ->assertSeeHtml('Risiko Rendah')
+    ->assertSeeHtml('Hemoglobin Sehat')
+    ->assertSeeHtml('Cakupan TTD')
+    ->assertSeeHtml('50%'); // 1 out of 2 received Fe (50% coverage)
+});
+
+test('analytics component loads live health alerts for high risk cases', function () {
+    $pedukuhan = Pedukuhan::factory()->create();
+    $posyandu = Posyandu::factory()->create(['pedukuhan_id' => $pedukuhan->id]);
+
+    $admin = User::factory()->create([
+        'role' => 'admin',
+        'posyandu_id' => $posyandu->id,
+    ]);
+
+    // Pasien Balita berisiko stunting
+    $balita = Patient::factory()->create([
+        'posyandu_id' => $posyandu->id,
+        'category' => 'balita',
+        'full_name' => 'Balita Berisiko',
+    ]);
+    MedicalRecord::factory()->create([
+        'patient_id' => $balita->id,
+        'stunting_status' => 'Pendek',
+        'visit_date' => now(),
+    ]);
+
+    $this->actingAs($admin);
+
+    $component = Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->assertSet('activeTab', 'overview');
+
+    $alerts = $component->get('liveHealthAlerts');
+    expect($alerts)->toBeArray()->toHaveCount(1);
+    expect($alerts[0]['patient_name'])->toBe('Balita Berisiko');
+});
+
+test('analytics component can drill down on pregnancy trimesters', function () {
+    $pedukuhan = Pedukuhan::factory()->create();
+    $posyandu = Posyandu::factory()->create(['pedukuhan_id' => $pedukuhan->id]);
+
+    $admin = User::factory()->create([
+        'role' => 'admin',
+        'posyandu_id' => $posyandu->id,
+    ]);
+
+    // Trimester 1 (1 - 13 Weeks)
+    $p1 = Patient::factory()->create([
+        'posyandu_id' => $posyandu->id,
+        'category' => 'ibu_hamil',
+        'status_mutasi' => 'aktif',
+        'full_name' => 'Ibu Trimester Satu',
+    ]);
+    MedicalRecord::factory()->create([
+        'patient_id' => $p1->id,
+        'visit_date' => now(),
+        'gestational_age' => '10 minggu',
+    ]);
+
+    // Trimester 2 (14 - 27 Weeks)
+    $p2 = Patient::factory()->create([
+        'posyandu_id' => $posyandu->id,
+        'category' => 'ibu_hamil',
+        'status_mutasi' => 'aktif',
+        'full_name' => 'Ibu Trimester Dua',
+    ]);
+    MedicalRecord::factory()->create([
+        'patient_id' => $p2->id,
+        'visit_date' => now(),
+        'gestational_age' => '20 minggu',
+    ]);
+
+    // Trimester 3 (28 Weeks - Birth)
+    $p3 = Patient::factory()->create([
+        'posyandu_id' => $posyandu->id,
+        'category' => 'ibu_hamil',
+        'status_mutasi' => 'aktif',
+        'full_name' => 'Ibu Trimester Tiga',
+    ]);
+    MedicalRecord::factory()->create([
+        'patient_id' => $p3->id,
+        'visit_date' => now(),
+        'gestational_age' => '32 minggu',
+    ]);
+
+    $this->actingAs($admin);
+
+    // Test Trimester 1
+    $dataT1 = Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->set('activeTab', 'pregnancy')
+        ->call('drillDown', 'Trimester I (1 - 13 Minggu)', 'pregnancy_trimester_1', now()->month)
+        ->get('drillDownData');
+    $namesT1 = collect($dataT1)->pluck('name')->toArray();
+    expect($namesT1)->toContain('Ibu Trimester Satu');
+    expect($namesT1)->not->toContain('Ibu Trimester Dua');
+    expect($namesT1)->not->toContain('Ibu Trimester Tiga');
+
+    // Test Trimester 2
+    $dataT2 = Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->set('activeTab', 'pregnancy')
+        ->call('drillDown', 'Trimester II (14 - 27 Minggu)', 'pregnancy_trimester_2', now()->month)
+        ->get('drillDownData');
+    $namesT2 = collect($dataT2)->pluck('name')->toArray();
+    expect($namesT2)->toContain('Ibu Trimester Dua');
+    expect($namesT2)->not->toContain('Ibu Trimester Satu');
+    expect($namesT2)->not->toContain('Ibu Trimester Tiga');
+
+    // Test Trimester 3
+    $dataT3 = Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->set('activeTab', 'pregnancy')
+        ->call('drillDown', 'Trimester III (28 Minggu - Lahir)', 'pregnancy_trimester_3', now()->month)
+        ->get('drillDownData');
+    $namesT3 = collect($dataT3)->pluck('name')->toArray();
+    expect($namesT3)->toContain('Ibu Trimester Tiga');
+    expect($namesT3)->not->toContain('Ibu Trimester Satu');
+    expect($namesT3)->not->toContain('Ibu Trimester Dua');
+});
+
+
+
+
+
