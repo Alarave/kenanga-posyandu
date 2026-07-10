@@ -90,6 +90,46 @@ class MedicalRecordService
                     'is_pregnant' => ($patientCategory === 'ibu_hamil'),
                     'gender' => ($patientCategory === 'lansia') ? ($data['gender'] ?? 'P') : 'P',
                 ]);
+            } else {
+                // Update patient if any fields were empty or changed
+                $updateData = [];
+                if (!empty($data['id_number']) && empty($patient->id_number)) {
+                    $updateData['id_number'] = $data['id_number'];
+                }
+                if (!empty($data['birth_date']) && empty($patient->birth_date)) {
+                    $updateData['birth_date'] = $data['birth_date'];
+                }
+                if (!empty($data['phone_number']) && $patient->phone_number !== $data['phone_number']) {
+                    $updateData['phone_number'] = $data['phone_number'];
+                }
+                if (!empty($data['address']) && $patient->address !== $data['address']) {
+                    $updateData['address'] = $data['address'];
+                }
+                if (!empty($data['husband_name']) && $patient->husband_name !== $data['husband_name']) {
+                    $updateData['husband_name'] = $data['husband_name'];
+                }
+                if (!empty($data['father_name']) && $patient->father_name !== $data['father_name']) {
+                    $updateData['father_name'] = $data['father_name'];
+                }
+                if (!empty($data['mother_name']) && $patient->mother_name !== $data['mother_name']) {
+                    $updateData['mother_name'] = $data['mother_name'];
+                }
+                if (!empty($data['dusun_rt_rw']) && $patient->dusun_rt_rw !== $data['dusun_rt_rw']) {
+                    $updateData['dusun_rt_rw'] = $data['dusun_rt_rw'];
+                }
+                if (!empty($data['desa_kelurahan']) && $patient->desa_kelurahan !== $data['desa_kelurahan']) {
+                    $updateData['desa_kelurahan'] = $data['desa_kelurahan'];
+                }
+                if (!empty($data['kecamatan']) && $patient->kecamatan !== $data['kecamatan']) {
+                    $updateData['kecamatan'] = $data['kecamatan'];
+                }
+                if ($patient->category === 'lansia' && !empty($data['gender']) && $patient->gender !== $data['gender']) {
+                    $updateData['gender'] = $data['gender'];
+                }
+
+                if (!empty($updateData)) {
+                    $patient->update($updateData);
+                }
             }
 
             $this->verifyPatientAccess($patient, $user);

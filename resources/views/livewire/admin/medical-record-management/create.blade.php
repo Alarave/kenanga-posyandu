@@ -1780,15 +1780,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const selectedOption = options.find(opt => opt.value == value);
         
         if (selectedOption) {
-            const data = selectedOption.dataset;
-            console.log('Filling data for patient:', value, data); // Debug
-            
-            // Targeted fields
             const mapping = {
-                'father_name': data.father,
-                'mother_name': data.mother,
-                'weight_at_birth': data.weightBirth,
-                'height_at_birth': data.heightBirth
+                'father_name': selectedOption.getAttribute('data-father'),
+                'mother_name': selectedOption.getAttribute('data-mother'),
+                'weight_at_birth': selectedOption.getAttribute('data-weight-birth'),
+                'height_at_birth': selectedOption.getAttribute('data-height-birth')
             };
 
             Object.entries(mapping).forEach(([name, val]) => {
@@ -2021,15 +2017,13 @@ document.addEventListener('DOMContentLoaded', function() {
         const selectedOption = options.find(opt => opt.value == value);
         
         if (selectedOption) {
-            const data = selectedOption.dataset;
-            
             const mapping = {
-                'id_number': data.nik,
-                'birth_date': data.birthDate,
-                'phone_number': data.phone,
-                'father_name': data.father,
-                'mother_name': data.mother,
-                'address': data.address
+                'id_number': selectedOption.getAttribute('data-nik'),
+                'birth_date': selectedOption.getAttribute('data-birth-date'),
+                'phone_number': selectedOption.getAttribute('data-phone'),
+                'father_name': selectedOption.getAttribute('data-father'),
+                'mother_name': selectedOption.getAttribute('data-mother'),
+                'address': selectedOption.getAttribute('data-address')
             };
 
             Object.entries(mapping).forEach(([name, val]) => {
@@ -2041,8 +2035,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            if (data.gender) {
-                let genderVal = data.gender;
+            const genderValRaw = selectedOption.getAttribute('data-gender');
+            if (genderValRaw) {
+                let genderVal = genderValRaw.trim().toUpperCase();
                 if (genderVal === 'M') genderVal = 'L';
                 if (genderVal === 'F') genderVal = 'P';
 
@@ -2199,17 +2194,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const selectedOption = options.find(opt => opt.value == value);
         
         if (selectedOption) {
-            const data = selectedOption.dataset;
-            
             const mapping = {
-                'id_number': data.nik,
-                'birth_date': data.birthDate,
-                'phone_number': data.phone,
-                'husband_name': data.husband,
-                'address': data.address,
-                'dusun_rt_rw': data.dusun,
-                'desa_kelurahan': data.desa,
-                'kecamatan': data.kecamatan
+                'id_number': selectedOption.getAttribute('data-nik'),
+                'birth_date': selectedOption.getAttribute('data-birth-date'),
+                'phone_number': selectedOption.getAttribute('data-phone'),
+                'husband_name': selectedOption.getAttribute('data-husband'),
+                'address': selectedOption.getAttribute('data-address'),
+                'dusun_rt_rw': selectedOption.getAttribute('data-dusun'),
+                'desa_kelurahan': selectedOption.getAttribute('data-desa'),
+                'kecamatan': selectedOption.getAttribute('data-kecamatan')
             };
 
             Object.entries(mapping).forEach(([name, val]) => {
@@ -2221,8 +2214,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
 
-            if (data.birthDate) {
-                const calculatedAge = calculateAge(data.birthDate);
+            const birthDateVal = selectedOption.getAttribute('data-birth-date');
+            if (birthDateVal) {
+                const calculatedAge = calculateAge(birthDateVal);
                 if (calculatedAge !== '') {
                     ageDisplay.value = calculatedAge;
                 }
