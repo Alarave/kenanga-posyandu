@@ -723,6 +723,18 @@ function articleEditor() {
         isDirty: false,
         isSaving: false,
         blocks: [],
+        focusedIndex: -1,
+        hoveredIndex: -1,
+        activeBlockId: null,
+        blockMenuAt: null,
+        menuStyle: '',
+        nextId: 1,
+        pendingInsertIndex: 0,
+        showFormatBar: false,
+        formatBarStyle: '',
+        showCategoryError: false,
+        showStatusError: false,
+        showContentError: false,
          init() {
             this.blocks = [{ id: this.nextId++, type: 'paragraph', content: '' }];
         },
