@@ -11,9 +11,9 @@ use Symfony\Component\HttpFoundation\Response;
 class SessionTimeout
 {
     /**
-     * Session timeout duration in seconds (15 minutes)
+     * Session timeout duration in seconds (1 hour)
      */
-    protected const TIMEOUT_DURATION = 900;
+    protected const TIMEOUT_DURATION = 3600;
 
     /**
      * Handle an incoming request.
@@ -32,7 +32,7 @@ class SessionTimeout
                 $activityLogService = app(ActivityLogService::class);
                 $activityLogService->log(
                     'auto_logout',
-                    'Pengguna logout otomatis karena tidak aktif selama 15 menit',
+                    'Pengguna logout otomatis karena tidak aktif selama 1 jam',
                     Auth::id(),
                     'User'
                 );
