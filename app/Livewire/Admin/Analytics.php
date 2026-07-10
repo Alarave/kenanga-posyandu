@@ -138,12 +138,13 @@ class Analytics extends BaseAdminComponent
     // ── ANA-16: Nutrition status filter ──
     public string $filterNutritionStatus = ''; // '' = all, 'Gizi Baik', 'Gizi Kurang', etc.
 
-    // ── ANA-22: Drill-down from chart click ──
     public bool $showDrillDown = false;
 
     public string $drillDownTitle = '';
 
     public array $drillDownData = [];
+
+    public array $liveHealthAlerts = [];
 
     public function mount(): void
     {
@@ -815,6 +816,8 @@ class Analytics extends BaseAdminComponent
             ->latest('visit_date')
             ->limit(5)
             ->get();
+
+        $this->loadLiveHealthAlerts();
     }
 
     protected function fetchAnalyticsData(): array
@@ -1595,6 +1598,86 @@ public function exportChartData(string $chartType)
         return response()->streamDownload(function () use ($export) {
             $export->export('php://output');
         }, str_replace(' ', '_', strtolower($title)) . "_{$targetYear}.xlsx");
+    }
+
+    protected function loadLiveHealthAlerts(): void
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $posyanduId = $user->isSuperAdmin() ? $this->selectedPosyandu : $user->posyandu_id;
+
+        $alertQuery = MedicalRecord::query()
+            ->with(['patient.posyandu'])
+            ->where(function ($q) {
+                // Balita risk
+                $q->where(function ($sub) {
+                    $sub->whereHas('patient', fn ($pq) => $pq->whereIn('category', ['balita', 'bayi', 'baduta']))
+                        ->where(fn ($sq) => $sq->whereIn('nutrition_status', ['Gizi Buruk', 'Berat Badan Sangat Kurang', 'Sangat Kurang'])
+                                                ->orWhereIn('wasting_status', ['Gizi Buruk', 'Sangat Kurang'])
+                                                ->orWhereIn('stunting_status', ['Pendek', 'Sangat Pendek']));
+                })
+                // Ibu Hamil risk
+                ->orWhere(function ($sub) {
+                    $sub->whereHas('patient', fn ($pq) => $pq->where('category', 'ibu_hamil'))
+                        ->where(fn ($sq) => $sq->where('systolic_bp', '>=', 140)
+                                                ->orWhere('diastolic_bp', '>=', 90)
+                                                ->orWhere(fn ($aq) => $aq->whereNotNull('hemoglobin')->where('hemoglobin', '<', 11)->where('hemoglobin', '>', 0))
+                                                ->orWhere(fn ($lq) => $lq->whereNotNull('upper_arm_circumference')->where('upper_arm_circumference', '>', 0)->where('upper_arm_circumference', '<', 23.5)));
+                })
+                // Lansia risk
+                ->orWhere(function ($sub) {
+                    $sub->whereHas('patient', fn ($pq) => $pq->where('category', 'lansia'))
+                        ->where(fn ($sq) => $sq->where('systolic_bp', '>=', 140)
+                                                ->orWhere('diastolic_bp', '>=', 90)
+                                                ->orWhere('blood_sugar', '>=', 200)
+                                                ->orWhere('cholesterol', '>=', 200)
+                                                ->orWhere('uric_acid', '>=', 7.0));
+                });
+            });
+
+        $alertQuery = $this->applyPosyanduScope($alertQuery, $posyanduId);
+
+        $this->liveHealthAlerts = $alertQuery->orderBy('visit_date', 'desc')
+            ->orderBy('id', 'desc')
+            ->limit(5)
+            ->get()
+            ->map(function ($r) {
+                $reasons = [];
+                $category = $r->patient?->category;
+
+                if (in_array($category, ['balita', 'bayi', 'baduta'])) {
+                    $gizi = $r->nutrition_status;
+                    $wasting = $r->wasting_status;
+                    $stunting = $r->stunting_status;
+                    if (in_array($gizi, ['Gizi Buruk', 'Berat Badan Sangat Kurang', 'Sangat Kurang'])) $reasons[] = "BB/U: " . $gizi;
+                    if (in_array($wasting, ['Gizi Buruk', 'Sangat Kurang'])) $reasons[] = "Wasting: " . $wasting;
+                    if (in_array($stunting, ['Pendek', 'Sangat Pendek'])) $reasons[] = "Stunting: " . $stunting;
+                } elseif ($category === 'ibu_hamil') {
+                    if ($r->systolic_bp >= 140 || $r->diastolic_bp >= 90) $reasons[] = "Tensi Tinggi: {$r->systolic_bp}/{$r->diastolic_bp} mmHg";
+                    if ($r->hemoglobin && $r->hemoglobin < 11 && $r->hemoglobin > 0) $reasons[] = "Anemia (Hb: {$r->hemoglobin} g/dL)";
+                    if ($r->upper_arm_circumference && $r->upper_arm_circumference < 23.5 && $r->upper_arm_circumference > 0) $reasons[] = "KEK (LILA: {$r->upper_arm_circumference} cm)";
+                } elseif ($category === 'lansia') {
+                    if ($r->systolic_bp >= 140 || $r->diastolic_bp >= 90) $reasons[] = "Tensi Tinggi: {$r->systolic_bp}/{$r->diastolic_bp} mmHg";
+                    if ($r->blood_sugar >= 200) $reasons[] = "Gula Darah: {$r->blood_sugar} mg/dL";
+                    if ($r->cholesterol >= 200) $reasons[] = "Kolesterol: {$r->cholesterol} mg/dL";
+                    if ($r->uric_acid >= 7.0) $reasons[] = "Asam Urat: {$r->uric_acid} mg/dL";
+                }
+
+                return [
+                    'id' => $r->id,
+                    'patient_id' => $r->patient_id,
+                    'patient_name' => $r->patient?->full_name ?? 'Warga Tanpa Nama',
+                    'patient_category' => match($category) {
+                        'balita', 'bayi', 'baduta' => 'Balita',
+                        'ibu_hamil' => 'Ibu Hamil',
+                        'lansia' => 'Lansia',
+                        default => ucfirst($category ?? '-')
+                    },
+                    'posyandu_name' => $r->patient?->posyandu?->name ?? '-',
+                    'visit_date' => $r->visit_date ? $r->visit_date->format('d M Y') : '-',
+                    'reasons' => $reasons,
+                ];
+            })->toArray();
     }
 
     public function render()

@@ -417,6 +417,38 @@ test('ibu hamil analytics component computes correct health scorecards and cover
     ->assertSeeHtml('50%'); // 1 out of 2 received Fe (50% coverage)
 });
 
+test('analytics component loads live health alerts for high risk cases', function () {
+    $pedukuhan = Pedukuhan::factory()->create();
+    $posyandu = Posyandu::factory()->create(['pedukuhan_id' => $pedukuhan->id]);
+
+    $admin = User::factory()->create([
+        'role' => 'admin',
+        'posyandu_id' => $posyandu->id,
+    ]);
+
+    // Pasien Balita berisiko stunting
+    $balita = Patient::factory()->create([
+        'posyandu_id' => $posyandu->id,
+        'category' => 'balita',
+        'full_name' => 'Balita Berisiko',
+    ]);
+    MedicalRecord::factory()->create([
+        'patient_id' => $balita->id,
+        'stunting_status' => 'Pendek',
+        'visit_date' => now(),
+    ]);
+
+    $this->actingAs($admin);
+
+    $component = Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->assertSet('activeTab', 'overview');
+
+    $alerts = $component->get('liveHealthAlerts');
+    expect($alerts)->toBeArray()->toHaveCount(1);
+    expect($alerts[0]['patient_name'])->toBe('Balita Berisiko');
+});
+
+
 
 
 
