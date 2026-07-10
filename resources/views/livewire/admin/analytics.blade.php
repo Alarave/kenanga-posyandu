@@ -1014,6 +1014,8 @@
                                 <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Unit Posyandu</th>
                                 <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Status / Keterangan</th>
                                 <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">Tanggal Kunjungan</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">BB</th>
+                                <th class="px-6 py-4 text-xs font-bold text-slate-700 uppercase tracking-wider">TB</th>
                                 <th class="px-6 py-4 text-right text-xs font-bold text-slate-700 uppercase tracking-wider">Aksi</th>
                             </tr>
                         </thead>
@@ -1047,6 +1049,8 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['visit_date'] }}</td>
+                                <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['weight'] ?? '-' }}</td>
+                                <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ $row['height'] ?? '-' }}</td>
                                 <td class="px-6 py-4 text-right">
                                     <a href="{{ route('admin.patients.show', $row['patient_id']) }}" class="w-8 h-8 inline-flex items-center justify-center rounded-lg bg-slate-100 text-slate-500 hover:bg-teal-600 hover:text-white transition-all shadow-xs">
                                         <span class="material-symbols-outlined text-[18px]">visibility</span>
@@ -1055,7 +1059,7 @@
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-10 text-center text-sm text-slate-500 font-bold bg-white">Tidak ada data detail untuk periode/filter ini</td>
+                                <td colspan="7" class="px-6 py-10 text-center text-sm text-slate-500 font-bold bg-white">Tidak ada data detail untuk periode/filter ini</td>
                             </tr>
                             @endforelse
                         </tbody>

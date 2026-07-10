@@ -305,6 +305,8 @@ class Analytics extends BaseAdminComponent
                 'posyandu' => $p->posyandu?->name ?? '-',
                 'nutrition_status' => 'Umur: ' . (int) Carbon::parse($p->birth_date)->diffInMonths($determinationDate) . ' Bulan',
                 'visit_date' => 'Terdaftar',
+                'weight' => '-',
+                'height' => '-',
                 'patient_id' => $p->id,
             ])->values()->toArray();
 
@@ -337,6 +339,8 @@ class Analytics extends BaseAdminComponent
                 'posyandu' => $p->posyandu?->name ?? '-',
                 'nutrition_status' => 'Umur: '.$p->age.' Tahun',
                 'visit_date' => 'Terdaftar',
+                'weight' => '-',
+                'height' => '-',
                 'patient_id' => $p->id,
             ])->values()->toArray();
 
@@ -376,6 +380,8 @@ class Analytics extends BaseAdminComponent
                 'posyandu' => $r->patient?->posyandu?->name ?? '-',
                 'nutrition_status' => 'IMT: '.number_format($r->weight / (($r->height / 100) ** 2), 2),
                 'visit_date' => $r->visit_date?->format('d M Y') ?? '-',
+                'weight' => $r->weight ? $r->weight . ' kg' : '-',
+                'height' => $r->height ? $r->height . ' cm' : '-',
                 'patient_id' => $r->patient_id,
             ])->values()->toArray();
 
@@ -472,6 +478,8 @@ class Analytics extends BaseAdminComponent
                 ),
             },
             'visit_date' => $r->visit_date?->format('d M Y') ?? '-',
+            'weight' => $r->weight ? $r->weight . ' kg' : '-',
+            'height' => $r->height ? $r->height . ' cm' : '-',
             'patient_id' => $r->patient_id,
         ])->toArray();
     }
