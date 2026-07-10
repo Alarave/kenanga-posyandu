@@ -1125,13 +1125,18 @@
                                       $isDanger = false;
                                       $isWarning = false;
                                       $isSuccess = false;
+                                      $customStyle = '';
 
-                                      if (str_contains($statusStr, 'gizi buruk') || str_contains($statusStr, 'sangat kurang') || str_contains($statusStr, 'belum') || str_contains($statusStr, 'anemia') || str_contains($statusStr, 'risiko') || $statusStr === 'buruk') {
-                                          $isDanger = true;
+                                      if (str_contains($statusStr, 'gizi buruk') || $statusStr === 'buruk') {
+                                          $customStyle = 'background-color: #FEE2E2; color: #B91C1C; border-color: rgba(185, 28, 28, 0.15);';
                                       } elseif (str_contains($statusStr, 'gizi kurang') || $statusStr === 'kurang') {
-                                          $isWarning = true;
-                                      } elseif (str_contains($statusStr, 'lebih') || str_contains($statusStr, 'obesitas')) {
-                                          $isWarning = true;
+                                          $customStyle = 'background-color: #FFEDD5; color: #C2410C; border-color: rgba(194, 65, 12, 0.15);';
+                                      } elseif (str_contains($statusStr, 'gizi lebih') || str_contains($statusStr, 'lebih') || str_contains($statusStr, 'obesitas')) {
+                                          $customStyle = 'background-color: #FEF9C3; color: #A16207; border-color: rgba(161, 98, 7, 0.15);';
+                                      } elseif (str_contains($statusStr, 'gizi baik') || $statusStr === 'baik' || str_contains($statusStr, 'normal')) {
+                                          $customStyle = 'background-color: #DCFCE7; color: #15803D; border-color: rgba(21, 128, 61, 0.15);';
+                                      } elseif (str_contains($statusStr, 'sangat kurang') || str_contains($statusStr, 'belum') || str_contains($statusStr, 'anemia') || str_contains($statusStr, 'risiko')) {
+                                          $isDanger = true;
                                       }
                                       
                                       // Specific clinical measurement warning checks
@@ -1166,7 +1171,9 @@
                                           $isSuccess = true;
                                       }
 
-                                      if ($isDanger) {
+                                      if ($customStyle !== '') {
+                                          $tagStyle = $customStyle;
+                                      } elseif ($isDanger) {
                                           $tagStyle = 'background-color: #FEF2F2; color: #DC2626; border-color: rgba(220, 38, 38, 0.15);';
                                       } elseif ($isWarning) {
                                           $tagStyle = 'background-color: #FFFBEB; color: #D97706; border-color: rgba(217, 119, 6, 0.15);';
