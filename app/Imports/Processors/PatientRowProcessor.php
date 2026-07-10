@@ -87,6 +87,14 @@ class PatientRowProcessor
         $isPregnantInput = $get('is_pregnant');
         $umur = $get('umur');
         $umurBulan = $get('umur_bulan');
+        // Balita-specific registration fields
+        $motherNik = $get('mother_nik');
+        $kiaBookOwnership = $get('kia_book_ownership');
+        $weightAtBirth = $get('weight_at_birth');
+        $heightAtBirth = $get('height_at_birth');
+        // Location fields
+        $desaKelurahan = $get('desa_kelurahan');
+        $kecamatan = $get('kecamatan');
 
         // Medical fields
         $tglUkur = $get('tanggal_ukur');
@@ -153,15 +161,90 @@ class PatientRowProcessor
             }
         }
 
+        // Extract extra pregnancy/postpartum fields
+        $extraFields = [
+            'pregnancy_number' => $get('pregnancy_number') !== '' ? (int) $get('pregnancy_number') : null,
+            'pregnancy_spacing' => $get('pregnancy_spacing') ?: null,
+            'starting_weight' => $this->parseDecimal($get('starting_weight')),
+            'starting_height' => $this->parseDecimal($get('starting_height')),
+            'delivery_date' => $this->parseDate($get('delivery_date'))?->format('Y-m-d'),
+            'delivery_method' => $get('delivery_method') ?: null,
+            
+            'gestational_age' => $get('gestational_age') ?: null,
+            'upper_arm_circumference' => $this->parseDecimal($get('upper_arm_circumference') ?: $get('lila')),
+            'imt_plotting_status' => $get('imt_plotting_status') ?: null,
+            'lila_plotting_status' => $get('lila_plotting_status') ?: null,
+            'bp_plotting_status' => $get('bp_plotting_status') ?: null,
+            
+            'tbc_screening_cough' => $get('tbc_screening_cough') !== '' ? $this->parseBool($get('tbc_screening_cough')) : null,
+            'tbc_screening_fever' => $get('tbc_screening_fever') !== '' ? $this->parseBool($get('tbc_screening_fever')) : null,
+            'tbc_screening_weight_loss' => $get('tbc_screening_weight_loss') !== '' ? $this->parseBool($get('tbc_screening_weight_loss')) : null,
+            'tbc_screening_contact' => $get('tbc_screening_contact') !== '' ? $this->parseBool($get('tbc_screening_contact')) : null,
+            
+            'nakes_gives_fe_mms' => $get('nakes_gives_fe_mms') ?: null,
+            'consumes_fe_mms_regularly' => $get('consumes_fe_mms_regularly') ?: null,
+            'nakes_gives_mt_kek' => $get('nakes_gives_mt_kek') ?: null,
+            'mt_package_details' => $get('mt_package_details') ?: null,
+            'consumes_mt_kek_regularly' => $get('consumes_mt_kek_regularly') ?: null,
+            'counseling_topic' => $get('counseling_topic') ?: null,
+            'joins_pregnant_class' => $get('joins_pregnant_class') ?: null,
+            'anc_referral' => $get('anc_referral') ?: null,
+            
+            'postpartum_period' => $get('postpartum_period') ?: null,
+            'postpartum_imt_plotting' => $get('postpartum_imt_plotting') ?: null,
+            'postpartum_bp_plotting' => $get('postpartum_bp_plotting') ?: null,
+            'nakes_gives_vit_a' => $get('nakes_gives_vit_a') ?: null,
+            'vit_a_capsule_count' => $get('vit_a_capsule_count') ?: null,
+            'consumes_vit_a_regularly' => $get('consumes_vit_a_regularly') ?: null,
+            'is_breastfeeding' => $get('is_breastfeeding') ?: null,
+            'postpartum_kb' => $get('postpartum_kb') ?: null,
+            'postpartum_counseling_topic' => $get('postpartum_counseling_topic') ?: null,
+            'postpartum_referral' => $get('postpartum_referral') ?: null,
+
+            // Field khusus Lansia (Posbindu)
+            'waist_circumference' => $this->parseDecimal($get('waist_circumference')),
+            'blood_pressure' => $get('blood_pressure') ?: null,
+            'eye_test' => $get('eye_test') ?: null,
+            'ear_test' => $get('ear_test') ?: null,
+            'puma_screening' => $get('puma_screening') ?: null,
+            'tbc_screening_status' => $get('tbc_screening_status') ?: null,
+            'mental_screening' => $get('mental_screening') ?: null,
+            'contraception' => $get('contraception') ?: null,
+            'education' => $get('education') ?: null,
+            'referral_type' => $get('referral_type') ?: null,
+            'risk_behaviors' => $get('risk_behaviors') ?: null,
+            'family_disease_history' => $get('family_disease_history') ?: null,
+            'imt' => $this->parseDecimal($get('imt')),
+
+            // Field tambahan Balita & Umum
+            'kpsp_status' => $get('kpsp_status') ?: null,
+            'tbc_screening_lethargy' => $get('tbc_screening_lethargy') !== '' ? $this->parseBool($get('tbc_screening_lethargy')) : null,
+            'tbc_screening_lumps' => $get('tbc_screening_lumps') !== '' ? $this->parseBool($get('tbc_screening_lumps')) : null,
+            'is_exclusive_breastfeeding' => $get('is_exclusive_breastfeeding') !== '' ? $this->parseBool($get('is_exclusive_breastfeeding')) : null,
+            'mp_asi' => $get('mp_asi') !== '' ? $this->parseBool($get('mp_asi')) : null,
+            'deworming_medicine' => $get('deworming_medicine') !== '' ? $this->parseBool($get('deworming_medicine')) : null,
+            'is_basic_immunization_complete' => $get('is_basic_immunization_complete') !== '' ? $this->parseBool($get('is_basic_immunization_complete')) : null,
+            'pmt_given' => $get('pmt_given') ?: null,
+            'counseling_notes' => $get('counseling_notes') ?: null,
+            'complaint' => $get('complaint') ?: null,
+            'disease_history' => $get('disease_history') ?: null,
+            'health_note' => $get('health_note') ?: null,
+            'measurement_method' => $get('measurement_method') ?: null,
+        ];
+
         try {
             $patient = $this->resolvePatient(
                 $hasValidNik, $nikClean, $nama, $birthDate, $namaOrtu, $fullAddress, $gender,
                 $categoryInput, $husbandName, $fatherName, $motherName, $placeOfBirth, $phoneNumber,
-                $historicalDiseases, $isPregnantInput, $rt, $rw, $umur, $umurBulan
+                $historicalDiseases, $isPregnantInput, $rt, $rw, $umur, $umurBulan,
+                $motherNik, $kiaBookOwnership, $weightAtBirth, $heightAtBirth, $desaKelurahan, $kecamatan
             );
 
-            if ($berat !== '' || $tinggi !== '' || $tensi !== '' || $gds !== '' || $asamUrat !== '' || $kolesterol !== '') {
-                $this->saveMedicalRecord($patient, $berat, $tinggi, $lingkarKepala, $vitamin, $imunisasi, $birthDate, $tglUkur, $gender, $rowNum, $customVisitDate, $tensi, $gds, $asamUrat, $kolesterol);
+            $hasMedicalData = $berat !== '' || $tinggi !== '' || $tensi !== '' || $gds !== '' || $asamUrat !== '' || $kolesterol !== ''
+                || collect($extraFields)->filter(fn($v) => $v !== null && $v !== '')->isNotEmpty();
+
+            if ($hasMedicalData) {
+                $this->saveMedicalRecord($patient, $berat, $tinggi, $lingkarKepala, $vitamin, $imunisasi, $birthDate, $tglUkur, $gender, $rowNum, $customVisitDate, $tensi, $gds, $asamUrat, $kolesterol, $extraFields);
             }
         } catch (\Exception $e) {
             $this->errors[] = "Baris {$rowNum}: Gagal menyimpan '{$nama}' — ".$e->getMessage();
@@ -190,7 +273,13 @@ class PatientRowProcessor
         string $rt = '',
         string $rw = '',
         string $umur = '',
-        string $umurBulan = ''
+        string $umurBulan = '',
+        string $motherNik = '',
+        string $kiaBookOwnership = '',
+        string $weightAtBirth = '',
+        string $heightAtBirth = '',
+        string $desaKelurahan = '',
+        string $kecamatan = ''
     ): Patient {
         // Resolve birth date from age/umur if missing (crucial for Lansia sheets)
         $resolvedBirthDate = $birthDate;
@@ -259,6 +348,24 @@ class PatientRowProcessor
             if ($rw !== '') {
                 $updateData['dusun_rt_rw'] = $rw;
             }
+            if ($desaKelurahan !== '') {
+                $updateData['desa_kelurahan'] = $desaKelurahan;
+            }
+            if ($kecamatan !== '') {
+                $updateData['kecamatan'] = $kecamatan;
+            }
+            if ($motherNik !== '') {
+                $updateData['mother_nik'] = $motherNik;
+            }
+            if ($kiaBookOwnership !== '') {
+                $updateData['kia_book_ownership'] = $this->parseBool($kiaBookOwnership) ? 1 : 0;
+            }
+            if ($weightAtBirth !== '') {
+                $updateData['weight_at_birth'] = $this->parseDecimal($weightAtBirth);
+            }
+            if ($heightAtBirth !== '') {
+                $updateData['height_at_birth'] = $this->parseDecimal($heightAtBirth);
+            }
 
             // If existing has a placeholder NIK (9999...) and we now have a valid one, update it
             if (str_starts_with($existing->id_number, '9999') && $hasValidNik) {
@@ -292,6 +399,12 @@ class PatientRowProcessor
             'is_pregnant' => $isPregnant,
             'rt_domisili' => $rt,
             'dusun_rt_rw' => $rw,
+            'desa_kelurahan' => $desaKelurahan ?: null,
+            'kecamatan' => $kecamatan ?: null,
+            'mother_nik' => $motherNik ?: null,
+            'kia_book_ownership' => $kiaBookOwnership !== '' ? ($this->parseBool($kiaBookOwnership) ? 1 : 0) : null,
+            'weight_at_birth' => $weightAtBirth !== '' ? $this->parseDecimal($weightAtBirth) : null,
+            'height_at_birth' => $heightAtBirth !== '' ? $this->parseDecimal($heightAtBirth) : null,
         ];
 
         \Illuminate\Support\Facades\Log::info("PatientImport - Creating new patient:", [
@@ -393,7 +506,8 @@ class PatientRowProcessor
         string $tensi = '',
         string $gds = '',
         string $asamUrat = '',
-        string $kolesterol = ''
+        string $kolesterol = '',
+        array $extraFields = []
     ): void {
         $visitDate = $customVisitDate;
         if (! ($visitDate instanceof Carbon)) {
@@ -428,44 +542,46 @@ class PatientRowProcessor
             ->where('visit_date', $visitDate->format('Y-m-d'))
             ->first();
 
+        $recordData = [
+            'weight' => $weightVal,
+            'height' => $heightVal,
+            'head_circumference' => $lkVal,
+            'immunization' => $imunisasi,
+            'vitamin_a' => $vitaminA,
+            'systolic_bp' => $systolic,
+            'diastolic_bp' => $diastolic,
+            'blood_sugar' => $gdsVal,
+            'uric_acid' => $asamUratVal,
+            'cholesterol' => $kolesterolVal,
+            'z_score' => $zScore,
+            'nutrition_status' => $nutritionStatus,
+        ];
+
+        // Merge pregnancy / postpartum details if passed
+        if (!empty($extraFields)) {
+            foreach ($extraFields as $field => $val) {
+                if ($val !== null && $val !== '') {
+                    $recordData[$field] = $val;
+                }
+            }
+        }
+
         if ($existingRecord) {
             // Update the existing medical record with new values instead of skipping
-            $existingRecord->update([
-                'weight' => $weightVal ?? $existingRecord->weight,
-                'height' => $heightVal ?? $existingRecord->height,
-                'head_circumference' => $lkVal ?? $existingRecord->head_circumference,
-                'immunization' => $imunisasi ?: $existingRecord->immunization,
-                'vitamin_a' => $vitaminA,
-                'z_score' => $zScore ?? $existingRecord->z_score,
-                'nutrition_status' => $nutritionStatus ?? $existingRecord->nutrition_status,
-                'systolic_bp' => $systolic ?? $existingRecord->systolic_bp,
-                'diastolic_bp' => $diastolic ?? $existingRecord->diastolic_bp,
-                'blood_sugar' => $gdsVal ?? $existingRecord->blood_sugar,
-                'uric_acid' => $asamUratVal ?? $existingRecord->uric_acid,
-                'cholesterol' => $kolesterolVal ?? $existingRecord->cholesterol,
-            ]);
+            // Clean null values so we don't overwrite existing values with null if not in import
+            $filteredData = array_filter($recordData, fn($v) => $v !== null && $v !== '');
+            $existingRecord->update($filteredData);
         } else {
             // Create a new medical record
-            MedicalRecord::create([
+            $newData = array_merge([
                 'patient_id' => $patient->id,
                 'user_id' => $this->userId,
                 'visit_date' => $visitDate->format('Y-m-d'),
-                'weight' => $weightVal,
-                'height' => $heightVal,
-                'head_circumference' => $lkVal,
-                'immunization' => $imunisasi,
-                'vitamin_a' => $vitaminA,
                 'pill_fe' => false,
-                'z_score' => $zScore,
-                'nutrition_status' => $nutritionStatus,
-                'systolic_bp' => $systolic,
-                'diastolic_bp' => $diastolic,
-                'blood_sugar' => $gdsVal,
-                'uric_acid' => $asamUratVal,
-                'cholesterol' => $kolesterolVal,
                 'complaint' => '—',
                 'diagnosis' => 'Sehat',
-            ]);
+            ], $recordData);
+            MedicalRecord::create($newData);
         }
 
         $this->recordsImported++;

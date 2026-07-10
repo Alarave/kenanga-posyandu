@@ -371,19 +371,62 @@ class MedicalRecordController extends Controller
     {
         if ($category === 'ibu_hamil') {
             return [
-                ['NIK', 'nama', 'tgl_lahir', 'jk', 'suami', 'tempat_lahir', 'phone_number', 'RT', 'RW', 'ALAMAT', 'apakah_hamil', 'TANGGAL UKUR', 'BERAT', 'TINGGI']
+                [
+                    // Identitas Warga
+                    'NIK', 'nama', 'tgl_lahir', 'jk', 'suami', 'tempat_lahir', 'phone_number',
+                    'RT', 'RW', 'desa_kelurahan', 'kecamatan', 'ALAMAT', 'apakah_hamil',
+                    // Detil Kehamilan
+                    'pregnancy_number', 'pregnancy_spacing', 'starting_weight', 'starting_height', 'delivery_date', 'delivery_method',
+                    // ANC
+                    'TANGGAL UKUR', 'gestational_age', 'BERAT', 'upper_arm_circumference', 'tensi', 'imt_plotting_status', 'lila_plotting_status', 'bp_plotting_status',
+                    'tbc_screening_cough', 'tbc_screening_fever', 'tbc_screening_weight_loss', 'tbc_screening_contact',
+                    'nakes_gives_fe_mms', 'consumes_fe_mms_regularly', 'nakes_gives_mt_kek', 'mt_package_details', 'consumes_mt_kek_regularly',
+                    'counseling_topic', 'joins_pregnant_class', 'anc_referral',
+                    // Postpartum
+                    'postpartum_period', 'postpartum_imt_plotting', 'postpartum_bp_plotting', 'nakes_gives_vit_a', 'vit_a_capsule_count', 'consumes_vit_a_regularly', 'is_breastfeeding', 'postpartum_kb', 'postpartum_counseling_topic', 'postpartum_referral'
+                ]
             ];
         }
 
         if ($category === 'lansia') {
             return [
-                ['NIK', 'nama', 'tgl_lahir', 'jk', 'tempat_lahir', 'phone_number', 'RT', 'RW', 'ALAMAT', 'riwayat_penyakit', 'TANGGAL UKUR', 'BERAT', 'TINGGI']
+                [
+                    // Identitas Warga
+                    'NIK', 'nama', 'tgl_lahir', 'jk',
+                    'tempat_lahir', 'phone_number', 'RT', 'RW', 'ALAMAT',
+                    // Riwayat Penyakit Keluarga
+                    'riwayat_penyakit_keluarga',
+                    // Perilaku Berisiko
+                    'perilaku_berisiko',
+                    // Data Pemeriksaan
+                    'TANGGAL UKUR', 'BERAT', 'TINGGI', 'IMT',
+                    'lingkar_perut', 'tekanan_darah',
+                    'gds', 'asam_urat', 'kolesterol',
+                    'tes_mata', 'tes_telinga',
+                    'skrining_puma', 'skrining_tbc', 'skrining_jiwa',
+                    'kontrasepsi', 'edukasi', 'rujuk',
+                ]
             ];
         }
 
         // Default: balita / bayi / anak
         return [
-            ['NIK', 'nama_anak', 'tgl_lahir', 'jk', 'nm_ortu', 'tempat_lahir', 'phone_number', 'RT', 'RW', 'ALAMAT', 'TANGGAL UKUR', 'BERAT', 'TINGGI', 'lingkar_kepala', 'vitamin', 'Imunisasi']
+            [
+                // Identitas Anak & Orang Tua
+                'NIK', 'nama_anak', 'tgl_lahir', 'jk',
+                'ayah', 'ibu', 'NIK_ibu', 'tempat_lahir', 'phone_number',
+                'RT', 'RW', 'ALAMAT',
+                'BB_lahir', 'PB_lahir', 'kepemilikan_buku_kia',
+                // Data Pemeriksaan (Antropometri)
+                'TANGGAL UKUR', 'BERAT', 'TINGGI', 'LILA', 'lingkar_kepala', 'CARA UKUR',
+                // Perkembangan & Skrining
+                'kpsp_status', 
+                'tbc_screening_cough', 'tbc_screening_fever', 'tbc_screening_contact', 'tbc_screening_lethargy', 'tbc_screening_lumps', 'tbc_screening_weight_loss',
+                // Nutrisi & Imunisasi
+                'is_exclusive_breastfeeding', 'mp_asi', 'vitamin', 'Imunisasi', 'is_basic_immunization_complete', 'deworming_medicine',
+                // Pelayanan Lainnya
+                'pmt_given', 'counseling_notes', 'complaint', 'disease_history', 'health_note', 'referral_type'
+            ]
         ];
     }
 }

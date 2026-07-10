@@ -290,32 +290,101 @@ class PatientController extends Controller
     {
         if ($category === 'ibu_hamil') {
             return [
+                // Baris Header
                 [
-                    'NIK', 'nama', 'tgl_lahir', 'jk', 'suami',
-                    'tempat_lahir', 'phone_number', 'RT', 'RW', 'ALAMAT',
-                    'apakah_hamil', 'TANGGAL UKUR', 'BERAT', 'TINGGI', 'LILA',
-                ]
+                    // Identitas Warga
+                    'NIK', 'nama', 'tgl_lahir', 'jk', 'suami', 'tempat_lahir', 'phone_number',
+                    'RT', 'RW', 'desa_kelurahan', 'kecamatan', 'ALAMAT', 'apakah_hamil',
+                    // Detil Kehamilan
+                    'pregnancy_number', 'pregnancy_spacing', 'starting_weight', 'starting_height', 'delivery_date', 'delivery_method',
+                    // ANC
+                    'TANGGAL UKUR', 'gestational_age', 'BERAT', 'upper_arm_circumference', 'tensi', 'imt_plotting_status', 'lila_plotting_status', 'bp_plotting_status',
+                    'tbc_screening_cough', 'tbc_screening_fever', 'tbc_screening_weight_loss', 'tbc_screening_contact',
+                    'nakes_gives_fe_mms', 'consumes_fe_mms_regularly', 'nakes_gives_mt_kek', 'mt_package_details', 'consumes_mt_kek_regularly',
+                    'counseling_topic', 'joins_pregnant_class', 'anc_referral',
+                    // Postpartum
+                    'postpartum_period', 'postpartum_imt_plotting', 'postpartum_bp_plotting', 'nakes_gives_vit_a', 'vit_a_capsule_count', 'consumes_vit_a_regularly', 'is_breastfeeding', 'postpartum_kb', 'postpartum_counseling_topic', 'postpartum_referral'
+                ],
+                // Baris Contoh
+                [
+                    '3275011234567890', 'Siti Rahayu', '1995-08-15', 'P', 'Budi Santoso',
+                    'Bandung', '08123456789', '003', '001', 'Cigondewah', 'Bandung Barat', 'Jl. Contoh No. 1 RT 003/001', 'Ya',
+                    '1', '3 Tahun', '60.5', '158.0', '2026-10-15', 'Normal',
+                    date('Y-m-d'), '16 Minggu', '65.5', '24.5', '120/80', 'Normal', 'Normal', 'Normal',
+                    'Tidak', 'Tidak', 'Tidak', 'Tidak',
+                    'Ya', 'Ya', 'Tidak', '', 'Tidak',
+                    'Gizi Ibu Hamil', 'Ya', 'Tidak Rujuk',
+                    '', '', '', '', '', '', '', '', '', ''
+                ],
             ];
         }
 
         if ($category === 'lansia') {
             return [
+                // Baris Header
                 [
-                    'NIK', 'nama', 'tgl_lahir', 'jk', 'tempat_lahir',
-                    'phone_number', 'RT', 'RW', 'ALAMAT', 'riwayat_penyakit',
-                    'TANGGAL UKUR', 'BERAT', 'TINGGI',
-                ]
+                    // Identitas Warga
+                    'NIK', 'nama', 'tgl_lahir', 'jk',
+                    'tempat_lahir', 'phone_number', 'RT', 'RW', 'ALAMAT',
+                    // Riwayat Penyakit Keluarga
+                    'riwayat_penyakit_keluarga',
+                    // Perilaku Berisiko Mandiri
+                    'perilaku_berisiko',
+                    // Data Pemeriksaan
+                    'TANGGAL UKUR', 'BERAT', 'TINGGI', 'IMT',
+                    'lingkar_perut', 'tekanan_darah',
+                    'gds', 'asam_urat', 'kolesterol',
+                    'tes_mata', 'tes_telinga',
+                    'skrining_puma', 'skrining_tbc', 'skrining_jiwa',
+                    'kontrasepsi', 'edukasi', 'rujuk',
+                ],
+                // Baris Contoh
+                [
+                    '3275019876543210', 'Hj. Sumiyati', '1955-03-20', 'P',
+                    'Yogyakarta', '08987654321', '002', '001', 'Jl. Mawar No. 5 RT 002/001',
+                    'Hipertensi, Jantung',
+                    'Merokok, Kurang Aktivitas',
+                    date('Y-m-d'), '58.0', '155.0', '24.1',
+                    '82.0', '130/80',
+                    '110', '5.4', '195',
+                    'Normal', 'Normal',
+                    'Tidak', 'Tidak', 'Tidak',
+                    'Tidak', 'Pola makan sehat', 'Tidak Rujuk',
+                ],
             ];
         }
 
-        // Default: balita
+        // Default: balita / bayi / baduta / anak
         return [
+            // Baris Header
             [
-                'NIK', 'nama_anak', 'tgl_lahir', 'jk', 'nm_ortu',
-                'tempat_lahir', 'phone_number', 'RT', 'RW', 'ALAMAT',
-                'TANGGAL UKUR', 'BERAT', 'TINGGI', 'LILA', 'lingkar_kepala',
-                'CARA UKUR', 'vitamin', 'Imunisasi',
-            ]
+                // Identitas Anak & Orang Tua
+                'NIK', 'nama_anak', 'tgl_lahir', 'jk',
+                'ayah', 'ibu', 'NIK_ibu', 'tempat_lahir', 'phone_number',
+                'RT', 'RW', 'ALAMAT',
+                'BB_lahir', 'PB_lahir', 'kepemilikan_buku_kia',
+                // Data Pemeriksaan (Antropometri)
+                'TANGGAL UKUR', 'BERAT', 'TINGGI', 'LILA', 'lingkar_kepala', 'CARA UKUR',
+                // Perkembangan & Skrining
+                'kpsp_status', 
+                'tbc_screening_cough', 'tbc_screening_fever', 'tbc_screening_contact', 'tbc_screening_lethargy', 'tbc_screening_lumps', 'tbc_screening_weight_loss',
+                // Nutrisi & Imunisasi
+                'is_exclusive_breastfeeding', 'mp_asi', 'vitamin', 'Imunisasi', 'is_basic_immunization_complete', 'deworming_medicine',
+                // Pelayanan Lainnya
+                'pmt_given', 'counseling_notes', 'complaint', 'disease_history', 'health_note', 'referral_type'
+            ],
+            // Baris Contoh
+            [
+                '3275011112223334', 'Anak Sehat', '2022-06-10', 'L',
+                'Budi Santoso', 'Siti Rahayu', '3275011234567890', 'Bandung', '08123456789',
+                '003', '001', 'Jl. Contoh No. 1 RT 003/001',
+                '3.2', '50.5', '1',
+                date('Y-m-d'), '12.5', '80.0', '16', '44.0', 'berdiri',
+                'Sesuai',
+                'Tidak', 'Tidak', 'Tidak', 'Tidak', 'Tidak', 'Tidak',
+                'Ya', 'Ya', 'Ya', 'BCG, Polio 1', 'Ya', 'Tidak',
+                'Biskuit Balita', 'Pola asuh sehat', 'Tidak ada keluhan', 'Sehat', 'Anak aktif', 'Tidak Rujuk'
+            ],
         ];
     }
 }

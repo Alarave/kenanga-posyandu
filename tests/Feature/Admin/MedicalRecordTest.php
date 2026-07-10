@@ -875,5 +875,57 @@ describe('fitur pemilihan kategori dan validasi dinamis', function () {
 
         $response->assertSessionHasErrors('measurement_method');
     });
+
+    it('dapat mengimpor data rekam medis ibu hamil beserta kolom kehamilan dan postpartum', function () {
+        $this->actingAs($this->admin);
+
+        // Prepare a dummy CSV content in memory
+        $csvContent = "sep=,\n"
+            . "NIK,nama,tgl_lahir,jk,suami,tempat_lahir,phone_number,RT,RW,ALAMAT,apakah_hamil,pregnancy_number,pregnancy_spacing,starting_weight,starting_height,delivery_date,delivery_method,TANGGAL UKUR,gestational_age,BERAT,upper_arm_circumference,tensi,imt_plotting_status,lila_plotting_status,bp_plotting_status,nakes_gives_fe_mms,consumes_fe_mms_regularly,postpartum_period,is_breastfeeding\n"
+            . "3201086001880001,Siti Maria,1988-01-06,P,Bpk Maria,Semarang,085837087476,8,6,Jl. Anggrek,Ya,2,3 Tahun,50,155,2026-10-10,Normal,2026-07-10,12-16 minggu,55.5,24.5,120/80,Normal,Normal,Normal,Ya,Ya,<7 Hari,Ya\n";
+
+        $tempFile = tempnam(sys_get_temp_dir(), 'test_import') . '.csv';
+        file_put_contents($tempFile, $csvContent);
+
+        $uploadedFile = new \Illuminate\Http\UploadedFile(
+            $tempFile,
+            'template_import_rekam_medis_ibu_hamil.csv',
+            'text/csv',
+            null,
+            true
+        );
+
+        $response = $this->post('/admin/medical-records/import', [
+            'file' => $uploadedFile,
+            'posyandu_id' => $this->posyandu->id,
+        ]);
+
+        dd(session('import_errors'), session('error'), session('success'));
+        
+        $patient = Patient::where('full_name', 'Siti Maria')->first();
+        expect($patient)->not->toBeNull();
+        expect($patient->category)->toBe('ibu_hamil');
+        expect($patient->husband_name)->toBe('Bpk Maria');
+
+        $record = MedicalRecord::where('patient_id', $patient->id)->first();
+        expect($record)->not->toBeNull();
+        expect((int)$record->pregnancy_number)->toBe(2);
+        expect($record->pregnancy_spacing)->toBe('3 Tahun');
+        expect((float)$record->starting_weight)->toBe(50.0);
+        expect((float)$record->starting_height)->toBe(155.0);
+        expect($record->delivery_date->format('Y-m-d'))->toBe('2026-10-10');
+        expect($record->delivery_method)->toBe('Normal');
+        expect($record->gestational_age)->toBe('12-16 minggu');
+        expect((float)$record->weight)->toBe(55.5);
+        expect((float)$record->upper_arm_circumference)->toBe(24.5);
+        expect($record->systolic_bp)->toBe(120);
+        expect($record->diastolic_bp)->toBe(80);
+        expect($record->imt_plotting_status)->toBe('Normal');
+        expect($record->nakes_gives_fe_mms)->toBe('Ya');
+        expect($record->postpartum_period)->toBe('<7 Hari');
+        expect($record->is_breastfeeding)->toBe('Ya');
+
+        @unlink($tempFile);
+    });
 });
 

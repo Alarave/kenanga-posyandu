@@ -182,7 +182,11 @@
                 <div>
                     <p class="text-base font-black text-slate-800">Kategori Balita</p>
                     <p class="text-xs font-bold text-slate-500 mt-2 leading-relaxed">
-                        Wajib mengisi Nama Anak, Tanggal Lahir, Jenis Kelamin (L/P), dan Nama Orang Tua (nm_ortu/ayah/ibu). Bisa mengimpor hasil timbangan langsung: Berat, Tinggi, LILA, Lingkar Kepala, dan Imunisasi.
+                        Wajib: <strong>NIK, nama_anak, tgl_lahir, jk</strong>.<br>
+                        Orang tua & Lahir: ayah, ibu, NIK_ibu, BB_lahir, PB_lahir, kepemilikan_buku_kia.<br>
+                        Antropometri: BERAT, TINGGI, LILA, lingkar_kepala, CARA UKUR.<br>
+                        Nutrisi & Imunisasi: vitamin, Imunisasi, asi_eksklusif, mpasi, imunisasi_dasar_lengkap, obat_cacing.<br>
+                        Lainnya: kpsp_status, skrining tbc, pmt, keluhan, riwayat_sakit, dll.
                     </p>
                 </div>
             </div>
@@ -195,7 +199,10 @@
                 <div>
                     <p class="text-base font-black text-slate-800">Kategori Ibu Hamil</p>
                     <p class="text-xs font-bold text-slate-500 mt-2 leading-relaxed">
-                        Wajib mengisi Nama, Tanggal Lahir, Jenis Kelamin (P), Nama Suami, dan Apakah Hamil (Ya/Tidak). Bisa mencatat pemeriksaan klinis: Berat, Tinggi, dan LILA.
+                        Wajib: <strong>NIK, nama, tgl_lahir, jk, suami, apakah_hamil</strong>.<br>
+                        Detil Hamil: anak_ke, jarak_kehamilan, bb_awal, tb_awal, hpl, cara_bersalin.<br>
+                        ANC (Periksa): usia_kehamilan, BERAT, LILA, tensi, plotting, skrining_tbc.<br>
+                        Lainnya: konsumsi tablet fe, pmt kek, kelas ibu hamil, nifas, vit A, dll.
                     </p>
                 </div>
             </div>
@@ -208,12 +215,16 @@
                 <div>
                     <p class="text-base font-black text-slate-800">Kategori Lansia</p>
                     <p class="text-xs font-bold text-slate-500 mt-2 leading-relaxed">
-                        Wajib mengisi Nama, Tanggal Lahir, dan Jenis Kelamin (L/P). Silakan isi kolom Riwayat Penyakit (misal: Hipertensi, Diabetes) jika ada, serta hasil pemeriksaan fisik: Berat dan Tinggi.
+                        Wajib: <strong>NIK, nama, tgl_lahir, jk</strong>.<br>
+                        Riwayat & Perilaku: <strong>riwayat_penyakit_keluarga, perilaku_berisiko</strong>.<br>
+                        Data Fisik: BERAT, TINGGI, IMT, <strong>lingkar_perut, tekanan_darah</strong>.<br>
+                        Lab & Skrining: gds, asam_urat, kolesterol, tes_mata, tes_telinga, skrining_puma, skrining_tbc, skrining_jiwa.<br>
+                        Lainnya: kontrasepsi, edukasi, rujuk.
                     </p>
                 </div>
             </div>
 
-            {{-- Format Tanggal --}}
+            {{-- Format & Tips --}}
             <div class="space-y-4">
                 <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center">
                     <span class="material-symbols-outlined text-[24px]">info</span>
@@ -221,8 +232,9 @@
                 <div>
                     <p class="text-base font-black text-slate-800">Format Tanggal & NIK</p>
                     <p class="text-xs font-bold text-slate-500 mt-2 leading-relaxed">
-                        - Tanggal Lahir/Ukur: Gunakan format `YYYY-MM-DD` (misal: 2022-08-06). Jika format tidak sesuai, data dilewati dengan peringatan.<br>
-                        - NIK: Harus berupa 16 digit angka. Jika tidak sesuai atau kosong, akan muncul peringatan.
+                        - <strong>Tanggal</strong>: Format <code class="bg-slate-100 px-1 rounded">YYYY-MM-DD</code> (misal: 2022-08-06).<br>
+                        - <strong>NIK</strong>: 16 digit angka. Kosong atau tidak valid → NIK sementara dibuat.<br>
+                        - <strong>Jenis Kelamin</strong>: L / Laki-laki / P / Perempuan.
                     </p>
                 </div>
             </div>
