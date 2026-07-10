@@ -22,7 +22,15 @@
                 </div>
                 <div class="flex justify-between items-center py-2.5 border-b border-slate-50">
                     <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Jenis Kelamin</span>
-                    <span class="text-sm font-black text-slate-700">{{ ($patient->gender == 'L' || $patient->gender == 'M') ? 'Laki-laki' : 'Perempuan' }}</span>
+                    <span class="text-sm font-black text-slate-700">
+                        @if(trim(strtoupper($patient->gender)) === 'L' || trim(strtoupper($patient->gender)) === 'M')
+                            Laki-laki
+                        @elseif(trim(strtoupper($patient->gender)) === 'P' || trim(strtoupper($patient->gender)) === 'W')
+                            Perempuan
+                        @else
+                            {{ $patient->gender }}
+                        @endif
+                    </span>
                 </div>
                 <div class="flex justify-between items-center py-2.5 border-b border-slate-50">
                     <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Tempat Lahir</span>

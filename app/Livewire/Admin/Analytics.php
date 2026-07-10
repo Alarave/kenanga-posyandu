@@ -217,7 +217,11 @@ class Analytics extends BaseAdminComponent
 
     public ?string $drillDownStatusFilter = null;
 
-    public function drillDown(string $label, string $type, ?int $month = null, ?string $statusFilter = null, ?int $year = null): void
+    public ?int $drillDownPosyandu = null;
+
+    public ?string $drillDownChartSource = null;
+
+    public function drillDown(string $label, string $type, ?int $month = null, ?string $statusFilter = null, ?int $year = null, ?int $posyanduId = null, ?string $chartSource = null): void
     {
         $this->showDrillDown = true;
         $this->drillDownType = $type;
@@ -225,6 +229,8 @@ class Analytics extends BaseAdminComponent
         $this->drillDownStatusFilter = $statusFilter;
         $this->drillDownLabel = $label;
         $this->drillDownYear = $year ?? $this->selectedYear;
+        $this->drillDownPosyandu = $posyanduId;
+        $this->drillDownChartSource = $chartSource;
 
         // Auto format title on first load
         $this->drillDownTitle = "Detail: {$label}";
@@ -283,9 +289,54 @@ class Analytics extends BaseAdminComponent
         $month = $this->drillDownMonth;
         $targetYear = $this->drillDownYear;
         $statusFilter = $this->drillDownStatusFilter;
+        $targetPosyandu = $this->drillDownPosyandu ?? $this->selectedPosyandu;
+
+        if (str_starts_with($type, 'balita_age_')) {
+            $patients = $this->applyPosyanduScope(Patient::query(), $targetPosyandu)
+                ->whereIn('category', ['balita', 'bayi', 'baduta'])
+                ->where('status_mutasi', 'aktif')
+                ->get();
+            
+            $determinationDate = Carbon::create($targetYear, $month ?? 12, 1)->endOfMonth();
+
+            $filteredPatients = $patients->filter(function ($p) use ($type, $determinationDate) {
+                if (! $p->birth_date) {
+                    return false;
+                }
+                $months = Carbon::parse($p->birth_date)->diffInMonths($determinationDate);
+
+                return match ($type) {
+                    'balita_age_0_12' => $months <= 11,
+                    'balita_age_12_24' => $months >= 12 && $months <= 23,
+                    'balita_age_24plus' => $months >= 24,
+                    default => false,
+                };
+            });
+
+            $this->drillDownData = $filteredPatients->map(function ($p) use ($determinationDate) {
+                $latest = $p->medicalRecords()->where('visit_date', '<=', $determinationDate)->latest('visit_date')->first();
+                return [
+                    'name' => $p->full_name ?? '-',
+                    'nik' => $p->id_number ?? '-',
+                    'posyandu' => $p->posyandu?->name ?? '-',
+                    'nutrition_status' => 'Umur: ' . (int) Carbon::parse($p->birth_date)->diffInMonths($determinationDate) . ' Bulan',
+                    'visit_date' => $latest && $latest->visit_date ? $latest->visit_date->format('d/m/Y') : 'Terdaftar',
+                    'weight' => $latest && $latest->weight ? $latest->weight . ' kg' : '-',
+                    'height' => $latest && $latest->height ? $latest->height . ' cm' : '-',
+                    'patient_id' => $p->id,
+                    'category_warga' => 'Balita', 
+                    'kategori_gizi' => '-', 
+                    'status_info' => $latest ? ($latest->nutrition_status ?? '-') : '-', 
+                    'month_name' => '-', 
+                    'age_months' => (int) Carbon::parse($p->birth_date)->diffInMonths($determinationDate), 
+                ];
+            })->values()->toArray();
+
+            return;
+        }
 
         if (str_starts_with($type, 'lansia_age_')) {
-            $patients = $this->applyPosyanduScope(Patient::query(), $this->selectedPosyandu)
+            $patients = $this->applyPosyanduScope(Patient::query(), $targetPosyandu)
                 ->where('category', 'lansia')
                 ->where('status_mutasi', 'aktif')
                 ->get();
@@ -304,20 +355,32 @@ class Analytics extends BaseAdminComponent
                 };
             });
 
-            $this->drillDownData = $filteredPatients->map(fn ($p) => [
-                'name' => $p->full_name ?? '-',
-                'nik' => $p->id_number ?? '-',
-                'posyandu' => $p->posyandu?->name ?? '-',
-                'nutrition_status' => 'Umur: '.$p->age.' Tahun',
-                'visit_date' => 'Terdaftar',
-                'patient_id' => $p->id,
-            ])->values()->toArray();
+            $determinationDate = Carbon::create($targetYear, $month ?? $this->selectedMonth ?? 12, 1)->endOfMonth();
+
+            $this->drillDownData = $filteredPatients->map(function ($p) use ($determinationDate) {
+                $latest = $p->medicalRecords()->where('visit_date', '<=', $determinationDate)->latest('visit_date')->first();
+                return [
+                    'name' => $p->full_name ?? '-',
+                    'nik' => $p->id_number ?? '-',
+                    'posyandu' => $p->posyandu?->name ?? '-',
+                    'nutrition_status' => 'Umur: '.$p->age.' Tahun',
+                    'visit_date' => $latest && $latest->visit_date ? $latest->visit_date->format('d/m/Y') : 'Terdaftar',
+                    'weight' => $latest && $latest->weight ? $latest->weight . ' kg' : '-',
+                    'height' => $latest && $latest->height ? $latest->height . ' cm' : '-',
+                    'patient_id' => $p->id,
+                    'category_warga' => 'Lansia', 
+                    'kategori_gizi' => '-', 
+                    'status_info' => '-', 
+                    'month_name' => '-', 
+                    'age_months' => $p->birth_date ? (int) $p->birth_date->diffInMonths(now()) : 0, 
+                ];
+            })->values()->toArray();
 
             return;
         }
 
         if (str_starts_with($type, 'lansia_imt_')) {
-            $query = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
+            $query = $this->applyPosyanduScope(MedicalRecord::query(), $targetPosyandu)
                 ->whereHas('patient', function ($q) {
                     $q->where('category', 'lansia')->where('status_mutasi', 'aktif');
                 })
@@ -349,8 +412,10 @@ class Analytics extends BaseAdminComponent
                 'posyandu' => $r->patient?->posyandu?->name ?? '-',
                 'nutrition_status' => 'IMT: '.number_format($r->weight / (($r->height / 100) ** 2), 2),
                 'visit_date' => $r->visit_date?->format('d M Y') ?? '-',
+                'weight' => $r->weight ? $r->weight . ' kg' : '-',
+                'height' => $r->height ? $r->height . ' cm' : '-',
                 'patient_id' => $r->patient_id,
-            ])->values()->toArray();
+             'category_warga' => 'Lansia', 'kategori_gizi' => '-', 'status_info' => '-', 'month_name' => $r->visit_date?->format('F') ?? '-', ])->values()->toArray();
 
             return;
         }
@@ -358,7 +423,7 @@ class Analytics extends BaseAdminComponent
         if (in_array($type, ['pregnancy_k1', 'pregnancy_k2', 'pregnancy_k3', 'pregnancy_k4', 'pregnancy_k5', 'pregnancy_k6'])) {
             $n = (int) substr($type, -1);
             
-            $query = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
+            $query = $this->applyPosyanduScope(MedicalRecord::query(), $targetPosyandu)
                 ->with(['patient.posyandu'])
                 ->whereYear('visit_date', $targetYear)
                 ->when($month ?? $this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $month ?? $this->selectedMonth))
@@ -386,15 +451,23 @@ class Analytics extends BaseAdminComponent
                     'nik' => $r->patient?->id_number ?? '-',
                     'posyandu' => $r->patient?->posyandu?->name ?? '-',
                     'nutrition_status' => "Total Kunjungan: {$totalVisits} Kali",
-                    'visit_date' => $r->visit_date?->format('d M Y') ?? '-',
+                    'visit_date' => $r->visit_date?->format('d/m/Y') ?? '-',
                     'patient_id' => $r->patient_id,
+                    'category_warga' => 'Ibu Hamil',
+                    'kategori_gizi' => '-',
+                    'status_info' => '-',
+                    'month_name' => $r->visit_date ? match($r->visit_date->month) {
+                        1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni',
+                        7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
+                        default => '-'
+                    } : '-',
                 ];
             })->values()->toArray();
 
             return;
         }
 
-        $query = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
+        $query = $this->applyPosyanduScope(MedicalRecord::query(), $targetPosyandu)
             ->with(['patient.posyandu'])
             ->whereYear('visit_date', $targetYear);
 
@@ -425,28 +498,36 @@ class Analytics extends BaseAdminComponent
             // ── Tren Prevalensi: Risiko Gizi
             'balita_risiko' => $query
                 ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
-                ->whereIn('nutrition_status', [
-                    MedicalRecord::STATUS_BB_U_RISIKO_LEBIH,    // 'Gizi Lebih'
-                    MedicalRecord::STATUS_GIZI_BERISIKO_LEBIH,  // 'Berisiko Gizi Lebih'
-                    MedicalRecord::STATUS_GIZI_LEBIH,           // 'Gizi Lebih'
-                    MedicalRecord::STATUS_GIZI_OBESITAS,        // 'Obesitas'
-                ]),
+                ->where(fn ($q) => $q
+                    ->whereIn('nutrition_status', [
+                        MedicalRecord::STATUS_BB_U_RISIKO_LEBIH,
+                        MedicalRecord::STATUS_GIZI_BERISIKO_LEBIH,
+                        MedicalRecord::STATUS_GIZI_LEBIH,
+                        MedicalRecord::STATUS_GIZI_OBESITAS,
+                        MedicalRecord::STATUS_BB_U_KURANG,
+                        MedicalRecord::STATUS_GIZI_KURANG,
+                    ])
+                    ->orWhereIn('wasting_status', [
+                        MedicalRecord::STATUS_BB_U_RISIKO_LEBIH,
+                        MedicalRecord::STATUS_GIZI_BERISIKO_LEBIH,
+                        MedicalRecord::STATUS_GIZI_LEBIH,
+                        MedicalRecord::STATUS_GIZI_OBESITAS,
+                        MedicalRecord::STATUS_BB_U_KURANG,
+                        MedicalRecord::STATUS_GIZI_KURANG,
+                    ])
+                ),
 
             // ── Tren Prevalensi: Stunting / Gizi Buruk
             'balita_stunting_buruk' => $query
                 ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
                 ->where(fn ($q) => $q
                     ->whereIn('nutrition_status', [
-                        MedicalRecord::STATUS_BB_U_SANGAT_KURANG,  // 'Gizi Buruk'
-                        MedicalRecord::STATUS_BB_U_KURANG,         // 'Gizi Kurang'
-                    ])
-                    ->orWhereIn('stunting_status', [
-                        MedicalRecord::STATUS_TB_U_SANGAT_PENDEK,  // 'Sangat Pendek'
-                        MedicalRecord::STATUS_TB_U_PENDEK,         // 'Pendek'
+                        MedicalRecord::STATUS_BB_U_SANGAT_KURANG,
+                        MedicalRecord::STATUS_GIZI_BURUK,
                     ])
                     ->orWhereIn('wasting_status', [
-                        MedicalRecord::STATUS_GIZI_BURUK,   // 'Gizi Buruk'
-                        MedicalRecord::STATUS_GIZI_KURANG,  // 'Gizi Kurang'
+                        MedicalRecord::STATUS_BB_U_SANGAT_KURANG,
+                        MedicalRecord::STATUS_GIZI_BURUK,
                     ])
                 ),
 
@@ -455,6 +536,29 @@ class Analytics extends BaseAdminComponent
             'lansia' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')),
             'nutrition_status' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
                 ->where('nutrition_status', $statusFilter),
+            'vaccine' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+                ->where(function($q) use ($statusFilter) {
+                    $sf = strtoupper($statusFilter ?? '');
+                    if (str_contains($sf, 'HB-0')) {
+                        $q->where('vaccine_name', 'like', '%HB-0%')->orWhere('vaccine_name', 'like', '%HEPATITIS B0%')->orWhere('vaccine_name', 'like', '%HB0%');
+                    } elseif (str_contains($sf, 'BCG')) {
+                        $q->where('vaccine_name', 'like', '%BCG%');
+                    } elseif (str_contains($sf, 'POLIO')) {
+                        $q->where('vaccine_name', 'like', "%{$sf}%");
+                    } elseif (str_contains($sf, 'DPT')) {
+                        $q->where('vaccine_name', 'like', "%{$sf}%")->orWhere('vaccine_name', 'like', "%PENTABIO%");
+                    } elseif (str_contains($sf, 'PCV')) {
+                        $q->where('vaccine_name', 'like', "%{$sf}%");
+                    } elseif (str_contains($sf, 'RV')) {
+                        $q->where('vaccine_name', 'like', "%{$sf}%")->orWhere('vaccine_name', 'like', "%ROTAVIRUS%");
+                    } elseif (str_contains($sf, 'IPV')) {
+                        $q->where('vaccine_name', 'like', "%{$sf}%");
+                    } elseif (str_contains($sf, 'MR')) {
+                        $q->where('vaccine_name', 'like', '%MR%')->orWhere('vaccine_name', 'like', '%CAMPAK%');
+                    } else {
+                        $q->where('vaccine_name', 'like', "%{$statusFilter}%");
+                    }
+                }),
             'lansia_hipertensi' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
                 ->where(fn ($q) => $q->where('systolic_bp', '>=', 140)->orWhere('diastolic_bp', '>=', 90)),
             'lansia_hiperglikemia' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
@@ -521,8 +625,30 @@ class Analytics extends BaseAdminComponent
                     )
                 ),
             },
-            'visit_date' => $r->visit_date?->format('d M Y') ?? '-',
+            'visit_date' => $r->visit_date?->format('d/m/Y') ?? '-',
+            'weight' => $r->weight ? $r->weight . ' kg' : '-',
+            'height' => $r->height ? $r->height . ' cm' : '-',
             'patient_id' => $r->patient_id,
+            'category_warga' => match($r->patient?->category) {
+                'balita', 'bayi', 'baduta' => 'Balita',
+                'ibu_hamil' => 'Ibu Hamil',
+                'lansia' => 'Lansia',
+                default => ucfirst($r->patient?->category ?? '-')
+            },
+            'kategori_gizi' => (function() use ($r) {
+                $gizi = $r->nutrition_status ?? '-';
+                if (stripos($gizi, 'gizi baik') !== false) return 'Normal';
+                if (stripos($gizi, 'gizi lebih') !== false || stripos($gizi, 'gizi kurang') !== false || stripos($gizi, 'risiko') !== false) return 'Resiko Gizi';
+                if (stripos($gizi, 'gizi buruk') !== false || stripos($gizi, 'stunting') !== false) return 'Stunting';
+                return '-';
+            })(),
+            'status_info' => in_array($r->patient?->category, ['balita', 'bayi', 'baduta']) ? ($r->nutrition_status ?: '-') : '-',
+            'month_name' => $r->visit_date ? match($r->visit_date->month) {
+                1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni',
+                7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
+                default => '-'
+            } : '-',
+            'stunting_status' => $r->stunting_status ?: '-',
         ])->values()->toArray();
     }
 
@@ -807,13 +933,10 @@ class Analytics extends BaseAdminComponent
             ->whereHas('medicalRecords', fn ($q) => $q->where(function ($sq) {
                 $sq->whereIn('nutrition_status', [
                     MedicalRecord::STATUS_BB_U_SANGAT_KURANG,
-                    MedicalRecord::STATUS_BB_U_KURANG,
-                ])->orWhereIn('stunting_status', [
-                    MedicalRecord::STATUS_TB_U_SANGAT_PENDEK,
-                    MedicalRecord::STATUS_TB_U_PENDEK,
-                ])->orWhereIn('wasting_status', [
                     MedicalRecord::STATUS_GIZI_BURUK,
-                    MedicalRecord::STATUS_GIZI_KURANG,
+                ])->orWhereIn('wasting_status', [
+                    MedicalRecord::STATUS_BB_U_SANGAT_KURANG,
+                    MedicalRecord::STATUS_GIZI_BURUK,
                 ]);
             })->whereYear('visit_date', $selectedYear)
                 ->when($selectedMonth, fn ($mq) => $mq->whereMonth('visit_date', $selectedMonth))
@@ -850,11 +973,13 @@ class Analytics extends BaseAdminComponent
 
             $normal = $group->whereIn('nutrition_status', [MedicalRecord::STATUS_BB_U_NORMAL, MedicalRecord::STATUS_GIZI_BAIK])->count();
             $stunting = $group->where(function ($r) {
-                return in_array($r->nutrition_status, [MedicalRecord::STATUS_BB_U_SANGAT_KURANG, MedicalRecord::STATUS_BB_U_KURANG]) ||
-                       in_array($r->stunting_status, [MedicalRecord::STATUS_TB_U_SANGAT_PENDEK, MedicalRecord::STATUS_TB_U_PENDEK]) ||
-                       in_array($r->wasting_status, [MedicalRecord::STATUS_GIZI_BURUK, MedicalRecord::STATUS_GIZI_KURANG]);
+                return in_array($r->nutrition_status, [MedicalRecord::STATUS_BB_U_SANGAT_KURANG, MedicalRecord::STATUS_GIZI_BURUK]) ||
+                       in_array($r->wasting_status, [MedicalRecord::STATUS_BB_U_SANGAT_KURANG, MedicalRecord::STATUS_GIZI_BURUK]);
             })->count();
-            $risk = $group->whereIn('nutrition_status', [MedicalRecord::STATUS_BB_U_RISIKO_LEBIH, MedicalRecord::STATUS_GIZI_BERISIKO_LEBIH, MedicalRecord::STATUS_GIZI_LEBIH, MedicalRecord::STATUS_GIZI_OBESITAS])->count();
+            $risk = $group->where(function ($r) {
+                return in_array($r->nutrition_status, [MedicalRecord::STATUS_BB_U_RISIKO_LEBIH, MedicalRecord::STATUS_GIZI_BERISIKO_LEBIH, MedicalRecord::STATUS_GIZI_LEBIH, MedicalRecord::STATUS_GIZI_OBESITAS, MedicalRecord::STATUS_BB_U_KURANG, MedicalRecord::STATUS_GIZI_KURANG]) ||
+                       in_array($r->wasting_status, [MedicalRecord::STATUS_BB_U_RISIKO_LEBIH, MedicalRecord::STATUS_GIZI_BERISIKO_LEBIH, MedicalRecord::STATUS_GIZI_LEBIH, MedicalRecord::STATUS_GIZI_OBESITAS, MedicalRecord::STATUS_BB_U_KURANG, MedicalRecord::STATUS_GIZI_KURANG]);
+            })->count();
 
             return (object) [
                 'normal_rate' => round(($normal / $total) * 100, 1),
@@ -918,9 +1043,8 @@ class Analytics extends BaseAdminComponent
         $stuntingPerPosyandu = Patient::whereIn('posyandu_id', $posyanduIds)
             ->whereIn('category', ['balita', 'bayi', 'baduta'])
             ->whereHas('medicalRecords', fn ($q) => $q->where(function ($sq) {
-                $sq->whereIn('nutrition_status', [MedicalRecord::STATUS_BB_U_SANGAT_KURANG, MedicalRecord::STATUS_BB_U_KURANG])
-                    ->orWhereIn('stunting_status', [MedicalRecord::STATUS_TB_U_SANGAT_PENDEK, MedicalRecord::STATUS_TB_U_PENDEK])
-                    ->orWhereIn('wasting_status', [MedicalRecord::STATUS_GIZI_BURUK, MedicalRecord::STATUS_GIZI_KURANG]);
+                $sq->whereIn('nutrition_status', [MedicalRecord::STATUS_BB_U_SANGAT_KURANG, MedicalRecord::STATUS_GIZI_BURUK])
+                    ->orWhereIn('wasting_status', [MedicalRecord::STATUS_BB_U_SANGAT_KURANG, MedicalRecord::STATUS_GIZI_BURUK]);
             })
                 ->whereYear('visit_date', $selectedYear)
                 ->when($selectedMonth, fn ($mq) => $mq->whereMonth('visit_date', $selectedMonth))
@@ -936,7 +1060,7 @@ class Analytics extends BaseAdminComponent
             $stunting = $stuntingPerPosyandu->get($pos->id, 0);
             $rate = $total > 0 ? round(($stunting / $total) * 100, 1) : 0;
             $stuntingByPosyandu[] = [
-                'name' => $pos->name, 'rate' => $rate, 'stunting' => $stunting, 'total' => $total,
+                'id' => $pos->id, 'name' => $pos->name, 'rate' => $rate, 'stunting' => $stunting, 'total' => $total,
                 'width' => min(100, $rate * 6),
                 'color' => $rate >= 10 ? 'bg-red-500' : ($rate >= 5 ? 'bg-amber-500' : 'bg-green-500'),
                 'text' => $rate >= 10 ? 'text-red-600' : ($rate >= 5 ? 'text-amber-600' : 'text-green-600'),
@@ -1203,6 +1327,266 @@ class Analytics extends BaseAdminComponent
             'trendLansiaAvgUricAcid' => $trendLansiaAvgUricAcid,
             'trendLansiaAvgCholesterol' => $trendLansiaAvgCholesterol,
         ];
+    }
+
+public function exportChartData(string $chartType)
+    {
+        $targetYear = $this->selectedYear;
+        $targetPosyandu = $this->selectedPosyandu;
+        $month = $this->selectedMonth;
+
+        $query = $this->applyPosyanduScope(\App\Models\MedicalRecord::query(), $targetPosyandu)
+            ->with(['patient.posyandu'])
+            ->whereYear('visit_date', $targetYear);
+
+        if ($month) {
+            $query->whereMonth('visit_date', $month);
+        }
+
+        $records = $query->orderBy('visit_date', 'desc')->get();
+
+        $title = 'Data Detail';
+        $headers = [];
+        $formattedData = [];
+        $months = [
+            1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+            5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+            9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
+        ];
+
+        switch ($chartType) {
+            case 'visits_trend':
+                $title = 'Tren Kunjungan Bulanan Gabungan';
+                $headers = ['Bulan', 'Nama Pasien', 'NIK', 'Unit Posyandu', 'Kategori Warga', 'Tanggal', 'BB (kg)', 'TB (cm)', 'Status / Info (Gizi Baik/Lebih/Kurang/Buruk)'];
+                
+                foreach ($records as $r) {
+                    $patient = $r->patient;
+                    if (!$patient) continue;
+                    
+                    $monthNum = $r->visit_date ? $r->visit_date->month : 0;
+                    $cat = match($patient->category) {
+                        'balita', 'bayi', 'baduta' => 'Balita',
+                        'ibu_hamil' => 'Ibu Hamil',
+                        'lansia' => 'Lansia',
+                        default => ucfirst($patient->category ?? '-')
+                    };
+
+                    $formattedData[] = [
+                        $months[$monthNum] ?? '-',
+                        $patient->full_name ?? '-',
+                        $patient->id_number ?? '-',
+                        $patient->posyandu?->name ?? '-',
+                        $cat,
+                        $r->visit_date ? $r->visit_date->format('d/m/Y') : '-',
+                        $r->weight ?: '-',
+                        $r->height ?: '-',
+                        $r->nutrition_status ?? '-'
+                    ];
+                }
+                break;
+
+            case 'nutrition_trend':
+                $title = 'Tren Status Gizi Balita';
+                $headers = ['Bulan', 'Nama Pasien', 'NIK', 'Unit Posyandu', 'Kategori Gizi (Normal/Resiko Gizi/Stunting)', 'Status / Info (Gizi Baik/Lebih/Kurang/Buruk)', 'Tanggal', 'BB (kg)', 'TB (cm)'];
+                
+                $records = $records->filter(fn($r) => in_array($r->patient?->category, ['balita', 'bayi', 'baduta']));
+                
+                foreach ($records as $r) {
+                    $patient = $r->patient;
+                    $monthNum = $r->visit_date ? $r->visit_date->month : 0;
+                    
+                    $gizi = $r->nutrition_status ?? '-';
+                    $kategoriGizi = '-';
+                    if (stripos($gizi, 'gizi baik') !== false) {
+                        $kategoriGizi = 'Normal';
+                    } elseif (stripos($gizi, 'gizi lebih') !== false || stripos($gizi, 'gizi kurang') !== false || stripos($gizi, 'risiko') !== false) {
+                        $kategoriGizi = 'Resiko Gizi';
+                    } elseif (stripos($gizi, 'gizi buruk') !== false || stripos($gizi, 'stunting') !== false) {
+                        $kategoriGizi = 'Stunting';
+                    }
+                    
+                    $formattedData[] = [
+                        $months[$monthNum] ?? '-',
+                        $patient->full_name ?? '-',
+                        $patient->id_number ?? '-',
+                        $patient->posyandu?->name ?? '-',
+                        $kategoriGizi,
+                        $gizi,
+                        $r->visit_date ? $r->visit_date->format('d/m/Y') : '-',
+                        $r->weight ?: '-',
+                        $r->height ?: '-'
+                    ];
+                }
+                break;
+
+            case 'nutrition_donut':
+                $title = 'Distribusi Status Gizi Balita';
+                $headers = ['Bulan', 'Nama Pasien', 'NIK', 'Unit Posyandu', 'Status / Info (Gizi Baik/Lebih/Kurang/Buruk)', 'Tanggal'];
+                
+                $records = $records->filter(fn($r) => in_array($r->patient?->category, ['balita', 'bayi', 'baduta']));
+                
+                foreach ($records as $r) {
+                    $patient = $r->patient;
+                    $monthNum = $r->visit_date ? $r->visit_date->month : 0;
+                    
+                    $formattedData[] = [
+                        $months[$monthNum] ?? '-',
+                        $patient->full_name ?? '-',
+                        $patient->id_number ?? '-',
+                        $patient->posyandu?->name ?? '-',
+                        $r->nutrition_status ?? '-',
+                        $r->visit_date ? $r->visit_date->format('d/m/Y') : '-',
+                    ];
+                }
+                break;
+
+            case 'vaccine_chart':
+                $title = 'Capaian Imunisasi Per Jenis Vaksin';
+                $headers = ['Bulan', 'Nama Pasien', 'NIK', 'Unit Posyandu', 'HB-0', 'BCG', 'Polio 1', 'Polio 2', 'Polio 3', 'Polio 4', 'DPT-HB-Hib 1', 'DPT-HB-Hib 2', 'DPT-HB-Hib 3', 'PCV 1', 'PCV 2', 'PCV 3', 'RV 1', 'RV 2', 'RV 3', 'IPV 1', 'IPV 2', 'MR'];
+                
+                // Group by patient to form the matrix
+                $records = $records->filter(fn($r) => in_array($r->patient?->category, ['balita', 'bayi', 'baduta']) && !empty($r->vaccine_name));
+                $patientMatrix = [];
+                
+                foreach ($records as $r) {
+                    $pid = $r->patient_id;
+                    if (!isset($patientMatrix[$pid])) {
+                        $patientMatrix[$pid] = [
+                            'patient' => $r->patient,
+                            'latest_month' => $r->visit_date ? $r->visit_date->month : 0,
+                            'vaccines' => []
+                        ];
+                    }
+                    $dateStr = $r->visit_date ? $r->visit_date->format('d/m/Y') : 'Y';
+                    
+                    // Match directly against headers as computed in AnalyticsSnapshot
+                    for ($i = 4; $i < count($headers); $i++) {
+                        $vaxName = $headers[$i];
+                        if (stripos($r->vaccine_name, $vaxName) !== false) {
+                            $patientMatrix[$pid]['vaccines'][$vaxName] = $dateStr;
+                        }
+                    }
+                    
+                    // Alternative names just in case
+                    if (stripos($r->vaccine_name, 'HEPATITIS B0') !== false || stripos($r->vaccine_name, 'HB0') !== false) {
+                        $patientMatrix[$pid]['vaccines']['HB-0'] = $dateStr;
+                    }
+                    if (stripos($r->vaccine_name, 'CAMPAK') !== false) {
+                        $patientMatrix[$pid]['vaccines']['MR'] = $dateStr;
+                    }
+                    if (stripos($r->vaccine_name, 'PENTABIO') !== false && $r->vaccine_dose) {
+                        $patientMatrix[$pid]['vaccines']["DPT-HB-Hib " . $r->vaccine_dose] = $dateStr;
+                    }
+                    if (stripos($r->vaccine_name, 'ROTAVIRUS') !== false && $r->vaccine_dose) {
+                        $patientMatrix[$pid]['vaccines']["RV " . $r->vaccine_dose] = $dateStr;
+                    }
+                }
+                
+                foreach ($patientMatrix as $pid => $data) {
+                    $patient = $data['patient'];
+                    $row = [
+                        $months[$data['latest_month']] ?? '-',
+                        $patient->full_name ?? '-',
+                        $patient->id_number ?? '-',
+                        $patient->posyandu?->name ?? '-'
+                    ];
+                    
+                    // Fill vaccines
+                    for ($i = 4; $i < count($headers); $i++) {
+                        $vname = $headers[$i];
+                        $row[] = $data['vaccines'][$vname] ?? '-';
+                    }
+                    
+                    $formattedData[] = $row;
+                }
+                break;
+
+            case 'growth_chart':
+                $title = 'Pertumbuhan Keseluruhan Balita';
+                $headers = ['Bulan', 'Nama Pasien', 'NIK', 'Unit Posyandu', 'Status / Info (Gizi Baik/Lebih/Kurang/Buruk)', 'Tanggal', 'BB (kg)', 'TB (cm)'];
+                
+                $records = $records->filter(fn($r) => in_array($r->patient?->category, ['balita', 'bayi', 'baduta']) && ($r->weight || $r->height));
+                
+                foreach ($records as $r) {
+                    $patient = $r->patient;
+                    $monthNum = $r->visit_date ? $r->visit_date->month : 0;
+                    
+                    $formattedData[] = [
+                        $months[$monthNum] ?? '-',
+                        $patient->full_name ?? '-',
+                        $patient->id_number ?? '-',
+                        $patient->posyandu?->name ?? '-',
+                        $r->nutrition_status ?? '-',
+                        $r->visit_date ? $r->visit_date->format('d/m/Y') : '-',
+                        $r->weight ?: '-',
+                        $r->height ?: '-'
+                    ];
+                }
+                break;
+
+            case 'lansia_metabolic_trend':
+                $title = 'Tren Risiko Metabolik Lansia';
+                $headers = [
+                    'Bulan', 'Nama Pasien', 'NIK', 'Unit Posyandu', 'Tanggal Periksa',
+                    'TD (mmHg)', 'Gula Darah (mg/dL)', 'Kolesterol (mg/dL)', 'Asam Urat (mg/dL)',
+                    'Faktor Risiko'
+                ];
+                
+                // Saring rekam medis lansia yang memiliki risiko metabolik
+                $records = $records->filter(function($r) {
+                    $isLansia = $r->patient?->category === 'lansia';
+                    if (!$isLansia) return false;
+                    
+                    $hasHipertensi = ($r->systolic_bp >= 140 || $r->diastolic_bp >= 90);
+                    $hasHiperglikemia = ($r->blood_sugar >= 200);
+                    $hasHiperkolesterolemia = ($r->cholesterol >= 200);
+                    $hasHiperurisemia = ($r->uric_acid >= 7.0);
+                    
+                    return $hasHipertensi || $hasHiperglikemia || $hasHiperkolesterolemia || $hasHiperurisemia;
+                });
+                
+                foreach ($records as $r) {
+                    $patient = $r->patient;
+                    $monthNum = $r->visit_date ? $r->visit_date->month : 0;
+                    
+                    $risks = [];
+                    if ($r->systolic_bp >= 140 || $r->diastolic_bp >= 90) {
+                        $risks[] = 'Hipertensi';
+                    }
+                    if ($r->blood_sugar >= 200) {
+                        $risks[] = 'Hiperglikemia';
+                    }
+                    if ($r->cholesterol >= 200) {
+                        $risks[] = 'Hiperkolesterolemia';
+                    }
+                    if ($r->uric_acid >= 7.0) {
+                        $risks[] = 'Hiperurisemia';
+                    }
+                    
+                    $formattedData[] = [
+                        $months[$monthNum] ?? '-',
+                        $patient->full_name ?? '-',
+                        $patient->id_number ?? '-',
+                        $patient->posyandu?->name ?? '-',
+                        $r->visit_date ? $r->visit_date->format('d/m/Y') : '-',
+                        ($r->systolic_bp && $r->diastolic_bp) ? "{$r->systolic_bp}/{$r->diastolic_bp}" : '-',
+                        $r->blood_sugar ?: '-',
+                        $r->cholesterol ?: '-',
+                        $r->uric_acid ?: '-',
+                        implode(', ', $risks)
+                    ];
+                }
+                break;
+
+            default:
+                abort(404);
+        }
+
+        $export = new \App\Exports\MasterChartExport($headers, $formattedData, $title, (string)$targetYear);
+        
+        return response()->streamDownload(function () use ($export) {
+            $export->export('php://output');
+        }, str_replace(' ', '_', strtolower($title)) . "_{$targetYear}.xlsx");
     }
 
     public function render()
