@@ -1422,6 +1422,60 @@ public function exportChartData(string $chartType)
                 }
                 break;
 
+            case 'lansia_metabolic_trend':
+                $title = 'Tren Risiko Metabolik Lansia';
+                $headers = [
+                    'Bulan', 'Nama Pasien', 'NIK', 'Unit Posyandu', 'Tanggal Periksa',
+                    'TD (mmHg)', 'Gula Darah (mg/dL)', 'Kolesterol (mg/dL)', 'Asam Urat (mg/dL)',
+                    'Faktor Risiko'
+                ];
+                
+                // Saring rekam medis lansia yang memiliki risiko metabolik
+                $records = $records->filter(function($r) {
+                    $isLansia = $r->patient?->category === 'lansia';
+                    if (!$isLansia) return false;
+                    
+                    $hasHipertensi = ($r->systolic_bp >= 140 || $r->diastolic_bp >= 90);
+                    $hasHiperglikemia = ($r->blood_sugar >= 200);
+                    $hasHiperkolesterolemia = ($r->cholesterol >= 200);
+                    $hasHiperurisemia = ($r->uric_acid >= 7.0);
+                    
+                    return $hasHipertensi || $hasHiperglikemia || $hasHiperkolesterolemia || $hasHiperurisemia;
+                });
+                
+                foreach ($records as $r) {
+                    $patient = $r->patient;
+                    $monthNum = $r->visit_date ? $r->visit_date->month : 0;
+                    
+                    $risks = [];
+                    if ($r->systolic_bp >= 140 || $r->diastolic_bp >= 90) {
+                        $risks[] = 'Hipertensi';
+                    }
+                    if ($r->blood_sugar >= 200) {
+                        $risks[] = 'Hiperglikemia';
+                    }
+                    if ($r->cholesterol >= 200) {
+                        $risks[] = 'Hiperkolesterolemia';
+                    }
+                    if ($r->uric_acid >= 7.0) {
+                        $risks[] = 'Hiperurisemia';
+                    }
+                    
+                    $formattedData[] = [
+                        $months[$monthNum] ?? '-',
+                        $patient->full_name ?? '-',
+                        $patient->id_number ?? '-',
+                        $patient->posyandu?->name ?? '-',
+                        $r->visit_date ? $r->visit_date->format('d/m/Y') : '-',
+                        ($r->systolic_bp && $r->diastolic_bp) ? "{$r->systolic_bp}/{$r->diastolic_bp}" : '-',
+                        $r->blood_sugar ?: '-',
+                        $r->cholesterol ?: '-',
+                        $r->uric_acid ?: '-',
+                        implode(', ', $risks)
+                    ];
+                }
+                break;
+
             default:
                 abort(404);
         }
