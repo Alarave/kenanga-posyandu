@@ -299,7 +299,7 @@
             <div class="overflow-x-auto">
                 <table class="w-full text-left">
                     <thead>
-                        <tr style="background:#f9fafb; border-bottom:1px solid rgba(0,0,0,0.05);" class="text-xs font-semibold text-slate-500 uppercase tracking-wider">
+                        <tr class="border-b border-slate-200 bg-slate-50/50 text-[11px] font-bold text-slate-500 uppercase tracking-wider">
                             <th class="px-6 py-4">Ibu Hamil</th>
                             <th class="px-6 py-4">Usia Hamil</th>
                             <th class="px-6 py-4">HPL / Taksiran</th>
@@ -315,74 +315,105 @@
                         @forelse($maternalTableData as $row)
                             <tr class="hover:bg-slate-50/50 transition-colors" wire:key="maternal-row-{{ $row['id'] }}">
                                 <td class="px-6 py-4">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-xs shrink-0">
-                                            {{ strtoupper(substr($row['name'], 0, 2)) }}
+                                    <div class="flex items-center gap-3.5">
+                                        <div class="w-10 h-10 rounded-xl bg-pink-50 border border-pink-100 text-pink-500 flex items-center justify-center font-bold text-xs shrink-0 shadow-xs">
+                                            <span class="material-symbols-outlined text-[20px]">pregnant_woman</span>
                                         </div>
                                         <div>
                                             <span class="block text-sm font-semibold text-slate-800">{{ $row['name'] }}</span>
-                                            <span class="text-xs text-slate-400 font-medium">Usia: {{ $row['age'] }} thn | {{ $row['posyandu_name'] }}</span>
+                                            <div class="flex items-center gap-1.5 mt-1 flex-wrap">
+                                                <span class="text-xs text-slate-400 font-medium">Usia: {{ $row['age'] }} thn | {{ $row['posyandu_name'] }}</span>
+                                                @if($row['is_high_risk'])
+                                                    <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-50 border border-amber-200 text-[9px] font-black text-amber-700 cursor-help" title="Risiko Tinggi: {{ $row['risk_reasons'] }}">
+                                                        <span class="material-symbols-outlined text-[10px] text-amber-500">warning</span>
+                                                        Risti
+                                                    </span>
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
                                 </td>
-                                <td class="px-6 py-4 text-slate-700 font-medium">{{ $row['gestational_age'] }}</td>
+                                <td class="px-6 py-4 text-slate-700 font-extrabold text-xs">
+                                    @if($row['gestational_age'] === '-')
+                                        <span class="text-slate-350 font-bold">-</span>
+                                    @else
+                                        {{ $row['gestational_age'] }}
+                                    @endif
+                                </td>
                                 <td class="px-6 py-4">
-                                    <span class="text-slate-700 font-semibold">{{ $row['hpl'] }}</span>
+                                    @if($row['hpl'] === '-')
+                                        <span class="text-slate-350 font-bold">-</span>
+                                    @else
+                                        <span class="text-slate-700 font-black text-xs">{{ $row['hpl'] }}</span>
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4 text-center">
                                     @if($row['lila'] === '-')
-                                        <span class="text-slate-300">-</span>
+                                        <span class="text-slate-350 font-bold">-</span>
                                     @else
-                                        <div class="flex flex-col items-center gap-1">
-                                            <span class="font-bold {{ $row['is_kek'] ? 'text-rose-600' : 'text-slate-700' }}">{{ $row['lila'] }} cm</span>
+                                        <div class="flex flex-col items-center justify-center gap-0.5">
+                                            <span class="font-extrabold text-xs {{ $row['is_kek'] ? 'text-rose-600' : 'text-slate-700' }}">{{ $row['lila'] }} cm</span>
                                             @if($row['is_kek'])
-                                                <span class="inline-flex px-1.5 py-0.5 rounded bg-rose-50 text-[9px] font-extrabold text-rose-600 border border-rose-100 uppercase tracking-wider">KEK</span>
+                                                <span class="inline-flex px-1.5 py-0.5 rounded bg-rose-50 text-[9px] font-black text-rose-600 border border-rose-100 uppercase tracking-wider">KEK</span>
+                                            @else
+                                                <span class="inline-flex px-1.5 py-0.5 rounded bg-emerald-50 text-[9px] font-black text-emerald-600 border border-emerald-100 uppercase tracking-wider">Normal</span>
                                             @endif
                                         </div>
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 text-center">
                                     @if($row['hb'] === '-')
-                                        <span class="text-slate-300">-</span>
+                                        <span class="text-slate-350 font-bold">-</span>
                                     @else
-                                        <div class="flex flex-col items-center gap-1">
-                                            <span class="font-bold {{ $row['is_anemia'] ? 'text-rose-600' : 'text-slate-700' }}">{{ $row['hb'] }} g/dL</span>
+                                        <div class="flex flex-col items-center justify-center gap-0.5">
+                                            <span class="font-extrabold text-xs {{ $row['is_anemia'] ? 'text-rose-600' : 'text-slate-700' }}">{{ $row['hb'] }} g/dL</span>
                                             @if($row['is_anemia'])
-                                                <span class="inline-flex px-1.5 py-0.5 rounded bg-rose-50 text-[9px] font-extrabold text-rose-600 border border-rose-100 uppercase tracking-wider">Anemia</span>
+                                                <span class="inline-flex px-1.5 py-0.5 rounded bg-rose-50 text-[9px] font-black text-rose-600 border border-rose-100 uppercase tracking-wider">Anemia</span>
+                                            @else
+                                                <span class="inline-flex px-1.5 py-0.5 rounded bg-emerald-50 text-[9px] font-black text-emerald-600 border border-emerald-100 uppercase tracking-wider">Normal</span>
                                             @endif
                                         </div>
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 text-center">
                                     @if($row['bp'] === '-')
-                                        <span class="text-slate-300">-</span>
+                                        <span class="text-slate-350 font-bold">-</span>
                                     @else
-                                        <div class="flex flex-col items-center gap-1">
-                                            <span class="font-bold {{ $row['is_hypertension'] ? 'text-rose-600' : 'text-slate-700' }}">{{ $row['bp'] }} mmHg</span>
+                                        <div class="flex flex-col items-center justify-center gap-0.5">
+                                            <span class="font-extrabold text-xs {{ $row['is_hypertension'] ? 'text-rose-600' : 'text-slate-700' }}">{{ $row['bp'] }} mmHg</span>
                                             @if($row['is_hypertension'])
-                                                <span class="inline-flex px-1.5 py-0.5 rounded bg-rose-50 text-[9px] font-extrabold text-rose-600 border border-rose-100 uppercase tracking-wider">Hipertensi</span>
+                                                <span class="inline-flex px-1.5 py-0.5 rounded bg-rose-50 text-[9px] font-black text-rose-600 border border-rose-100 uppercase tracking-wider">Hipertensi</span>
+                                            @else
+                                                <span class="inline-flex px-1.5 py-0.5 rounded bg-emerald-50 text-[9px] font-black text-emerald-600 border border-emerald-100 uppercase tracking-wider">Normal</span>
                                             @endif
                                         </div>
                                     @endif
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    <div class="flex flex-col items-center gap-1">
-                                        <span class="font-bold text-slate-700">{{ $row['anc_count'] }} kali</span>
-                                        <span class="inline-flex px-1.5 py-0.5 rounded bg-blue-50 text-[9px] font-extrabold text-blue-600 border border-blue-100 uppercase tracking-wider">ANC K{{ min(6, max(1, $row['anc_count'])) }}</span>
+                                    <div class="flex flex-col items-center justify-center gap-0.5">
+                                        <span class="font-bold text-xs text-slate-700">{{ $row['anc_count'] }} Kali</span>
+                                        <span class="inline-flex px-1.5 py-0.5 rounded bg-blue-50 text-[9px] font-black text-blue-600 border border-blue-100 uppercase tracking-wider">K{{ min(6, max(1, $row['anc_count'])) }}</span>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4 text-center">
-                                    <span class="badge {{ $row['ttd_received'] === 'Ya' ? 'badge-teal' : 'badge-red' }}">{{ $row['ttd_received'] }}</span>
+                                    @if($row['ttd_received'] === 'Ya')
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-250 text-xs font-bold text-emerald-700">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                            Menerima
+                                        </span>
+                                    @elseif($row['ttd_received'] === 'Tidak')
+                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-rose-50 border border-rose-250 text-xs font-bold text-rose-700">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                                            Belum
+                                        </span>
+                                    @else
+                                        <span class="text-slate-350 font-bold">-</span>
+                                    @endif
                                 </td>
                                 <td class="px-6 py-4 text-right">
-                                    <div class="flex items-center justify-end gap-1.5">
-                                        @if($row['is_high_risk'])
-                                            <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-red-50 text-red-500 border border-red-100 hover:bg-red-100 transition-colors cursor-help" title="Risiko Tinggi: {{ $row['risk_reasons'] }}">
-                                                <span class="material-symbols-outlined text-[15px]">warning</span>
-                                            </span>
-                                        @endif
-                                        <a href="{{ route('admin.patients.show', $row['id']) }}" class="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-50 text-slate-400 hover:bg-teal-500 hover:text-white transition-all" title="Buka Detail Profil">
-                                            <span class="material-symbols-outlined text-[18px]">visibility</span>
+                                    <div class="flex items-center justify-end">
+                                        <a href="{{ route('admin.patients.show', $row['id']) }}" class="w-8 h-8 flex items-center justify-center rounded-xl bg-slate-50 border border-slate-200 text-slate-500 hover:bg-teal-500 hover:text-white hover:border-teal-500 transition-all shadow-xs" title="Buka Detail Profil">
+                                            <span class="material-symbols-outlined text-[16px]">visibility</span>
                                         </a>
                                     </div>
                                 </td>
