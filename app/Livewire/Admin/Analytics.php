@@ -1146,8 +1146,13 @@ class Analytics extends BaseAdminComponent
             ->when(! $user->isSuperAdmin() && $user->posyandu_id, fn ($q) => $q->where('posyandu_id', $user->posyandu_id))
             ->count();
 
-        $isPgSql = DB::getDriverName() === 'pgsql';
-        $monthFieldRaw = $isPgSql ? 'EXTRACT(MONTH FROM medical_records.visit_date)' : 'MONTH(medical_records.visit_date)';
+        $dbDriver = DB::getDriverName();
+        $isPgSql = $dbDriver === 'pgsql';
+        $monthFieldRaw = match ($dbDriver) {
+            'sqlite' => "strftime('%m', medical_records.visit_date)",
+            'pgsql' => "EXTRACT(MONTH FROM medical_records.visit_date)",
+            default => "MONTH(medical_records.visit_date)",
+        };
 
         // Combined Monthly Visits Trend (12 Months) — DB-level aggregation
         $trendVisitCounts = (clone $medicalRecordQuery)
@@ -1187,7 +1192,11 @@ class Analytics extends BaseAdminComponent
         $this->trendLabelsPrevious = [];
 
         if ($this->viewMode === 'yearly') {
-            $monthFieldRawShort = $isPgSql ? 'EXTRACT(MONTH FROM visit_date)' : 'MONTH(visit_date)';
+            $monthFieldRawShort = match ($dbDriver) {
+                'sqlite' => "strftime('%m', visit_date)",
+                'pgsql' => "EXTRACT(MONTH FROM visit_date)",
+                default => "MONTH(visit_date)",
+            };
             $prevYearCounts = (clone $medicalRecordQuery)
                 ->whereYear('visit_date', $selectedYear - 1)
                 ->select([
