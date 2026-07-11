@@ -48,7 +48,7 @@
     </div>
 
     {{-- ── RIGHT: Search · Notif · Profile ── --}}
-    <div class="flex items-center gap-2 md:gap-3 flex-shrink-0" x-data="{ profileOpen: false }" @keydown.escape.window="profileOpen = false; $dispatch('close-dropdowns')" @close-dropdowns.window="if ($event.detail !== 'profile') profileOpen = false" wire:ignore.self>
+    <div class="flex items-center gap-2 md:gap-3 flex-shrink-0" x-data="{ profileOpen: false }" @keydown.escape.window="profileOpen = false; $dispatch('close-dropdowns')" @close-dropdowns.window="if ($event.detail !== 'profile') profileOpen = false" x-on:livewire:navigating.window="profileOpen = false" wire:ignore.self>
 
         {{-- ── Search (desktop) ── --}}
         @livewire('global-search')
