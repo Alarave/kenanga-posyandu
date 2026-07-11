@@ -1294,6 +1294,57 @@
                 </div>
             </div>
         </div>
+
+        {{-- Service Performance Summary Widget --}}
+        <div class="widget-card p-5 relative overflow-hidden off-screen-widget">
+            <div class="absolute -right-8 -top-8 w-32 h-32 bg-emerald-50/50 rounded-full blur-3xl pointer-events-none">
+            </div>
+            <div class="relative z-10">
+                <div class="flex items-center gap-2.5 mb-5">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[18px]">query_stats</span>
+                    </div>
+                    <span class="font-bold text-slate-900 text-sm">Ringkasan Aktivitas Layanan</span>
+                </div>
+                <div class="space-y-3">
+                    {{-- Item 1: Pemeriksaan --}}
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <span class="material-symbols-outlined text-[20px] text-teal-600">assignment_turned_in</span>
+                            <div class="flex flex-col">
+                                <span class="text-xs font-bold text-slate-800">Pemeriksaan</span>
+                                <span class="text-[9px] text-slate-400 font-bold uppercase mt-0.5">Total Pemeriksaan</span>
+                            </div>
+                        </div>
+                        <span class="text-base font-black text-slate-900">{{ number_format($totalPemeriksaan) }}</span>
+                    </div>
+
+                    {{-- Item 2: Imunisasi --}}
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <span class="material-symbols-outlined text-[20px] text-rose-500">vaccines</span>
+                            <div class="flex flex-col">
+                                <span class="text-xs font-bold text-slate-800">Imunisasi</span>
+                                <span class="text-[9px] text-slate-400 font-bold uppercase mt-0.5">Total Imunisasi</span>
+                            </div>
+                        </div>
+                        <span class="text-base font-black text-slate-900">{{ number_format($totalImunisasi) }}</span>
+                    </div>
+
+                    {{-- Item 3: Kunjungan Baru --}}
+                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <span class="material-symbols-outlined text-[20px] text-blue-500">fiber_new</span>
+                            <div class="flex flex-col">
+                                <span class="text-xs font-bold text-slate-800">Kunjungan Baru</span>
+                                <span class="text-[9px] text-slate-400 font-bold uppercase mt-0.5">Bulan Ini</span>
+                            </div>
+                        </div>
+                        <span class="text-base font-black text-slate-900">{{ number_format($kunjunganBaru) }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
