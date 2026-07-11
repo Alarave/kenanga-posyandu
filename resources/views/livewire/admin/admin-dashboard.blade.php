@@ -966,13 +966,13 @@
 
 </div>
 
-{{-- ── Main Grid (Row 2: Other Widgets) ── --}}
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+{{-- ── Main Grid (Row 2: Alerts & Stats) ── --}}
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
 
     {{-- Left: 8 Columns --}}
     <div class="lg:col-span-8 space-y-6">
-
-        {{-- Bumil Risiko Tinggi Alert Table --}}
+                {{-- Bumil Risiko Tinggi Alert Table --}}
         <div class="widget-card off-screen-widget">
             <div class="widget-header">
                 <div class="flex items-center gap-3">
@@ -1046,8 +1046,153 @@
             </div>
         </div>
 
-        {{-- Riwayat Aktivitas & Imunisasi Tabbed Widget --}}
-        <div class="widget-card off-screen-widget" x-data="{ activeTab: 'pemeriksaan' }">
+    </div>
+
+    {{-- Right Side: 4 Columns --}}
+    <div class="lg:col-span-4 flex flex-col gap-5">
+                {{-- Missing Immunizations Widget --}}
+        <div class="widget-card p-5 relative overflow-hidden off-screen-widget">
+            <div class="absolute -right-8 -top-8 w-32 h-32 bg-red-50 rounded-full blur-3xl pointer-events-none">
+            </div>
+            <div class="relative z-10">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-9 h-9 rounded-xl bg-red-500 text-white flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[18px]">vaccines</span>
+                        </div>
+                        <span class="font-bold text-slate-900 text-sm">Atensi Imunisasi</span>
+                    </div>
+                    @if (count($missingImmunizations) > 0)
+                        <span class="badge badge-red">{{ count($missingImmunizations) }} Anak</span>
+                    @endif
+                </div>
+
+                <div class="space-y-2">
+                    @forelse($missingImmunizations as $item)
+                        <div
+                            class="flex items-center justify-between p-3 rounded-xl bg-red-100 border border-red-400 hover:bg-red-200 hover:shadow-sm transition-all">
+                            <div class="flex items-center gap-2.5 overflow-hidden">
+                                <div
+                                    class="w-8 h-8 rounded-lg bg-red-500 text-white shrink-0 flex items-center justify-center font-bold text-[11px]">
+                                    {{ strtoupper(substr($item['patient']->full_name, 0, 2)) }}
+                                </div>
+                                <div class="min-w-0">
+                                    <p class="text-sm font-semibold text-red-900 truncate">
+                                        {{ $item['patient']->full_name }}</p>
+                                    <p class="text-xs text-red-500 truncate">Target: {{ $item['next_vaccine'] }}
+                                    </p>
+                                </div>
+                            </div>
+                            <a href="{{ route('admin.patients.show', $item['patient']->id) }}"
+                                class="w-7 h-7 shrink-0 flex items-center justify-center rounded-lg bg-red-500 border border-red-500 text-white hover:bg-red-700 hover:border-red-700 transition-all">
+                                <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
+                            </a>
+                        </div>
+                    @empty
+                        <div class="flex flex-col items-center py-6 text-center">
+                            <div
+                                class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300 mb-3">
+                                <span class="material-symbols-outlined text-[24px]">verified</span>
+                            </div>
+                            <p class="text-sm font-medium text-slate-400">Semua Imunisasi Terpenuhi</p>
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+        </div>
+
+                {{-- Kehadiran Balita Widget --}}
+        <div class="widget-card p-5 relative overflow-hidden off-screen-widget">
+            <div class="absolute -right-8 -top-8 w-32 h-32 bg-emerald-50 rounded-full blur-3xl pointer-events-none">
+            </div>
+            <div class="relative z-10">
+                <div class="flex items-center justify-between mb-5">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-9 h-9 rounded-xl bg-emerald-500 text-white flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[18px]">how_to_reg</span>
+                        </div>
+                        <span class="font-bold text-slate-900 text-sm">Partisipasi (D/S)</span>
+                    </div>
+                    <span class="badge badge-emerald">{{ $kehadiranBalita['persentase'] }}%</span>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div
+                        class="p-3 rounded-xl bg-emerald-50 border border-emerald-100 flex flex-col justify-center items-center text-center">
+                        <span class="text-xl font-bold text-emerald-700">{{ $kehadiranBalita['hadir'] }}</span>
+                        <span class="text-[10px] font-semibold text-emerald-600 uppercase mt-1">Hadir</span>
+                    </div>
+                    <div
+                        class="p-3 rounded-xl bg-rose-50 border border-rose-100 flex flex-col justify-center items-center text-center">
+                        <span class="text-xl font-bold text-rose-700">{{ $kehadiranBalita['tidak_hadir'] }}</span>
+                        <span class="text-[10px] font-semibold text-rose-600 uppercase mt-1">Tidak Hadir</span>
+                    </div>
+                        {{-- Sidebar widgets relocated to row charts --}}                </div>
+            </div>
+        </div>
+
+                {{-- Quick Actions Widget --}}
+        <div class="widget-card p-5 relative overflow-hidden off-screen-widget">
+            <div class="absolute -right-8 -top-8 w-32 h-32 bg-indigo-50 rounded-full blur-3xl pointer-events-none">
+            </div>
+            <div class="relative z-10">
+                <div class="flex items-center gap-2.5 mb-5">
+                    <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[18px]">bolt</span>
+                    </div>
+                    <span class="font-bold text-slate-900 text-sm">Pintasan Cepat</span>
+                </div>
+                <div class="space-y-2.5">
+                    <a href="{{ route('admin.patients.create') }}"
+                       class="flex items-center justify-between p-3 rounded-xl bg-indigo-50/50 border border-indigo-100 hover:bg-indigo-50 hover:shadow-sm transition-all group font-bold">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-[18px] text-indigo-600 group-hover:scale-110 transition-transform">person_add</span>
+                            <span class="text-xs text-slate-750">Daftarkan Warga Baru</span>
+                        </div>
+                        <span class="material-symbols-outlined text-[14px] text-slate-400">chevron_right</span>
+                    </a>
+
+                    <a href="{{ route('admin.medical-records.create') }}"
+                       class="flex items-center justify-between p-3 rounded-xl bg-emerald-50/50 border border-emerald-100 hover:bg-emerald-50 hover:shadow-sm transition-all group font-bold">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-[18px] text-emerald-600 group-hover:scale-110 transition-transform">add_moderator</span>
+                            <span class="text-xs text-slate-755">Input Rekam Medis</span>
+                        </div>
+                        <span class="material-symbols-outlined text-[14px] text-slate-400">chevron_right</span>
+                    </a>
+
+                    <a href="{{ route('admin.patients.import') }}"
+                       class="flex items-center justify-between p-3 rounded-xl bg-blue-50/50 border border-blue-100 hover:bg-blue-50 hover:shadow-sm transition-all group font-bold">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-[18px] text-blue-600 group-hover:scale-110 transition-transform">cloud_upload</span>
+                            <span class="text-xs text-slate-750">Impor Data Excel</span>
+                        </div>
+                        <span class="material-symbols-outlined text-[14px] text-slate-400">chevron_right</span>
+                    </a>
+
+                    <a href="{{ route('admin.reports.index') }}"
+                       class="flex items-center justify-between p-3 rounded-xl bg-amber-50/50 border border-amber-100 hover:bg-amber-50 hover:shadow-sm transition-all group font-bold">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-[18px] text-amber-600 group-hover:scale-110 transition-transform">analytics</span>
+                            <span class="text-xs text-slate-750">Ekspor Laporan Bulanan</span>
+                        </div>
+                        <span class="material-symbols-outlined text-[14px] text-slate-400">chevron_right</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+{{-- ── Main Grid (Row 3: Riwayat & Galeri - Equal Height) ── --}}
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
+
+    {{-- Left: 8 Columns (Riwayat Aktivitas - Stretched) --}}
+    <div class="lg:col-span-8 flex">
+        <div class="widget-card off-screen-widget w-full flex flex-col justify-between" x-data="{ activeTab: 'pemeriksaan' }">
+                    {{-- Riwayat Aktivitas & Imunisasi Tabbed Widget --}}
+        
             <div class="widget-header flex-col sm:flex-row gap-4 items-start sm:items-center">
                 <div class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-xl bg-teal-50 dark:bg-teal-950/20 flex items-center justify-center shrink-0">
@@ -1176,192 +1321,64 @@
         </div>
     </div>
 
-    {{-- Right Side: 4 Columns --}}
-    <div class="lg:col-span-4 flex flex-col gap-5">
-
-        {{-- Missing Immunizations Widget --}}
-        <div class="widget-card p-5 relative overflow-hidden off-screen-widget">
-            <div class="absolute -right-8 -top-8 w-32 h-32 bg-red-50 rounded-full blur-3xl pointer-events-none">
+    {{-- Right: 4 Columns (Galeri Kegiatan Terbaru - Stretched) --}}
+    <div class="lg:col-span-4 flex">
+        {{-- Gallery Activity Widget --}}
+        <div class="widget-card p-5 relative overflow-hidden off-screen-widget w-full flex flex-col justify-between">
+            <div class="absolute -right-8 -top-8 w-32 h-32 bg-amber-50/50 rounded-full blur-3xl pointer-events-none">
             </div>
-            <div class="relative z-10">
-                <div class="flex items-center justify-between mb-5">
-                    <div class="flex items-center gap-2.5">
-                        <div class="w-9 h-9 rounded-xl bg-red-500 text-white flex items-center justify-center">
-                            <span class="material-symbols-outlined text-[18px]">vaccines</span>
+            <div class="relative z-10 flex-1 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-5">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[18px]">imagesmode</span>
+                            </div>
+                            <span class="font-bold text-slate-900 text-sm">Galeri Kegiatan Terbaru</span>
                         </div>
-                        <span class="font-bold text-slate-900 text-sm">Atensi Imunisasi</span>
+                        <span class="badge badge-amber">Foto</span>
                     </div>
-                    @if (count($missingImmunizations) > 0)
-                        <span class="badge badge-red">{{ count($missingImmunizations) }} Anak</span>
+
+                    @if(count($latestGalleryItems) > 0)
+                        <div class="grid grid-cols-2 gap-2 mb-4">
+                            @foreach($latestGalleryItems as $gallery)
+                                <div class="relative group/gallery overflow-hidden rounded-xl border border-slate-100 aspect-square bg-slate-50">
+                                    @if($gallery->photo)
+                                        <img src="{{ asset('storage/' . $gallery->photo) }}" 
+                                             alt="{{ $gallery->title }}" 
+                                             class="w-full h-full object-cover group-hover/gallery:scale-110 transition-transform duration-300">
+                                    @else
+                                        <div class="w-full h-full flex items-center justify-center text-slate-350">
+                                            <span class="material-symbols-outlined text-[24px]">image</span>
+                                        </div>
+                                    @endif
+                                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover/gallery:opacity-100 transition-opacity duration-200 flex flex-col justify-end p-2 text-white">
+                                        <p class="text-[10px] font-black line-clamp-1 leading-tight">{{ $gallery->title }}</p>
+                                        @if($gallery->posyandu)
+                                            <p class="text-[8px] font-medium text-slate-300 mt-0.5">{{ $gallery->posyandu->name }}</p>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="flex flex-col items-center py-6 text-center mb-4">
+                            <div class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300 mb-3">
+                                <span class="material-symbols-outlined text-[24px]">add_photo_alternate</span>
+                            </div>
+                            <p class="text-xs font-bold text-slate-400">Belum ada foto kegiatan</p>
+                            <p class="text-[10px] text-slate-300 mt-0.5">Dokumentasi posyandu akan muncul di sini</p>
+                        </div>
                     @endif
                 </div>
 
-                <div class="space-y-2">
-                    @forelse($missingImmunizations as $item)
-                        <div
-                            class="flex items-center justify-between p-3 rounded-xl bg-red-100 border border-red-400 hover:bg-red-200 hover:shadow-sm transition-all">
-                            <div class="flex items-center gap-2.5 overflow-hidden">
-                                <div
-                                    class="w-8 h-8 rounded-lg bg-red-500 text-white shrink-0 flex items-center justify-center font-bold text-[11px]">
-                                    {{ strtoupper(substr($item['patient']->full_name, 0, 2)) }}
-                                </div>
-                                <div class="min-w-0">
-                                    <p class="text-sm font-semibold text-red-900 truncate">
-                                        {{ $item['patient']->full_name }}</p>
-                                    <p class="text-xs text-red-500 truncate">Target: {{ $item['next_vaccine'] }}
-                                    </p>
-                                </div>
-                            </div>
-                            <a href="{{ route('admin.patients.show', $item['patient']->id) }}"
-                                class="w-7 h-7 shrink-0 flex items-center justify-center rounded-lg bg-red-500 border border-red-500 text-white hover:bg-red-700 hover:border-red-700 transition-all">
-                                <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
-                            </a>
-                        </div>
-                    @empty
-                        <div class="flex flex-col items-center py-6 text-center">
-                            <div
-                                class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300 mb-3">
-                                <span class="material-symbols-outlined text-[24px]">verified</span>
-                            </div>
-                            <p class="text-sm font-medium text-slate-400">Semua Imunisasi Terpenuhi</p>
-                        </div>
-                    @endforelse
-                </div>
-            </div>
-        </div>
-
-        {{-- Kehadiran Balita Widget --}}
-        <div class="widget-card p-5 relative overflow-hidden off-screen-widget">
-            <div class="absolute -right-8 -top-8 w-32 h-32 bg-emerald-50 rounded-full blur-3xl pointer-events-none">
-            </div>
-            <div class="relative z-10">
-                <div class="flex items-center justify-between mb-5">
-                    <div class="flex items-center gap-2.5">
-                        <div class="w-9 h-9 rounded-xl bg-emerald-500 text-white flex items-center justify-center">
-                            <span class="material-symbols-outlined text-[18px]">how_to_reg</span>
-                        </div>
-                        <span class="font-bold text-slate-900 text-sm">Partisipasi (D/S)</span>
-                    </div>
-                    <span class="badge badge-emerald">{{ $kehadiranBalita['persentase'] }}%</span>
-                </div>
-                <div class="grid grid-cols-2 gap-3">
-                    <div
-                        class="p-3 rounded-xl bg-emerald-50 border border-emerald-100 flex flex-col justify-center items-center text-center">
-                        <span class="text-xl font-bold text-emerald-700">{{ $kehadiranBalita['hadir'] }}</span>
-                        <span class="text-[10px] font-semibold text-emerald-600 uppercase mt-1">Hadir</span>
-                    </div>
-                    <div
-                        class="p-3 rounded-xl bg-rose-50 border border-rose-100 flex flex-col justify-center items-center text-center">
-                        <span class="text-xl font-bold text-rose-700">{{ $kehadiranBalita['tidak_hadir'] }}</span>
-                        <span class="text-[10px] font-semibold text-rose-600 uppercase mt-1">Tidak Hadir</span>
-                    </div>
-                        {{-- Sidebar widgets relocated to row charts --}}                </div>
-            </div>
-        </div>
-
-        {{-- Quick Actions Widget --}}
-        <div class="widget-card p-5 relative overflow-hidden off-screen-widget">
-            <div class="absolute -right-8 -top-8 w-32 h-32 bg-indigo-50 rounded-full blur-3xl pointer-events-none">
-            </div>
-            <div class="relative z-10">
-                <div class="flex items-center gap-2.5 mb-5">
-                    <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center">
-                        <span class="material-symbols-outlined text-[18px]">bolt</span>
-                    </div>
-                    <span class="font-bold text-slate-900 text-sm">Pintasan Cepat</span>
-                </div>
-                <div class="space-y-2.5">
-                    <a href="{{ route('admin.patients.create') }}"
-                       class="flex items-center justify-between p-3 rounded-xl bg-indigo-50/50 border border-indigo-100 hover:bg-indigo-50 hover:shadow-sm transition-all group font-bold">
-                        <div class="flex items-center gap-3">
-                            <span class="material-symbols-outlined text-[18px] text-indigo-600 group-hover:scale-110 transition-transform">person_add</span>
-                            <span class="text-xs text-slate-750">Daftarkan Warga Baru</span>
-                        </div>
-                        <span class="material-symbols-outlined text-[14px] text-slate-400">chevron_right</span>
-                    </a>
-
-                    <a href="{{ route('admin.medical-records.create') }}"
-                       class="flex items-center justify-between p-3 rounded-xl bg-emerald-50/50 border border-emerald-100 hover:bg-emerald-50 hover:shadow-sm transition-all group font-bold">
-                        <div class="flex items-center gap-3">
-                            <span class="material-symbols-outlined text-[18px] text-emerald-600 group-hover:scale-110 transition-transform">add_moderator</span>
-                            <span class="text-xs text-slate-755">Input Rekam Medis</span>
-                        </div>
-                        <span class="material-symbols-outlined text-[14px] text-slate-400">chevron_right</span>
-                    </a>
-
-                    <a href="{{ route('admin.patients.import') }}"
-                       class="flex items-center justify-between p-3 rounded-xl bg-blue-50/50 border border-blue-100 hover:bg-blue-50 hover:shadow-sm transition-all group font-bold">
-                        <div class="flex items-center gap-3">
-                            <span class="material-symbols-outlined text-[18px] text-blue-600 group-hover:scale-110 transition-transform">cloud_upload</span>
-                            <span class="text-xs text-slate-750">Impor Data Excel</span>
-                        </div>
-                        <span class="material-symbols-outlined text-[14px] text-slate-400">chevron_right</span>
-                    </a>
-
-                    <a href="{{ route('admin.reports.index') }}"
-                       class="flex items-center justify-between p-3 rounded-xl bg-amber-50/50 border border-amber-100 hover:bg-amber-50 hover:shadow-sm transition-all group font-bold">
-                        <div class="flex items-center gap-3">
-                            <span class="material-symbols-outlined text-[18px] text-amber-600 group-hover:scale-110 transition-transform">analytics</span>
-                            <span class="text-xs text-slate-750">Ekspor Laporan Bulanan</span>
-                        </div>
-                        <span class="material-symbols-outlined text-[14px] text-slate-400">chevron_right</span>
+                <div class="mt-auto">
+                    <a href="{{ route('admin.gallery.index') }}"
+                       class="w-full h-10 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-bold text-xs flex items-center justify-center transition-colors gap-2 cursor-pointer shadow-xs border-0">
+                        <span class="material-symbols-outlined text-[16px]">collections</span>
+                        Buka Galeri Kegiatan
                     </a>
                 </div>
-            </div>
-        </div>
-
-        {{-- Gallery Activity Widget --}}
-        <div class="widget-card p-5 relative overflow-hidden off-screen-widget">
-            <div class="absolute -right-8 -top-8 w-32 h-32 bg-amber-50/50 rounded-full blur-3xl pointer-events-none">
-            </div>
-            <div class="relative z-10">
-                <div class="flex items-center justify-between mb-5">
-                    <div class="flex items-center gap-2.5">
-                        <div class="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center">
-                            <span class="material-symbols-outlined text-[18px]">imagesmode</span>
-                        </div>
-                        <span class="font-bold text-slate-900 text-sm">Galeri Kegiatan Terbaru</span>
-                    </div>
-                    <span class="badge badge-amber">Foto</span>
-                </div>
-
-                @if(count($latestGalleryItems) > 0)
-                    <div class="grid grid-cols-2 gap-2 mb-4">
-                        @foreach($latestGalleryItems as $gallery)
-                            <div class="relative group/gallery overflow-hidden rounded-xl border border-slate-100 aspect-square bg-slate-50">
-                                @if($gallery->photo)
-                                    <img src="{{ asset('storage/' . $gallery->photo) }}" 
-                                         alt="{{ $gallery->title }}" 
-                                         class="w-full h-full object-cover group-hover/gallery:scale-110 transition-transform duration-300">
-                                @else
-                                    <div class="w-full h-full flex items-center justify-center text-slate-350">
-                                        <span class="material-symbols-outlined text-[24px]">image</span>
-                                    </div>
-                                @endif
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover/gallery:opacity-100 transition-opacity duration-200 flex flex-col justify-end p-2 text-white">
-                                    <p class="text-[10px] font-black line-clamp-1 leading-tight">{{ $gallery->title }}</p>
-                                    @if($gallery->posyandu)
-                                        <p class="text-[8px] font-medium text-slate-300 mt-0.5">{{ $gallery->posyandu->name }}</p>
-                                    @endif
-                                </div>
-                            </div>
-                        @endforeach
-                    </div>
-                @else
-                    <div class="flex flex-col items-center py-6 text-center mb-4">
-                        <div class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300 mb-3">
-                            <span class="material-symbols-outlined text-[24px]">add_photo_alternate</span>
-                        </div>
-                        <p class="text-xs font-bold text-slate-400">Belum ada foto kegiatan</p>
-                        <p class="text-[10px] text-slate-300 mt-0.5">Dokumentasi posyandu akan muncul di sini</p>
-                    </div>
-                @endif
-
-                <a href="{{ route('admin.gallery.index') }}"
-                   class="w-full h-10 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-bold text-xs flex items-center justify-center transition-colors gap-2 cursor-pointer shadow-xs border-0">
-                    <span class="material-symbols-outlined text-[16px]">collections</span>
-                    Buka Galeri Kegiatan
-                </a>
             </div>
         </div>
     </div>
