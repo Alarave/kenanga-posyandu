@@ -1144,22 +1144,26 @@ class Analytics extends BaseAdminComponent
             ->when(! $user->isSuperAdmin() && $user->posyandu_id, fn ($q) => $q->where('posyandu_id', $user->posyandu_id))
             ->count();
 
+        $isPgSql = DB::getDriverName() === 'pgsql';
+        $monthFieldRaw = $isPgSql ? 'EXTRACT(MONTH FROM medical_records.visit_date)' : 'MONTH(medical_records.visit_date)';
+
         // Combined Monthly Visits Trend (12 Months) — DB-level aggregation
         $trendVisitCounts = (clone $medicalRecordQuery)
             ->join('patients', 'medical_records.patient_id', '=', 'patients.id')
             ->whereYear('medical_records.visit_date', $selectedYear)
             ->select([
-                DB::raw('MONTH(medical_records.visit_date) as visit_month'),
+                DB::raw("{$monthFieldRaw} as visit_month"),
                 'patients.category',
                 DB::raw('COUNT(*) as total'),
             ])
-            ->groupBy(DB::raw('MONTH(medical_records.visit_date)'), 'patients.category')
+            ->groupBy(DB::raw($monthFieldRaw), 'patients.category')
             ->get();
 
         // Build lookup: [month][category] = count
         $visitCountMap = [];
         foreach ($trendVisitCounts as $row) {
-            $visitCountMap[$row->visit_month][$row->category] = ($visitCountMap[$row->visit_month][$row->category] ?? 0) + $row->total;
+            $monthKey = (int) $row->visit_month;
+            $visitCountMap[$monthKey][$row->category] = ($visitCountMap[$monthKey][$row->category] ?? 0) + $row->total;
         }
 
         $trendLabels = [];
@@ -1181,13 +1185,14 @@ class Analytics extends BaseAdminComponent
         $this->trendLabelsPrevious = [];
 
         if ($this->viewMode === 'yearly') {
+            $monthFieldRawShort = $isPgSql ? 'EXTRACT(MONTH FROM visit_date)' : 'MONTH(visit_date)';
             $prevYearCounts = (clone $medicalRecordQuery)
                 ->whereYear('visit_date', $selectedYear - 1)
                 ->select([
-                    DB::raw('MONTH(visit_date) as visit_month'),
+                    DB::raw("{$monthFieldRawShort} as visit_month"),
                     DB::raw('COUNT(*) as total'),
                 ])
-                ->groupBy(DB::raw('MONTH(visit_date)'))
+                ->groupBy(DB::raw($monthFieldRawShort))
                 ->pluck('total', 'visit_month')
                 ->toArray();
 
