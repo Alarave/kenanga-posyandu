@@ -956,7 +956,7 @@
                         <a href="{{ route('admin.schedules.index') }}"
                             class="w-full h-11 bg-teal-600 text-white rounded-xl font-semibold text-sm flex items-center justify-center hover:bg-teal-700 transition-colors gap-2 cursor-pointer border-0">
                             <span class="material-symbols-outlined text-[18px]">calendar_month</span>
-                            Buka Kalender
+                            Buka Jadwal Kegiatan
                         </a>
                     </div>
                 @endif

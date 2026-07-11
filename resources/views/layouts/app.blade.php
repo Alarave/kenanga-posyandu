@@ -100,6 +100,7 @@
         /* Prevent table overflow in cards */
         .section-card, .premium-card, .bento-card, .widget-card {
             max-width: 100%;
+            overflow: hidden;
         }
 
         .overflow-x-auto {

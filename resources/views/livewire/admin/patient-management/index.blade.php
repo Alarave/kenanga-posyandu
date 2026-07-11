@@ -228,7 +228,7 @@
     @endif
 
     {{-- ── Data Table ── --}}
-    <div class="section-card relative z-10 flex flex-col">
+    <div class="section-card relative z-10 flex flex-col overflow-hidden">
         <x-table no-border>
             <thead style="background:#f9fafb; border-bottom:1px solid rgba(0,0,0,0.06);">
                 <tr>

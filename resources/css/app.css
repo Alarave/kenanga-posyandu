@@ -274,6 +274,7 @@ input[type="submit"] {
     border-radius: var(--radius-2xl);
     box-shadow: var(--shadow-card);
     transition: box-shadow var(--transition-base), border-color var(--transition-base);
+    overflow: hidden;
 }
 
 .section-card:hover {
