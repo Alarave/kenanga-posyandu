@@ -103,7 +103,8 @@
                 x-transition:enter-start="opacity-0 translate-y-2 scale-95"
                 x-transition:enter-end="opacity-100 translate-y-0 scale-100"
                 class="absolute right-0 mt-2.5 w-72 bg-white rounded-[2rem] shadow-[0_15px_40px_rgba(0,0,0,0.12)]
-                       border border-slate-100 overflow-hidden z-50 p-2">
+                       border border-slate-100 overflow-hidden z-50 p-2"
+                x-cloak>
 
                 {{-- User Card Section (More Compact) --}}
                 <div class="px-4 py-4 rounded-3xl mb-2 relative overflow-hidden group/card bg-slate-50 border border-slate-100">
