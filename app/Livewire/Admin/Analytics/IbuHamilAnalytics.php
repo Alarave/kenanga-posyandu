@@ -386,6 +386,138 @@ class IbuHamilAnalytics extends Component
         });
     }
 
+    // AH-09: Pemantauan Berat Badan & IMT
+    #[\Livewire\Attributes\Computed]
+    public function weightBmiStats()
+    {
+        $records = $this->applyPosyanduScope(\App\Models\MedicalRecord::query(), $this->selectedPosyandu)
+            ->whereHas('patient', function ($q) {
+                $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
+            })
+            ->whereYear('visit_date', $this->selectedYear)
+            ->when($this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $this->selectedMonth))
+            ->orderBy('visit_date', 'desc')
+            ->orderBy('id', 'desc')
+            ->get()
+            ->unique('patient_id');
+
+        $totalWithWeightGain = 0;
+        $totalGain = 0;
+        $imtDistribution = [
+            'Normal' => 0,
+            'Kurus' => 0,
+            'Gemuk' => 0,
+            'Obesitas' => 0,
+            'Lainnya' => 0,
+        ];
+
+        $totalStartingWeight = 0;
+        $totalCurrentWeight = 0;
+        $countStarting = 0;
+        $countCurrent = 0;
+
+        foreach ($records as $r) {
+            $sw = $r->starting_weight ? (float) $r->starting_weight : 0;
+            $cw = $r->weight ? (float) $r->weight : 0;
+
+            if ($sw > 0) {
+                $totalStartingWeight += $sw;
+                $countStarting++;
+            }
+            if ($cw > 0) {
+                $totalCurrentWeight += $cw;
+                $countCurrent++;
+            }
+
+            if ($sw > 0 && $cw > 0 && $cw >= $sw) {
+                $totalGain += ($cw - $sw);
+                $totalWithWeightGain++;
+            }
+
+            $imt = trim($r->imt_plotting_status ?? '');
+            if ($imt !== '') {
+                if (stripos($imt, 'normal') !== false) {
+                    $imtDistribution['Normal']++;
+                } elseif (stripos($imt, 'kurus') !== false || stripos($imt, 'rendah') !== false) {
+                    $imtDistribution['Kurus']++;
+                } elseif (stripos($imt, 'gemuk') !== false || stripos($imt, 'lebih') !== false) {
+                    $imtDistribution['Gemuk']++;
+                } elseif (stripos($imt, 'obes') !== false) {
+                    $imtDistribution['Obesitas']++;
+                } else {
+                    $imtDistribution['Lainnya']++;
+                }
+            }
+        }
+
+        $avgStarting = $countStarting > 0 ? round($totalStartingWeight / $countStarting, 1) : 0;
+        $avgCurrent = $countCurrent > 0 ? round($totalCurrentWeight / $countCurrent, 1) : 0;
+        $avgGain = $totalWithWeightGain > 0 ? round($totalGain / $totalWithWeightGain, 1) : 0;
+
+        return [
+            'avgStarting' => $avgStarting,
+            'avgCurrent' => $avgCurrent,
+            'avgGain' => $avgGain,
+            'imtDistribution' => $imtDistribution,
+            'totalWithWeightGain' => $totalWithWeightGain,
+        ];
+    }
+
+    // AH-10: Penyuluhan & Rujukan
+    #[\Livewire\Attributes\Computed]
+    public function counselingReferralStats()
+    {
+        $records = $this->applyPosyanduScope(\App\Models\MedicalRecord::query(), $this->selectedPosyandu)
+            ->whereHas('patient', function ($q) {
+                $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
+            })
+            ->whereYear('visit_date', $this->selectedYear)
+            ->when($this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $this->selectedMonth))
+            ->orderBy('visit_date', 'desc')
+            ->orderBy('id', 'desc')
+            ->get();
+
+        // 1. Class participation
+        $uniqueClassRecords = $records->unique('patient_id');
+        $totalClassPatients = $uniqueClassRecords->count();
+        $joinedClass = $uniqueClassRecords->filter(function($r) {
+            return in_array(strtolower(trim($r->joins_pregnant_class ?? '')), ['ya', '1', 'true', 'sudah']);
+        })->count();
+
+        // 2. Counseling topics count
+        $topics = [];
+        foreach ($records as $r) {
+            $topic = trim($r->counseling_topic ?? '');
+            if ($topic !== '' && strtolower($topic) !== 'tidak ada' && strtolower($topic) !== '-') {
+                $topics[$topic] = ($topics[$topic] ?? 0) + 1;
+            }
+        }
+        arsort($topics);
+        $topTopics = array_slice($topics, 0, 4, true);
+
+        // 3. Referral logs
+        $referrals = $records->filter(function($r) {
+            return !empty(trim($r->anc_referral ?? '')) && strtolower(trim($r->anc_referral ?? '')) !== 'tidak ada' && strtolower(trim($r->anc_referral ?? '')) !== '-';
+        })->map(function($r) {
+            return [
+                'patient_name' => $r->patient?->full_name ?? '-',
+                'visit_date' => $r->visit_date?->format('d/m/Y') ?? '-',
+                'anc_referral' => $r->anc_referral,
+            ];
+        })->take(3);
+
+        $totalReferrals = $records->filter(fn($r) => !empty(trim($r->anc_referral ?? '')) && strtolower(trim($r->anc_referral ?? '')) !== 'tidak ada' && strtolower(trim($r->anc_referral ?? '')) !== '-')->count();
+
+        return [
+            'totalClassPatients' => $totalClassPatients,
+            'joinedClass' => $joinedClass,
+            'classPercentage' => $totalClassPatients > 0 ? round(($joinedClass / $totalClassPatients) * 100) : 0,
+            'topTopics' => $topTopics,
+            'referrals' => $referrals,
+            'totalReferrals' => $totalReferrals,
+        ];
+    }
+
     public function render()
     {
         return view('livewire.admin.analytics.ibu-hamil-analytics', [
@@ -398,6 +530,8 @@ class IbuHamilAnalytics extends Component
             'tbcStats' => $this->tbcStats(),
             'ancStats' => $this->ancStats(),
             'maternalTableData' => $this->maternalTableData(),
+            'weightBmiStats' => $this->weightBmiStats(),
+            'counselingReferralStats' => $this->counselingReferralStats(),
         ]);
     }
 }

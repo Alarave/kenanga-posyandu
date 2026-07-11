@@ -437,7 +437,12 @@ test('ibu hamil analytics component computes correct health scorecards and cover
     ->assertSeeHtml('Tekanan Darah Sehat')
     ->assertSeeHtml('Skrining TBC')
     ->assertSeeHtml('Cakupan TTD')
-    ->assertSeeHtml('50%'); // 1 out of 2 received Fe (50% coverage) / 50% TBC Normal
+    ->assertSeeHtml('50%') // 1 out of 2 received Fe (50% coverage) / 50% TBC Normal
+    ->assertSeeHtml('Pemantauan Berat Badan &amp; IMT')
+    ->assertSeeHtml('Penyuluhan &amp; Rujukan')
+    ->assertSeeHtml('Partisipasi Kelas Ibu Hamil')
+    ->assertSeeHtml('Topik Penyuluhan Terpopuler')
+    ->assertSeeHtml('Log Rujukan Terbaru');
 });
 
 test('analytics component loads live health alerts for high risk cases', function () {

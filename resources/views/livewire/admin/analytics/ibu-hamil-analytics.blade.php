@@ -218,196 +218,326 @@
             </div>
         </div>
 
-        {{-- Row 2: Visualisasi Tren & Detail Kepatuhan --}}
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6">
-            {{-- Left Column: Usia Kehamilan & Kepatuhan ANC (occupies 5/12 cols) --}}
-            <div class="lg:col-span-5 space-y-6 flex flex-col justify-between">
-                {{-- AH-01: Trimester --}}
-                <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs relative overflow-hidden flex flex-col justify-between flex-1">
-                    <div class="absolute -right-8 -top-8 w-32 h-32 bg-pink-50/50 rounded-full blur-3xl pointer-events-none"></div>
-                    <div class="relative z-10">
-                        <div class="flex items-center justify-between mb-4">
-                            <div>
-                                <h3 class="text-base font-bold text-slate-900 tracking-tight">Usia Kehamilan</h3>
-                                <p class="text-[11px] text-slate-500 font-semibold mt-0.5">Proporsi ibu hamil per trimester</p>
-                            </div>
-                            <div class="w-8 h-8 rounded-lg bg-pink-50 flex items-center justify-center text-pink-600 border border-pink-100/50">
-                                <span class="material-symbols-outlined text-[16px]">pregnant_woman</span>
-                            </div>
+        {{-- Row 2: Usia Kehamilan & Kepatuhan Kunjungan ANC --}}
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+            {{-- Usia Kehamilan (Trimester) --}}
+            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs relative overflow-hidden flex flex-col justify-between">
+                <div class="absolute -right-8 -top-8 w-32 h-32 bg-pink-50/50 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900 tracking-tight">Usia Kehamilan</h3>
+                            <p class="text-[11px] text-slate-500 font-semibold mt-0.5">Proporsi ibu hamil per trimester</p>
                         </div>
-
-                        @php
-                            $totalBumil = array_sum($trimesterStats);
-                            $isEmptyBumil = $totalBumil === 0;
-                        @endphp
-
-                        <div x-data="{
-                            chart: null,
-                            hiddenItems: [],
-                            isEmpty: {{ $isEmptyBumil ? 'true' : 'false' }},
-                            init() {
-                                if (typeof Chart === 'undefined') { setTimeout(() => this.init(), 100); return; }
-                                if (this.isEmpty) return;
-                                const data = [
-                                    {{ $trimesterStats['T1'] ?? 0 }},
-                                    {{ $trimesterStats['T2'] ?? 0 }},
-                                    {{ $trimesterStats['T3'] ?? 0 }}
-                                ];
-                                const labels = ['Trimester 1', 'Trimester 2', 'Trimester 3'];
-                                const colors = ['#f472b6', '#db2777', '#9d174d']; // Soft, Med, Dark Pink
-                        
-                                this.chart = new Chart(this.$refs.canvas, {
-                                    type: 'doughnut',
-                                    data: {
-                                        labels: labels,
-                                        datasets: [{
-                                            data: data,
-                                            backgroundColor: colors,
-                                            borderWidth: 2,
-                                            borderColor: '#ffffff',
-                                            hoverOffset: 6
-                                        }]
-                                    },
-                                    options: {
-                                        responsive: true,
-                                        maintainAspectRatio: false,
-                                        cutout: '75%',
-                                        animation: { duration: 800, easing: 'easeOutQuart' },
-                                        onClick: (event, activeElements) => {
-                                            if (activeElements && activeElements.length > 0) {
-                                                const index = activeElements[0].index;
-                                                const types = ['pregnancy_trimester_1', 'pregnancy_trimester_2', 'pregnancy_trimester_3'];
-                                                const labels = ['Trimester I (1 - 13 Minggu)', 'Trimester II (14 - 27 Minggu)', 'Trimester III (28 Minggu - Lahir)'];
-                                                $wire.$parent.drillDown(labels[index], types[index], null);
-                                            }
-                                        },
-                                        plugins: {
-                                            legend: { display: false },
-                                            tooltip: {
-                                                cornerRadius: 8,
-                                                padding: 8,
-                                                bodyFont: { family: '\'Public Sans\', sans-serif', size: 11 }
-                                            }
-                                        }
-                                    }
-                                });
-                            },
-                            toggleVisibility(index) {
-                                if (!this.chart) return;
-                                this.chart.toggleDataVisibility(index);
-                                this.chart.update();
-                                if (this.hiddenItems.includes(index)) {
-                                    this.hiddenItems = this.hiddenItems.filter(i => i !== index);
-                                } else {
-                                    this.hiddenItems.push(index);
-                                }
-                            }
-                        }" 
-                        wire:key="trimester-chart-container-{{ $selectedYear }}-{{ $selectedMonth ?? 'all' }}-{{ $selectedPosyandu ?? 'all' }}"
-                        wire:ignore 
-                        class="relative flex justify-center mb-4 h-36">
-                            <canvas x-show="!isEmpty" x-ref="canvas"></canvas>
-                            <div x-show="!isEmpty" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                <span class="text-2xl font-black text-slate-800 leading-none" style="font-variant-numeric:tabular-nums;">{{ $rataRataUsiaKehamilan }}</span>
-                                <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-0.5 text-center">Minggu<br>(Rata-rata)</span>
-                            </div>
-                            <template x-if="isEmpty">
-                                <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-400">
-                                    <span class="material-symbols-outlined text-[24px] mb-1 opacity-50">pie_chart</span>
-                                    <span class="text-xs font-semibold">Belum ada data</span>
-                                </div>
-                            </template>
-                        </div>
-
-                        {{-- Legend --}}
-                        <div class="space-y-1.5 pt-3 border-t border-slate-100 max-h-40 overflow-y-auto pr-1">
-                            @foreach ([
-                                'T1' => ['label' => 'Trimester 1', 'sub' => '0–13 mg', 'color' => '#f472b6'],
-                                'T2' => ['label' => 'Trimester 2', 'sub' => '14–27 mg', 'color' => '#db2777'],
-                                'T3' => ['label' => 'Trimester 3', 'sub' => '28+ mg', 'color' => '#9d174d'],
-                            ] as $key => $info)
-                                @php
-                                    $count = $trimesterStats[$key] ?? 0;
-                                    $percentage = $totalBumil > 0 ? round(($count / $totalBumil) * 100, 1) : 0;
-                                @endphp
-                                <div class="flex flex-col gap-1 text-[11px]">
-                                    <div class="flex items-center gap-2" :class="hiddenItems.includes({{ array_search($key, ['T1', 'T2', 'T3']) }}) ? 'opacity-40' : ''">
-                                        <span class="w-2 h-2 rounded-full shrink-0 cursor-pointer" style="background:{{ $info['color'] }}" @click="toggleVisibility({{ array_search($key, ['T1', 'T2', 'T3']) }})"></span>
-                                        <span class="text-slate-650 flex-1 truncate font-medium cursor-pointer hover:text-pink-600 hover:underline" wire:click="$parent.drillDown('{{ $info['label'] === 'Trimester 1' ? 'Trimester I (1 - 13 Minggu)' : ($info['label'] === 'Trimester 2' ? 'Trimester II (14 - 27 Minggu)' : 'Trimester III (28 Minggu - Lahir)') }}', '{{ $info['label'] === 'Trimester 1' ? 'pregnancy_trimester_1' : ($info['label'] === 'Trimester 2' ? 'pregnancy_trimester_2' : 'pregnancy_trimester_3') }}', null)">
-                                            {{ $info['label'] }} <span class="text-[9px] text-slate-400 font-normal">({{ $info['sub'] }})</span>
-                                        </span>
-                                        <div class="flex items-center gap-2 shrink-0">
-                                            <span class="text-slate-400 text-[9px]">{{ $count }} Bumil</span>
-                                            <span class="font-bold text-slate-700 w-8 text-right">{{ $percentage }}%</span>
-                                            <button wire:click="$parent.drillDown('{{ $info['label'] === 'Trimester 1' ? 'Trimester I (1 - 13 Minggu)' : ($info['label'] === 'Trimester 2' ? 'Trimester II (14 - 27 Minggu)' : 'Trimester III (28 Minggu - Lahir)') }}', '{{ $info['label'] === 'Trimester 1' ? 'pregnancy_trimester_1' : ($info['label'] === 'Trimester 2' ? 'pregnancy_trimester_2' : 'pregnancy_trimester_3') }}', null)" class="w-6 h-6 flex items-center justify-center rounded bg-slate-50 hover:bg-pink-50 text-slate-400 hover:text-pink-600 transition-colors" title="Detail Bumil">
-                                                <span class="material-symbols-outlined text-[13px]">visibility</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
+                        <div class="w-8 h-8 rounded-lg bg-pink-50 flex items-center justify-center text-pink-600 border border-pink-100/50">
+                            <span class="material-symbols-outlined text-[16px]">pregnant_woman</span>
                         </div>
                     </div>
-                </div>
 
-                {{-- AH-05: ANC K1-K6 --}}
-                <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between flex-1 mt-6">
-                    <div>
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-500 flex items-center justify-center border border-indigo-100/50">
-                                    <span class="material-symbols-outlined text-[18px]">stethoscope</span>
+                    @php
+                        $totalBumil = array_sum($trimesterStats);
+                        $isEmptyBumil = $totalBumil === 0;
+                    @endphp
+
+                    <div x-data="{
+                        chart: null,
+                        hiddenItems: [],
+                        isEmpty: {{ $isEmptyBumil ? 'true' : 'false' }},
+                        init() {
+                            if (typeof Chart === 'undefined') { setTimeout(() => this.init(), 100); return; }
+                            if (this.isEmpty) return;
+                            const data = [
+                                {{ $trimesterStats['T1'] ?? 0 }},
+                                {{ $trimesterStats['T2'] ?? 0 }},
+                                {{ $trimesterStats['T3'] ?? 0 }}
+                            ];
+                            const labels = ['Trimester 1', 'Trimester 2', 'Trimester 3'];
+                            const colors = ['#f472b6', '#db2777', '#9d174d']; // Soft, Med, Dark Pink
+                    
+                            this.chart = new Chart(this.$refs.canvas, {
+                                type: 'doughnut',
+                                data: {
+                                    labels: labels,
+                                    datasets: [{
+                                        data: data,
+                                        backgroundColor: colors,
+                                        borderWidth: 2,
+                                        borderColor: '#ffffff',
+                                        hoverOffset: 6
+                                    }]
+                                },
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    cutout: '75%',
+                                    animation: { duration: 800, easing: 'easeOutQuart' },
+                                    onClick: (event, activeElements) => {
+                                        if (activeElements && activeElements.length > 0) {
+                                            const index = activeElements[0].index;
+                                            const types = ['pregnancy_trimester_1', 'pregnancy_trimester_2', 'pregnancy_trimester_3'];
+                                            const labels = ['Trimester I (1 - 13 Minggu)', 'Trimester II (14 - 27 Minggu)', 'Trimester III (28 Minggu - Lahir)'];
+                                            $wire.$parent.drillDown(labels[index], types[index], null);
+                                        }
+                                    },
+                                    plugins: {
+                                        legend: { display: false },
+                                        tooltip: {
+                                            cornerRadius: 8,
+                                            padding: 8,
+                                            bodyFont: { family: '\'Public Sans\', sans-serif', size: 11 }
+                                        }
+                                    }
+                                }
+                            });
+                        },
+                        toggleVisibility(index) {
+                            if (!this.chart) return;
+                            this.chart.toggleDataVisibility(index);
+                            this.chart.update();
+                            if (this.hiddenItems.includes(index)) {
+                                this.hiddenItems = this.hiddenItems.filter(i => i !== index);
+                            } else {
+                                this.hiddenItems.push(index);
+                            }
+                        }
+                    }" 
+                    wire:key="trimester-chart-container-{{ $selectedYear }}-{{ $selectedMonth ?? 'all' }}-{{ $selectedPosyandu ?? 'all' }}"
+                    wire:ignore 
+                    class="relative flex justify-center mb-4 h-36">
+                        <canvas x-show="!isEmpty" x-ref="canvas"></canvas>
+                        <div x-show="!isEmpty" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                            <span class="text-2xl font-black text-slate-800 leading-none" style="font-variant-numeric:tabular-nums;">{{ $rataRataUsiaKehamilan }}</span>
+                            <span class="text-[9px] font-bold text-slate-400 uppercase tracking-wider mt-0.5 text-center">Minggu<br>(Rata-rata)</span>
+                        </div>
+                        <template x-if="isEmpty">
+                            <div class="absolute inset-0 flex flex-col items-center justify-center text-slate-400">
+                                <span class="material-symbols-outlined text-[24px] mb-1 opacity-50">pie_chart</span>
+                                <span class="text-xs font-semibold">Belum ada data</span>
+                            </div>
+                        </template>
+                    </div>
+
+                    {{-- Legend --}}
+                    <div class="space-y-1.5 pt-3 border-t border-slate-100 max-h-40 overflow-y-auto pr-1">
+                        @foreach ([
+                            'T1' => ['label' => 'Trimester 1', 'sub' => '0–13 mg', 'color' => '#f472b6'],
+                            'T2' => ['label' => 'Trimester 2', 'sub' => '14–27 mg', 'color' => '#db2777'],
+                            'T3' => ['label' => 'Trimester 3', 'sub' => '28+ mg', 'color' => '#9d174d'],
+                        ] as $key => $info)
+                            @php
+                                $count = $trimesterStats[$key] ?? 0;
+                                $percentage = $totalBumil > 0 ? round(($count / $totalBumil) * 100, 1) : 0;
+                            @endphp
+                            <div class="flex flex-col gap-1 text-[11px]">
+                                <div class="flex items-center gap-2" :class="hiddenItems.includes({{ array_search($key, ['T1', 'T2', 'T3']) }}) ? 'opacity-40' : ''">
+                                    <span class="w-2 h-2 rounded-full shrink-0 cursor-pointer" style="background:{{ $info['color'] }}" @click="toggleVisibility({{ array_search($key, ['T1', 'T2', 'T3']) }})"></span>
+                                    <span class="text-slate-650 flex-1 truncate font-medium cursor-pointer hover:text-pink-600 hover:underline" wire:click="$parent.drillDown('{{ $info['label'] === 'Trimester 1' ? 'Trimester I (1 - 13 Minggu)' : ($info['label'] === 'Trimester 2' ? 'Trimester II (14 - 27 Minggu)' : 'Trimester III (28 Minggu - Lahir)') }}', '{{ $info['label'] === 'Trimester 1' ? 'pregnancy_trimester_1' : ($info['label'] === 'Trimester 2' ? 'pregnancy_trimester_2' : 'pregnancy_trimester_3') }}', null)">
+                                        {{ $info['label'] }} <span class="text-[9px] text-slate-400 font-normal">({{ $info['sub'] }})</span>
+                                    </span>
+                                    <div class="flex items-center gap-2 shrink-0">
+                                        <span class="text-slate-400 text-[9px]">{{ $count }} Bumil</span>
+                                        <span class="font-bold text-slate-700 w-8 text-right">{{ $percentage }}%</span>
+                                        <button wire:click="$parent.drillDown('{{ $info['label'] === 'Trimester 1' ? 'Trimester I (1 - 13 Minggu)' : ($info['label'] === 'Trimester 2' ? 'Trimester II (14 - 27 Minggu)' : 'Trimester III (28 Minggu - Lahir)') }}', '{{ $info['label'] === 'Trimester 1' ? 'pregnancy_trimester_1' : ($info['label'] === 'Trimester 2' ? 'pregnancy_trimester_2' : 'pregnancy_trimester_3') }}', null)" class="w-6 h-6 flex items-center justify-center rounded bg-slate-50 hover:bg-pink-50 text-slate-400 hover:text-pink-600 transition-colors" title="Detail Bumil">
+                                            <span class="material-symbols-outlined text-[13px]">visibility</span>
+                                        </button>
+                                    </div>
                                 </div>
-                                <div>
-                                    <h3 class="text-base font-bold text-slate-900 tracking-tight">Kepatuhan Kunjungan ANC</h3>
-                                    <p class="text-[11px] text-slate-500 font-semibold mt-0.5">Tingkat kunjungan minimal standar K1 sampai K6</p>
-                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+
+            {{-- Kepatuhan Kunjungan ANC --}}
+            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-500 flex items-center justify-center border border-indigo-100/50">
+                                <span class="material-symbols-outlined text-[18px]">stethoscope</span>
+                            </div>
+                            <div>
+                                <h3 class="text-base font-bold text-slate-900 tracking-tight">Kepatuhan Kunjungan ANC</h3>
+                                <p class="text-[11px] text-slate-500 font-semibold mt-0.5">Tingkat kunjungan minimal standar K1 sampai K6</p>
                             </div>
                         </div>
-                        
-                        <div class="grid grid-cols-2 gap-3">
-                            @foreach([
-                                'k1' => ['label' => 'K1 (TM 1)', 'trimester' => 'Trimester I', 'desc' => 'Deteksi faktor risiko awal janin', 'color' => 'rose'], 
-                                'k2' => ['label' => 'K2 (TM 1)', 'trimester' => 'Trimester I', 'desc' => 'Skrining perkembangan janin', 'color' => 'rose'], 
-                                'k3' => ['label' => 'K3 (TM 2)', 'trimester' => 'Trimester II', 'desc' => 'Tekanan darah &amp; kadar Hb rutin', 'color' => 'amber'], 
-                                'k4' => ['label' => 'K4 (TM 2)', 'trimester' => 'Trimester II', 'desc' => 'Deteksi risiko preeklamsia', 'color' => 'amber'], 
-                                'k5' => ['label' => 'K5 (TM 3)', 'trimester' => 'Trimester III', 'desc' => 'Perencanaan persalinan aman', 'color' => 'emerald'], 
-                                'k6' => ['label' => 'K6 (TM 3)', 'trimester' => 'Trimester III', 'desc' => 'Pemeriksaan posisi akhir janin', 'color' => 'emerald']
-                            ] as $key => $info)
-                            <div wire:click="$parent.drillDown('Ibu Hamil - Kunjungan {{ strtoupper($key) }}', 'pregnancy_{{ $key }}', {{ $selectedMonth ?? 'null' }})"
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3">
+                        @foreach([
+                            'k1' => ['label' => 'K1 (TM 1)', 'trimester' => 'Trimester I', 'desc' => 'Deteksi faktor risiko awal janin', 'color' => 'rose'], 
+                            'k2' => ['label' => 'K2 (TM 1)', 'trimester' => 'Trimester I', 'desc' => 'Skrining perkembangan janin', 'color' => 'rose'], 
+                            'k3' => ['label' => 'K3 (TM 2)', 'trimester' => 'Trimester II', 'desc' => 'Tekanan darah &amp; kadar Hb rutin', 'color' => 'amber'], 
+                            'k4' => ['label' => 'K4 (TM 2)', 'trimester' => 'Trimester II', 'desc' => 'Deteksi risiko preeklamsia', 'color' => 'amber'], 
+                            'k5' => ['label' => 'K5 (TM 3)', 'trimester' => 'Trimester III', 'desc' => 'Perencanaan persalinan aman', 'color' => 'emerald'], 
+                            'k6' => ['label' => 'K6 (TM 3)', 'trimester' => 'Trimester III', 'desc' => 'Pemeriksaan posisi akhir janin', 'color' => 'emerald']
+                        ] as $key => $info)
+                        <div wire:click="$parent.drillDown('Ibu Hamil - Kunjungan {{ strtoupper($key) }}', 'pregnancy_{{ $key }}', {{ $selectedMonth ?? 'null' }})"
                                  class="p-3 bg-gradient-to-br from-white to-slate-50 border border-slate-200/50 rounded-xl flex flex-col justify-between transition-all duration-300 hover:shadow-sm hover:border-slate-350 hover:-translate-y-0.5 cursor-pointer select-none active:scale-[0.98] group">
-                                <div>
-                                    <div class="flex items-center justify-between mb-1">
-                                        <span class="text-[8px] font-black text-{{ $info['color'] }}-700 uppercase tracking-widest bg-{{ $info['color'] }}-50 px-1.5 py-0.5 rounded">{{ $info['trimester'] }}</span>
-                                    </div>
-                                    <h4 class="text-[11px] font-extrabold text-slate-900 tracking-tight">{{ $info['label'] }}</h4>
-                                    <p class="text-[8.5px] font-semibold text-slate-400 mt-0.5 leading-tight">{{ $info['desc'] }}</p>
+                            <div>
+                                <div class="flex items-center justify-between mb-1">
+                                    <span class="text-[8px] font-black text-{{ $info['color'] }}-700 uppercase tracking-widest bg-{{ $info['color'] }}-50 px-1.5 py-0.5 rounded">{{ $info['trimester'] }}</span>
                                 </div>
-                                <div class="flex items-baseline gap-1 mt-2.5">
-                                    <span class="text-xl font-black text-slate-800 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ $ancStats[$key] ?? 0 }}</span>
-                                    <span class="text-[9px] font-bold text-slate-400">Ibu</span>
-                                </div>
+                                <h4 class="text-[11px] font-extrabold text-slate-900 tracking-tight">{{ $info['label'] }}</h4>
+                                <p class="text-[8.5px] font-semibold text-slate-400 mt-0.5 leading-tight">{{ $info['desc'] }}</p>
                             </div>
+                            <div class="flex items-baseline gap-1 mt-2.5">
+                                <span class="text-xl font-black text-slate-800 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ $ancStats[$key] ?? 0 }}</span>
+                                <span class="text-[9px] font-bold text-slate-400">Ibu</span>
+                            </div>
+                        </div>
+                        @endforeach
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Row 3: Pemantauan Berat Badan & IMT + Penyuluhan & Rujukan --}}
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+            {{-- Pemantauan Berat Badan & IMT --}}
+            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-teal-50 text-teal-650 flex items-center justify-center border border-teal-100">
+                                <span class="material-symbols-outlined text-[18px]">scale</span>
+                            </div>
+                            <div>
+                                <h3 class="text-base font-bold text-slate-900 tracking-tight">Pemantauan Berat Badan &amp; IMT</h3>
+                                <p class="text-[11px] text-slate-500 font-semibold mt-0.5">Analisis kenaikan berat badan &amp; plotting IMT KIA</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Weight Gain Metrics --}}
+                    <div class="grid grid-cols-3 gap-3 mb-6">
+                        <div class="p-3 bg-slate-50 border border-slate-100 rounded-xl text-center">
+                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider block">Rata-rata BB Awal</span>
+                            <span class="text-lg font-black text-slate-700 mt-1 block">{{ $weightBmiStats['avgStarting'] > 0 ? $weightBmiStats['avgStarting'] . ' kg' : '-' }}</span>
+                        </div>
+                        <div class="p-3 bg-slate-50 border border-slate-100 rounded-xl text-center">
+                            <span class="text-[9px] font-black text-slate-400 uppercase tracking-wider block">Rata-rata BB Sekarang</span>
+                            <span class="text-lg font-black text-slate-700 mt-1 block">{{ $weightBmiStats['avgCurrent'] > 0 ? $weightBmiStats['avgCurrent'] . ' kg' : '-' }}</span>
+                        </div>
+                        <div class="p-3 bg-emerald-50/50 border border-emerald-100 rounded-xl text-center">
+                            <span class="text-[9px] font-black text-emerald-700 uppercase tracking-wider block">Rata-rata Kenaikan</span>
+                            <span class="text-lg font-black text-emerald-600 mt-1 block">+{{ $weightBmiStats['avgGain'] }} kg</span>
+                        </div>
+                    </div>
+
+                    {{-- IMT Distribution List --}}
+                    <div>
+                        <h4 class="text-xs font-bold text-slate-700 mb-3 uppercase tracking-wider">Plotting IMT (Buku KIA)</h4>
+                        <div class="space-y-2.5">
+                            @php
+                                $imtDistribution = $weightBmiStats['imtDistribution'];
+                                $totalImt = array_sum($imtDistribution);
+                            @endphp
+                            @foreach(['Normal' => 'bg-emerald-500', 'Kurus' => 'bg-amber-500', 'Gemuk' => 'bg-orange-500', 'Obesitas' => 'bg-rose-500'] as $key => $colorClass)
+                                @php
+                                    $count = $imtDistribution[$key] ?? 0;
+                                    $percent = $totalImt > 0 ? round(($count / $totalImt) * 100) : 0;
+                                @endphp
+                                <div>
+                                    <div class="flex justify-between items-center text-[11px] mb-1">
+                                        <span class="font-bold text-slate-600">{{ $key }}</span>
+                                        <span class="font-extrabold text-slate-800">{{ $count }} Ibu ({{ $percent }}%)</span>
+                                    </div>
+                                    <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
+                                        <div class="{{ $colorClass }} h-full rounded-full transition-all duration-500" style="width: {{ $percent }}%"></div>
+                                    </div>
+                                </div>
                             @endforeach
                         </div>
                     </div>
                 </div>
             </div>
 
-            {{-- Right Column: Tren Kepatuhan & Risiko (occupies 7/12 cols) --}}
-            <div class="lg:col-span-7 bg-white rounded-3xl p-6 border border-slate-200 shadow-xs flex flex-col justify-between">
-                <div class="flex items-start justify-between gap-4 mb-4">
-                    <div>
-                        <h3 class="text-base font-extrabold text-slate-900 tracking-tight">Tren Kepatuhan &amp; Risiko Ibu Hamil</h3>
-                        <p class="text-[11px] text-slate-500 font-semibold mt-0.5">Tren prevalensi bulanan kepatuhan suplemen zat besi dan risiko tinggi usia kehamilan</p>
+            {{-- Penyuluhan & Rujukan --}}
+            <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-4 border-b border-slate-100 pb-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-pink-50 text-pink-600 flex items-center justify-center border border-pink-100">
+                                <span class="material-symbols-outlined text-[18px]">forum</span>
+                            </div>
+                            <div>
+                                <h3 class="text-base font-bold text-slate-900 tracking-tight">Penyuluhan &amp; Rujukan</h3>
+                                <p class="text-[11px] text-slate-500 font-semibold mt-0.5">Partisipasi kelas bumil &amp; log rujukan medis</p>
+                            </div>
+                        </div>
                     </div>
-                    <button onclick="downloadChart(pregnancyRiskChart, 'tren_kepatuhan_risiko_ibu_hamil')" class="shrink-0 p-2 text-slate-500 hover:text-slate-800 rounded-lg bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
-                        <span class="material-symbols-outlined text-[16px]">download</span>
-                    </button>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {{-- Left side of Panel: Partisipasi Kelas & Topik Terpopuler --}}
+                        <div class="space-y-4">
+                            <div class="p-4 bg-slate-50 border border-slate-100 rounded-2xl">
+                                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-2">Partisipasi Kelas Ibu Hamil</h4>
+                                <div class="flex items-baseline gap-2">
+                                    <span class="text-3xl font-black text-slate-800">{{ $counselingReferralStats['classPercentage'] }}%</span>
+                                    <span class="text-[10px] font-bold text-slate-400">Ikut Kelas</span>
+                                </div>
+                                <div class="mt-2 text-[10px] text-slate-500 font-semibold">
+                                    {{ $counselingReferralStats['joinedClass'] }} dari {{ $counselingReferralStats['totalClassPatients'] }} Ibu hamil berpartisipasi.
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-2.5">Topik Penyuluhan Terpopuler</h4>
+                                <div class="space-y-1.5">
+                                    @forelse($counselingReferralStats['topTopics'] as $topic => $count)
+                                        <div class="flex items-center justify-between text-xs p-1.5 bg-slate-50/50 rounded-lg border border-slate-100">
+                                            <span class="truncate font-semibold text-slate-650 flex-1 pr-2" title="{{ $topic }}">{{ $topic }}</span>
+                                            <span class="font-extrabold text-slate-700 bg-white border border-slate-200 px-2 py-0.5 rounded text-[10px]">{{ $count }}x</span>
+                                        </div>
+                                    @empty
+                                        <span class="text-slate-400 text-xs font-semibold block text-center py-2">Belum ada penyuluhan</span>
+                                    @endforelse
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Right side of Panel: Catatan Rujukan --}}
+                        <div class="border-l border-slate-100 pl-4 space-y-3">
+                            <div class="flex justify-between items-center">
+                                <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Log Rujukan Terbaru</h4>
+                                <span class="text-[10px] font-extrabold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full">{{ $counselingReferralStats['totalReferrals'] }} Kasus</span>
+                            </div>
+                            <div class="space-y-2">
+                                @forelse($counselingReferralStats['referrals'] as $ref)
+                                    <div class="p-2 bg-rose-50/20 border border-rose-100/50 rounded-xl flex flex-col gap-1">
+                                        <div class="flex justify-between items-center text-[10px]">
+                                            <span class="font-black text-slate-700 truncate max-w-[100px]">{{ $ref['patient_name'] }}</span>
+                                            <span class="text-slate-400 font-semibold">{{ $ref['visit_date'] }}</span>
+                                        </div>
+                                        <p class="text-[10px] text-rose-700 font-semibold leading-relaxed line-clamp-2" title="{{ $ref['anc_referral'] }}">{{ $ref['anc_referral'] }}</p>
+                                    </div>
+                                @empty
+                                    <div class="h-28 flex flex-col items-center justify-center text-slate-400">
+                                        <span class="material-symbols-outlined text-[20px] mb-1 opacity-50">check_circle</span>
+                                        <span class="text-[10px] font-semibold">Tidak ada rujukan aktif</span>
+                                    </div>
+                                @endforelse
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="relative flex-1 min-h-[350px] lg:min-h-[500px]">
-                    <canvas id="pregnancyRiskChart" wire:ignore></canvas>
+            </div>
+        </div>
+
+        {{-- Row 4: Tren Kepatuhan &amp; Risiko --}}
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs mt-6 w-full">
+            <div class="flex items-start justify-between gap-4 mb-4">
+                <div>
+                    <h3 class="text-base font-extrabold text-slate-900 tracking-tight">Tren Kepatuhan &amp; Risiko Ibu Hamil</h3>
+                    <p class="text-[11px] text-slate-500 font-semibold mt-0.5">Tren kuantitatif bulanan kepatuhan suplemen zat besi dan risiko tinggi kasus hipertensi</p>
                 </div>
+                <button onclick="downloadChart(pregnancyRiskChart, 'tren_kepatuhan_risiko_ibu_hamil')" class="shrink-0 p-2 text-slate-500 hover:text-slate-800 rounded-lg bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
+                    <span class="material-symbols-outlined text-[16px]">download</span>
+                </button>
+            </div>
+            <div class="relative min-h-[300px] lg:min-h-[350px]">
+                <canvas id="pregnancyRiskChart" wire:ignore></canvas>
             </div>
         </div>
 

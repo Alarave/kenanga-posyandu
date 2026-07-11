@@ -2478,7 +2478,7 @@ function initCharts(data = null) {
                     },
                     scales: {
                         x: { grid: { display: false } },
-                        y: { beginAtZero: true, max: 100, grid: { color: '#f1f5f9' }, ticks: { callback: function(value) { return value + '%'; } } }
+                        y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { callback: function(value) { return value + ' Orang'; } } }
                     },
                     plugins: { legend: { display: true } }
                 }

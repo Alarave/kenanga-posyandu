@@ -1250,8 +1250,8 @@ class Analytics extends BaseAdminComponent
             if ($totalM > 0) {
                 $hyperM = $latestRecordsByPatient->filter(fn ($r) => $r->systolic_bp >= 140 || $r->diastolic_bp >= 90)->count();
                 $feM = $latestRecordsByPatient->filter(fn ($r) => $r->pill_fe == 1)->count();
-                $trendPregnancyHypertension[] = round(($hyperM / $totalM) * 100, 1);
-                $trendPregnancyFe[] = round(($feM / $totalM) * 100, 1);
+                $trendPregnancyHypertension[] = $hyperM;
+                $trendPregnancyFe[] = $feM;
             } else {
                 $trendPregnancyHypertension[] = 0;
                 $trendPregnancyFe[] = 0;
