@@ -468,142 +468,200 @@
             </div>
 
             {{-- Widget 3: Rangkuman Indikator Kesehatan Utama (Horizontal Layout, Below Main KPIs, No Donut Charts) --}}
-            <div class="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 border border-slate-200 shadow-xs">
-                <div class="mb-4">
-                    <h3 class="text-base sm:text-lg font-extrabold text-slate-900 tracking-tight flex items-center gap-2">
-                        <span class="material-symbols-outlined text-teal-600 text-[20px]">clinical_notes</span>
-                        Indikator Kesehatan Utama
-                    </h3>
-                    <p class="text-xs text-slate-500 font-semibold mt-0.5">Ringkasan parameter klinis pasien dari pemeriksaan terbaru</p>
+            {{-- Widget 3: Rangkuman Indikator Kesehatan Utama (Horizontal Layout, Below Main KPIs, Premium Redesign) --}}
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
+                <div class="mb-6">
+                    <div class="flex items-center gap-2">
+                        <span class="material-symbols-outlined text-teal-600 text-[24px] bg-teal-50 p-1.5 rounded-xl border border-teal-100">clinical_notes</span>
+                        <div>
+                            <h3 class="text-lg font-black text-slate-900 tracking-tight">
+                                Pusat Deteksi Dini &amp; Indikator Kesehatan Utama
+                            </h3>
+                            <p class="text-xs text-slate-500 font-semibold">Pemantauan otomatis data klinis terbaru berdasarkan klasifikasi kelompok warga binaan</p>
+                        </div>
+                    </div>
                 </div>
                 
-                {{-- Grid 3 Kolom: Balita, Ibu Hamil, Lansia (Horizontal) --}}
-                <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
-                    {{-- Balita --}}
-                    <div class="space-y-3">
-                        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-teal-500"></span> Balita & Anak
-                        </h4>
-                        <div class="grid grid-cols-2 gap-6">
-                            {{-- Prevalensi Stunting --}}
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col justify-between min-h-[105px]">
-                                <div>
-                                    <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Prevalensi Stunting</p>
-                                    <p class="text-xl font-black text-slate-800 mt-1">{{ $stuntingRate }}%</p>
+                {{-- Grid 3 Kolom Premium: Balita, Ibu Hamil, Lansia --}}
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    
+                    {{-- Kategori: Balita & Anak --}}
+                    <div class="relative overflow-hidden bg-slate-50/50 rounded-2xl p-5 border border-slate-150 flex flex-col justify-between hover:shadow-md transition-all duration-300">
+                        <div>
+                            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-200/60">
+                                <h4 class="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-teal-500 animate-pulse"></span>
+                                    Balita &amp; Anak
+                                </h4>
+                                <span class="text-[9px] font-black uppercase bg-teal-100 text-teal-800 px-2 py-0.5 rounded-md border border-teal-200">Gizi &amp; Tumbuh Kembang</span>
+                            </div>
+
+                            <div class="space-y-4">
+                                {{-- Prevalensi Stunting --}}
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-xs font-extrabold text-slate-700">
+                                        <span>Prevalensi Stunting</span>
+                                        <span class="text-slate-900">{{ $stuntingRate }}%</span>
+                                    </div>
+                                    <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                                        <div class="h-full rounded-full transition-all duration-500 {{ $stuntingRate >= 14 ? 'bg-amber-500' : 'bg-emerald-500' }}" style="width: {{ min(100, $stuntingRate) }}%"></div>
+                                    </div>
+                                    <div class="flex justify-between items-center text-[9px] font-bold mt-1 text-slate-400">
+                                        <span>Ambang Batas WHO: 14%</span>
+                                        @if($stuntingRate >= 14)
+                                            <span class="text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-sm">Perlu Perhatian</span>
+                                        @else
+                                            <span class="text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-sm">Aman / Terkendali</span>
+                                        @endif
+                                    </div>
                                 </div>
-                                <div class="border-t border-slate-200/60 pt-1.5 mt-2 flex items-center justify-between text-[8px] font-bold">
-                                    <span class="text-rose-600 flex items-center gap-1">
-                                        <span class="w-1 h-1 rounded-full bg-rose-500"></span> Stunting: {{ $stuntingRate }}%
-                                    </span>
-                                    <span class="text-slate-300">|</span>
-                                    <span class="text-emerald-600 flex items-center gap-1">
-                                        <span class="w-1 h-1 rounded-full bg-emerald-500"></span> Normal: {{ round(100 - $stuntingRate, 1) }}%
-                                    </span>
+
+                                {{-- Imunisasi Dasar --}}
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-xs font-extrabold text-slate-700">
+                                        <span>Cakupan Imunisasi Lengkap</span>
+                                        <span class="text-slate-900">{{ $cakupanImunisasi }}%</span>
+                                    </div>
+                                    <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                                        <div class="h-full rounded-full bg-teal-500 transition-all duration-500" style="width: {{ min(100, $cakupanImunisasi) }}%"></div>
+                                    </div>
+                                    <div class="flex justify-between items-center text-[9px] font-bold mt-1 text-slate-400">
+                                        <span>Target Nasional: 90%</span>
+                                        @if($cakupanImunisasi >= 90)
+                                            <span class="text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-sm">Sesuai Target</span>
+                                        @else
+                                            <span class="text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded-sm">Perlu Akselerasi</span>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
-                            
-                            {{-- Imunisasi Dasar --}}
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col justify-between min-h-[105px]">
-                                <div>
-                                    <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Imunisasi Dasar</p>
-                                    <p class="text-xl font-black text-slate-800 mt-1">{{ $cakupanImunisasi }}%</p>
-                                </div>
-                                <div class="border-t border-slate-200/60 pt-1.5 mt-2 flex items-center justify-between text-[8px] font-bold">
-                                    <span class="text-teal-600 flex items-center gap-1">
-                                        <span class="w-1 h-1 rounded-full bg-teal-500"></span> Lengkap: {{ $cakupanImunisasi }}%
-                                    </span>
-                                    <span class="text-slate-300">|</span>
-                                    <span class="text-slate-500 flex items-center gap-1">
-                                        <span class="w-1 h-1 rounded-full bg-slate-400"></span> Belum: {{ round(100 - $cakupanImunisasi, 1) }}%
-                                    </span>
-                                </div>
-                            </div>
+                        </div>
+                        <div class="mt-5 pt-3 border-t border-slate-200/60 flex justify-between items-center text-[10px] font-black text-teal-600 hover:text-teal-800 transition-colors cursor-pointer" wire:click="$set('activeTab', 'balita')">
+                            <span>Buka Detail Analitik Balita</span>
+                            <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
                         </div>
                     </div>
 
-                    {{-- Ibu Hamil --}}
-                    <div class="space-y-3">
-                        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Ibu Hamil
-                        </h4>
-                        <div class="grid grid-cols-2 gap-6">
-                            {{-- Risiko Hipertensi --}}
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col justify-between min-h-[105px]">
-                                <div>
-                                    <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Risiko Hipertensi</p>
-                                    <p class="text-xl font-black text-slate-800 mt-1">{{ $hypertensionRiskRate }}%</p>
+                    {{-- Kategori: Ibu Hamil --}}
+                    <div class="relative overflow-hidden bg-slate-50/50 rounded-2xl p-5 border border-slate-150 flex flex-col justify-between hover:shadow-md transition-all duration-300">
+                        <div>
+                            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-200/60">
+                                <h4 class="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-rose-500 animate-pulse"></span>
+                                    Ibu Hamil
+                                </h4>
+                                <span class="text-[9px] font-black uppercase bg-rose-100 text-rose-800 px-2 py-0.5 rounded-md border border-rose-200">Kesehatan Ibu &amp; Janin</span>
+                            </div>
+
+                            <div class="space-y-4">
+                                {{-- Risiko Hipertensi --}}
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-xs font-extrabold text-slate-700">
+                                        <span>Risiko Hipertensi Kehamilan</span>
+                                        <span class="text-slate-900">{{ $hypertensionRiskRate }}%</span>
+                                    </div>
+                                    <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                                        <div class="h-full rounded-full transition-all duration-500 {{ $hypertensionRiskRate >= 10 ? 'bg-rose-500' : 'bg-emerald-500' }}" style="width: {{ min(100, $hypertensionRiskRate) }}%"></div>
+                                    </div>
+                                    <div class="flex justify-between items-center text-[9px] font-bold mt-1 text-slate-400">
+                                        <span>Normal: &lt; 10%</span>
+                                        @if($hypertensionRiskRate >= 10)
+                                            <span class="text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded-sm">Risiko Tinggi</span>
+                                        @else
+                                            <span class="text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-sm">Kondusif</span>
+                                        @endif
+                                    </div>
                                 </div>
-                                <div class="border-t border-slate-200/60 pt-1.5 mt-2 flex items-center justify-between text-[8px] font-bold">
-                                    <span class="text-rose-600 flex items-center gap-1">
-                                        <span class="w-1 h-1 rounded-full bg-rose-500"></span> Risiko: {{ $hypertensionRiskRate }}%
-                                    </span>
-                                    <span class="text-slate-300">|</span>
-                                    <span class="text-emerald-600 flex items-center gap-1">
-                                        <span class="w-1 h-1 rounded-full bg-emerald-500"></span> Normal: {{ round(100 - $hypertensionRiskRate, 1) }}%
-                                    </span>
+
+                                {{-- Kepatuhan Tablet Fe --}}
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-xs font-extrabold text-slate-700">
+                                        <span>Kepatuhan Konsumsi Tablet Fe</span>
+                                        <span class="text-slate-900">{{ $feComplianceRate }}%</span>
+                                    </div>
+                                    <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                                        <div class="h-full rounded-full bg-rose-500 transition-all duration-500" style="width: {{ min(100, $feComplianceRate) }}%"></div>
+                                    </div>
+                                    <div class="flex justify-between items-center text-[9px] font-bold mt-1 text-slate-400">
+                                        <span>Target Kepatuhan: 85%</span>
+                                        @if($feComplianceRate >= 85)
+                                            <span class="text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-sm">Memenuhi Target</span>
+                                        @else
+                                            <span class="text-amber-600 bg-amber-50 px-1.5 py-0.5 rounded-sm">Perlu Binaan</span>
+                                        @endif
+                                    </div>
                                 </div>
                             </div>
-                            
-                            {{-- Kepatuhan Fe --}}
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col justify-between min-h-[105px]">
-                                <div>
-                                    <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Kepatuhan Tablet Fe</p>
-                                    <p class="text-xl font-black text-slate-800 mt-1">{{ $feComplianceRate }}%</p>
-                                </div>
-                                <div class="border-t border-slate-200/60 pt-1.5 mt-2 flex items-center justify-between text-[8px] font-bold">
-                                    <span class="text-teal-600 flex items-center gap-1">
-                                        <span class="w-1 h-1 rounded-full bg-teal-500"></span> Patuh: {{ $feComplianceRate }}%
-                                    </span>
-                                    <span class="text-slate-300">|</span>
-                                    <span class="text-slate-500 flex items-center gap-1">
-                                        <span class="w-1 h-1 rounded-full bg-slate-400"></span> Belum: {{ round(100 - $feComplianceRate, 1) }}%
-                                    </span>
-                                </div>
-                            </div>
+                        </div>
+                        <div class="mt-5 pt-3 border-t border-slate-200/60 flex justify-between items-center text-[10px] font-black text-rose-600 hover:text-rose-800 transition-colors cursor-pointer" wire:click="$set('activeTab', 'pregnancy')">
+                            <span>Buka Detail Analitik Ibu Hamil</span>
+                            <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
                         </div>
                     </div>
 
-                    {{-- Lansia --}}
-                    <div class="space-y-3">
-                        <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-widest flex items-center gap-1">
-                            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500"></span> Lanjut Usia
-                        </h4>
-                        <div class="grid grid-cols-2 gap-6">
-                            {{-- Hipertensi Lansia --}}
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col justify-between min-h-[105px]">
-                                <div>
-                                    <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Hipertensi Lansia</p>
-                                    <p class="text-xl font-black text-slate-800 mt-1">{{ $lansiaHypertensionRate }}%</p>
-                                </div>
-                                <div class="border-t border-slate-200/60 pt-1.5 mt-2 flex items-center justify-between text-[8px] font-bold">
-                                    <span class="text-rose-600 flex items-center gap-1">
-                                        <span class="w-1 h-1 rounded-full bg-rose-500"></span> Risiko: {{ $lansiaHypertensionRate }}%
-                                    </span>
-                                    <span class="text-slate-300">|</span>
-                                    <span class="text-emerald-600 flex items-center gap-1">
-                                        <span class="w-1 h-1 rounded-full bg-emerald-500"></span> Normal: {{ round(100 - $lansiaHypertensionRate, 1) }}%
-                                    </span>
-                                </div>
+                    {{-- Kategori: Lansia --}}
+                    <div class="relative overflow-hidden bg-slate-50/50 rounded-2xl p-5 border border-slate-150 flex flex-col justify-between hover:shadow-md transition-all duration-300">
+                        <div>
+                            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-200/60">
+                                <h4 class="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-2">
+                                    <span class="w-2.5 h-2.5 rounded-full bg-indigo-500 animate-pulse"></span>
+                                    Lanjut Usia (Lansia)
+                                </h4>
+                                <span class="text-[9px] font-black uppercase bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-md border border-indigo-200">Penyakit Tidak Menular</span>
                             </div>
-                            
-                            {{-- Diabetes Lansia --}}
-                            <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex flex-col justify-between min-h-[105px]">
-                                <div>
-                                    <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Diabetes Lansia</p>
-                                    <p class="text-xl font-black text-slate-800 mt-1">{{ $lansiaHyperglycemiaRate }}%</p>
+
+                            <div class="space-y-2">
+                                {{-- Hipertensi Lansia --}}
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-[11px] font-bold text-slate-700">
+                                        <span>Hipertensi (TD &ge; 140/90)</span>
+                                        <span class="font-extrabold text-slate-900">{{ $lansiaHypertensionRate }}%</span>
+                                    </div>
+                                    <div class="w-full bg-slate-250 h-1.5 rounded-full overflow-hidden">
+                                        <div class="h-full bg-indigo-500 transition-all duration-500" style="width: {{ min(100, $lansiaHypertensionRate) }}%"></div>
+                                    </div>
                                 </div>
-                                <div class="border-t border-slate-200/60 pt-1.5 mt-2 flex items-center justify-between text-[8px] font-bold">
-                                    <span class="text-rose-600 flex items-center gap-1">
-                                        <span class="w-1 h-1 rounded-full bg-rose-500"></span> Risiko: {{ $lansiaHyperglycemiaRate }}%
-                                    </span>
-                                    <span class="text-slate-300">|</span>
-                                    <span class="text-emerald-600 flex items-center gap-1">
-                                        <span class="w-1 h-1 rounded-full bg-emerald-500"></span> Normal: {{ round(100 - $lansiaHyperglycemiaRate, 1) }}%
-                                    </span>
+
+                                {{-- Gula Darah Tinggi --}}
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-[11px] font-bold text-slate-700">
+                                        <span>Gula Darah Tinggi (GDS &ge; 200)</span>
+                                        <span class="font-extrabold text-slate-900">{{ $lansiaHyperglycemiaRate }}%</span>
+                                    </div>
+                                    <div class="w-full bg-slate-250 h-1.5 rounded-full overflow-hidden">
+                                        <div class="h-full bg-amber-500 transition-all duration-500" style="width: {{ min(100, $lansiaHyperglycemiaRate) }}%"></div>
+                                    </div>
+                                </div>
+
+                                {{-- Kolesterol Tinggi --}}
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-[11px] font-bold text-slate-700">
+                                        <span>Kolesterol Tinggi (&ge; 200)</span>
+                                        <span class="font-extrabold text-slate-900">{{ $lansiaHypercholesterolemiaRate }}%</span>
+                                    </div>
+                                    <div class="w-full bg-slate-250 h-1.5 rounded-full overflow-hidden">
+                                        <div class="h-full bg-rose-500 transition-all duration-500" style="width: {{ min(100, $lansiaHypercholesterolemiaRate) }}%"></div>
+                                    </div>
+                                </div>
+
+                                {{-- Asam Urat Tinggi --}}
+                                <div class="space-y-1">
+                                    <div class="flex justify-between text-[11px] font-bold text-slate-700">
+                                        <span>Asam Urat Tinggi (&ge; 7.0)</span>
+                                        <span class="font-extrabold text-slate-900">{{ $lansiaHyperuricemiaRate }}%</span>
+                                    </div>
+                                    <div class="w-full bg-slate-250 h-1.5 rounded-full overflow-hidden">
+                                        <div class="h-full bg-purple-500 transition-all duration-500" style="width: {{ min(100, $lansiaHyperuricemiaRate) }}%"></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                        <div class="mt-5 pt-3 border-t border-slate-200/60 flex justify-between items-center text-[10px] font-black text-indigo-600 hover:text-indigo-800 transition-colors cursor-pointer" wire:click="$set('activeTab', 'lansia')">
+                            <span>Buka Detail Analitik Lansia</span>
+                            <span class="material-symbols-outlined text-[14px]">arrow_forward</span>
+                        </div>
                     </div>
+
                 </div>
             </div>
 
