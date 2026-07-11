@@ -138,6 +138,7 @@
 
                     @foreach($menuItems as $item)
                     <a href="{{ $item['href'] }}"
+                       @click="profileOpen = false"
                        class="flex items-center gap-3.5 px-3 py-2.5 text-slate-600 hover:bg-slate-50
                               hover:text-slate-900 rounded-xl transition-all group font-bold relative">
                         <div @class([
