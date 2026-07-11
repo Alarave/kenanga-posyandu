@@ -774,6 +774,21 @@ class Analytics extends BaseAdminComponent
                 ->where('cholesterol', '>=', 200),
             'lansia_hiperurisemia' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
                 ->where('uric_acid', '>=', 7.0),
+            'lansia_obesity_sentral' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
+                ->where(function($q) {
+                    $q->where(fn($sq) => $sq->whereHas('patient', fn($pq) => $pq->where('gender', 'L'))->where('waist_circumference', '>', 90))
+                      ->orWhere(fn($sq) => $sq->whereHas('patient', fn($pq) => $pq->where('gender', 'P'))->where('waist_circumference', '>', 80));
+                }),
+            'lansia_eye_issue' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
+                ->whereNotNull('eye_test')->where('eye_test', '!=', '')->where('eye_test', '!=', '-')->where('eye_test', '!=', 'Normal'),
+            'lansia_ear_issue' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
+                ->whereNotNull('ear_test')->where('ear_test', '!=', '')->where('ear_test', '!=', '-')->where('ear_test', '!=', 'Normal'),
+            'lansia_puma_risk' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
+                ->whereIn('puma_screening', ['Ya', '1', 'true', 'sudah']),
+            'lansia_tbc_risk' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
+                ->whereIn('tbc_screening_status', ['Ya', '1', 'true', 'sudah', 'gejala terindikasi']),
+            'lansia_mental_risk' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
+                ->whereIn('mental_screening', ['Ya', '1', 'true', 'sudah', 'ada masalah']),
             'pregnancy_high_risk', 'pregnancy_hypertension', 'pregnancy_tablet_fe', 'pregnancy_kek', 'pregnancy_tbc' => $query->whereHas('patient', function ($q) {
                     $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
                 }),
@@ -781,7 +796,7 @@ class Analytics extends BaseAdminComponent
         };
 
         $records = $query->latest('visit_date')->latest('id')->get();
-        if (str_starts_with($type, 'pregnancy_') && in_array($type, ['pregnancy_high_risk', 'pregnancy_hypertension', 'pregnancy_tablet_fe', 'pregnancy_kek', 'pregnancy_tbc'])) {
+        if ((str_starts_with($type, 'pregnancy_') && in_array($type, ['pregnancy_high_risk', 'pregnancy_hypertension', 'pregnancy_tablet_fe', 'pregnancy_kek', 'pregnancy_tbc'])) || str_starts_with($type, 'lansia_')) {
             $records = $records->unique('patient_id');
             if ($type === 'pregnancy_high_risk') {
                 $records = $records->filter(function ($r) {
@@ -819,6 +834,12 @@ class Analytics extends BaseAdminComponent
                 'lansia_hiperglikemia' => 'GDS: '.($r->blood_sugar ?: '-').' mg/dL',
                 'lansia_hiperkolesterolemia' => 'Kolesterol: '.($r->cholesterol ?: '-').' mg/dL',
                 'lansia_hiperurisemia' => 'Asam Urat: '.($r->uric_acid ?: '-').' mg/dL',
+                'lansia_obesity_sentral' => 'LP: '.($r->waist_circumference ?: '-').' cm',
+                'lansia_eye_issue' => 'Tes Mata: '.($r->eye_test ?: '-'),
+                'lansia_ear_issue' => 'Tes Telinga: '.($r->ear_test ?: '-'),
+                'lansia_puma_risk' => 'Skrining PUMA: '.($r->puma_screening ?: '-'),
+                'lansia_tbc_risk' => 'Skrining TBC: '.($r->tbc_screening_status ?: '-'),
+                'lansia_mental_risk' => 'Skrining Jiwa: '.($r->mental_screening ?: '-'),
                 'pregnancy_high_risk' => (function() use ($r) {
                     $age = $r->patient?->birth_date?->age;
                     $reasons = [];

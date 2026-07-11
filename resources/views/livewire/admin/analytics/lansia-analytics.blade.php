@@ -237,6 +237,134 @@
             </div>
         </div>
     </div>
+    
+    {{-- Row 3: Obesitas Sentral, Panca Indra & Rujukan Lansia --}}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+        {{-- Obesitas Sentral & Gangguan Indra --}}
+        <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between relative overflow-hidden">
+            <div>
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="material-symbols-outlined text-teal-600 text-[26px]">medical_information</span>
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900">Obesitas Sentral &amp; Gangguan Indra</h3>
+                        <p class="text-xs text-slate-500 font-semibold mt-0.5">Analisis lingkar perut dan fungsi indera sensorik lansia</p>
+                    </div>
+                </div>
+
+                {{-- Average Waist Circumference card --}}
+                <div class="grid grid-cols-1 gap-4 mb-6">
+                    <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4 flex flex-col items-center justify-center text-center">
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1">RATA-RATA LINGKAR PERUT</span>
+                        <span class="text-3xl font-black text-slate-800">{{ $sensoryObesityStats['avgWaist'] }} cm</span>
+                    </div>
+                </div>
+
+                <div class="space-y-4">
+                    {{-- Obesitas Sentral --}}
+                    <div wire:click="$parent.drillDown('Lansia - Obesitas Sentral', 'lansia_obesity_sentral', {{ $selectedMonth ?? 'null' }})"
+                         class="cursor-pointer hover:bg-slate-50 px-2 -mx-2 py-1 rounded-xl transition-colors group/item"
+                         title="Klik untuk melihat daftar lansia dengan obesitas sentral">
+                        <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-1.5">
+                            <span class="hover:underline hover:text-teal-600 transition-colors">Obesitas Sentral</span>
+                            <span class="text-slate-900 font-extrabold">{{ $sensoryObesityStats['obesitySentral'] }} Jiwa ({{ $sensoryObesityStats['obesityPct'] }}%)</span>
+                        </div>
+                        <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                            <div class="h-full bg-teal-500 rounded-full transition-all" style="width: {{ $sensoryObesityStats['obesityPct'] }}%"></div>
+                        </div>
+                    </div>
+
+                    {{-- Gangguan Penglihatan --}}
+                    <div wire:click="$parent.drillDown('Lansia - Gangguan Penglihatan', 'lansia_eye_issue', {{ $selectedMonth ?? 'null' }})"
+                         class="cursor-pointer hover:bg-slate-50 px-2 -mx-2 py-1 rounded-xl transition-colors group/item"
+                         title="Klik untuk melihat daftar lansia dengan gangguan penglihatan">
+                        <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-1.5">
+                            <span class="hover:underline hover:text-indigo-600 transition-colors">Gangguan Penglihatan</span>
+                            <span class="text-slate-900 font-extrabold">{{ $sensoryObesityStats['eyeIssue'] }} Jiwa ({{ $sensoryObesityStats['eyePct'] }}%)</span>
+                        </div>
+                        <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                            <div class="h-full bg-indigo-500 rounded-full transition-all" style="width: {{ $sensoryObesityStats['eyePct'] }}%"></div>
+                        </div>
+                    </div>
+
+                    {{-- Gangguan Pendengaran --}}
+                    <div wire:click="$parent.drillDown('Lansia - Gangguan Pendengaran', 'lansia_ear_issue', {{ $selectedMonth ?? 'null' }})"
+                         class="cursor-pointer hover:bg-slate-50 px-2 -mx-2 py-1 rounded-xl transition-colors group/item"
+                         title="Klik untuk melihat daftar lansia dengan gangguan pendengaran">
+                        <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-1.5">
+                            <span class="hover:underline hover:text-pink-600 transition-colors">Gangguan Pendengaran</span>
+                            <span class="text-slate-900 font-extrabold">{{ $sensoryObesityStats['earIssue'] }} Jiwa ({{ $sensoryObesityStats['earPct'] }}%)</span>
+                        </div>
+                        <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                            <div class="h-full bg-pink-500 rounded-full transition-all" style="width: {{ $sensoryObesityStats['earPct'] }}%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Skrining Khusus Lansia & Rujukan --}}
+        <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between relative overflow-hidden">
+            <div>
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="material-symbols-outlined text-purple-600 text-[26px]">clinical_notes</span>
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900">Skrining Khusus &amp; Rujukan</h3>
+                        <p class="text-xs text-slate-500 font-semibold mt-0.5">Deteksi risiko PPOK, TBC, kesehatan jiwa, dan log rujukan aktif</p>
+                    </div>
+                </div>
+
+                {{-- Mini progress bars for PUMA, TBC, Mental --}}
+                <div class="grid grid-cols-3 gap-3 mb-6">
+                    <div wire:click="$parent.drillDown('Lansia - Risiko PPOK (PUMA)', 'lansia_puma_risk', {{ $selectedMonth ?? 'null' }})"
+                         class="bg-rose-50/50 border border-rose-100 hover:bg-rose-50/80 hover:border-rose-300 transition-all rounded-2xl p-3 text-center cursor-pointer group/card">
+                        <span class="block text-[9px] font-black text-rose-700 uppercase tracking-wider mb-1">PUMA (Paru)</span>
+                        <span class="text-xl font-black text-rose-600 block">{{ $specialScreeningReferralStats['pumaCount'] }}</span>
+                        <span class="text-[9px] font-extrabold text-rose-500 block mt-0.5">{{ $specialScreeningReferralStats['pumaPct'] }}% Berisiko</span>
+                    </div>
+
+                    <div wire:click="$parent.drillDown('Lansia - Terduga Gejala TBC', 'lansia_tbc_risk', {{ $selectedMonth ?? 'null' }})"
+                         class="bg-amber-50/50 border border-amber-100 hover:bg-amber-50/80 hover:border-amber-300 transition-all rounded-2xl p-3 text-center cursor-pointer group/card">
+                        <span class="block text-[9px] font-black text-amber-700 uppercase tracking-wider mb-1">Skrining TBC</span>
+                        <span class="text-xl font-black text-amber-600 block">{{ $specialScreeningReferralStats['tbcCount'] }}</span>
+                        <span class="text-[9px] font-extrabold text-amber-500 block mt-0.5">{{ $specialScreeningReferralStats['tbcPct'] }}% Gejala</span>
+                    </div>
+
+                    <div wire:click="$parent.drillDown('Lansia - Risiko Kesehatan Jiwa', 'lansia_mental_risk', {{ $selectedMonth ?? 'null' }})"
+                         class="bg-purple-50/50 border border-purple-100 hover:bg-purple-50/80 hover:border-purple-300 transition-all rounded-2xl p-3 text-center cursor-pointer group/card">
+                        <span class="block text-[9px] font-black text-purple-700 uppercase tracking-wider mb-1">Skrining Jiwa</span>
+                        <span class="text-xl font-black text-purple-600 block">{{ $specialScreeningReferralStats['mentalCount'] }}</span>
+                        <span class="text-[9px] font-extrabold text-purple-500 block mt-0.5">{{ $specialScreeningReferralStats['mentalPct'] }}% Gejala</span>
+                    </div>
+                </div>
+
+                {{-- Referral Log Table/List --}}
+                <div class="mt-2">
+                    <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                        Rujukan Medis Terbaru
+                    </h4>
+                    <div class="border border-slate-100 rounded-2xl overflow-hidden bg-slate-50/50">
+                        @forelse($specialScreeningReferralStats['referrals'] as $ref)
+                            <div class="px-4 py-2.5 border-b border-slate-100 last:border-0 flex items-center justify-between text-xs transition-colors hover:bg-slate-50">
+                                <div>
+                                    <span class="font-extrabold text-slate-800 block">{{ $ref['name'] }}</span>
+                                    <span class="text-[10px] text-slate-500 block truncate max-w-[200px]" title="{{ $ref['reason'] }}">{{ $ref['reason'] }}</span>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-slate-400 block font-bold text-[10px]">{{ $ref['date'] }}</span>
+                                    <span class="text-slate-650 font-black block text-[10px]">{{ $ref['posyandu'] }}</span>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="p-6 text-center text-slate-400 text-xs font-semibold">
+                                Tidak ada log rujukan medis lansia pada periode ini.
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     {{-- Lansia Metabolic Risk Chart --}}
     <div class="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-xs mt-6">

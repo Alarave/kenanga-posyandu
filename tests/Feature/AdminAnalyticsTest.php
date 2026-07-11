@@ -595,6 +595,64 @@ test('analytics component can drill down on pregnancy imt and counseling topic',
     expect(collect($dataCounseling)->pluck('name')->toArray())->toContain($p1->full_name);
 });
 
+test('analytics component can calculate lansia obesity, sensory, and screening stats and support drill down', function () {
+    $pedukuhan = Pedukuhan::factory()->create();
+    $posyandu = Posyandu::factory()->create(['pedukuhan_id' => $pedukuhan->id]);
+
+    $admin = User::factory()->create([
+        'role' => 'admin',
+        'posyandu_id' => $posyandu->id,
+    ]);
+
+    $p1 = \App\Models\Patient::factory()->create([
+        'posyandu_id' => $posyandu->id,
+        'category' => 'lansia',
+        'status_mutasi' => 'aktif',
+        'gender' => 'L',
+    ]);
+    \App\Models\MedicalRecord::factory()->create([
+        'patient_id' => $p1->id,
+        'visit_date' => now(),
+        'waist_circumference' => 95,
+        'eye_test' => 'Katarak',
+        'ear_test' => 'Normal',
+        'puma_screening' => 'Ya',
+        'tbc_screening_status' => 'Tidak',
+        'mental_screening' => 'Tidak',
+        'referral_type' => 'Puskesmas',
+        'complaint' => 'Gangguan napas',
+    ]);
+
+    $this->actingAs($admin);
+
+    $comp = Livewire::test(\App\Livewire\Admin\Analytics\LansiaAnalytics::class, [
+        'selectedYear' => now()->year,
+        'selectedMonth' => now()->month,
+        'selectedPosyandu' => $posyandu->id,
+    ]);
+
+    $sensoryObesity = $comp->get('sensoryObesityStats');
+    expect($sensoryObesity['avgWaist'])->toBe(95.0);
+    expect($sensoryObesity['obesitySentral'])->toBe(1);
+    expect($sensoryObesity['eyeIssue'])->toBe(1);
+
+    $screening = $comp->get('specialScreeningReferralStats');
+    expect($screening['pumaCount'])->toBe(1);
+    expect($screening['referrals'])->toHaveCount(1);
+
+    $drillObesity = Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->set('activeTab', 'lansia')
+        ->call('drillDown', 'Lansia - Obesitas Sentral', 'lansia_obesity_sentral', now()->month)
+        ->get('drillDownData');
+    expect(collect($drillObesity)->pluck('name')->toArray())->toContain($p1->full_name);
+
+    $drillEye = Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->set('activeTab', 'lansia')
+        ->call('drillDown', 'Lansia - Gangguan Penglihatan', 'lansia_eye_issue', now()->month)
+        ->get('drillDownData');
+    expect(collect($drillEye)->pluck('name')->toArray())->toContain($p1->full_name);
+});
+
 
 
 
