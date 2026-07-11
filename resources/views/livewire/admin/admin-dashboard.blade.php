@@ -1243,6 +1243,57 @@
                         {{-- Sidebar widgets relocated to row charts --}}                </div>
             </div>
         </div>
+
+        {{-- Quick Actions Widget --}}
+        <div class="widget-card p-5 relative overflow-hidden off-screen-widget">
+            <div class="absolute -right-8 -top-8 w-32 h-32 bg-indigo-50 rounded-full blur-3xl pointer-events-none">
+            </div>
+            <div class="relative z-10">
+                <div class="flex items-center gap-2.5 mb-5">
+                    <div class="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center">
+                        <span class="material-symbols-outlined text-[18px]">bolt</span>
+                    </div>
+                    <span class="font-bold text-slate-900 text-sm">Pintasan Cepat</span>
+                </div>
+                <div class="space-y-2.5">
+                    <a href="{{ route('admin.patients.create') }}"
+                       class="flex items-center justify-between p-3 rounded-xl bg-indigo-50/50 border border-indigo-100 hover:bg-indigo-50 hover:shadow-sm transition-all group font-bold">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-[18px] text-indigo-600 group-hover:scale-110 transition-transform">person_add</span>
+                            <span class="text-xs text-slate-750">Daftarkan Warga Baru</span>
+                        </div>
+                        <span class="material-symbols-outlined text-[14px] text-slate-400">chevron_right</span>
+                    </a>
+
+                    <a href="{{ route('admin.medical-records.create') }}"
+                       class="flex items-center justify-between p-3 rounded-xl bg-emerald-50/50 border border-emerald-100 hover:bg-emerald-50 hover:shadow-sm transition-all group font-bold">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-[18px] text-emerald-600 group-hover:scale-110 transition-transform">add_moderator</span>
+                            <span class="text-xs text-slate-755">Input Rekam Medis</span>
+                        </div>
+                        <span class="material-symbols-outlined text-[14px] text-slate-400">chevron_right</span>
+                    </a>
+
+                    <a href="{{ route('admin.patients.import') }}"
+                       class="flex items-center justify-between p-3 rounded-xl bg-blue-50/50 border border-blue-100 hover:bg-blue-50 hover:shadow-sm transition-all group font-bold">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-[18px] text-blue-600 group-hover:scale-110 transition-transform">cloud_upload</span>
+                            <span class="text-xs text-slate-750">Impor Data Excel</span>
+                        </div>
+                        <span class="material-symbols-outlined text-[14px] text-slate-400">chevron_right</span>
+                    </a>
+
+                    <a href="{{ route('admin.reports.index') }}"
+                       class="flex items-center justify-between p-3 rounded-xl bg-amber-50/50 border border-amber-100 hover:bg-amber-50 hover:shadow-sm transition-all group font-bold">
+                        <div class="flex items-center gap-3">
+                            <span class="material-symbols-outlined text-[18px] text-amber-600 group-hover:scale-110 transition-transform">analytics</span>
+                            <span class="text-xs text-slate-750">Ekspor Laporan Bulanan</span>
+                        </div>
+                        <span class="material-symbols-outlined text-[14px] text-slate-400">chevron_right</span>
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
