@@ -51,7 +51,9 @@
     <div class="flex items-center gap-2 md:gap-3 flex-shrink-0" x-data="{ profileOpen: false }" @keydown.escape.window="profileOpen = false; $dispatch('close-dropdowns')" @close-dropdowns.window="if ($event.detail !== 'profile') profileOpen = false" x-on:livewire:navigating.window="profileOpen = false" wire:ignore.self>
 
         {{-- ── Search (desktop) ── --}}
-        @livewire('global-search')
+        <div class="hidden lg:block w-full max-w-xl">
+            @livewire('global-search')
+        </div>
 
         {{-- ── Mobile search toggle ── --}}
         <button id="mobileSearchBtn"
