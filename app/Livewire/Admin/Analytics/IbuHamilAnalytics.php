@@ -255,6 +255,39 @@ class IbuHamilAnalytics extends Component
         ];
     }
 
+    // AH-08: Skrining TBC
+    #[\Livewire\Attributes\Computed]
+    public function tbcStats()
+    {
+        $records = $this->applyPosyanduScope(\App\Models\MedicalRecord::query(), $this->selectedPosyandu)
+            ->whereHas('patient', function ($q) {
+                $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
+            })
+            ->whereYear('visit_date', $this->selectedYear)
+            ->when($this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $this->selectedMonth))
+            ->orderBy('visit_date', 'desc')
+            ->orderBy('id', 'desc')
+            ->get()
+            ->unique('patient_id');
+
+        $total = $records->count();
+
+        $tbc = $records->filter(function($r) {
+            return in_array(strtolower(trim($r->tbc_screening_cough ?? '')), ['ya', '1', 'true', 'sudah'])
+                || in_array(strtolower(trim($r->tbc_screening_fever ?? '')), ['ya', '1', 'true', 'sudah'])
+                || in_array(strtolower(trim($r->tbc_screening_weight_loss ?? '')), ['ya', '1', 'true', 'sudah'])
+                || in_array(strtolower(trim($r->tbc_screening_contact ?? '')), ['ya', '1', 'true', 'sudah']);
+        })->count();
+
+        $normal = $total - $tbc;
+
+        return [
+            'tbc' => $tbc,
+            'normal' => $normal,
+            'total' => $total,
+        ];
+    }
+
     // Daftar Warga Ibu Hamil untuk Tabel Pemantauan Klinis
     #[\Livewire\Attributes\Computed]
     public function maternalTableData()
@@ -362,6 +395,7 @@ class IbuHamilAnalytics extends Component
             'hypertensionStats' => $this->hypertensionStats(),
             'ttdStats' => $this->ttdStats(),
             'kekStats' => $this->kekStats(),
+            'tbcStats' => $this->tbcStats(),
             'ancStats' => $this->ancStats(),
             'maternalTableData' => $this->maternalTableData(),
         ]);

@@ -8,11 +8,11 @@
         </style>
 
         {{-- Stats Grid Ibu Hamil --}}
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6">
             {{-- AH-02 & 03: Pregnancy Safety --}}
             <div wire:click="$parent.drillDown('Ibu Hamil - Risiko Tinggi &amp; 4T', 'pregnancy_high_risk', {{ $selectedMonth ?? 'null' }})"
                  class="relative overflow-hidden bg-gradient-to-br from-white to-emerald-50/10 rounded-3xl p-6 border border-emerald-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-emerald-100/40 hover:-translate-y-1 hover:border-emerald-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group pregnancy-card">
-                
+                 
                 {{-- Background Watermark Icon --}}
                 <span class="material-symbols-outlined absolute -bottom-6 -right-6 text-[120px] text-emerald-500 opacity-[0.04] transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 pointer-events-none">shield</span>
 
@@ -48,7 +48,7 @@
             {{-- AH-07: KEK (Kekurangan Energi Kronis) --}}
             <div wire:click="$parent.drillDown('Ibu Hamil - Kasus KEK', 'pregnancy_kek', {{ $selectedMonth ?? 'null' }})"
                  class="relative overflow-hidden bg-gradient-to-br from-white to-purple-50/10 rounded-3xl p-6 border border-purple-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-purple-100/40 hover:-translate-y-1 hover:border-purple-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group pregnancy-card">
-                
+                 
                 {{-- Background Watermark Icon --}}
                 <span class="material-symbols-outlined absolute -bottom-6 -right-6 text-[120px] text-purple-500 opacity-[0.04] transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 pointer-events-none">straighten</span>
 
@@ -111,6 +111,41 @@
                     <div class="flex items-center gap-2">
                         <span class="text-rose-700 font-extrabold bg-rose-50 px-2.5 py-0.5 rounded-lg">{{ $hypertensionStats['hypertension'] }} Ibu</span>
                         <span class="material-symbols-outlined text-[14px] !w-auto !overflow-visible text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 hover-text-rose">arrow_forward</span>
+                    </div>
+                </div>
+            </div>
+
+            {{-- AH-08: Skrining TBC --}}
+            <div wire:click="$parent.drillDown('Ibu Hamil - Skrining Gejala TBC', 'pregnancy_tbc', {{ $selectedMonth ?? 'null' }})"
+                 class="relative overflow-hidden bg-gradient-to-br from-white to-amber-50/10 rounded-3xl p-6 border border-amber-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-amber-100/40 hover:-translate-y-1 hover:border-amber-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group pregnancy-card">
+                 
+                {{-- Background Watermark Icon --}}
+                <span class="material-symbols-outlined absolute -bottom-6 -right-6 text-[120px] text-amber-500 opacity-[0.04] transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 pointer-events-none">clinical_notes</span>
+
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200/50 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:bg-amber-100 group-hover:text-amber-750">
+                            <span class="material-symbols-outlined text-[26px]">clinical_notes</span>
+                        </div>
+                        <span class="text-[10px] font-black text-amber-700 uppercase tracking-widest bg-amber-50 px-2.5 py-1 rounded-lg">Skrining TBC</span>
+                    </div>
+                    <div class="flex items-baseline justify-between w-full">
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-5xl font-black text-amber-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ $tbcStats['normal'] }}</span>
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Ibu Hamil</span>
+                        </div>
+                        @php
+                            $tbcPercentage = $tbcStats['total'] > 0 ? round(($tbcStats['normal'] / $tbcStats['total']) * 100) : 100;
+                        @endphp
+                        <span class="text-xs font-extrabold text-amber-750 bg-amber-100/80 px-2 py-0.5 rounded-md">{{ $tbcPercentage }}% Sehat</span>
+                    </div>
+                    <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Ibu hamil yang tidak memiliki gejala TBC (Batuk terus, Demam, BB turun, Kontak TBC).</p>
+                </div>
+                <div class="mt-6 pt-4 border-t border-slate-100 flex justify-between items-center pr-2">
+                    <span class="text-xs font-bold text-slate-500 transition-colors duration-300 hover-text-amber">Gejala TBC:</span>
+                    <div class="flex items-center gap-2">
+                        <span class="text-amber-700 font-extrabold bg-amber-50 px-2.5 py-0.5 rounded-lg">{{ $tbcStats['tbc'] }} Ibu</span>
+                        <span class="material-symbols-outlined text-[14px] !w-auto !overflow-visible text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 hover-text-amber">arrow_forward</span>
                     </div>
                 </div>
             </div>

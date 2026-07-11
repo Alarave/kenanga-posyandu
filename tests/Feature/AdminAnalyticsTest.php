@@ -392,7 +392,7 @@ test('ibu hamil analytics component computes correct health scorecards and cover
         'posyandu_id' => $posyandu->id,
     ]);
 
-    // Patient 1: High risk (Age 18), TD normal (120/80), Fe received (1)
+    // Patient 1: High risk (Age 18), TD normal (120/80), Fe received (1), TBC cough (Ya)
     $p1 = \App\Models\Patient::factory()->create([
         'posyandu_id' => $posyandu->id,
         'category' => 'ibu_hamil',
@@ -406,9 +406,10 @@ test('ibu hamil analytics component computes correct health scorecards and cover
         'diastolic_bp' => 80,
         'nakes_gives_fe_mms' => 1,
         'height' => 150,
+        'tbc_screening_cough' => 'Ya',
     ]);
 
-    // Patient 2: Normal risk (Age 25), TD hipertensi (140/90), Fe not received (0)
+    // Patient 2: Normal risk (Age 25), TD hipertensi (140/90), Fe not received (0), TBC cough (Tidak)
     $p2 = \App\Models\Patient::factory()->create([
         'posyandu_id' => $posyandu->id,
         'category' => 'ibu_hamil',
@@ -422,6 +423,7 @@ test('ibu hamil analytics component computes correct health scorecards and cover
         'diastolic_bp' => 90,
         'nakes_gives_fe_mms' => 0,
         'height' => 150,
+        'tbc_screening_cough' => 'Tidak',
     ]);
 
     $this->actingAs($admin);
@@ -433,8 +435,9 @@ test('ibu hamil analytics component computes correct health scorecards and cover
     ])
     ->assertSeeHtml('Risiko Rendah')
     ->assertSeeHtml('Tekanan Darah Sehat')
+    ->assertSeeHtml('Skrining TBC')
     ->assertSeeHtml('Cakupan TTD')
-    ->assertSeeHtml('50%'); // 1 out of 2 received Fe (50% coverage)
+    ->assertSeeHtml('50%'); // 1 out of 2 received Fe (50% coverage) / 50% TBC Normal
 });
 
 test('analytics component loads live health alerts for high risk cases', function () {

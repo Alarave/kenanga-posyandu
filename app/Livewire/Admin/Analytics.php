@@ -266,6 +266,7 @@ class Analytics extends BaseAdminComponent
             'pregnancy_hypertension' => 'Kasus Hipertensi',
             'pregnancy_tablet_fe' => 'Pemberian Tablet Fe',
             'pregnancy_kek' => 'Kasus KEK',
+            'pregnancy_tbc' => 'Skrining Gejala TBC',
             'pregnancy_k1' => 'Kunjungan K1',
             'pregnancy_k2' => 'Kunjungan K2',
             'pregnancy_k3' => 'Kunjungan K3',
@@ -648,14 +649,14 @@ class Analytics extends BaseAdminComponent
                 ->where('cholesterol', '>=', 200),
             'lansia_hiperurisemia' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
                 ->where('uric_acid', '>=', 7.0),
-            'pregnancy_high_risk', 'pregnancy_hypertension', 'pregnancy_tablet_fe', 'pregnancy_kek' => $query->whereHas('patient', function ($q) {
+            'pregnancy_high_risk', 'pregnancy_hypertension', 'pregnancy_tablet_fe', 'pregnancy_kek', 'pregnancy_tbc' => $query->whereHas('patient', function ($q) {
                     $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
                 }),
             default => null,
         };
 
         $records = $query->latest('visit_date')->latest('id')->get();
-        if (str_starts_with($type, 'pregnancy_') && in_array($type, ['pregnancy_high_risk', 'pregnancy_hypertension', 'pregnancy_tablet_fe', 'pregnancy_kek'])) {
+        if (str_starts_with($type, 'pregnancy_') && in_array($type, ['pregnancy_high_risk', 'pregnancy_hypertension', 'pregnancy_tablet_fe', 'pregnancy_kek', 'pregnancy_tbc'])) {
             $records = $records->unique('patient_id');
             if ($type === 'pregnancy_high_risk') {
                 $records = $records->filter(function ($r) {
@@ -673,6 +674,13 @@ class Analytics extends BaseAdminComponent
             } elseif ($type === 'pregnancy_tablet_fe') {
                 $records = $records->filter(function ($r) {
                     return !in_array(strtolower(trim($r->nakes_gives_fe_mms)), ['ya', '1', 'true', 'sudah']);
+                });
+            } elseif ($type === 'pregnancy_tbc') {
+                $records = $records->filter(function ($r) {
+                    return in_array(strtolower(trim($r->tbc_screening_cough ?? '')), ['ya', '1', 'true', 'sudah'])
+                        || in_array(strtolower(trim($r->tbc_screening_fever ?? '')), ['ya', '1', 'true', 'sudah'])
+                        || in_array(strtolower(trim($r->tbc_screening_weight_loss ?? '')), ['ya', '1', 'true', 'sudah'])
+                        || in_array(strtolower(trim($r->tbc_screening_contact ?? '')), ['ya', '1', 'true', 'sudah']);
                 });
             }
         }
@@ -700,6 +708,14 @@ class Analytics extends BaseAdminComponent
                 'pregnancy_hypertension' => 'TD: '.($r->systolic_bp ?: '-').'/'.($r->diastolic_bp ?: '-').' mmHg',
                 'pregnancy_tablet_fe' => $r->nakes_gives_fe_mms ? 'Tablet Fe: Menerima' : 'Tablet Fe: Belum Menerima',
                 'pregnancy_kek' => 'LILA: '.($r->upper_arm_circumference ?: '-').' cm',
+                'pregnancy_tbc' => (function() use ($r) {
+                    $symptoms = [];
+                    if (in_array(strtolower(trim($r->tbc_screening_cough ?? '')), ['ya', '1', 'true', 'sudah'])) $symptoms[] = 'Batuk';
+                    if (in_array(strtolower(trim($r->tbc_screening_fever ?? '')), ['ya', '1', 'true', 'sudah'])) $symptoms[] = 'Demam';
+                    if (in_array(strtolower(trim($r->tbc_screening_weight_loss ?? '')), ['ya', '1', 'true', 'sudah'])) $symptoms[] = 'BB Turun';
+                    if (in_array(strtolower(trim($r->tbc_screening_contact ?? '')), ['ya', '1', 'true', 'sudah'])) $symptoms[] = 'Kontak TBC';
+                    return count($symptoms) > 0 ? 'Gejala: ' . implode(', ', $symptoms) : 'Bebas Gejala';
+                })(),
                 default => $r->nutrition_status ?: (
                     $r->patient?->category === 'lansia' ? 'Lansia' : (
                         $r->patient?->category === 'ibu_hamil' ? 'Ibu Hamil' : (

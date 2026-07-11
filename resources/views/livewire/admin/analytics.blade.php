@@ -1377,7 +1377,7 @@
                 @endif
 
                 {{-- Ibu Hamil Category Tabs --}}
-                @if(in_array($drillDownType, ['pregnancy_high_risk', 'pregnancy_kek', 'pregnancy_hypertension', 'pregnancy_tablet_fe']))
+                @if(in_array($drillDownType, ['pregnancy_high_risk', 'pregnancy_kek', 'pregnancy_hypertension', 'pregnancy_tablet_fe', 'pregnancy_tbc']))
                 <div class="flex flex-wrap gap-2 p-1.5 bg-slate-100 rounded-2xl w-fit">
                     <button wire:click="switchDrillDownCategory('pregnancy_high_risk')" 
                             class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'pregnancy_high_risk' ? 'bg-white text-amber-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
@@ -1393,6 +1393,11 @@
                             class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'pregnancy_hypertension' ? 'bg-white text-rose-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
                         <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
                         Kasus Hipertensi
+                    </button>
+                    <button wire:click="switchDrillDownCategory('pregnancy_tbc')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'pregnancy_tbc' ? 'bg-white text-amber-650 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                        Skrining Gejala TBC
                     </button>
                     <button wire:click="switchDrillDownCategory('pregnancy_tablet_fe')" 
                             class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'pregnancy_tablet_fe' ? 'bg-white text-teal-650 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
@@ -1567,7 +1572,7 @@
                                               }
                                           }
                                       }
-                                      if (str_starts_with($drillDownType, 'pregnancy_') && in_array($drillDownType, ['pregnancy_high_risk', 'pregnancy_kek', 'pregnancy_hypertension', 'pregnancy_tablet_fe'])) {
+                                      if (str_starts_with($drillDownType, 'pregnancy_') && in_array($drillDownType, ['pregnancy_high_risk', 'pregnancy_kek', 'pregnancy_hypertension', 'pregnancy_tablet_fe', 'pregnancy_tbc'])) {
                                           $isDanger = true;
                                           $customStyle = '';
                                       }
