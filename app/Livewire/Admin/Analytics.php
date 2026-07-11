@@ -518,35 +518,72 @@ class Analytics extends BaseAdminComponent
             $records = $query->get()->unique('patient_id');
 
             $filteredRecords = $records->filter(function ($r) use ($type) {
-                $imt = trim($r->imt_plotting_status ?? '');
-                if ($imt === '') return false;
+                $sw = $r->starting_weight ? (float) $r->starting_weight : 0;
+                $sh = $r->starting_height ? (float) $r->starting_height : 0;
+                $cat = null;
+                if ($sw > 0 && $sh > 0) {
+                    $shM = $sh / 100;
+                    $imtVal = $sw / ($shM * $shM);
+                    if ($imtVal < 18.5) $cat = 'Kurus';
+                    elseif ($imtVal >= 18.5 && $imtVal < 25.0) $cat = 'Normal';
+                    elseif ($imtVal >= 25.0 && $imtVal < 30.0) $cat = 'Gemuk';
+                    else $cat = 'Obesitas';
+                } else {
+                    $imt = trim($r->imt_plotting_status ?? '');
+                    if ($imt !== '') {
+                        if (stripos($imt, 'normal') !== false) {
+                            $cat = 'Normal';
+                        } elseif (stripos($imt, 'kurus') !== false || stripos($imt, 'rendah') !== false) {
+                            $cat = 'Kurus';
+                        } elseif (stripos($imt, 'gemuk') !== false || stripos($imt, 'lebih') !== false) {
+                            $cat = 'Gemuk';
+                        } elseif (stripos($imt, 'obes') !== false) {
+                            $cat = 'Obesitas';
+                        }
+                    }
+                }
                 return match ($type) {
-                    'pregnancy_imt_normal' => stripos($imt, 'normal') !== false,
-                    'pregnancy_imt_kurus' => stripos($imt, 'kurus') !== false || stripos($imt, 'rendah') !== false,
-                    'pregnancy_imt_gemuk' => stripos($imt, 'gemuk') !== false || stripos($imt, 'lebih') !== false,
-                    'pregnancy_imt_obesitas' => stripos($imt, 'obes') !== false,
+                    'pregnancy_imt_normal' => $cat === 'Normal',
+                    'pregnancy_imt_kurus' => $cat === 'Kurus',
+                    'pregnancy_imt_gemuk' => $cat === 'Gemuk',
+                    'pregnancy_imt_obesitas' => $cat === 'Obesitas',
                     default => false,
                 };
             });
 
-            $this->drillDownData = $filteredRecords->map(fn ($r) => [
-                'name' => $r->patient?->full_name ?? '-',
-                'nik' => $r->patient?->id_number ?? '-',
-                'posyandu' => $r->patient?->posyandu?->name ?? '-',
-                'nutrition_status' => 'Status IMT: ' . ($r->imt_plotting_status ?: '-'),
-                'visit_date' => $r->visit_date?->format('d/m/Y') ?? '-',
-                'weight' => $r->weight ? $r->weight . ' kg' : '-',
-                'height' => $r->height ? $r->height . ' cm' : '-',
-                'patient_id' => $r->patient_id,
-                'category_warga' => 'Ibu Hamil',
-                'kategori_gizi' => '-',
-                'status_info' => '-',
-                'month_name' => $r->visit_date ? match($r->visit_date->month) {
-                    1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni',
-                    7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
-                    default => '-'
-                } : '-',
-            ])->values()->toArray();
+            $this->drillDownData = $filteredRecords->map(function ($r) {
+                $sw = $r->starting_weight ? (float) $r->starting_weight : 0;
+                $sh = $r->starting_height ? (float) $r->starting_height : 0;
+                $cat = '-';
+                if ($sw > 0 && $sh > 0) {
+                    $shM = $sh / 100;
+                    $imtVal = $sw / ($shM * $shM);
+                    if ($imtVal < 18.5) $cat = 'Kurus (' . round($imtVal, 1) . ')';
+                    elseif ($imtVal >= 18.5 && $imtVal < 25.0) $cat = 'Normal (' . round($imtVal, 1) . ')';
+                    elseif ($imtVal >= 25.0 && $imtVal < 30.0) $cat = 'Gemuk (' . round($imtVal, 1) . ')';
+                    else $cat = 'Obesitas (' . round($imtVal, 1) . ')';
+                } else {
+                    $cat = $r->imt_plotting_status ?: '-';
+                }
+                return [
+                    'name' => $r->patient?->full_name ?? '-',
+                    'nik' => $r->patient?->id_number ?? '-',
+                    'posyandu' => $r->patient?->posyandu?->name ?? '-',
+                    'nutrition_status' => 'IMT Pre-kehamilan: ' . $cat,
+                    'visit_date' => $r->visit_date?->format('d/m/Y') ?? '-',
+                    'weight' => $r->weight ? $r->weight . ' kg' : '-',
+                    'height' => $r->height ? $r->height . ' cm' : '-',
+                    'patient_id' => $r->patient_id,
+                    'category_warga' => 'Ibu Hamil',
+                    'kategori_gizi' => '-',
+                    'status_info' => '-',
+                    'month_name' => $r->visit_date ? match($r->visit_date->month) {
+                        1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni',
+                        7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
+                        default => '-'
+                    } : '-',
+                ];
+            })->values()->toArray();
 
             return;
         }

@@ -419,6 +419,7 @@ class IbuHamilAnalytics extends Component
         foreach ($records as $r) {
             $sw = $r->starting_weight ? (float) $r->starting_weight : 0;
             $cw = $r->weight ? (float) $r->weight : 0;
+            $sh = $r->starting_height ? (float) $r->starting_height : 0;
 
             if ($sw > 0) {
                 $totalStartingWeight += $sw;
@@ -434,19 +435,33 @@ class IbuHamilAnalytics extends Component
                 $totalWithWeightGain++;
             }
 
-            $imt = trim($r->imt_plotting_status ?? '');
-            if ($imt !== '') {
-                if (stripos($imt, 'normal') !== false) {
-                    $imtDistribution['Normal']++;
-                } elseif (stripos($imt, 'kurus') !== false || stripos($imt, 'rendah') !== false) {
-                    $imtDistribution['Kurus']++;
-                } elseif (stripos($imt, 'gemuk') !== false || stripos($imt, 'lebih') !== false) {
-                    $imtDistribution['Gemuk']++;
-                } elseif (stripos($imt, 'obes') !== false) {
-                    $imtDistribution['Obesitas']++;
-                } else {
-                    $imtDistribution['Lainnya']++;
+            $cat = null;
+            if ($sw > 0 && $sh > 0) {
+                $shM = $sh / 100;
+                $imtVal = $sw / ($shM * $shM);
+                if ($imtVal < 18.5) $cat = 'Kurus';
+                elseif ($imtVal >= 18.5 && $imtVal < 25.0) $cat = 'Normal';
+                elseif ($imtVal >= 25.0 && $imtVal < 30.0) $cat = 'Gemuk';
+                else $cat = 'Obesitas';
+            } else {
+                $imt = trim($r->imt_plotting_status ?? '');
+                if ($imt !== '') {
+                    if (stripos($imt, 'normal') !== false) {
+                        $cat = 'Normal';
+                    } elseif (stripos($imt, 'kurus') !== false || stripos($imt, 'rendah') !== false) {
+                        $cat = 'Kurus';
+                    } elseif (stripos($imt, 'gemuk') !== false || stripos($imt, 'lebih') !== false) {
+                        $cat = 'Gemuk';
+                    } elseif (stripos($imt, 'obes') !== false) {
+                        $cat = 'Obesitas';
+                    } else {
+                        $cat = 'Lainnya';
+                    }
                 }
+            }
+
+            if ($cat) {
+                $imtDistribution[$cat]++;
             }
         }
 
