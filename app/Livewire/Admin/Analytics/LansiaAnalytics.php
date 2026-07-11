@@ -5,7 +5,6 @@ namespace App\Livewire\Admin\Analytics;
 use App\Livewire\Traits\HasPosyanduScope;
 use App\Models\MedicalRecord;
 use App\Models\Patient;
-use Livewire\Attributes\Computed;
 use Livewire\Attributes\Reactive;
 use Livewire\Component;
 
@@ -22,12 +21,74 @@ class LansiaAnalytics extends Component
     #[Reactive]
     public $selectedPosyandu;
 
-    // AL-01: Kategori Umur
-    #[Computed]
-    public function ageCategories()
+    /**
+     * Single cached collection of latest lansia records per patient.
+     * Loaded once per render cycle, shared across all metric calculations.
+     */
+    private $cachedRecords = null;
+
+    private $cachedPatients = null;
+
+    /**
+     * Load lansia medical records ONCE — replaces 4 duplicate DB queries.
+     * Selects only the columns needed across all metric calculations.
+     */
+    private function getLatestRecords()
     {
-        $patients = $this->applyPosyanduScope(Patient::query(), $this->selectedPosyandu)
-            ->where('category', 'lansia')->where('status_mutasi', 'aktif')->get();
+        if ($this->cachedRecords !== null) {
+            return $this->cachedRecords;
+        }
+
+        $this->cachedRecords = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
+            ->with(['patient:id,gender,birth_date,full_name,posyandu_id,category,status_mutasi'])
+            ->whereHas('patient', function ($q) {
+                $q->where('category', 'lansia')->where('status_mutasi', 'aktif');
+            })
+            ->whereYear('visit_date', $this->selectedYear)
+            ->when($this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $this->selectedMonth))
+            ->select([
+                'id', 'patient_id', 'visit_date',
+                'weight', 'height', 'waist_circumference',
+                'systolic_bp', 'diastolic_bp', 'blood_sugar', 'cholesterol', 'uric_acid',
+                'eye_test', 'ear_test',
+                'puma_screening', 'tbc_screening_status', 'mental_screening', 'contraception',
+            ])
+            ->orderBy('visit_date', 'desc')
+            ->orderBy('id', 'desc')
+            ->get()
+            ->unique('patient_id');
+
+        return $this->cachedRecords;
+    }
+
+    /**
+     * Load lansia patients ONCE for age categories.
+     */
+    private function getLansiaPatients()
+    {
+        if ($this->cachedPatients !== null) {
+            return $this->cachedPatients;
+        }
+
+        $this->cachedPatients = $this->applyPosyanduScope(Patient::query(), $this->selectedPosyandu)
+            ->where('category', 'lansia')
+            ->where('status_mutasi', 'aktif')
+            ->select(['id', 'birth_date'])
+            ->get();
+
+        return $this->cachedPatients;
+    }
+
+    /**
+     * Compute all lansia analytics in a single pass over the cached records.
+     * Returns a consolidated array with all metrics.
+     */
+    private function computeAllStats(): array
+    {
+        $records = $this->getLatestRecords();
+        $patients = $this->getLansiaPatients();
+
+        // ── AL-01: Kategori Umur (from patients table) ──
         $pra = 0;
         $lansia = 0;
         $resti = 0;
@@ -44,66 +105,43 @@ class LansiaAnalytics extends Component
             }
         }
 
-        return ['pra' => $pra, 'lansia' => $lansia, 'resti' => $resti];
-    }
-
-    // AL-02: IMT
-    #[Computed]
-    public function imtStats()
-    {
-        $records = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
-            ->whereHas('patient', function ($q) {
-                $q->where('category', 'lansia')->where('status_mutasi', 'aktif');
-            })
-            ->whereYear('visit_date', $this->selectedYear)
-            ->when($this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $this->selectedMonth))
-            ->orderBy('visit_date', 'desc')
-            ->orderBy('id', 'desc')
-            ->get()
-            ->unique('patient_id');
-
-        $kurang = 0;
-        $normal = 0;
-        $lebih = 0;
-        $obesitas = 0;
-        foreach ($records as $r) {
-            if ($r->weight && $r->height) {
-                $imt = $r->weight / (($r->height / 100) ** 2);
-                if ($imt < 18.5) {
-                    $kurang++;
-                } elseif ($imt < 25) {
-                    $normal++;
-                } elseif ($imt < 27) {
-                    $lebih++;
-                } else {
-                    $obesitas++;
-                }
-            }
-        }
-
-        return ['kurang' => $kurang, 'normal' => $normal, 'lebih' => $lebih, 'obesitas' => $obesitas];
-    }
-
-    // AL-03 to AL-06: Metabolic Risks
-    #[Computed]
-    public function metabolicRisks()
-    {
-        $records = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
-            ->whereHas('patient', function ($q) {
-                $q->where('category', 'lansia')->where('status_mutasi', 'aktif');
-            })
-            ->whereYear('visit_date', $this->selectedYear)
-            ->when($this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $this->selectedMonth))
-            ->orderBy('visit_date', 'desc')
-            ->orderBy('id', 'desc')
-            ->get()
-            ->unique('patient_id');
-
+        // ── Single pass over records for ALL metrics ──
+        $imtKurang = 0;
+        $imtNormal = 0;
+        $imtLebih = 0;
+        $imtObesitas = 0;
         $hipertensi = 0;
         $gula = 0;
         $kolesterol = 0;
         $asamUrat = 0;
+        $totalWaist = 0;
+        $countWaist = 0;
+        $obesitySentral = 0;
+        $eyeIssue = 0;
+        $earIssue = 0;
+        $pumaCount = 0;
+        $tbcCount = 0;
+        $mentalCount = 0;
+        $contraceptionCount = 0;
+
+        $totalValidLansia = $records->count();
+
         foreach ($records as $r) {
+            // AL-02: IMT
+            if ($r->weight && $r->height) {
+                $imt = $r->weight / (($r->height / 100) ** 2);
+                if ($imt < 18.5) {
+                    $imtKurang++;
+                } elseif ($imt < 25) {
+                    $imtNormal++;
+                } elseif ($imt < 27) {
+                    $imtLebih++;
+                } else {
+                    $imtObesitas++;
+                }
+            }
+
+            // AL-03 to AL-06: Metabolic Risks
             if ($r->systolic_bp >= 140 || $r->diastolic_bp >= 90) {
                 $hipertensi++;
             }
@@ -116,34 +154,8 @@ class LansiaAnalytics extends Component
             if ($r->uric_acid >= 7.0) {
                 $asamUrat++;
             }
-        }
 
-        return ['hipertensi' => $hipertensi, 'gula' => $gula, 'kolesterol' => $kolesterol, 'asamUrat' => $asamUrat];
-    }
-
-    // AL-07: Obesitas Sentral & Gangguan Indra
-    #[Computed]
-    public function sensoryObesityStats()
-    {
-        $records = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
-            ->whereHas('patient', function ($q) {
-                $q->where('category', 'lansia')->where('status_mutasi', 'aktif');
-            })
-            ->whereYear('visit_date', $this->selectedYear)
-            ->when($this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $this->selectedMonth))
-            ->orderBy('visit_date', 'desc')
-            ->orderBy('id', 'desc')
-            ->get()
-            ->unique('patient_id');
-
-        $totalWaist = 0;
-        $countWaist = 0;
-        $obesitySentral = 0;
-        $eyeIssue = 0;
-        $earIssue = 0;
-        $totalValidLansia = $records->count();
-
-        foreach ($records as $r) {
+            // AL-07: Obesitas Sentral & Gangguan Indra
             $gender = $r->patient?->gender ?? '';
             $wc = $r->waist_circumference ? (float) $r->waist_circumference : 0;
             if ($wc > 0) {
@@ -163,71 +175,37 @@ class LansiaAnalytics extends Component
             if ($ear !== '' && $ear !== '-' && $ear !== 'normal') {
                 $earIssue++;
             }
-        }
 
-        $avgWaist = $countWaist > 0 ? round($totalWaist / $countWaist, 1) : 0;
-        $obesityPct = $totalValidLansia > 0 ? round(($obesitySentral / $totalValidLansia) * 100) : 0;
-        $eyePct = $totalValidLansia > 0 ? round(($eyeIssue / $totalValidLansia) * 100) : 0;
-        $earPct = $totalValidLansia > 0 ? round(($earIssue / $totalValidLansia) * 100) : 0;
-
-        return [
-            'avgWaist' => $avgWaist,
-            'obesitySentral' => $obesitySentral,
-            'obesityPct' => $obesityPct,
-            'eyeIssue' => $eyeIssue,
-            'eyePct' => $eyePct,
-            'earIssue' => $earIssue,
-            'earPct' => $earPct,
-            'total' => $totalValidLansia,
-        ];
-    }
-
-    // AL-08: Skrining Khusus Lansia & Rujukan
-    #[Computed]
-    public function specialScreeningReferralStats()
-    {
-        $records = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
-            ->whereHas('patient', function ($q) {
-                $q->where('category', 'lansia')->where('status_mutasi', 'aktif');
-            })
-            ->whereYear('visit_date', $this->selectedYear)
-            ->when($this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $this->selectedMonth))
-            ->orderBy('visit_date', 'desc')
-            ->orderBy('id', 'desc')
-            ->get()
-            ->unique('patient_id');
-
-        $pumaCount = 0;
-        $tbcCount = 0;
-        $mentalCount = 0;
-        $contraceptionCount = 0;
-        $totalValidLansia = $records->count();
-
-        foreach ($records as $r) {
-            $puma = strtolower(trim($r->puma_screening ?? ''));
-            if ($puma === 'ya' || $puma === '1' || $puma === 'true' || $puma === 'sudah') {
+            // AL-08: Skrining Khusus
+            $pumaVal = strtolower(trim($r->puma_screening ?? ''));
+            if ($pumaVal === 'ya' || $pumaVal === '1' || $pumaVal === 'true' || $pumaVal === 'sudah') {
                 $pumaCount++;
             }
-            $tbc = strtolower(trim($r->tbc_screening_status ?? ''));
-            if ($tbc === 'ya' || $tbc === '1' || $tbc === 'true' || $tbc === 'sudah' || $tbc === 'gejala terindikasi') {
+            $tbcVal = strtolower(trim($r->tbc_screening_status ?? ''));
+            if ($tbcVal === 'ya' || $tbcVal === '1' || $tbcVal === 'true' || $tbcVal === 'sudah' || $tbcVal === 'gejala terindikasi') {
                 $tbcCount++;
             }
-            $mental = strtolower(trim($r->mental_screening ?? ''));
-            if ($mental === 'ya' || $mental === '1' || $mental === 'true' || $mental === 'sudah' || $mental === 'ada masalah') {
+            $mentalVal = strtolower(trim($r->mental_screening ?? ''));
+            if ($mentalVal === 'ya' || $mentalVal === '1' || $mentalVal === 'true' || $mentalVal === 'sudah' || $mentalVal === 'ada masalah') {
                 $mentalCount++;
             }
-            $kb = strtolower(trim($r->contraception ?? ''));
-            if ($kb === 'ya' || $kb === '1' || $kb === 'true' || $kb === 'sudah' || $kb === 'aktif') {
+            $kbVal = strtolower(trim($r->contraception ?? ''));
+            if ($kbVal === 'ya' || $kbVal === '1' || $kbVal === 'true' || $kbVal === 'sudah' || $kbVal === 'aktif') {
                 $contraceptionCount++;
             }
         }
 
+        // Computed percentages
+        $avgWaist = $countWaist > 0 ? round($totalWaist / $countWaist, 1) : 0;
+        $obesityPct = $totalValidLansia > 0 ? round(($obesitySentral / $totalValidLansia) * 100) : 0;
+        $eyePct = $totalValidLansia > 0 ? round(($eyeIssue / $totalValidLansia) * 100) : 0;
+        $earPct = $totalValidLansia > 0 ? round(($earIssue / $totalValidLansia) * 100) : 0;
         $pumaPct = $totalValidLansia > 0 ? round(($pumaCount / $totalValidLansia) * 100) : 0;
         $tbcPct = $totalValidLansia > 0 ? round(($tbcCount / $totalValidLansia) * 100) : 0;
         $mentalPct = $totalValidLansia > 0 ? round(($mentalCount / $totalValidLansia) * 100) : 0;
         $contraceptionPct = $totalValidLansia > 0 ? round(($contraceptionCount / $totalValidLansia) * 100) : 0;
 
-        // Recent referrals (referral_type is not null and not 'None')
+        // Referrals — separate lightweight query (only fetches 3 rows)
         $referrals = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
             ->with(['patient.posyandu'])
             ->whereHas('patient', function ($q) {
@@ -251,27 +229,35 @@ class LansiaAnalytics extends Component
             ]);
 
         return [
-            'pumaCount' => $pumaCount,
-            'pumaPct' => $pumaPct,
-            'tbcCount' => $tbcCount,
-            'tbcPct' => $tbcPct,
-            'mentalCount' => $mentalCount,
-            'mentalPct' => $mentalPct,
-            'contraceptionCount' => $contraceptionCount,
-            'contraceptionPct' => $contraceptionPct,
-            'referrals' => $referrals,
-            'total' => $totalValidLansia,
+            'ageCategories' => ['pra' => $pra, 'lansia' => $lansia, 'resti' => $resti],
+            'imtStats' => ['kurang' => $imtKurang, 'normal' => $imtNormal, 'lebih' => $imtLebih, 'obesitas' => $imtObesitas],
+            'metabolicRisks' => ['hipertensi' => $hipertensi, 'gula' => $gula, 'kolesterol' => $kolesterol, 'asamUrat' => $asamUrat],
+            'sensoryObesityStats' => [
+                'avgWaist' => $avgWaist, 'obesitySentral' => $obesitySentral, 'obesityPct' => $obesityPct,
+                'eyeIssue' => $eyeIssue, 'eyePct' => $eyePct, 'earIssue' => $earIssue, 'earPct' => $earPct,
+                'total' => $totalValidLansia,
+            ],
+            'specialScreeningReferralStats' => [
+                'pumaCount' => $pumaCount, 'pumaPct' => $pumaPct,
+                'tbcCount' => $tbcCount, 'tbcPct' => $tbcPct,
+                'mentalCount' => $mentalCount, 'mentalPct' => $mentalPct,
+                'contraceptionCount' => $contraceptionCount, 'contraceptionPct' => $contraceptionPct,
+                'referrals' => $referrals, 'total' => $totalValidLansia,
+            ],
         ];
     }
 
     public function render()
     {
+        $stats = $this->computeAllStats();
+
         return view('livewire.admin.analytics.lansia-analytics', [
-            'ageCategories' => $this->ageCategories(),
-            'imtStats' => $this->imtStats(),
-            'metabolicRisks' => $this->metabolicRisks(),
-            'sensoryObesityStats' => $this->sensoryObesityStats(),
-            'specialScreeningReferralStats' => $this->specialScreeningReferralStats(),
+            'ageCategories' => $stats['ageCategories'],
+            'imtStats' => $stats['imtStats'],
+            'metabolicRisks' => $stats['metabolicRisks'],
+            'sensoryObesityStats' => $stats['sensoryObesityStats'],
+            'specialScreeningReferralStats' => $stats['specialScreeningReferralStats'],
         ]);
     }
 }
+

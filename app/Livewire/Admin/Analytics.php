@@ -194,19 +194,22 @@ class Analytics extends BaseAdminComponent
         $this->filterNutritionStatus = '';
         $this->drillDownData = [];
         $this->showDrillDown = false;
-        $this->loadData();
+        // Only reload recent records + alerts for the new tab — no full recalculation
+        $this->loadRecentRecords();
     }
 
     // ── ANA-15: Search filter updates ──
     public function updatedTableSearch(): void
     {
-        $this->loadData();
+        // Only reload recent records tables — no need to recalculate all analytics
+        $this->loadRecentRecords();
     }
 
     // ── ANA-16: Nutrition status filter ──
     public function updatedFilterNutritionStatus(): void
     {
-        $this->loadData();
+        // Only reload recent records tables — no need to recalculate all analytics
+        $this->loadRecentRecords();
     }
 
     public string $drillDownType = '';
@@ -916,7 +919,7 @@ class Analytics extends BaseAdminComponent
                     return count($reasons) > 0 ? implode(' & ', $reasons) : 'Risiko Tinggi';
                 })(),
                 'pregnancy_hypertension' => 'TD: '.($r->systolic_bp ?: '-').'/'.($r->diastolic_bp ?: '-').' mmHg',
-                'pregnancy_tablet_fe' => $r->nakes_gives_fe_mms ? 'Tablet Fe: Menerima' : 'Tablet Fe: Belum Menerima',
+                'pregnancy_tablet_fe' => in_array(strtolower(trim($r->nakes_gives_fe_mms ?? '')), ['ya', '1', 'true', 'sudah']) ? 'Tablet Fe: Menerima' : 'Tablet Fe: Belum Menerima',
                 'pregnancy_kek' => 'LILA: '.($r->upper_arm_circumference ?: '-').' cm',
                 'pregnancy_tbc' => (function() use ($r) {
                     $symptoms = [];
@@ -1067,60 +1070,30 @@ class Analytics extends BaseAdminComponent
             trendLansiaHyperuricemia: $this->trendLansiaHyperuricemia
         );
 
-        // Recent records (filtered by month/year/posyandu + gender)
-        $medicalRecordQuery = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
-            ->whereYear('visit_date', $this->selectedYear);
-
-        if ($this->selectedMonth) {
-            $medicalRecordQuery->whereMonth('visit_date', $this->selectedMonth);
-        }
-
-        // ANA-16: apply nutrition status filter when set
-        if ($this->filterNutritionStatus) {
-            if ($this->filterNutritionStatus === 'Gizi Baik') {
-                $medicalRecordQuery->where(fn ($q) => $q->whereNull('nutrition_status')
-                    ->orWhere('nutrition_status', '')
-                    ->orWhere('nutrition_status', 'Gizi Baik'));
-            } else {
-                $medicalRecordQuery->where('nutrition_status', $this->filterNutritionStatus);
-            }
-        }
-
-        // ANA-15: apply search when set
-        if ($this->tableSearch) {
-            $searchTerm = '%'.strtolower($this->tableSearch).'%';
-            $blindIndex = Patient::generateBlindIndex($this->tableSearch);
-            $medicalRecordQuery->whereHas('patient', function ($q) use ($searchTerm, $blindIndex) {
-                $q->whereRaw('LOWER(full_name) LIKE ?', [$searchTerm])
-                    ->orWhere('id_number_hash', $blindIndex);
-            });
-        }
-
-        $this->recentRecords = (clone $medicalRecordQuery)
-            ->with(['patient.posyandu'])
-            ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
-            ->latest('visit_date')
-            ->limit(20)
-            ->get();
-
-        $this->recentPregnancyRecords = (clone $medicalRecordQuery)
-            ->with(['patient.posyandu'])
-            ->whereHas('patient', fn ($q) => $q->where('category', 'ibu_hamil'))
-            ->latest('visit_date')
-            ->limit(20)
-            ->get();
-
-        $this->recentLansiaRecords = (clone $medicalRecordQuery)
-            ->with(['patient.posyandu'])
-            ->whereHas('patient', fn ($q) => $q->where('category', 'lansia'))
-            ->latest('visit_date')
-            ->limit(5)
-            ->get();
-
-        $this->loadLiveHealthAlerts();
+        // Load recent records only for the active tab
+        $this->loadRecentRecords();
     }
 
+    /**
+     * Fetch analytics data — split into per-section methods.
+     * When called from loadData() with snapshot fallback, all sections run.
+     * The return array is identical to the original monolithic method.
+     */
     protected function fetchAnalyticsData(): array
+    {
+        $overviewData = $this->fetchOverviewData();
+        $balitaData = $this->fetchBalitaData($overviewData['totalBalita']);
+        $pregnancyData = $this->fetchPregnancyData();
+        $lansiaData = $this->fetchLansiaData();
+
+        return array_merge($overviewData, $balitaData, $pregnancyData, $lansiaData);
+    }
+
+    /**
+     * ── SECTION 1: Global Overview Stats ──────────────────────────
+     * Total terdaftar, kunjungan, trend 12 bulan, compare/yearly mode.
+     */
+    protected function fetchOverviewData(): array
     {
         /** @var User $user */
         $user = Auth::user();
@@ -1130,15 +1103,9 @@ class Analytics extends BaseAdminComponent
         $selectedYear = $this->selectedYear;
         $selectedMonth = $this->selectedMonth;
 
-        // Determination date for age calculation
-        $determinationDate = $selectedMonth
-            ? Carbon::create($selectedYear, $selectedMonth)->endOfMonth()
-            : Carbon::create($selectedYear)->endOfYear();
-
         $basePatientFilter = fn ($q) => $q->whereYear('visit_date', $selectedYear)
             ->when($selectedMonth, fn ($mq) => $mq->whereMonth('visit_date', $selectedMonth));
 
-        // ── 1. GLOBAL OVERVIEW STATS ────────────────────────────────
         // Total terdaftar (tidak difilter tahun — semua sasaran posyandu)
         $totalBalita = $this->applyPosyanduScope(Patient::query(), $this->selectedPosyandu)
             ->whereIn('category', ['balita', 'bayi', 'baduta'])
@@ -1177,11 +1144,23 @@ class Analytics extends BaseAdminComponent
             ->when(! $user->isSuperAdmin() && $user->posyandu_id, fn ($q) => $q->where('posyandu_id', $user->posyandu_id))
             ->count();
 
-        // Combined Monthly Visits Trend (12 Months)
-        $recordsYear = (clone $medicalRecordQuery)
-            ->with('patient')
-            ->whereYear('visit_date', $selectedYear)
+        // Combined Monthly Visits Trend (12 Months) — DB-level aggregation
+        $trendVisitCounts = (clone $medicalRecordQuery)
+            ->join('patients', 'medical_records.patient_id', '=', 'patients.id')
+            ->whereYear('medical_records.visit_date', $selectedYear)
+            ->select([
+                DB::raw('MONTH(medical_records.visit_date) as visit_month'),
+                'patients.category',
+                DB::raw('COUNT(*) as total'),
+            ])
+            ->groupBy(DB::raw('MONTH(medical_records.visit_date)'), 'patients.category')
             ->get();
+
+        // Build lookup: [month][category] = count
+        $visitCountMap = [];
+        foreach ($trendVisitCounts as $row) {
+            $visitCountMap[$row->visit_month][$row->category] = ($visitCountMap[$row->visit_month][$row->category] ?? 0) + $row->total;
+        }
 
         $trendLabels = [];
         $trendVisitsBalita = [];
@@ -1190,10 +1169,10 @@ class Analytics extends BaseAdminComponent
 
         for ($m = 1; $m <= 12; $m++) {
             $trendLabels[] = Carbon::create($selectedYear, $m)->translatedFormat('M');
-            $monthRecords = $recordsYear->filter(fn ($r) => Carbon::parse($r->visit_date)->month === $m);
-            $trendVisitsBalita[] = $monthRecords->filter(fn ($r) => $r->patient && in_array($r->patient->category, ['balita', 'bayi', 'baduta']))->count();
-            $trendVisitsIbuHamil[] = $monthRecords->filter(fn ($r) => $r->patient && $r->patient->category === 'ibu_hamil')->count();
-            $trendVisitsLansia[] = $monthRecords->filter(fn ($r) => $r->patient && $r->patient->category === 'lansia')->count();
+            $monthMap = $visitCountMap[$m] ?? [];
+            $trendVisitsBalita[] = ($monthMap['balita'] ?? 0) + ($monthMap['bayi'] ?? 0) + ($monthMap['baduta'] ?? 0);
+            $trendVisitsIbuHamil[] = $monthMap['ibu_hamil'] ?? 0;
+            $trendVisitsLansia[] = $monthMap['lansia'] ?? 0;
         }
 
         // Compare Mode & Yearly Mode Logic
@@ -1202,32 +1181,83 @@ class Analytics extends BaseAdminComponent
         $this->trendLabelsPrevious = [];
 
         if ($this->viewMode === 'yearly') {
-            // Yearly mode compares this year vs last year overall visits
-            $recordsPrevYear = (clone $medicalRecordQuery)
+            $prevYearCounts = (clone $medicalRecordQuery)
                 ->whereYear('visit_date', $selectedYear - 1)
-                ->get();
+                ->select([
+                    DB::raw('MONTH(visit_date) as visit_month'),
+                    DB::raw('COUNT(*) as total'),
+                ])
+                ->groupBy(DB::raw('MONTH(visit_date)'))
+                ->pluck('total', 'visit_month')
+                ->toArray();
+
+            $currYearTotals = [];
+            foreach ($visitCountMap as $month => $cats) {
+                $currYearTotals[$month] = array_sum($cats);
+            }
 
             for ($m = 1; $m <= 12; $m++) {
-                $this->trendCompareCurrent[] = $recordsYear->filter(fn ($r) => Carbon::parse($r->visit_date)->month === $m)->count();
-                $this->trendComparePrevious[] = $recordsPrevYear->filter(fn ($r) => Carbon::parse($r->visit_date)->month === $m)->count();
+                $this->trendCompareCurrent[] = $currYearTotals[$m] ?? 0;
+                $this->trendComparePrevious[] = $prevYearCounts[$m] ?? 0;
             }
         } elseif ($this->compareMode && $selectedMonth) {
-            // Compare mode (Bulan Ini vs Bulan Lalu)
-            $recordsPrevMonth = (clone $medicalRecordQuery)
-                ->whereYear('visit_date', clone Carbon::create($selectedYear, $selectedMonth)->subMonth()->year)
-                ->whereMonth('visit_date', clone Carbon::create($selectedYear, $selectedMonth)->subMonth()->month)
-                ->get();
+            $prevMonthDate = Carbon::create($selectedYear, $selectedMonth)->subMonth();
+            $prevMonthCounts = (clone $medicalRecordQuery)
+                ->join('patients', 'medical_records.patient_id', '=', 'patients.id')
+                ->whereYear('medical_records.visit_date', $prevMonthDate->year)
+                ->whereMonth('medical_records.visit_date', $prevMonthDate->month)
+                ->select(['patients.category', DB::raw('COUNT(*) as total')])
+                ->groupBy('patients.category')
+                ->pluck('total', 'category')
+                ->toArray();
 
-            // Group by category for bar chart
+            $currentMonthMap = $visitCountMap[$selectedMonth] ?? [];
+
             $categories = ['balita', 'ibu_hamil', 'lansia'];
             foreach ($categories as $cat) {
-                $this->trendCompareCurrent[] = $recordsYear->filter(fn ($r) => Carbon::parse($r->visit_date)->month === $selectedMonth && $r->patient && in_array($r->patient->category, $cat === 'balita' ? ['balita', 'bayi', 'baduta'] : [$cat]))->count();
-                $this->trendComparePrevious[] = $recordsPrevMonth->filter(fn ($r) => $r->patient && in_array($r->patient->category, $cat === 'balita' ? ['balita', 'bayi', 'baduta'] : [$cat]))->count();
+                if ($cat === 'balita') {
+                    $this->trendCompareCurrent[] = ($currentMonthMap['balita'] ?? 0) + ($currentMonthMap['bayi'] ?? 0) + ($currentMonthMap['baduta'] ?? 0);
+                    $this->trendComparePrevious[] = ($prevMonthCounts['balita'] ?? 0) + ($prevMonthCounts['bayi'] ?? 0) + ($prevMonthCounts['baduta'] ?? 0);
+                } else {
+                    $this->trendCompareCurrent[] = $currentMonthMap[$cat] ?? 0;
+                    $this->trendComparePrevious[] = $prevMonthCounts[$cat] ?? 0;
+                }
             }
             $this->trendLabelsPrevious = ['Balita', 'Ibu Hamil', 'Lansia'];
         }
 
-        // ── 2. BALITA ANALYTICS ─────────────────────────────────────
+        return [
+            'totalBalita' => $totalBalita,
+            'totalIbuHamil' => $totalIbuHamil,
+            'totalLansia' => $totalLansia,
+            'totalKunjungan' => $totalKunjungan,
+            'kaderAktif' => $kaderAktif,
+            'trendLabels' => $trendLabels,
+            'trendVisitsBalita' => $trendVisitsBalita,
+            'trendVisitsIbuHamil' => $trendVisitsIbuHamil,
+            'trendVisitsLansia' => $trendVisitsLansia,
+        ];
+    }
+
+    /**
+     * ── SECTION 2: Balita Analytics ───────────────────────────────
+     * Stunting, nutrisi, vaksin, growth, demographics.
+     */
+    protected function fetchBalitaData(int $totalBalita): array
+    {
+        $patientQuery = $this->applyPosyanduScope(Patient::query(), $this->selectedPosyandu);
+        $medicalRecordQuery = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu);
+
+        $selectedYear = $this->selectedYear;
+        $selectedMonth = $this->selectedMonth;
+
+        $determinationDate = $selectedMonth
+            ? Carbon::create($selectedYear, $selectedMonth)->endOfMonth()
+            : Carbon::create($selectedYear)->endOfYear();
+
+        $basePatientFilter = fn ($q) => $q->whereYear('visit_date', $selectedYear)
+            ->when($selectedMonth, fn ($mq) => $mq->whereMonth('visit_date', $selectedMonth));
+
         $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')
             ->whereYear('visit_date', $selectedYear)
             ->when($selectedMonth, fn ($q) => $q->whereMonth('visit_date', $selectedMonth))
@@ -1273,9 +1303,10 @@ class Analytics extends BaseAdminComponent
             ->select('id', 'visit_date', 'nutrition_status', 'stunting_status', 'wasting_status', 'weight', 'height')
             ->get();
 
-        $balitaTrends = $balitaRecords->groupBy(function ($record) {
-            return Carbon::parse($record->visit_date)->month;
-        })->map(function ($group) {
+        // Pre-group by month integer to avoid Carbon::parse() in loop
+        $balitaByMonth = $balitaRecords->groupBy(fn ($r) => $r->visit_date instanceof \Carbon\Carbon ? $r->visit_date->month : Carbon::parse($r->visit_date)->month);
+
+        $balitaTrends = $balitaByMonth->map(function ($group) {
             $total = $group->count();
             if ($total === 0) {
                 return (object) ['normal_rate' => 0, 'stunting_rate' => 0, 'risk_rate' => 0];
@@ -1309,8 +1340,8 @@ class Analytics extends BaseAdminComponent
             $trendStunting[] = $monthData ? $monthData->stunting_rate : 0;
             $trendRisk[] = $monthData ? $monthData->risk_rate : 0;
 
-            // Rata-rata BB & TB per bulan
-            $monthRecs = $balitaRecords->filter(fn ($r) => Carbon::parse($r->visit_date)->month === $m);
+            // Rata-rata BB & TB per bulan — use pre-grouped collection
+            $monthRecs = $balitaByMonth->get($m, collect());
             $weightVals = $monthRecs->map(fn ($r) => (float) ($r->weight ?? 0))->filter(fn ($v) => $v > 0);
             $heightVals = $monthRecs->map(fn ($r) => (float) ($r->height ?? 0))->filter(fn ($v) => $v > 0);
             $trendAvgWeight[] = $weightVals->count() > 0 ? round($weightVals->average(), 2) : 0;
@@ -1416,10 +1447,41 @@ class Analytics extends BaseAdminComponent
                 ->unique()
                 ->count();
         }
-        $vaccineLabels = array_keys($vaccineCounts);
-        $vaccineData = array_values($vaccineCounts);
 
-        // ── 3. PREGNANCY (IBU HAMIL) ANALYTICS ─────────────────────
+        return [
+            'stuntingRate' => $stuntingRate,
+            'cakupanImunisasi' => $cakupanImunisasi,
+            'trendNormal' => $trendNormal,
+            'trendStunting' => $trendStunting,
+            'trendRisk' => $trendRisk,
+            'trendAvgWeight' => $trendAvgWeight,
+            'trendAvgHeight' => $trendAvgHeight,
+            'nutritionLabels' => array_keys($dist),
+            'nutritionData' => array_values($dist),
+            'stuntingByPosyandu' => $stuntingByPosyandu,
+            'usia0_12' => $bayis,
+            'usia12_24' => $badutas,
+            'usia24plus' => $balitasCount,
+            'vaccineLabels' => array_keys($vaccineCounts),
+            'vaccineData' => array_values($vaccineCounts),
+        ];
+    }
+
+    /**
+     * ── SECTION 3: Pregnancy (Ibu Hamil) Analytics ────────────────
+     * Hipertensi, Fe compliance, trend, averages.
+     */
+    protected function fetchPregnancyData(): array
+    {
+        $patientQuery = $this->applyPosyanduScope(Patient::query(), $this->selectedPosyandu);
+        $medicalRecordQuery = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu);
+
+        $selectedYear = $this->selectedYear;
+        $selectedMonth = $this->selectedMonth;
+
+        $basePatientFilter = fn ($q) => $q->whereYear('visit_date', $selectedYear)
+            ->when($selectedMonth, fn ($mq) => $mq->whereMonth('visit_date', $selectedMonth));
+
         $latestRecordSubqueryPreg = MedicalRecord::selectRaw('MAX(id) as id')
             ->whereYear('visit_date', $selectedYear)
             ->when($selectedMonth, fn ($q) => $q->whereMonth('visit_date', $selectedMonth))
@@ -1445,15 +1507,22 @@ class Analytics extends BaseAdminComponent
         $hypertensionRiskRate = $totalPregWithRecordsCount > 0 ? round(($pregHypertensionCount / $totalPregWithRecordsCount) * 100, 1) : 0;
         $feComplianceRate = $totalPregWithRecordsCount > 0 ? round(($pregFeComplianceCount / $totalPregWithRecordsCount) * 100, 1) : 0;
 
+        // Load pregnancy records for trend + averages in a single query
         $pregRecords = (clone $medicalRecordQuery)
             ->whereHas('patient', fn ($q) => $q->where('category', 'ibu_hamil'))
             ->whereYear('visit_date', $selectedYear)
-            ->get(['id', 'patient_id', 'visit_date', 'systolic_bp', 'diastolic_bp', 'pill_fe']);
+            ->get(['id', 'patient_id', 'visit_date', 'systolic_bp', 'diastolic_bp', 'pill_fe', 'weight', 'starting_weight', 'upper_arm_circumference']);
+
+        // Pre-group by month
+        $pregByMonth = $pregRecords->groupBy(fn ($r) => $r->visit_date instanceof Carbon ? $r->visit_date->month : Carbon::parse($r->visit_date)->month);
 
         $trendPregnancyHypertension = [];
         $trendPregnancyFe = [];
+        $trendPregnancyAvgWeightGain = [];
+        $trendPregnancyAvgLila = [];
+
         for ($m = 1; $m <= 12; $m++) {
-            $monthRecs = $pregRecords->filter(fn ($r) => Carbon::parse($r->visit_date)->month === $m);
+            $monthRecs = $pregByMonth->get($m, collect());
             $latestRecordsByPatient = $monthRecs->sortByDesc('id')->unique('patient_id');
             $totalM = $latestRecordsByPatient->count();
 
@@ -1466,9 +1535,52 @@ class Analytics extends BaseAdminComponent
                 $trendPregnancyHypertension[] = 0;
                 $trendPregnancyFe[] = 0;
             }
+
+            // Ibu Hamil averages — reuse the same collection (no separate query)
+            $gains = [];
+            foreach ($monthRecs as $rec) {
+                if ((float) $rec->weight > 0) {
+                    $startW = (float) $rec->starting_weight;
+                    if ($startW <= 0) {
+                        $patientRecs = $pregRecords->filter(fn ($r) => $r->patient_id === $rec->patient_id)->sortBy('visit_date');
+                        $firstWeight = $patientRecs->first()?->weight ?? $rec->weight;
+                        $startW = $patientRecs->where('starting_weight', '>', 0)->first()?->starting_weight ?? $firstWeight;
+                    }
+                    $gains[] = max(0.0, (float) $rec->weight - (float) $startW);
+                }
+            }
+            $trendPregnancyAvgWeightGain[] = count($gains) > 0 ? round(array_sum($gains) / count($gains), 1) : 0;
+
+            $lilaVals = $monthRecs->pluck('upper_arm_circumference')->filter(fn ($v) => (float) $v > 0);
+            $trendPregnancyAvgLila[] = $lilaVals->count() > 0 ? round($lilaVals->average(), 1) : 0;
         }
 
-        // ── 4. LANSIA ANALYTICS ────────────────────────────────────
+        return [
+            'hypertensionRiskRate' => $hypertensionRiskRate,
+            'feComplianceRate' => $feComplianceRate,
+            'trendPregnancyHypertension' => $trendPregnancyHypertension,
+            'trendPregnancyFe' => $trendPregnancyFe,
+            'trendPregnancyAvgWeightGain' => $trendPregnancyAvgWeightGain,
+            'trendPregnancyAvgLila' => $trendPregnancyAvgLila,
+        ];
+    }
+
+    /**
+     * ── SECTION 4: Lansia Analytics ──────────────────────────────
+     * Metabolic rates, trends, averages.
+     * Optimized: uses a single DB query for both trends and averages (previously 2 duplicate queries).
+     */
+    protected function fetchLansiaData(): array
+    {
+        $patientQuery = $this->applyPosyanduScope(Patient::query(), $this->selectedPosyandu);
+        $medicalRecordQuery = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu);
+
+        $selectedYear = $this->selectedYear;
+        $selectedMonth = $this->selectedMonth;
+
+        $basePatientFilter = fn ($q) => $q->whereYear('visit_date', $selectedYear)
+            ->when($selectedMonth, fn ($mq) => $mq->whereMonth('visit_date', $selectedMonth));
+
         $latestRecordSubqueryLansia = MedicalRecord::selectRaw('MAX(id) as id')
             ->whereYear('visit_date', $selectedYear)
             ->when($selectedMonth, fn ($q) => $q->whereMonth('visit_date', $selectedMonth))
@@ -1504,31 +1616,28 @@ class Analytics extends BaseAdminComponent
         $lansiaHypercholesterolemiaRate = $totalLansiaWithRecordsCount > 0 ? round(($lansiaHypercholesterolemiaCount / $totalLansiaWithRecordsCount) * 100, 1) : 0;
         $lansiaHyperuricemiaRate = $totalLansiaWithRecordsCount > 0 ? round(($lansiaHyperuricemiaCount / $totalLansiaWithRecordsCount) * 100, 1) : 0;
 
-        // Lansia trends bulanan & averages
+        // Single query for lansia records — used for BOTH trends and averages
+        // (previously 2 separate identical queries: $lansiaRecords + $lansiaAvgRecords)
+        $lansiaRecords = (clone $medicalRecordQuery)
+            ->whereHas('patient', fn ($q) => $q->where('category', 'lansia'))
+            ->whereYear('visit_date', $selectedYear)
+            ->select(['id', 'patient_id', 'visit_date', 'systolic_bp', 'diastolic_bp', 'blood_sugar', 'cholesterol', 'uric_acid'])
+            ->get();
+
+        $lansiaByMonth = $lansiaRecords->groupBy(fn ($r) => $r->visit_date instanceof Carbon ? $r->visit_date->month : Carbon::parse($r->visit_date)->month);
+
         $trendLansiaHypertension = [];
         $trendLansiaHyperglycemia = [];
         $trendLansiaHypercholesterolemia = [];
         $trendLansiaHyperuricemia = [];
-
         $trendLansiaAvgSystolic = [];
         $trendLansiaAvgDiastolic = [];
         $trendLansiaAvgBloodSugar = [];
         $trendLansiaAvgUricAcid = [];
         $trendLansiaAvgCholesterol = [];
 
-        $trendPregnancyAvgWeightGain = [];
-        $trendPregnancyAvgLila = [];
-
-        $lansiaRecordsYear = $recordsYear->filter(fn ($r) => $r->patient && $r->patient->category === 'lansia');
-        $pregRecordsYear = $recordsYear->filter(fn ($r) => $r->patient && $r->patient->category === 'ibu_hamil');
-
-        $lansiaRecords = (clone $medicalRecordQuery)
-            ->whereHas('patient', fn ($q) => $q->where('category', 'lansia'))
-            ->whereYear('visit_date', $selectedYear)
-            ->get(['id', 'patient_id', 'visit_date', 'systolic_bp', 'diastolic_bp', 'blood_sugar', 'cholesterol', 'uric_acid']);
-
         for ($m = 1; $m <= 12; $m++) {
-            $monthRecs = $lansiaRecords->filter(fn ($r) => Carbon::parse($r->visit_date)->month === $m);
+            $monthRecs = $lansiaByMonth->get($m, collect());
             $latestRecordsByPatient = $monthRecs->sortByDesc('id')->unique('patient_id');
             $totalLM = $latestRecordsByPatient->count();
 
@@ -1549,80 +1658,24 @@ class Analytics extends BaseAdminComponent
                 $trendLansiaHyperuricemia[] = 0;
             }
 
-            // Averages calculations from cached records
-            $monthLansiaRecs = $lansiaRecordsYear->filter(fn ($r) => Carbon::parse($r->visit_date)->month === $m);
-            $monthPregRecs = $pregRecordsYear->filter(fn ($r) => Carbon::parse($r->visit_date)->month === $m);
-
-            // Lansia averages
-            $sysVals = $monthLansiaRecs->pluck('systolic_bp')->filter(fn ($v) => (float) $v > 0);
+            // Lansia averages — reuse the same collection (no duplicate query)
+            $sysVals = $monthRecs->pluck('systolic_bp')->filter(fn ($v) => (float) $v > 0);
             $trendLansiaAvgSystolic[] = $sysVals->count() > 0 ? round($sysVals->average(), 1) : 0;
 
-            $diaVals = $monthLansiaRecs->pluck('diastolic_bp')->filter(fn ($v) => (float) $v > 0);
+            $diaVals = $monthRecs->pluck('diastolic_bp')->filter(fn ($v) => (float) $v > 0);
             $trendLansiaAvgDiastolic[] = $diaVals->count() > 0 ? round($diaVals->average(), 1) : 0;
 
-            $sugarVals = $monthLansiaRecs->pluck('blood_sugar')->filter(fn ($v) => (float) $v > 0);
+            $sugarVals = $monthRecs->pluck('blood_sugar')->filter(fn ($v) => (float) $v > 0);
             $trendLansiaAvgBloodSugar[] = $sugarVals->count() > 0 ? round($sugarVals->average(), 1) : 0;
 
-            $uricVals = $monthLansiaRecs->pluck('uric_acid')->filter(fn ($v) => (float) $v > 0);
+            $uricVals = $monthRecs->pluck('uric_acid')->filter(fn ($v) => (float) $v > 0);
             $trendLansiaAvgUricAcid[] = $uricVals->count() > 0 ? round($uricVals->average(), 2) : 0;
 
-            $cholVals = $monthLansiaRecs->pluck('cholesterol')->filter(fn ($v) => (float) $v > 0);
+            $cholVals = $monthRecs->pluck('cholesterol')->filter(fn ($v) => (float) $v > 0);
             $trendLansiaAvgCholesterol[] = $cholVals->count() > 0 ? round($cholVals->average(), 1) : 0;
-
-            // Ibu Hamil averages
-            $gains = [];
-            foreach ($monthPregRecs as $rec) {
-                if ((float) $rec->weight > 0) {
-                    $startW = (float) $rec->starting_weight;
-                    if ($startW <= 0) {
-                        $patientRecs = $pregRecordsYear->filter(fn ($r) => $r->patient_id === $rec->patient_id)->sortBy('visit_date');
-                        $firstWeight = $patientRecs->first()?->weight ?? $rec->weight;
-                        $startW = $patientRecs->where('starting_weight', '>', 0)->first()?->starting_weight ?? $firstWeight;
-                    }
-                    $gains[] = max(0.0, (float) $rec->weight - (float) $startW);
-                }
-            }
-            $trendPregnancyAvgWeightGain[] = count($gains) > 0 ? round(array_sum($gains) / count($gains), 1) : 0;
-
-            $lilaVals = $monthPregRecs->pluck('upper_arm_circumference')->filter(fn ($v) => (float) $v > 0);
-            $trendPregnancyAvgLila[] = $lilaVals->count() > 0 ? round($lilaVals->average(), 1) : 0;
         }
 
         return [
-            // Overview
-            'totalBalita' => $totalBalita,
-            'totalIbuHamil' => $totalIbuHamil,
-            'totalLansia' => $totalLansia,
-            'totalKunjungan' => $totalKunjungan,
-            'kaderAktif' => $kaderAktif,
-            'trendLabels' => $trendLabels,
-            'trendVisitsBalita' => $trendVisitsBalita,
-            'trendVisitsIbuHamil' => $trendVisitsIbuHamil,
-            'trendVisitsLansia' => $trendVisitsLansia,
-            // Balita
-            'stuntingRate' => $stuntingRate,
-            'cakupanImunisasi' => $cakupanImunisasi,
-            'trendNormal' => $trendNormal,
-            'trendStunting' => $trendStunting,
-            'trendRisk' => $trendRisk,
-            'trendAvgWeight' => $trendAvgWeight,
-            'trendAvgHeight' => $trendAvgHeight,
-            'nutritionLabels' => array_keys($dist),
-            'nutritionData' => array_values($dist),
-            'stuntingByPosyandu' => $stuntingByPosyandu,
-            'usia0_12' => $bayis,
-            'usia12_24' => $badutas,
-            'usia24plus' => $balitasCount,
-            'vaccineLabels' => $vaccineLabels,
-            'vaccineData' => $vaccineData,
-            // Ibu Hamil
-            'hypertensionRiskRate' => $hypertensionRiskRate,
-            'feComplianceRate' => $feComplianceRate,
-            'trendPregnancyHypertension' => $trendPregnancyHypertension,
-            'trendPregnancyFe' => $trendPregnancyFe,
-            'trendPregnancyAvgWeightGain' => $trendPregnancyAvgWeightGain,
-            'trendPregnancyAvgLila' => $trendPregnancyAvgLila,
-            // Lansia
             'lansiaHypertensionRate' => $lansiaHypertensionRate,
             'lansiaHyperglycemiaRate' => $lansiaHyperglycemiaRate,
             'lansiaHypercholesterolemiaRate' => $lansiaHypercholesterolemiaRate,
@@ -1897,6 +1950,97 @@ public function exportChartData(string $chartType)
         return response()->streamDownload(function () use ($export) {
             $export->export('php://output');
         }, str_replace(' ', '_', strtolower($title)) . "_{$targetYear}.xlsx");
+    }
+
+    /**
+     * Load recent records tab-aware: only query the category matching the active tab.
+     * Also loads health alerts only for overview tab.
+     */
+    protected function loadRecentRecords(): void
+    {
+        $medicalRecordQuery = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
+            ->whereYear('visit_date', $this->selectedYear);
+
+        if ($this->selectedMonth) {
+            $medicalRecordQuery->whereMonth('visit_date', $this->selectedMonth);
+        }
+
+        // ANA-16: apply nutrition status filter when set
+        if ($this->filterNutritionStatus) {
+            if ($this->filterNutritionStatus === 'Gizi Baik') {
+                $medicalRecordQuery->where(fn ($q) => $q->whereNull('nutrition_status')
+                    ->orWhere('nutrition_status', '')
+                    ->orWhere('nutrition_status', 'Gizi Baik'));
+            } else {
+                $medicalRecordQuery->where('nutrition_status', $this->filterNutritionStatus);
+            }
+        }
+
+        // ANA-15: apply search when set
+        if ($this->tableSearch) {
+            $searchTerm = '%'.strtolower($this->tableSearch).'%';
+            $blindIndex = Patient::generateBlindIndex($this->tableSearch);
+            $medicalRecordQuery->whereHas('patient', function ($q) use ($searchTerm, $blindIndex) {
+                $q->whereRaw('LOWER(full_name) LIKE ?', [$searchTerm])
+                    ->orWhere('id_number_hash', $blindIndex);
+            });
+        }
+
+        // Tab-aware recent records: only query the category relevant to the active tab
+        switch ($this->activeTab) {
+            case 'balita':
+                $this->recentRecords = (clone $medicalRecordQuery)
+                    ->with(['patient.posyandu'])
+                    ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+                    ->latest('visit_date')
+                    ->limit(20)
+                    ->get();
+                break;
+
+            case 'pregnancy':
+                $this->recentPregnancyRecords = (clone $medicalRecordQuery)
+                    ->with(['patient.posyandu'])
+                    ->whereHas('patient', fn ($q) => $q->where('category', 'ibu_hamil'))
+                    ->latest('visit_date')
+                    ->limit(20)
+                    ->get();
+                break;
+
+            case 'lansia':
+                $this->recentLansiaRecords = (clone $medicalRecordQuery)
+                    ->with(['patient.posyandu'])
+                    ->whereHas('patient', fn ($q) => $q->where('category', 'lansia'))
+                    ->latest('visit_date')
+                    ->limit(5)
+                    ->get();
+                break;
+
+            default: // 'overview'
+                $this->recentRecords = (clone $medicalRecordQuery)
+                    ->with(['patient.posyandu'])
+                    ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+                    ->latest('visit_date')
+                    ->limit(20)
+                    ->get();
+
+                $this->recentPregnancyRecords = (clone $medicalRecordQuery)
+                    ->with(['patient.posyandu'])
+                    ->whereHas('patient', fn ($q) => $q->where('category', 'ibu_hamil'))
+                    ->latest('visit_date')
+                    ->limit(20)
+                    ->get();
+
+                $this->recentLansiaRecords = (clone $medicalRecordQuery)
+                    ->with(['patient.posyandu'])
+                    ->whereHas('patient', fn ($q) => $q->where('category', 'lansia'))
+                    ->latest('visit_date')
+                    ->limit(5)
+                    ->get();
+
+                // Health alerts only on overview tab
+                $this->loadLiveHealthAlerts();
+                break;
+        }
     }
 
     protected function loadLiveHealthAlerts(): void
