@@ -32,7 +32,16 @@ mkdir -p /var/www/storage/framework/views \
          /var/www/storage/framework/cache \
          /var/www/storage/framework/sessions \
          /var/www/storage/logs \
+         /var/www/storage/app/public/articles \
+         /var/www/storage/app/public/galleries \
          /var/www/bootstrap/cache
+
+# Copy default images from backup if they don't exist in public storage (e.g., when a volume is mounted)
+if [ -d "/var/www/storage_backup" ]; then
+    echo "==> Restoring default assets if missing..."
+    cp -rn /var/www/storage_backup/* /var/www/storage/app/public/
+fi
+
 chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 

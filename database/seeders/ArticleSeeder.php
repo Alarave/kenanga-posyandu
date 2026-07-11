@@ -14,6 +14,10 @@ class ArticleSeeder extends Seeder
      */
     public function run(): void
     {
+        if (Article::exists()) {
+            return;
+        }
+
         $admin = User::first() ?? User::factory()->create([
             'role' => 'superadmin',
             'full_name' => 'Bidan Sari',

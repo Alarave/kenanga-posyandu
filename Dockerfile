@@ -43,6 +43,11 @@ COPY . /var/www
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 RUN npm install && npm run build
 
+# Backup default public storage files before setting permissions
+RUN mkdir -p /var/www/storage_backup && \
+    if [ -d "/var/www/storage/app/public" ]; then cp -R /var/www/storage/app/public/* /var/www/storage_backup/; fi
+
+
 # Set correct permissions for Laravel storage & cache dirs
 RUN mkdir -p /var/www/storage/framework/views \
              /var/www/storage/framework/cache \

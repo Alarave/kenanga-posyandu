@@ -9,6 +9,10 @@ class GallerySeeder extends Seeder
 {
     public function run()
     {
+        if (DB::table('galleries')->exists()) {
+            return;
+        }
+
         $items = [
             [
                 'posyandu_id' => 1,
