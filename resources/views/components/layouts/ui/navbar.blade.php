@@ -33,9 +33,8 @@
            transition-shadow duration-200"
     style="font-family:'Public Sans', 'Public Sans Fallback', 'Inter', sans-serif;">
 
-    {{-- ── LEFT: Mobile toggle + Page title ── --}}
-    <div class="flex items-center gap-3 min-w-0">
-
+    {{-- ── LEFT: Mobile toggle ── --}}
+    <div class="flex items-center gap-3 flex-shrink-0">
         {{-- Mobile hamburger --}}
         <button id="mobileSidebarToggle"
             class="lg:hidden w-9 h-9 flex items-center justify-center rounded-xl
@@ -43,25 +42,25 @@
                    active:scale-95 transition-all duration-150 flex-shrink-0">
             <i class="fas fa-bars" style="font-size:14px;"></i>
         </button>
-
-        {{-- Page title / breadcrumb area removed as requested --}}
     </div>
 
-    {{-- ── RIGHT: Search · Notif · Profile ── --}}
-    <div class="flex items-center gap-2 md:gap-3 flex-shrink-0" x-data="{ profileOpen: false }" @keydown.escape.window="profileOpen = false; $dispatch('close-dropdowns')" @close-dropdowns.window="if ($event.detail !== 'profile') profileOpen = false" x-on:livewire:navigating.window="profileOpen = false" wire:ignore.self>
-
-        {{-- ── Search (desktop) ── --}}
-        <div class="hidden lg:block w-full max-w-xl">
+    {{-- ── CENTER: Search bar (takes up remaining space) ── --}}
+    <div class="flex-1 flex items-center px-2 md:px-4 min-w-0">
+        {{-- Desktop search --}}
+        <div class="hidden lg:block w-full max-w-lg">
             @livewire('global-search')
         </div>
-
-        {{-- ── Mobile search toggle ── --}}
+        {{-- Mobile search toggle --}}
         <button id="mobileSearchBtn"
             class="lg:hidden w-9 h-9 flex items-center justify-center rounded-xl
                    text-slate-500 border border-slate-200 hover:bg-slate-50
                    active:scale-95 transition-all duration-150">
             <i class="fas fa-search" style="font-size:13px;"></i>
         </button>
+    </div>
+
+    {{-- ── RIGHT: Notif · Profile ── --}}
+    <div class="flex items-center gap-2 md:gap-3 flex-shrink-0" x-data="{ profileOpen: false }" @keydown.escape.window="profileOpen = false; $dispatch('close-dropdowns')" @close-dropdowns.window="if ($event.detail !== 'profile') profileOpen = false" x-on:livewire:navigating.window="profileOpen = false" wire:ignore.self>
 
         {{-- ── Notification bell (Admin RW Only) ── --}}
         @if(auth()->user()->isSuperAdmin())
