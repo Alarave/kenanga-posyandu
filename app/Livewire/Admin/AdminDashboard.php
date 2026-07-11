@@ -451,6 +451,7 @@ class AdminDashboard extends BaseAdminComponent
 
         // Load latest gallery items
         $this->latestGalleryItems = $this->applyDashboardFilters(Gallery::accessibleBy($user), 'gallery')
+            ->whereNotNull('gallery_folder_id')
             ->latest()
             ->limit(4)
             ->get();

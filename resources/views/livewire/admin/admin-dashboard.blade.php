@@ -1342,7 +1342,8 @@
                     @if(count($latestGalleryItems) > 0)
                         <div class="grid grid-cols-2 gap-2 mb-4">
                             @foreach($latestGalleryItems as $gallery)
-                                <div class="relative group/gallery overflow-hidden rounded-xl border border-slate-100 aspect-square bg-slate-50">
+                                <a href="{{ $gallery->gallery_folder_id ? route('admin.gallery.show', $gallery->gallery_folder_id) : route('admin.gallery.index') }}" 
+                                   class="relative group/gallery overflow-hidden rounded-xl border border-slate-100 aspect-square bg-slate-50 block">
                                     @if($gallery->photo)
                                         <img src="{{ asset('storage/' . $gallery->photo) }}" 
                                              alt="{{ $gallery->title }}" 
@@ -1358,7 +1359,7 @@
                                             <p class="text-[8px] font-medium text-slate-300 mt-0.5">{{ $gallery->posyandu->name }}</p>
                                         @endif
                                     </div>
-                                </div>
+                                </a>
                             @endforeach
                         </div>
                     @else
