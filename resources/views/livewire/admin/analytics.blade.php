@@ -784,6 +784,105 @@
                             @endforelse
                         </div>
                     </div>
+            </div>
+
+            {{-- Riwayat Aktivitas Kunjungan Pemeriksaan Terbaru --}}
+            <div class="bg-white rounded-3xl border border-slate-200 shadow-xs overflow-hidden mt-6">
+                <div class="px-6 py-5 border-b border-slate-150 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-slate-50/50">
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900">Riwayat Aktivitas Kunjungan Pemeriksaan Terbaru</h3>
+                        <p class="text-xs text-slate-500 mt-0.5 font-semibold">Daftar rekam medis pemeriksaan terbaru dari semua kategori warga</p>
+                    </div>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-200">
+                                <th class="px-6 py-3.5 text-xs font-black text-slate-500 uppercase tracking-wider">Nama Warga</th>
+                                <th class="px-6 py-3.5 text-xs font-black text-slate-500 uppercase tracking-wider">Kategori</th>
+                                <th class="px-6 py-3.5 text-xs font-black text-slate-500 uppercase tracking-wider">Unit Posyandu</th>
+                                <th class="px-6 py-3.5 text-xs font-black text-slate-500 uppercase tracking-wider">Status / Info</th>
+                                <th class="px-6 py-3.5 text-xs font-black text-slate-500 uppercase tracking-wider">Tanggal Kunjungan</th>
+                                <th class="px-6 py-3.5 text-right text-xs font-black text-slate-500 uppercase tracking-wider">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            @forelse($recentActivityRecords as $record)
+                            <tr class="hover:bg-slate-50/80 transition-colors text-slate-800">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        @php
+                                            $cat = $record->patient?->category;
+                                            $bgClass = match($cat) {
+                                                'balita', 'bayi', 'baduta' => 'bg-teal-50 text-teal-750 border-teal-100',
+                                                'ibu_hamil' => 'bg-rose-50 text-rose-750 border-rose-100',
+                                                'lansia' => 'bg-indigo-50 text-indigo-750 border-indigo-100',
+                                                default => 'bg-slate-50 text-slate-750 border-slate-100'
+                                            };
+                                            $initials = strtoupper(substr($record->patient?->full_name ?? 'W', 0, 2));
+                                        @endphp
+                                        <div class="w-9 h-9 rounded-xl flex items-center justify-center font-extrabold text-sm border shadow-xs {{ $bgClass }}">
+                                            {{ $initials }}
+                                        </div>
+                                        <div>
+                                            <span class="block font-bold text-slate-900 text-sm">{{ $record->patient?->full_name }}</span>
+                                            <span class="text-[10px] font-black text-slate-400 uppercase block tracking-wider mt-0.5">NIK: {{ $record->patient?->id_number ?: '-' }}</span>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    @php
+                                        $labelCat = match($cat) {
+                                            'balita', 'bayi', 'baduta' => 'Balita',
+                                            'ibu_hamil' => 'Ibu Hamil',
+                                            'lansia' => 'Lansia',
+                                            default => ucfirst($cat ?? '-')
+                                        };
+                                        $badgeClass = match($cat) {
+                                            'balita', 'bayi', 'baduta' => 'bg-teal-50 text-teal-700 border-teal-200',
+                                            'ibu_hamil' => 'bg-rose-50 text-rose-700 border-rose-200',
+                                            'lansia' => 'bg-indigo-50 text-indigo-700 border-indigo-200',
+                                            default => 'bg-slate-50 text-slate-700 border-slate-200'
+                                        };
+                                    @endphp
+                                    <span class="inline-flex px-2.5 py-1 rounded-full text-xs font-bold border {{ $badgeClass }}">
+                                        {{ $labelCat }}
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-xs font-bold text-slate-650">{{ $record->patient?->posyandu?->name ?? '-' }}</td>
+                                <td class="px-6 py-4 text-xs font-bold text-slate-800">
+                                    @if(in_array($cat, ['balita', 'bayi', 'baduta']))
+                                        <span class="text-slate-600">Gizi:</span> {{ $record->nutrition_status ?: 'Gizi Baik' }}
+                                    @elseif($cat === 'ibu_hamil')
+                                        <span class="text-slate-600">Usia Kehamilan:</span> {{ $record->gestational_age ? $record->gestational_age . ' minggu' : '-' }}
+                                    @elseif($cat === 'lansia')
+                                        <span class="text-slate-600">TD:</span> {{ $record->systolic_bp ?: '-' }}/{{ $record->diastolic_bp ?: '-' }} mmHg
+                                    @else
+                                        -
+                                    @endif
+                                </td>
+                                <td class="px-6 py-4 text-xs font-bold text-slate-600">{{ \Carbon\Carbon::parse($record->visit_date)->translatedFormat('d M Y') }}</td>
+                                <td class="px-6 py-4 text-right">
+                                    @php
+                                        $btnHover = match($cat) {
+                                            'balita', 'bayi', 'baduta' => 'hover:bg-teal-600 hover:shadow-teal-600/10',
+                                            'ibu_hamil' => 'hover:bg-rose-600 hover:shadow-rose-600/10',
+                                            'lansia' => 'hover:bg-indigo-700 hover:shadow-indigo-700/10',
+                                            default => 'hover:bg-slate-700 hover:shadow-slate-700/10'
+                                        };
+                                    @endphp
+                                    <a href="{{ route('admin.patients.show', $record->patient_id) }}" class="w-9 h-9 inline-flex items-center justify-center rounded-xl bg-slate-100 text-slate-500 hover:text-white hover:shadow-md transition-all border border-slate-200/60 {{ $btnHover }}">
+                                        <span class="material-symbols-outlined text-[20px]">visibility</span>
+                                    </a>
+                                </td>
+                            </tr>
+                            @empty
+                            <tr>
+                                <td colspan="6" class="px-6 py-12 text-center text-sm text-slate-400 font-bold bg-white">Belum ada kunjungan pemeriksaan</td>
+                            </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>

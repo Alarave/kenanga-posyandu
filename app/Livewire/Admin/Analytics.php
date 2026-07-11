@@ -89,6 +89,8 @@ class Analytics extends BaseAdminComponent
 
     public ?object $recentLansiaRecords = null;
 
+    public ?object $recentActivityRecords = null;
+
     // Vaccine distribution
     public array $vaccineLabels = [];
 
@@ -2040,6 +2042,13 @@ public function exportChartData(string $chartType)
                     ->whereHas('patient', fn ($q) => $q->where('category', 'lansia'))
                     ->latest('visit_date')
                     ->limit(5)
+                    ->get();
+
+                $this->recentActivityRecords = (clone $medicalRecordQuery)
+                    ->with(['patient.posyandu'])
+                    ->latest('visit_date')
+                    ->latest('id')
+                    ->limit(10)
                     ->get();
 
                 // Health alerts only on overview tab
