@@ -784,6 +784,7 @@
                             @endforelse
                         </div>
                     </div>
+                </div>
             </div>
 
             {{-- Riwayat Aktivitas Kunjungan Pemeriksaan Terbaru --}}
