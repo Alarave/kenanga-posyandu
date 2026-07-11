@@ -1377,7 +1377,7 @@
                 @endif
 
                 {{-- Ibu Hamil Category Tabs --}}
-                @if(in_array($drillDownType, ['pregnancy_high_risk', 'pregnancy_kek', 'pregnancy_anemia', 'pregnancy_tablet_fe']))
+                @if(in_array($drillDownType, ['pregnancy_high_risk', 'pregnancy_kek', 'pregnancy_hypertension', 'pregnancy_tablet_fe']))
                 <div class="flex flex-wrap gap-2 p-1.5 bg-slate-100 rounded-2xl w-fit">
                     <button wire:click="switchDrillDownCategory('pregnancy_high_risk')" 
                             class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'pregnancy_high_risk' ? 'bg-white text-amber-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
@@ -1389,10 +1389,10 @@
                         <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
                         Kasus KEK
                     </button>
-                    <button wire:click="switchDrillDownCategory('pregnancy_anemia')" 
-                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'pregnancy_anemia' ? 'bg-white text-rose-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                    <button wire:click="switchDrillDownCategory('pregnancy_hypertension')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'pregnancy_hypertension' ? 'bg-white text-rose-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
                         <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
-                        Kasus Anemia
+                        Kasus Hipertensi
                     </button>
                     <button wire:click="switchDrillDownCategory('pregnancy_tablet_fe')" 
                             class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'pregnancy_tablet_fe' ? 'bg-white text-teal-650 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
@@ -1567,6 +1567,11 @@
                                               }
                                           }
                                       }
+                                      if (str_starts_with($drillDownType, 'pregnancy_') && in_array($drillDownType, ['pregnancy_high_risk', 'pregnancy_kek', 'pregnancy_hypertension', 'pregnancy_tablet_fe'])) {
+                                          $isDanger = true;
+                                          $customStyle = '';
+                                      }
+                                      
                                       if (str_contains($statusStr, 'menerima')) {
                                           $isSuccess = true;
                                       }

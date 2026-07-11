@@ -173,6 +173,7 @@ class PatientRowProcessor
             
             'gestational_age' => $get('gestational_age') ?: null,
             'upper_arm_circumference' => $this->parseDecimal($get('upper_arm_circumference') ?: $get('lila')),
+            'hemoglobin' => $this->parseDecimal($get('hemoglobin') ?: $get('Hemoglobin')),
             'imt_plotting_status' => $get('imt_plotting_status') ?: null,
             'lila_plotting_status' => $get('lila_plotting_status') ?: null,
             'bp_plotting_status' => $get('bp_plotting_status') ?: null,

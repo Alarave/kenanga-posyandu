@@ -125,9 +125,9 @@ class IbuHamilAnalytics extends Component
         return ['highRisk' => $highRisk, 'normal' => $normal];
     }
 
-    // AH-06: Anemia
+    // AH-06: Hipertensi
     #[Computed]
-    public function anemiaStats()
+    public function hypertensionStats()
     {
         $records = $this->applyPosyanduScope(MedicalRecord::query(), $this->selectedPosyandu)
             ->whereHas('patient', function ($q) {
@@ -140,14 +140,20 @@ class IbuHamilAnalytics extends Component
             ->get()
             ->unique('patient_id');
 
-        $anemia = $records->whereNotNull('hemoglobin')->where('hemoglobin', '<', 11)->count();
-        $totalWithHb = $records->whereNotNull('hemoglobin')->count();
-        $normal = $totalWithHb - $anemia;
+        $totalWithBp = $records->filter(function($r) {
+            return $r->systolic_bp > 0 || $r->diastolic_bp > 0;
+        })->count();
+
+        $hypertension = $records->filter(function($r) {
+            return ($r->systolic_bp >= 140 || $r->diastolic_bp >= 90);
+        })->count();
+
+        $normal = $totalWithBp - $hypertension;
 
         return [
-            'anemia' => $anemia,
+            'hypertension' => $hypertension,
             'normal' => $normal,
-            'total' => $totalWithHb,
+            'total' => $totalWithBp,
         ];
     }
 
@@ -306,15 +312,6 @@ class IbuHamilAnalytics extends Component
                 $riskReasons[] = 'Tinggi < 145 cm';
             }
 
-            $isAnemia = false;
-            $hbVal = '-';
-            if ($latestRecord && $latestRecord->hemoglobin) {
-                $hbVal = (float) $latestRecord->hemoglobin;
-                if ($hbVal < 11) {
-                    $isAnemia = true;
-                }
-            }
-
             $isKek = false;
             $lilaVal = '-';
             if ($latestRecord && $latestRecord->upper_arm_circumference) {
@@ -345,8 +342,6 @@ class IbuHamilAnalytics extends Component
                 'hpl' => $hpl,
                 'lila' => $lilaVal,
                 'is_kek' => $isKek,
-                'hb' => $hbVal,
-                'is_anemia' => $isAnemia,
                 'bp' => $bpVal,
                 'is_hypertension' => $isHypertension,
                 'anc_count' => $ancCount,
@@ -360,14 +355,11 @@ class IbuHamilAnalytics extends Component
 
     public function render()
     {
-        $anemiaData = $this->anemiaStats();
-
         return view('livewire.admin.analytics.ibu-hamil-analytics', [
             'trimesterStats' => $this->trimesterStats(),
             'rataRataUsiaKehamilan' => $this->rataRataUsiaKehamilan,
             'riskStats' => $this->riskStats(),
-            'anemiaCount' => $anemiaData['anemia'],
-            'anemiaStats' => $anemiaData,
+            'hypertensionStats' => $this->hypertensionStats(),
             'ttdStats' => $this->ttdStats(),
             'kekStats' => $this->kekStats(),
             'ancStats' => $this->ancStats(),

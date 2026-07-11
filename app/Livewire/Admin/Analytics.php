@@ -263,7 +263,7 @@ class Analytics extends BaseAdminComponent
             'lansia_hiperkolesterolemia' => 'Hiperkolesterolemia',
             'lansia_hiperurisemia' => 'Hiperurisemia',
             'pregnancy_high_risk' => 'Risiko Tinggi & 4T',
-            'pregnancy_anemia' => 'Kasus Anemia',
+            'pregnancy_hypertension' => 'Kasus Hipertensi',
             'pregnancy_tablet_fe' => 'Pemberian Tablet Fe',
             'pregnancy_kek' => 'Kasus KEK',
             'pregnancy_k1' => 'Kunjungan K1',
@@ -648,38 +648,33 @@ class Analytics extends BaseAdminComponent
                 ->where('cholesterol', '>=', 200),
             'lansia_hiperurisemia' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
                 ->where('uric_acid', '>=', 7.0),
-            'pregnancy_high_risk' => $query->whereHas('patient', function ($q) {
-                    $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
-                })
-                ->where(fn ($q) => $q
-                    ->whereHas('patient', function ($pQuery) {
-                        $twentyYearsAgo = now()->subYears(20)->toDateString();
-                        $thirtyFiveYearsAgo = now()->subYears(35)->toDateString();
-                        $pQuery->where('birth_date', '>', $twentyYearsAgo)
-                               ->orWhere('birth_date', '<', $thirtyFiveYearsAgo);
-                    })
-                    ->orWhere('height', '<', 145)
-                ),
-            'pregnancy_anemia' => $query->whereHas('patient', function ($q) {
-                    $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
-                })
-                ->whereNotNull('hemoglobin')
-                ->where('hemoglobin', '<', 11),
-            'pregnancy_tablet_fe' => $query->whereHas('patient', function ($q) {
+            'pregnancy_high_risk', 'pregnancy_hypertension', 'pregnancy_tablet_fe', 'pregnancy_kek' => $query->whereHas('patient', function ($q) {
                     $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
                 }),
-            'pregnancy_kek' => $query->whereHas('patient', function ($q) {
-                    $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
-                })
-                ->whereNotNull('upper_arm_circumference')
-                ->where('upper_arm_circumference', '>', 0)
-                ->where('upper_arm_circumference', '<', 23.5),
             default => null,
         };
 
-        $records = $query->latest('visit_date')->get();
-        if ($type === 'pregnancy_tablet_fe') {
-            $records = $records->sortBy('nakes_gives_fe_mms');
+        $records = $query->latest('visit_date')->latest('id')->get();
+        if (str_starts_with($type, 'pregnancy_') && in_array($type, ['pregnancy_high_risk', 'pregnancy_hypertension', 'pregnancy_tablet_fe', 'pregnancy_kek'])) {
+            $records = $records->unique('patient_id');
+            if ($type === 'pregnancy_high_risk') {
+                $records = $records->filter(function ($r) {
+                    $age = $r->patient?->birth_date?->age;
+                    return ($age && ($age < 20 || $age > 35)) || ($r->height && $r->height < 145);
+                });
+            } elseif ($type === 'pregnancy_hypertension') {
+                $records = $records->filter(function ($r) {
+                    return $r->systolic_bp >= 140 || $r->diastolic_bp >= 90;
+                });
+            } elseif ($type === 'pregnancy_kek') {
+                $records = $records->filter(function ($r) {
+                    return $r->upper_arm_circumference > 0 && $r->upper_arm_circumference < 23.5;
+                });
+            } elseif ($type === 'pregnancy_tablet_fe') {
+                $records = $records->filter(function ($r) {
+                    return !in_array(strtolower(trim($r->nakes_gives_fe_mms)), ['ya', '1', 'true', 'sudah']);
+                });
+            }
         }
 
         $this->drillDownData = $records->map(fn ($r) => [
@@ -702,7 +697,7 @@ class Analytics extends BaseAdminComponent
                     }
                     return count($reasons) > 0 ? implode(' & ', $reasons) : 'Risiko Tinggi';
                 })(),
-                'pregnancy_anemia' => 'Hb: '.($r->hemoglobin ?: '-').' g/dL',
+                'pregnancy_hypertension' => 'TD: '.($r->systolic_bp ?: '-').'/'.($r->diastolic_bp ?: '-').' mmHg',
                 'pregnancy_tablet_fe' => $r->nakes_gives_fe_mms ? 'Tablet Fe: Menerima' : 'Tablet Fe: Belum Menerima',
                 'pregnancy_kek' => 'LILA: '.($r->upper_arm_circumference ?: '-').' cm',
                 default => $r->nutrition_status ?: (

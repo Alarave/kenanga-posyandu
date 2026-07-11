@@ -80,36 +80,36 @@
                 </div>
             </div>
     
-            {{-- AH-06: Hemoglobin Index --}}
-            <div wire:click="$parent.drillDown('Ibu Hamil - Kasus Anemia', 'pregnancy_anemia', {{ $selectedMonth ?? 'null' }})"
+            {{-- AH-06: Tekanan Darah Index --}}
+            <div wire:click="$parent.drillDown('Ibu Hamil - Kasus Hipertensi', 'pregnancy_hypertension', {{ $selectedMonth ?? 'null' }})"
                  class="relative overflow-hidden bg-gradient-to-br from-white to-rose-50/10 rounded-3xl p-6 border border-rose-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-rose-100/40 hover:-translate-y-1 hover:border-rose-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group pregnancy-card">
-                
+                 
                 {{-- Background Watermark Icon --}}
-                <span class="material-symbols-outlined absolute -bottom-6 -right-6 text-[120px] text-rose-500 opacity-[0.04] transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 pointer-events-none">water_drop</span>
+                <span class="material-symbols-outlined absolute -bottom-6 -right-6 text-[120px] text-rose-500 opacity-[0.04] transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 pointer-events-none">monitor_heart</span>
 
                 <div>
                     <div class="flex items-center justify-between mb-4">
                         <div class="w-12 h-12 rounded-2xl bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-200/50 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:bg-rose-100 group-hover:text-rose-750">
-                            <span class="material-symbols-outlined text-[26px]">water_drop</span>
+                            <span class="material-symbols-outlined text-[26px]">monitor_heart</span>
                         </div>
-                        <span class="text-[10px] font-black text-rose-700 uppercase tracking-widest bg-rose-50 px-2.5 py-1 rounded-lg">Hemoglobin Sehat</span>
+                        <span class="text-[10px] font-black text-rose-700 uppercase tracking-widest bg-rose-50 px-2.5 py-1 rounded-lg">Tekanan Darah Sehat</span>
                     </div>
                     <div class="flex items-baseline justify-between w-full">
                         <div class="flex items-baseline gap-2">
-                            <span class="text-5xl font-black text-rose-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ $anemiaStats['normal'] }}</span>
+                            <span class="text-5xl font-black text-rose-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ $hypertensionStats['normal'] }}</span>
                             <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Ibu Hamil</span>
                         </div>
                         @php
-                            $anemiaPercentage = $anemiaStats['total'] > 0 ? round(($anemiaStats['normal'] / $anemiaStats['total']) * 100) : 100;
+                            $bpPercentage = $hypertensionStats['total'] > 0 ? round(($hypertensionStats['normal'] / $hypertensionStats['total']) * 100) : 100;
                         @endphp
-                        <span class="text-xs font-extrabold text-rose-750 bg-rose-100/80 px-2 py-0.5 rounded-md">{{ $anemiaPercentage }}% Normal</span>
+                        <span class="text-xs font-extrabold text-rose-750 bg-rose-100/80 px-2 py-0.5 rounded-md">{{ $bpPercentage }}% Normal</span>
                     </div>
-                    <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Ibu hamil dengan kadar Hemoglobin (Hb) aman (&ge; 11 g/dL) bebas dari anemia.</p>
+                    <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Ibu hamil dengan tekanan darah normal (&lt; 140/90 mmHg) bebas dari risiko hipertensi/preeklamsia.</p>
                 </div>
                 <div class="mt-6 pt-4 border-t border-slate-100 flex justify-between items-center pr-2">
-                    <span class="text-xs font-bold text-slate-500 transition-colors duration-300 hover-text-rose">Kasus Anemia:</span>
+                    <span class="text-xs font-bold text-slate-500 transition-colors duration-300 hover-text-rose">Kasus Hipertensi:</span>
                     <div class="flex items-center gap-2">
-                        <span class="text-rose-700 font-extrabold bg-rose-50 px-2.5 py-0.5 rounded-lg">{{ $anemiaStats['anemia'] }} Ibu</span>
+                        <span class="text-rose-700 font-extrabold bg-rose-50 px-2.5 py-0.5 rounded-lg">{{ $hypertensionStats['hypertension'] }} Ibu</span>
                         <span class="material-symbols-outlined text-[14px] !w-auto !overflow-visible text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 hover-text-rose">arrow_forward</span>
                     </div>
                 </div>
@@ -370,7 +370,6 @@
                             <th class="px-6 py-4">Usia Hamil</th>
                             <th class="px-6 py-4">HPL / Taksiran</th>
                             <th class="px-6 py-4 text-center">LILA</th>
-                            <th class="px-6 py-4 text-center">Hemoglobin</th>
                             <th class="px-6 py-4 text-center">Tekanan Darah</th>
                             <th class="px-6 py-4 text-center">ANC</th>
                             <th class="px-6 py-4 text-center">Tablet Fe</th>
@@ -421,20 +420,6 @@
                                             <span class="font-extrabold text-xs {{ $row['is_kek'] ? 'text-rose-600' : 'text-slate-700' }}">{{ $row['lila'] }} cm</span>
                                             @if($row['is_kek'])
                                                 <span class="inline-flex px-1.5 py-0.5 rounded bg-rose-50 text-[9px] font-black text-rose-600 border border-rose-100 uppercase tracking-wider">KEK</span>
-                                            @else
-                                                <span class="inline-flex px-1.5 py-0.5 rounded bg-emerald-50 text-[9px] font-black text-emerald-600 border border-emerald-100 uppercase tracking-wider">Normal</span>
-                                            @endif
-                                        </div>
-                                    @endif
-                                </td>
-                                <td class="px-6 py-4 text-center">
-                                    @if($row['hb'] === '-')
-                                        <span class="text-slate-350 font-bold">-</span>
-                                    @else
-                                        <div class="flex flex-col items-center justify-center gap-0.5">
-                                            <span class="font-extrabold text-xs {{ $row['is_anemia'] ? 'text-rose-600' : 'text-slate-700' }}">{{ $row['hb'] }} g/dL</span>
-                                            @if($row['is_anemia'])
-                                                <span class="inline-flex px-1.5 py-0.5 rounded bg-rose-50 text-[9px] font-black text-rose-600 border border-rose-100 uppercase tracking-wider">Anemia</span>
                                             @else
                                                 <span class="inline-flex px-1.5 py-0.5 rounded bg-emerald-50 text-[9px] font-black text-emerald-600 border border-emerald-100 uppercase tracking-wider">Normal</span>
                                             @endif

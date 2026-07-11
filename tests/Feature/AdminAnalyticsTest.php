@@ -295,13 +295,14 @@ test('analytics component can drill down on pregnancy risks', function () {
         'posyandu_id' => $posyandu->id,
         'category' => 'ibu_hamil',
         'status_mutasi' => 'aktif',
-        'full_name' => 'Ibu Hamil Anemia',
+        'full_name' => 'Ibu Hamil Hipertensi',
         'birth_date' => now()->subYears(28),
     ]);
     MedicalRecord::factory()->create([
         'patient_id' => $pregnant1->id,
         'visit_date' => now(),
-        'hemoglobin' => 10.0, // Anemia
+        'systolic_bp' => 140,
+        'diastolic_bp' => 90,
         'height' => 160,
     ]);
 
@@ -334,13 +335,13 @@ test('analytics component can drill down on pregnancy risks', function () {
 
     $this->actingAs($admin);
 
-    // Test Anemia drill down
+    // Test Hipertensi drill down
     Livewire::test(\App\Livewire\Admin\Analytics::class)
         ->set('activeTab', 'lansia')
-        ->call('drillDown', 'Ibu Hamil - Kasus Anemia', 'pregnancy_anemia', now()->month)
-        ->assertSee('Ibu Hamil Anemia')
+        ->call('drillDown', 'Ibu Hamil - Kasus Hipertensi', 'pregnancy_hypertension', now()->month)
+        ->assertSee('Ibu Hamil Hipertensi')
         ->assertDontSee('Ibu Hamil Tinggi Badan Kurang')
-        ->assertSee('Hb: 10 g/dL');
+        ->assertSee('TD: 140/90 mmHg');
 
     // Test High Risk drill down
     Livewire::test(\App\Livewire\Admin\Analytics::class)
@@ -355,20 +356,21 @@ test('analytics component can drill down on pregnancy risks', function () {
         ->set('activeTab', 'lansia')
         ->call('drillDown', 'Ibu Hamil - Pemberian Tablet Fe', 'pregnancy_tablet_fe', now()->month);
         
-    $testComponent->assertSee('Ibu Hamil Menerima Fe')
-        ->assertSee('Tablet Fe: Menerima')
-        ->assertSee('Ibu Hamil Anemia')
+    $testComponent->assertDontSee('Ibu Hamil Menerima Fe')
+        ->assertDontSee('Tablet Fe: Menerima')
+        ->assertSee('Ibu Hamil Hipertensi')
         ->assertSee('Tablet Fe: Belum Menerima');
 
     $drillDownData = $testComponent->get('drillDownData');
+    expect(count($drillDownData))->toBe(2);
     expect($drillDownData[0]['nutrition_status'])->toBe('Tablet Fe: Belum Menerima');
-    expect($drillDownData[2]['nutrition_status'])->toBe('Tablet Fe: Menerima');
+    expect($drillDownData[1]['nutrition_status'])->toBe('Tablet Fe: Belum Menerima');
 
     // Test ANC K1 drill down
     Livewire::test(\App\Livewire\Admin\Analytics::class)
         ->set('activeTab', 'lansia')
         ->call('drillDown', 'Ibu Hamil - Kunjungan K1', 'pregnancy_k1', now()->month)
-        ->assertSee('Ibu Hamil Anemia')
+        ->assertSee('Ibu Hamil Hipertensi')
         ->assertSee('Ibu Hamil Tinggi Badan Kurang')
         ->assertSee('Ibu Hamil Menerima Fe')
         ->assertSee('Total Kunjungan: 1 Kali');
@@ -377,7 +379,7 @@ test('analytics component can drill down on pregnancy risks', function () {
     Livewire::test(\App\Livewire\Admin\Analytics::class)
         ->set('activeTab', 'lansia')
         ->call('drillDown', 'Ibu Hamil - Kunjungan K2', 'pregnancy_k2', now()->month)
-        ->assertDontSee('Ibu Hamil Anemia')
+        ->assertDontSee('Ibu Hamil Hipertensi')
         ->assertDontSee('Ibu Hamil Tinggi Badan Kurang');
 });
 
@@ -390,7 +392,7 @@ test('ibu hamil analytics component computes correct health scorecards and cover
         'posyandu_id' => $posyandu->id,
     ]);
 
-    // Patient 1: High risk (Age 18), Hb normal (12), Fe received (1)
+    // Patient 1: High risk (Age 18), TD normal (120/80), Fe received (1)
     $p1 = \App\Models\Patient::factory()->create([
         'posyandu_id' => $posyandu->id,
         'category' => 'ibu_hamil',
@@ -400,12 +402,13 @@ test('ibu hamil analytics component computes correct health scorecards and cover
     \App\Models\MedicalRecord::factory()->create([
         'patient_id' => $p1->id,
         'visit_date' => now(),
-        'hemoglobin' => 12,
+        'systolic_bp' => 120,
+        'diastolic_bp' => 80,
         'nakes_gives_fe_mms' => 1,
         'height' => 150,
     ]);
 
-    // Patient 2: Normal risk (Age 25), Hb anemia (10), Fe not received (0)
+    // Patient 2: Normal risk (Age 25), TD hipertensi (140/90), Fe not received (0)
     $p2 = \App\Models\Patient::factory()->create([
         'posyandu_id' => $posyandu->id,
         'category' => 'ibu_hamil',
@@ -415,7 +418,8 @@ test('ibu hamil analytics component computes correct health scorecards and cover
     \App\Models\MedicalRecord::factory()->create([
         'patient_id' => $p2->id,
         'visit_date' => now(),
-        'hemoglobin' => 10,
+        'systolic_bp' => 140,
+        'diastolic_bp' => 90,
         'nakes_gives_fe_mms' => 0,
         'height' => 150,
     ]);
@@ -428,7 +432,7 @@ test('ibu hamil analytics component computes correct health scorecards and cover
         'selectedPosyandu' => $posyandu->id
     ])
     ->assertSeeHtml('Risiko Rendah')
-    ->assertSeeHtml('Hemoglobin Sehat')
+    ->assertSeeHtml('Tekanan Darah Sehat')
     ->assertSeeHtml('Cakupan TTD')
     ->assertSeeHtml('50%'); // 1 out of 2 received Fe (50% coverage)
 });
