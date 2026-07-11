@@ -257,7 +257,7 @@ describe('privasi data - tidak menampilkan data pribadi sasaran', function () {
 
 describe('redirect untuk halaman admin', function () {
     it('redirect ke login saat mengakses halaman admin tanpa login', function () {
-        $response = $this->get('/admin/patients');
+        $response = $this->get('/admin/pasien');
 
         $response->assertRedirect('/login');
     });
@@ -269,19 +269,19 @@ describe('redirect untuk halaman admin', function () {
     });
 
     it('redirect ke login saat mengakses medical records tanpa login', function () {
-        $response = $this->get('/admin/medical-records');
+        $response = $this->get('/admin/rekam-medis');
 
         $response->assertRedirect('/login');
     });
 
     it('redirect ke login saat mengakses reports tanpa login', function () {
-        $response = $this->get('/admin/reports');
+        $response = $this->get('/admin/laporan');
 
         $response->assertRedirect('/login');
     });
 
     it('redirect ke login saat mengakses activity logs tanpa login', function () {
-        $response = $this->get('/admin/activity-logs');
+        $response = $this->get('/admin/log-aktivitas');
 
         $response->assertRedirect('/login');
     });
@@ -366,8 +366,8 @@ describe('keamanan halaman publik', function () {
         $response = $this->get('/');
 
         $response->assertOk();
-        $response->assertDontSee('/admin/patients');
-        $response->assertDontSee('/admin/medical-records');
+        $response->assertDontSee('/admin/pasien');
+        $response->assertDontSee('/admin/rekam-medis');
     });
 
     it('halaman publik tidak mengekspos informasi sensitif sistem', function () {

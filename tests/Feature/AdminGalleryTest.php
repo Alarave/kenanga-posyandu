@@ -21,7 +21,7 @@ test('superadmin can access admin gallery index', function () {
     ]);
 
     $this->actingAs($superadmin);
-    $response = $this->get('/admin/gallery');
+    $response = $this->get('/admin/galeri');
 
     $response->assertStatus(200);
 });
@@ -40,14 +40,14 @@ test('can create a new gallery folder', function () {
     $coverPhoto = UploadedFile::fake()->image('cover.jpg');
 
     $this->actingAs($admin);
-    $response = $this->post('/admin/gallery', [
+    $response = $this->post('/admin/galeri', [
         'name' => 'Folder Imunisasi 2026',
         'description' => 'Dokumentasi imunisasi balita',
         'posyandu_id' => $posyandu->id,
         'cover_photo' => $coverPhoto,
     ]);
 
-    $response->assertRedirect('/admin/gallery');
+    $response->assertRedirect('/admin/galeri');
 
     $folder = GalleryFolder::latest()->first();
     expect($folder->name)->toBe('Folder Imunisasi 2026');
@@ -75,13 +75,13 @@ test('can upload image file to folder and it is saved as type image', function (
     $file = UploadedFile::fake()->image('kegiatan.jpg');
 
     $this->actingAs($admin);
-    $response = $this->post("/admin/gallery/{$folder->id}/media", [
+    $response = $this->post("/admin/galeri/{$folder->id}/media", [
         'title' => 'Kegiatan Posyandu',
         'description' => 'Edukasi kesehatan anak',
         'photos' => [$file],
     ]);
 
-    $response->assertRedirect("/admin/gallery/{$folder->id}");
+    $response->assertRedirect("/admin/galeri/{$folder->id}");
 
     $gallery = Gallery::latest()->first();
     expect($gallery->type)->toBe('image');
@@ -111,13 +111,13 @@ test('can upload video file to folder and it is saved as type video', function (
     $file = UploadedFile::fake()->create('kegiatan.mp4', 500, 'video/mp4');
 
     $this->actingAs($admin);
-    $response = $this->post("/admin/gallery/{$folder->id}/media", [
+    $response = $this->post("/admin/galeri/{$folder->id}/media", [
         'title' => 'Video Kegiatan Posyandu',
         'description' => 'Rekaman imunisasi rutin',
         'photos' => [$file],
     ]);
 
-    $response->assertRedirect("/admin/gallery/{$folder->id}");
+    $response->assertRedirect("/admin/galeri/{$folder->id}");
 
     $gallery = Gallery::latest()->first();
     expect($gallery->type)->toBe('video');

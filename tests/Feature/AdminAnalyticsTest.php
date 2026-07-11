@@ -20,7 +20,7 @@ test('superadmin can access admin analytics page and see component', function ()
     ]);
 
     $this->actingAs($superadmin);
-    $response = $this->get('/admin/analytics');
+    $response = $this->get('/admin/analitik');
 
     $response->assertStatus(200);
     $response->assertSeeLivewire('admin.analytics');
