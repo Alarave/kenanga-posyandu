@@ -557,6 +557,44 @@ test('analytics component can drill down on pregnancy trimesters', function () {
     expect($namesT3)->not->toContain('Ibu Trimester Dua');
 });
 
+test('analytics component can drill down on pregnancy imt and counseling topic', function () {
+    $pedukuhan = Pedukuhan::factory()->create();
+    $posyandu = Posyandu::factory()->create(['pedukuhan_id' => $pedukuhan->id]);
+
+    $admin = User::factory()->create([
+        'role' => 'admin',
+        'posyandu_id' => $posyandu->id,
+    ]);
+
+    $p1 = \App\Models\Patient::factory()->create([
+        'posyandu_id' => $posyandu->id,
+        'category' => 'ibu_hamil',
+        'status_mutasi' => 'aktif',
+    ]);
+    \App\Models\MedicalRecord::factory()->create([
+        'patient_id' => $p1->id,
+        'visit_date' => now(),
+        'imt_plotting_status' => 'Kurus sekali',
+        'counseling_topic' => 'Inisiasi Menyusui Dini',
+    ]);
+
+    $this->actingAs($admin);
+
+    // Test IMT
+    $dataImt = Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->set('activeTab', 'pregnancy')
+        ->call('drillDown', 'IMT Kurus', 'pregnancy_imt_kurus', now()->month)
+        ->get('drillDownData');
+    expect(collect($dataImt)->pluck('name')->toArray())->toContain($p1->full_name);
+
+    // Test Counseling Topic
+    $dataCounseling = Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->set('activeTab', 'pregnancy')
+        ->call('drillDown', 'Penyuluhan - Inisiasi Menyusui Dini', 'pregnancy_counseling_topic', now()->month, 'Inisiasi Menyusui Dini')
+        ->get('drillDownData');
+    expect(collect($dataCounseling)->pluck('name')->toArray())->toContain($p1->full_name);
+});
+
 
 
 

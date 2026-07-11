@@ -438,10 +438,14 @@
                                     $count = $imtDistribution[$key] ?? 0;
                                     $percent = $totalImt > 0 ? round(($count / $totalImt) * 100) : 0;
                                 @endphp
-                                <div>
-                                    <div class="flex justify-between items-center text-[11px] mb-1">
-                                        <span class="font-bold text-slate-600">{{ $key }}</span>
-                                        <span class="font-extrabold text-slate-800">{{ $count }} Ibu ({{ $percent }}%)</span>
+                                <div wire:click="$parent.drillDown('IMT {{ $key }}', 'pregnancy_imt_{{ strtolower($key) }}', null)" 
+                                     class="cursor-pointer hover:bg-slate-50/80 rounded-xl p-2.5 transition-all group">
+                                    <div class="flex justify-between items-center text-[11px] mb-1.5">
+                                        <span class="font-bold text-slate-600 group-hover:text-teal-650 transition-colors">{{ $key }}</span>
+                                        <div class="flex items-center gap-1">
+                                            <span class="font-extrabold text-slate-800 group-hover:text-teal-700 transition-colors">{{ $count }} Ibu ({{ $percent }}%)</span>
+                                            <span class="material-symbols-outlined text-[12px] text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+                                        </div>
                                     </div>
                                     <div class="w-full bg-slate-100 rounded-full h-1.5 overflow-hidden">
                                         <div class="{{ $colorClass }} h-full rounded-full transition-all duration-500" style="width: {{ $percent }}%"></div>
@@ -486,9 +490,13 @@
                                 <h4 class="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-2.5">Topik Penyuluhan Terpopuler</h4>
                                 <div class="space-y-1.5">
                                     @forelse($counselingReferralStats['topTopics'] as $topic => $count)
-                                        <div class="flex items-center justify-between text-xs p-1.5 bg-slate-50/50 rounded-lg border border-slate-100">
-                                            <span class="truncate font-semibold text-slate-650 flex-1 pr-2" title="{{ $topic }}">{{ $topic }}</span>
-                                            <span class="font-extrabold text-slate-700 bg-white border border-slate-200 px-2 py-0.5 rounded text-[10px]">{{ $count }}x</span>
+                                        <div wire:click="$parent.drillDown('Penyuluhan: {{ $topic }}', 'pregnancy_counseling_topic', null, '{{ $topic }}')" 
+                                             class="flex items-center justify-between text-xs p-1.5 bg-slate-50/50 hover:bg-slate-100 border border-slate-100 hover:border-slate-200 cursor-pointer rounded-lg transition-all group">
+                                            <span class="truncate font-semibold text-slate-650 flex-1 pr-2 group-hover:text-teal-650 transition-colors" title="{{ $topic }}">{{ $topic }}</span>
+                                            <div class="flex items-center gap-1.5 shrink-0">
+                                                <span class="font-extrabold text-slate-700 bg-white border border-slate-200 group-hover:border-teal-200 group-hover:text-teal-700 px-2 py-0.5 rounded text-[10px] transition-colors">{{ $count }}x</span>
+                                                <span class="material-symbols-outlined text-[12px] text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">arrow_forward</span>
+                                            </div>
                                         </div>
                                     @empty
                                         <span class="text-slate-400 text-xs font-semibold block text-center py-2">Belum ada penyuluhan</span>

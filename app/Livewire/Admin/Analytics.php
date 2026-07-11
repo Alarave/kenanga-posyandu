@@ -276,6 +276,11 @@ class Analytics extends BaseAdminComponent
             'pregnancy_trimester_1' => 'Trimester I',
             'pregnancy_trimester_2' => 'Trimester II',
             'pregnancy_trimester_3' => 'Trimester III',
+            'pregnancy_imt_normal' => 'IMT Normal',
+            'pregnancy_imt_kurus' => 'IMT Kurus',
+            'pregnancy_imt_gemuk' => 'IMT Gemuk',
+            'pregnancy_imt_obesitas' => 'IMT Obesitas',
+            'pregnancy_counseling_topic' => 'Topik Penyuluhan: ' . ($this->drillDownStatusFilter ?? 'Semua'),
             default => 'Data',
         };
 
@@ -482,6 +487,89 @@ class Analytics extends BaseAdminComponent
                 'nik' => $r->patient?->id_number ?? '-',
                 'posyandu' => $r->patient?->posyandu?->name ?? '-',
                 'nutrition_status' => 'Usia Kehamilan: ' . $r->gestational_age,
+                'visit_date' => $r->visit_date?->format('d/m/Y') ?? '-',
+                'weight' => $r->weight ? $r->weight . ' kg' : '-',
+                'height' => $r->height ? $r->height . ' cm' : '-',
+                'patient_id' => $r->patient_id,
+                'category_warga' => 'Ibu Hamil',
+                'kategori_gizi' => '-',
+                'status_info' => '-',
+                'month_name' => $r->visit_date ? match($r->visit_date->month) {
+                    1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni',
+                    7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
+                    default => '-'
+                } : '-',
+            ])->values()->toArray();
+
+            return;
+        }
+
+        if (in_array($type, ['pregnancy_imt_normal', 'pregnancy_imt_kurus', 'pregnancy_imt_gemuk', 'pregnancy_imt_obesitas'])) {
+            $query = $this->applyPosyanduScope(MedicalRecord::query(), $targetPosyandu)
+                ->with(['patient.posyandu'])
+                ->whereHas('patient', function ($q) {
+                    $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
+                })
+                ->whereYear('visit_date', $targetYear)
+                ->when($month ?? $this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $month ?? $this->selectedMonth))
+                ->orderBy('visit_date', 'desc')
+                ->orderBy('id', 'desc');
+
+            $records = $query->get()->unique('patient_id');
+
+            $filteredRecords = $records->filter(function ($r) use ($type) {
+                $imt = trim($r->imt_plotting_status ?? '');
+                if ($imt === '') return false;
+                return match ($type) {
+                    'pregnancy_imt_normal' => stripos($imt, 'normal') !== false,
+                    'pregnancy_imt_kurus' => stripos($imt, 'kurus') !== false || stripos($imt, 'rendah') !== false,
+                    'pregnancy_imt_gemuk' => stripos($imt, 'gemuk') !== false || stripos($imt, 'lebih') !== false,
+                    'pregnancy_imt_obesitas' => stripos($imt, 'obes') !== false,
+                    default => false,
+                };
+            });
+
+            $this->drillDownData = $filteredRecords->map(fn ($r) => [
+                'name' => $r->patient?->full_name ?? '-',
+                'nik' => $r->patient?->id_number ?? '-',
+                'posyandu' => $r->patient?->posyandu?->name ?? '-',
+                'nutrition_status' => 'Status IMT: ' . ($r->imt_plotting_status ?: '-'),
+                'visit_date' => $r->visit_date?->format('d/m/Y') ?? '-',
+                'weight' => $r->weight ? $r->weight . ' kg' : '-',
+                'height' => $r->height ? $r->height . ' cm' : '-',
+                'patient_id' => $r->patient_id,
+                'category_warga' => 'Ibu Hamil',
+                'kategori_gizi' => '-',
+                'status_info' => '-',
+                'month_name' => $r->visit_date ? match($r->visit_date->month) {
+                    1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni',
+                    7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
+                    default => '-'
+                } : '-',
+            ])->values()->toArray();
+
+            return;
+        }
+
+        if ($type === 'pregnancy_counseling_topic') {
+            $query = $this->applyPosyanduScope(MedicalRecord::query(), $targetPosyandu)
+                ->with(['patient.posyandu'])
+                ->whereHas('patient', function ($q) {
+                    $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
+                })
+                ->whereYear('visit_date', $targetYear)
+                ->when($month ?? $this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $month ?? $this->selectedMonth))
+                ->where('counseling_topic', $statusFilter)
+                ->orderBy('visit_date', 'desc')
+                ->orderBy('id', 'desc');
+
+            $records = $query->get()->unique('patient_id');
+
+            $this->drillDownData = $records->map(fn ($r) => [
+                'name' => $r->patient?->full_name ?? '-',
+                'nik' => $r->patient?->id_number ?? '-',
+                'posyandu' => $r->patient?->posyandu?->name ?? '-',
+                'nutrition_status' => 'Materi: ' . ($r->counseling_topic ?: '-'),
                 'visit_date' => $r->visit_date?->format('d/m/Y') ?? '-',
                 'weight' => $r->weight ? $r->weight . ' kg' : '-',
                 'height' => $r->height ? $r->height . ' cm' : '-',
