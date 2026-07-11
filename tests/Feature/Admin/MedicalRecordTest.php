@@ -900,8 +900,6 @@ describe('fitur pemilihan kategori dan validasi dinamis', function () {
             'posyandu_id' => $this->posyandu->id,
         ]);
 
-        dd(session('import_errors'), session('error'), session('success'));
-        
         $patient = Patient::where('full_name', 'Siti Maria')->first();
         expect($patient)->not->toBeNull();
         expect($patient->category)->toBe('ibu_hamil');

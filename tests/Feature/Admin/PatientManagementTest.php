@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 use App\Models\Patient;
 use App\Models\Posyandu;
@@ -775,12 +775,13 @@ describe('Tampilan detail kustom sesuai kategori', function () {
             'diagnosis' => 'Sehat',
             'upper_arm_circumference' => 22.0,
             'measurement_method' => 'recumbent',
+            'lila_plotting_status' => 'KEK',
         ]);
 
         $response = $this->get("/admin/patients/{$this->patient1->id}");
         $response->assertSee('Suami Antigravity');
         $response->assertSee('LILA');
-        $response->assertSee('Risiko KEK');
+        $response->assertSee('KEK');
     });
 
     it('menampilkan detail spesifik umum', function () {
