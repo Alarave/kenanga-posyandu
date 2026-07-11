@@ -460,6 +460,87 @@ class Analytics extends BaseAdminComponent
             return;
         }
 
+        if (str_starts_with($type, 'lansia_') && !str_starts_with($type, 'lansia_age_') && !str_starts_with($type, 'lansia_imt_')) {
+            $query = $this->applyPosyanduScope(MedicalRecord::query(), $targetPosyandu)
+                ->with(['patient.posyandu'])
+                ->whereHas('patient', function ($q) {
+                    $q->where('category', 'lansia')->where('status_mutasi', 'aktif');
+                })
+                ->whereYear('visit_date', $targetYear)
+                ->when($month ?? $this->selectedMonth, fn ($q) => $q->whereMonth('visit_date', $month ?? $this->selectedMonth))
+                ->orderBy('visit_date', 'desc')
+                ->orderBy('id', 'desc');
+
+            $records = $query->get()->unique('patient_id');
+
+            $filteredRecords = $records->filter(function ($r) use ($type) {
+                switch ($type) {
+                    case 'lansia_hipertensi':
+                        return $r->systolic_bp >= 140 || $r->diastolic_bp >= 90;
+                    case 'lansia_hiperglikemia':
+                        return $r->blood_sugar >= 200;
+                    case 'lansia_hiperkolesterolemia':
+                        return $r->cholesterol >= 200;
+                    case 'lansia_hiperurisemia':
+                        return $r->uric_acid >= 7.0;
+                    case 'lansia_obesity_sentral':
+                        $gender = $r->patient?->gender ?? '';
+                        $wc = $r->waist_circumference ? (float) $r->waist_circumference : 0;
+                        return ($gender === 'L' && $wc > 90) || ($gender === 'P' && $wc > 80);
+                    case 'lansia_eye_issue':
+                        $eye = strtolower(trim($r->eye_test ?? ''));
+                        return $eye !== '' && $eye !== '-' && $eye !== 'normal';
+                    case 'lansia_ear_issue':
+                        $ear = strtolower(trim($r->ear_test ?? ''));
+                        return $ear !== '' && $ear !== '-' && $ear !== 'normal';
+                    case 'lansia_puma_risk':
+                        $puma = strtolower(trim($r->puma_screening ?? ''));
+                        return $puma === 'ya' || $puma === '1' || $puma === 'true' || $puma === 'sudah';
+                    case 'lansia_tbc_risk':
+                        $tbc = strtolower(trim($r->tbc_screening_status ?? ''));
+                        return $tbc === 'ya' || $tbc === '1' || $tbc === 'true' || $tbc === 'sudah' || $tbc === 'gejala terindikasi';
+                    case 'lansia_mental_risk':
+                        $mental = strtolower(trim($r->mental_screening ?? ''));
+                        return $mental === 'ya' || $mental === '1' || $mental === 'true' || $mental === 'sudah' || $mental === 'ada masalah';
+                    default:
+                        return false;
+                }
+            });
+
+            $this->drillDownData = $filteredRecords->map(fn ($r) => [
+                'name' => $r->patient?->full_name ?? '-',
+                'nik' => $r->patient?->id_number ?? '-',
+                'posyandu' => $r->patient?->posyandu?->name ?? '-',
+                'nutrition_status' => match ($type) {
+                    'lansia_hipertensi' => 'TD: '.($r->systolic_bp ?: '-').'/'.($r->diastolic_bp ?: '-').' mmHg',
+                    'lansia_hiperglikemia' => 'GDS: '.($r->blood_sugar ?: '-').' mg/dL',
+                    'lansia_hiperkolesterolemia' => 'Kolesterol: '.($r->cholesterol ?: '-').' mg/dL',
+                    'lansia_hiperurisemia' => 'Asam Urat: '.($r->uric_acid ?: '-').' mg/dL',
+                    'lansia_obesity_sentral' => 'LP: '.($r->waist_circumference ?: '-').' cm',
+                    'lansia_eye_issue' => 'Tes Mata: '.($r->eye_test ?: '-'),
+                    'lansia_ear_issue' => 'Tes Telinga: '.($r->ear_test ?: '-'),
+                    'lansia_puma_risk' => 'Skrining PUMA: '.($r->puma_screening ?: '-'),
+                    'lansia_tbc_risk' => 'Skrining TBC: '.($r->tbc_screening_status ?: '-'),
+                    'lansia_mental_risk' => 'Skrining Jiwa: '.($r->mental_screening ?: '-'),
+                    default => 'Lansia',
+                },
+                'visit_date' => $r->visit_date?->format('d/m/Y') ?? '-',
+                'weight' => $r->weight ? $r->weight . ' kg' : '-',
+                'height' => $r->height ? $r->height . ' cm' : '-',
+                'patient_id' => $r->patient_id,
+                'category_warga' => 'Lansia',
+                'kategori_gizi' => '-',
+                'status_info' => '-',
+                'month_name' => $r->visit_date ? match($r->visit_date->month) {
+                    1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni',
+                    7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
+                    default => '-'
+                } : '-',
+            ])->values()->toArray();
+
+            return;
+        }
+
         if (in_array($type, ['pregnancy_trimester_1', 'pregnancy_trimester_2', 'pregnancy_trimester_3'])) {
             $query = $this->applyPosyanduScope(MedicalRecord::query(), $targetPosyandu)
                 ->with(['patient.posyandu'])
@@ -772,29 +853,6 @@ class Analytics extends BaseAdminComponent
                         $q->where('vaccine_name', 'like', "%{$statusFilter}%");
                     }
                 }),
-            'lansia_hipertensi' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
-                ->where(fn ($q) => $q->where('systolic_bp', '>=', 140)->orWhere('diastolic_bp', '>=', 90)),
-            'lansia_hiperglikemia' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
-                ->where('blood_sugar', '>=', 200),
-            'lansia_hiperkolesterolemia' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
-                ->where('cholesterol', '>=', 200),
-            'lansia_hiperurisemia' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
-                ->where('uric_acid', '>=', 7.0),
-            'lansia_obesity_sentral' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
-                ->where(function($q) {
-                    $q->where(fn($sq) => $sq->whereHas('patient', fn($pq) => $pq->where('gender', 'L'))->where('waist_circumference', '>', 90))
-                      ->orWhere(fn($sq) => $sq->whereHas('patient', fn($pq) => $pq->where('gender', 'P'))->where('waist_circumference', '>', 80));
-                }),
-            'lansia_eye_issue' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
-                ->whereNotNull('eye_test')->where('eye_test', '!=', '')->where('eye_test', '!=', '-')->where('eye_test', '!=', 'Normal'),
-            'lansia_ear_issue' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
-                ->whereNotNull('ear_test')->where('ear_test', '!=', '')->where('ear_test', '!=', '-')->where('ear_test', '!=', 'Normal'),
-            'lansia_puma_risk' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
-                ->whereIn('puma_screening', ['Ya', '1', 'true', 'sudah']),
-            'lansia_tbc_risk' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
-                ->whereIn('tbc_screening_status', ['Ya', '1', 'true', 'sudah', 'gejala terindikasi']),
-            'lansia_mental_risk' => $query->whereHas('patient', fn ($q) => $q->where('category', 'lansia')->where('status_mutasi', 'aktif'))
-                ->whereIn('mental_screening', ['Ya', '1', 'true', 'sudah', 'ada masalah']),
             'pregnancy_high_risk', 'pregnancy_hypertension', 'pregnancy_tablet_fe', 'pregnancy_kek', 'pregnancy_tbc' => $query->whereHas('patient', function ($q) {
                     $q->where('category', 'ibu_hamil')->where('status_mutasi', 'aktif');
                 }),
