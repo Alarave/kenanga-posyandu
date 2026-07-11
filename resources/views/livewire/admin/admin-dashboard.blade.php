@@ -1295,54 +1295,58 @@
             </div>
         </div>
 
-        {{-- Service Performance Summary Widget --}}
+        {{-- Gallery Activity Widget --}}
         <div class="widget-card p-5 relative overflow-hidden off-screen-widget">
-            <div class="absolute -right-8 -top-8 w-32 h-32 bg-emerald-50/50 rounded-full blur-3xl pointer-events-none">
+            <div class="absolute -right-8 -top-8 w-32 h-32 bg-amber-50/50 rounded-full blur-3xl pointer-events-none">
             </div>
             <div class="relative z-10">
-                <div class="flex items-center gap-2.5 mb-5">
-                    <div class="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center">
-                        <span class="material-symbols-outlined text-[18px]">query_stats</span>
+                <div class="flex items-center justify-between mb-5">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-9 h-9 rounded-xl bg-amber-500 text-white flex items-center justify-center">
+                            <span class="material-symbols-outlined text-[18px]">imagesmode</span>
+                        </div>
+                        <span class="font-bold text-slate-900 text-sm">Galeri Kegiatan Terbaru</span>
                     </div>
-                    <span class="font-bold text-slate-900 text-sm">Ringkasan Aktivitas Layanan</span>
+                    <span class="badge badge-amber">Foto</span>
                 </div>
-                <div class="space-y-3">
-                    {{-- Item 1: Pemeriksaan --}}
-                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
-                        <div class="flex items-center gap-2.5">
-                            <span class="material-symbols-outlined text-[20px] text-teal-600">assignment_turned_in</span>
-                            <div class="flex flex-col">
-                                <span class="text-xs font-bold text-slate-800">Pemeriksaan</span>
-                                <span class="text-[9px] text-slate-400 font-bold uppercase mt-0.5">Total Pemeriksaan</span>
-                            </div>
-                        </div>
-                        <span class="text-base font-black text-slate-900">{{ number_format($totalPemeriksaan) }}</span>
-                    </div>
 
-                    {{-- Item 2: Imunisasi --}}
-                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
-                        <div class="flex items-center gap-2.5">
-                            <span class="material-symbols-outlined text-[20px] text-rose-500">vaccines</span>
-                            <div class="flex flex-col">
-                                <span class="text-xs font-bold text-slate-800">Imunisasi</span>
-                                <span class="text-[9px] text-slate-400 font-bold uppercase mt-0.5">Total Imunisasi</span>
+                @if(count($latestGalleryItems) > 0)
+                    <div class="grid grid-cols-2 gap-2 mb-4">
+                        @foreach($latestGalleryItems as $gallery)
+                            <div class="relative group/gallery overflow-hidden rounded-xl border border-slate-100 aspect-square bg-slate-50">
+                                @if($gallery->photo)
+                                    <img src="{{ asset('storage/' . $gallery->photo) }}" 
+                                         alt="{{ $gallery->title }}" 
+                                         class="w-full h-full object-cover group-hover/gallery:scale-110 transition-transform duration-300">
+                                @else
+                                    <div class="w-full h-full flex items-center justify-center text-slate-350">
+                                        <span class="material-symbols-outlined text-[24px]">image</span>
+                                    </div>
+                                @endif
+                                <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover/gallery:opacity-100 transition-opacity duration-200 flex flex-col justify-end p-2 text-white">
+                                    <p class="text-[10px] font-black line-clamp-1 leading-tight">{{ $gallery->title }}</p>
+                                    @if($gallery->posyandu)
+                                        <p class="text-[8px] font-medium text-slate-300 mt-0.5">{{ $gallery->posyandu->name }}</p>
+                                    @endif
+                                </div>
                             </div>
-                        </div>
-                        <span class="text-base font-black text-slate-900">{{ number_format($totalImunisasi) }}</span>
+                        @endforeach
                     </div>
+                @else
+                    <div class="flex flex-col items-center py-6 text-center mb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300 mb-3">
+                            <span class="material-symbols-outlined text-[24px]">add_photo_alternate</span>
+                        </div>
+                        <p class="text-xs font-bold text-slate-400">Belum ada foto kegiatan</p>
+                        <p class="text-[10px] text-slate-300 mt-0.5">Dokumentasi posyandu akan muncul di sini</p>
+                    </div>
+                @endif
 
-                    {{-- Item 3: Kunjungan Baru --}}
-                    <div class="p-3 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-between">
-                        <div class="flex items-center gap-2.5">
-                            <span class="material-symbols-outlined text-[20px] text-blue-500">fiber_new</span>
-                            <div class="flex flex-col">
-                                <span class="text-xs font-bold text-slate-800">Kunjungan Baru</span>
-                                <span class="text-[9px] text-slate-400 font-bold uppercase mt-0.5">Bulan Ini</span>
-                            </div>
-                        </div>
-                        <span class="text-base font-black text-slate-900">{{ number_format($kunjunganBaru) }}</span>
-                    </div>
-                </div>
+                <a href="{{ route('admin.gallery.index') }}"
+                   class="w-full h-10 bg-amber-500 hover:bg-amber-600 text-white rounded-xl font-bold text-xs flex items-center justify-center transition-colors gap-2 cursor-pointer shadow-xs border-0">
+                    <span class="material-symbols-outlined text-[16px]">collections</span>
+                    Buka Galeri Kegiatan
+                </a>
             </div>
         </div>
     </div>

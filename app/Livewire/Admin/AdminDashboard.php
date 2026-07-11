@@ -10,6 +10,7 @@ use App\Models\Patient;
 use App\Models\Posyandu;
 use App\Models\Schedule;
 use App\Models\User;
+use App\Models\Gallery;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Auth;
@@ -79,6 +80,9 @@ class AdminDashboard extends BaseAdminComponent
     public ?string $selectedNutritionStatus = null;
 
     public array $balitasForSelectedStatus = [];
+
+    // Gallery Properties
+    public $latestGalleryItems = [];
 
     public bool $showBumilModal = false;
 
@@ -444,6 +448,12 @@ class AdminDashboard extends BaseAdminComponent
         if ($this->selectedLansiaGroup) {
             $this->loadLansiasForSelectedGroup();
         }
+
+        // Load latest gallery items
+        $this->latestGalleryItems = Gallery::accessibleBy($user)
+            ->latest()
+            ->limit(4)
+            ->get();
     }
 
     protected function computeDashboardStatsRealtime()
