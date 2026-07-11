@@ -155,7 +155,7 @@ class AdminDashboard extends BaseAdminComponent
         $user = Auth::user();
         if ($user->isSuperAdmin()) {
             if ($this->filterPosyandu !== 'semua') {
-                if ($type === 'patient' || $type === 'schedule') {
+                if ($type === 'patient' || $type === 'schedule' || $type === 'gallery') {
                     $query->where('posyandu_id', $this->filterPosyandu);
                 } elseif ($type === 'medical_record') {
                     $query->whereHas('patient', function ($q) {
@@ -164,7 +164,7 @@ class AdminDashboard extends BaseAdminComponent
                 }
             }
         } else {
-            if ($type === 'patient' || $type === 'schedule') {
+            if ($type === 'patient' || $type === 'schedule' || $type === 'gallery') {
                 $query->where('posyandu_id', Auth::user()->posyandu_id);
             } elseif ($type === 'medical_record') {
                 $query->whereHas('patient', function ($q) {
@@ -450,7 +450,7 @@ class AdminDashboard extends BaseAdminComponent
         }
 
         // Load latest gallery items
-        $this->latestGalleryItems = Gallery::accessibleBy($user)
+        $this->latestGalleryItems = $this->applyDashboardFilters(Gallery::accessibleBy($user), 'gallery')
             ->latest()
             ->limit(4)
             ->get();
