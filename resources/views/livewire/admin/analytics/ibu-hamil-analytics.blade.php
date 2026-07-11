@@ -39,7 +39,7 @@
                 <div class="mt-6 pt-4 border-t border-slate-100 flex justify-between items-center pr-2">
                     <span class="text-xs font-bold text-slate-500 transition-colors duration-300 hover-text-teal">Risiko Tinggi &amp; 4T:</span>
                     <div class="flex items-center gap-2">
-                        <span class="text-amber-700 font-extrabold bg-amber-50 px-2.5 py-0.5 rounded-lg text-xs">{{ $riskStats['highRisk'] }} Ibu</span>
+                        <span class="text-amber-700 font-black bg-amber-50 px-3 py-1 rounded-xl text-sm min-w-[28px] h-7 flex items-center justify-center">{{ $riskStats['highRisk'] }}</span>
                         <span class="material-symbols-outlined text-[14px] text-slate-400 opacity-0 group-hover:opacity-100 hover-text-teal transition-opacity">arrow_forward</span>
                     </div>
                 </div>
@@ -74,7 +74,7 @@
                 <div class="mt-6 pt-4 border-t border-slate-100 flex justify-between items-center pr-2">
                     <span class="text-xs font-bold text-slate-500 transition-colors duration-300 hover-text-purple">Kasus KEK:</span>
                     <div class="flex items-center gap-2">
-                        <span class="text-purple-700 font-extrabold bg-purple-50 px-2.5 py-0.5 rounded-lg text-xs">{{ $kekStats['kek'] }} Ibu</span>
+                        <span class="text-purple-700 font-black bg-purple-50 px-3 py-1 rounded-xl text-sm min-w-[28px] h-7 flex items-center justify-center">{{ $kekStats['kek'] }}</span>
                         <span class="material-symbols-outlined text-[14px] text-slate-400 opacity-0 group-hover:opacity-100 hover-text-purple transition-opacity">arrow_forward</span>
                     </div>
                 </div>
@@ -109,7 +109,7 @@
                 <div class="mt-6 pt-4 border-t border-slate-100 flex justify-between items-center pr-2">
                     <span class="text-xs font-bold text-slate-500 transition-colors duration-300 hover-text-rose">Kasus Hipertensi:</span>
                     <div class="flex items-center gap-2">
-                        <span class="text-rose-700 font-extrabold bg-rose-50 px-2.5 py-0.5 rounded-lg text-xs">{{ $hypertensionStats['hypertension'] }} Ibu</span>
+                        <span class="text-rose-700 font-black bg-rose-50 px-3 py-1 rounded-xl text-sm min-w-[28px] h-7 flex items-center justify-center">{{ $hypertensionStats['hypertension'] }}</span>
                         <span class="material-symbols-outlined text-[14px] text-slate-400 opacity-0 group-hover:opacity-100 hover-text-rose transition-opacity">arrow_forward</span>
                     </div>
                 </div>
@@ -144,7 +144,7 @@
                 <div class="mt-6 pt-4 border-t border-slate-100 flex justify-between items-center pr-2">
                     <span class="text-xs font-bold text-slate-500 transition-colors duration-300 hover-text-amber">Gejala TBC:</span>
                     <div class="flex items-center gap-2">
-                        <span class="text-amber-700 font-extrabold bg-amber-50 px-2.5 py-0.5 rounded-lg text-xs">{{ $tbcStats['tbc'] }} Ibu</span>
+                        <span class="text-amber-700 font-black bg-amber-50 px-3 py-1 rounded-xl text-sm min-w-[28px] h-7 flex items-center justify-center">{{ $tbcStats['tbc'] }}</span>
                         <span class="material-symbols-outlined text-[14px] text-slate-400 opacity-0 group-hover:opacity-100 hover-text-amber transition-opacity">arrow_forward</span>
                     </div>
                 </div>
@@ -183,7 +183,7 @@
                 <div class="mt-6 pt-4 border-t border-slate-100 flex justify-between items-center pr-2">
                     <span class="text-xs font-bold text-slate-500 transition-colors duration-300 hover-text-teal">Belum Menerima:</span>
                     <div class="flex items-center gap-2">
-                        <span class="text-rose-700 font-extrabold bg-rose-50 px-2.5 py-0.5 rounded-lg text-xs">{{ $ttdStats['notReceived'] }} Ibu</span>
+                        <span class="text-rose-700 font-black bg-rose-50 px-3 py-1 rounded-xl text-sm min-w-[28px] h-7 flex items-center justify-center">{{ $ttdStats['notReceived'] }}</span>
                         <span class="material-symbols-outlined text-[14px] text-slate-400 opacity-0 group-hover:opacity-100 hover-text-teal transition-opacity">arrow_forward</span>
                     </div>
                 </div>
@@ -212,7 +212,7 @@
                     <span class="text-xs font-bold text-slate-500">Ibu Hamil Aktif:</span>
                     <div class="flex items-center gap-2">
                         @php $totalBumil = array_sum($trimesterStats); @endphp
-                        <span class="text-pink-700 font-extrabold bg-pink-50 px-2.5 py-0.5 rounded-lg text-xs">{{ $totalBumil }} Ibu</span>
+                        <span class="text-pink-700 font-black bg-pink-50 px-3 py-1 rounded-xl text-sm min-w-[28px] h-7 flex items-center justify-center">{{ $totalBumil }}</span>
                     </div>
                 </div>
             </div>
