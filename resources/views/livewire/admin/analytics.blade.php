@@ -1376,6 +1376,48 @@
                 </div>
                 @endif
 
+                {{-- Lansia Obesitas & Sensorik Tabs --}}
+                @if(in_array($drillDownType, ['lansia_obesity_sentral', 'lansia_eye_issue', 'lansia_ear_issue']))
+                <div class="flex flex-wrap gap-2 p-1.5 bg-slate-100 rounded-2xl w-fit">
+                    <button wire:click="switchDrillDownCategory('lansia_obesity_sentral')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'lansia_obesity_sentral' ? 'bg-white text-teal-650 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-teal-500"></span>
+                        Obesitas Sentral
+                    </button>
+                    <button wire:click="switchDrillDownCategory('lansia_eye_issue')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'lansia_eye_issue' ? 'bg-white text-indigo-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
+                        Gangguan Penglihatan
+                    </button>
+                    <button wire:click="switchDrillDownCategory('lansia_ear_issue')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'lansia_ear_issue' ? 'bg-white text-pink-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-pink-500"></span>
+                        Gangguan Pendengaran
+                    </button>
+                </div>
+                @endif
+
+                {{-- Lansia Skrining Khusus Tabs --}}
+                @if(in_array($drillDownType, ['lansia_puma_risk', 'lansia_tbc_risk', 'lansia_mental_risk']))
+                <div class="flex flex-wrap gap-2 p-1.5 bg-slate-100 rounded-2xl w-fit">
+                    <button wire:click="switchDrillDownCategory('lansia_puma_risk')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'lansia_puma_risk' ? 'bg-white text-rose-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                        Skrining PUMA
+                    </button>
+                    <button wire:click="switchDrillDownCategory('lansia_tbc_risk')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'lansia_tbc_risk' ? 'bg-white text-amber-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+                        Skrining TBC
+                    </button>
+                    <button wire:click="switchDrillDownCategory('lansia_mental_risk')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'lansia_mental_risk' ? 'bg-white text-purple-650 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+                        Skrining Jiwa
+                    </button>
+                </div>
+                @endif
+
                 {{-- Ibu Hamil Category Tabs --}}
                 @if(in_array($drillDownType, ['pregnancy_high_risk', 'pregnancy_kek', 'pregnancy_hypertension', 'pregnancy_tablet_fe', 'pregnancy_tbc']))
                 <div class="flex flex-wrap gap-2 p-1.5 bg-slate-100 rounded-2xl w-fit">
