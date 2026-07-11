@@ -156,13 +156,13 @@
 
     <div class="min-h-screen app-grid bg-dashboard">
         <!-- Sidebar -->
-        @include('components.layouts.app.sidebar')
+        @include('components.layouts.ui.sidebar')
         
         <!-- Main Content Wrapper -->
         <div id="mainContent" class="flex-1 shrink-0 flex flex-col min-h-screen transition-all duration-300 ease-in-out relative">
             
             <!-- Navbar (Now part of the right-side flow) -->
-            <x-layouts.app.navbar />
+            <x-layouts.ui.navbar />
             
             <!-- Main Content Area -->
             <main class="flex-1 w-full p-4 md:px-8 md:pt-1 md:pb-8">

@@ -1,12 +1,12 @@
 <?php
 
-namespace App\View\Components\Layouts\App;
+namespace App\View\Components\Layouts\UI;
 
 use Closure;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
-class Pagination extends Component
+class Sidebar extends Component
 {
     /**
      * Create a new component instance.
@@ -21,6 +21,6 @@ class Pagination extends Component
      */
     public function render(): View|Closure|string
     {
-        return view('components.layouts.app.pagination');
+        return view('components.layouts.ui.sidebar');
     }
 }
