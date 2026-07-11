@@ -29,6 +29,7 @@
         "fakerphp/faker": "*",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
+        "league/flysystem-aws-s3-v3": "3.0",
         "livewire/flux": "^2.1.1",
         "livewire/volt": "^1.7.0",
         "phpoffice/phpspreadsheet": "^5.7"
@@ -47,7 +48,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/Helpers/StorageHelper.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

@@ -44,7 +44,7 @@ class GalleryFolderController extends Controller
         $validated['user_id'] = $user->id;
 
         if ($request->hasFile('cover_photo')) {
-            $validated['cover_photo'] = $request->file('cover_photo')->store('gallery_covers', 'public');
+            $validated['cover_photo'] = $request->file('cover_photo')->store('gallery_covers', config('filesystems.cloud', 'public'));
         }
 
         GalleryFolder::create($validated);
@@ -105,10 +105,11 @@ class GalleryFolderController extends Controller
         }
 
         if ($request->hasFile('cover_photo')) {
+            $disk = config('filesystems.cloud', 'public');
             if ($folder->cover_photo) {
-                Storage::disk('public')->delete($folder->cover_photo);
+                Storage::disk($disk)->delete($folder->cover_photo);
             }
-            $validated['cover_photo'] = $request->file('cover_photo')->store('gallery_covers', 'public');
+            $validated['cover_photo'] = $request->file('cover_photo')->store('gallery_covers', $disk);
         }
 
         $folder->update($validated);
@@ -128,13 +129,13 @@ class GalleryFolderController extends Controller
 
         // Hapus cover photo folder jika ada
         if ($folder->cover_photo) {
-            Storage::disk('public')->delete($folder->cover_photo);
+            Storage::disk(config('filesystems.cloud', 'public'))->delete($folder->cover_photo);
         }
 
         // Hapus semua media fisik yang ada di dalam folder tersebut
         foreach ($folder->galleries as $gallery) {
             if ($gallery->photo) {
-                Storage::disk('public')->delete($gallery->photo);
+                Storage::disk(config('filesystems.cloud', 'public'))->delete($gallery->photo);
             }
         }
 

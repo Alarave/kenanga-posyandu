@@ -41,7 +41,7 @@ class PatientService
         }
 
         if (isset($data['profile_photo']) && $data['profile_photo'] instanceof UploadedFile) {
-            $data['profile_photo'] = $data['profile_photo']->store('patients', 'public');
+            $data['profile_photo'] = $data['profile_photo']->store('patients', config('filesystems.cloud', 'public'));
         }
 
         $patient = Patient::create($data);
@@ -95,7 +95,7 @@ class PatientService
             ->toArray();
 
         if (isset($data['profile_photo']) && $data['profile_photo'] instanceof UploadedFile) {
-            $data['profile_photo'] = $data['profile_photo']->store('patients', 'public');
+            $data['profile_photo'] = $data['profile_photo']->store('patients', config('filesystems.cloud', 'public'));
         }
 
         $patient->update($data);

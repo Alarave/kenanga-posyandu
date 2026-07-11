@@ -14,7 +14,7 @@ class PosyanduService
     public function createPosyandu(array $data): Posyandu
     {
         if (isset($data['logo_photo']) && $data['logo_photo'] instanceof UploadedFile) {
-            $data['logo_photo'] = $data['logo_photo']->store('posyandu', 'public');
+            $data['logo_photo'] = $data['logo_photo']->store('posyandu', config('filesystems.cloud', 'public'));
         }
 
         // Automatically set Pedukuhan to "Aren Jaya"
@@ -30,10 +30,11 @@ class PosyanduService
     public function updatePosyandu(Posyandu $posyandu, array $data): Posyandu
     {
         if (isset($data['logo_photo']) && $data['logo_photo'] instanceof UploadedFile) {
+            $disk = config('filesystems.cloud', 'public');
             if ($posyandu->logo_photo) {
-                Storage::disk('public')->delete($posyandu->logo_photo);
+                Storage::disk($disk)->delete($posyandu->logo_photo);
             }
-            $data['logo_photo'] = $data['logo_photo']->store('posyandu', 'public');
+            $data['logo_photo'] = $data['logo_photo']->store('posyandu', $disk);
         }
 
         // Automatically set Pedukuhan to "Aren Jaya"
@@ -51,7 +52,7 @@ class PosyanduService
     public function deletePosyandu(Posyandu $posyandu): void
     {
         if ($posyandu->logo_photo) {
-            Storage::disk('public')->delete($posyandu->logo_photo);
+            Storage::disk(config('filesystems.cloud', 'public'))->delete($posyandu->logo_photo);
         }
         $posyandu->delete();
     }

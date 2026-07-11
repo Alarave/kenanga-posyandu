@@ -2,7 +2,7 @@ FROM php:8.3-apache
 
 # ── 1. PHP Extensions ─────────────────────────────────────────────────────────
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
-RUN install-php-extensions gd pdo_pgsql pgsql zip mbstring exif pcntl bcmath xml
+RUN install-php-extensions gd pdo_pgsql pgsql zip mbstring exif pcntl bcmath xml curl
 
 # ── 2. Node.js (must run before Apache config to avoid re-enabling MPMs) ──────
 RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \

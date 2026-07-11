@@ -35,7 +35,7 @@ class UserService
         }
 
         if (isset($data['image']) && $data['image'] instanceof UploadedFile) {
-            $path = $data['image']->store('kaders', 'public');
+            $path = $data['image']->store('kaders', config('filesystems.cloud', 'public'));
             $data['image'] = basename($path);
         }
 
@@ -66,10 +66,11 @@ class UserService
         }
 
         if (isset($data['image']) && $data['image'] instanceof UploadedFile) {
+            $disk = config('filesystems.cloud', 'public');
             if ($user->image && ! str_starts_with($user->image, 'assets/')) {
-                Storage::disk('public')->delete('kaders/'.$user->image);
+                Storage::disk($disk)->delete('kaders/'.$user->image);
             }
-            $path = $data['image']->store('kaders', 'public');
+            $path = $data['image']->store('kaders', $disk);
             $data['image'] = basename($path);
         } else {
             unset($data['image']);
@@ -163,7 +164,7 @@ class UserService
     public function deleteUser(User $user): void
     {
         if ($user->image && ! str_starts_with($user->image, 'assets/')) {
-            Storage::disk('public')->delete('kaders/'.$user->image);
+            Storage::disk(config('filesystems.cloud', 'public'))->delete('kaders/'.$user->image);
         }
 
         $userName = $user->name;

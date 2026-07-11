@@ -61,6 +61,22 @@ return [
             'report' => false,
         ],
 
+        // Cloudflare R2 – S3-compatible object storage (gratis, persistent)
+        // Aktif secara otomatis saat FILESYSTEM_CLOUD=r2 diset di Railway env vars
+        'r2' => [
+            'driver' => 's3',
+            'key' => env('AWS_ACCESS_KEY_ID'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY'),
+            'region' => env('AWS_DEFAULT_REGION', 'auto'),
+            'bucket' => env('AWS_BUCKET'),
+            'url' => env('AWS_URL'),           // Public URL bucket R2 (domain custom/dev URL)
+            'endpoint' => env('AWS_ENDPOINT'), // https://<account_id>.r2.cloudflarestorage.com
+            'use_path_style_endpoint' => true, // Wajib true untuk R2
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
+
     ],
 
     /*

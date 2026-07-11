@@ -30,7 +30,8 @@ class GalleryService
             } else {
                 $data['type'] = 'image';
             }
-            $data['photo'] = $data['photo']->store('galleries', 'public');
+            $disk = config('filesystems.cloud', 'public');
+            $data['photo'] = $data['photo']->store('galleries', $disk);
         } else {
             $data['type'] = 'image';
         }
@@ -44,8 +45,9 @@ class GalleryService
     public function updateGallery(Gallery $gallery, array $data): Gallery
     {
         if (isset($data['photo']) && $data['photo'] instanceof UploadedFile) {
+            $disk = config('filesystems.cloud', 'public');
             if ($gallery->photo) {
-                Storage::disk('public')->delete($gallery->photo);
+                Storage::disk($disk)->delete($gallery->photo);
             }
             $mimeType = $data['photo']->getMimeType();
             $extension = strtolower($data['photo']->getClientOriginalExtension());
@@ -56,7 +58,7 @@ class GalleryService
             } else {
                 $data['type'] = 'image';
             }
-            $data['photo'] = $data['photo']->store('galleries', 'public');
+            $data['photo'] = $data['photo']->store('galleries', $disk);
         }
 
         $gallery->update($data);
@@ -70,7 +72,7 @@ class GalleryService
     public function deleteGallery(Gallery $gallery): void
     {
         if ($gallery->photo) {
-            Storage::disk('public')->delete($gallery->photo);
+            Storage::disk(config('filesystems.cloud', 'public'))->delete($gallery->photo);
         }
         $gallery->delete();
     }
