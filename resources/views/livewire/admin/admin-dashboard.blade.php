@@ -894,6 +894,83 @@
                 </table>
             </div>
         </div>
+    </div>
+
+    {{-- Right: 4 Columns (Agenda Terdekat - Equal Height) --}}
+    <div class="lg:col-span-4 flex">
+        <div class="widget-card p-5 relative overflow-hidden off-screen-widget w-full flex flex-col justify-between">
+            <div class="absolute -right-8 -top-8 w-32 h-32 bg-teal-50 rounded-full blur-3xl pointer-events-none">
+            </div>
+            <div class="relative z-10 flex-1 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center justify-between mb-5">
+                        <div class="flex items-center gap-2.5">
+                            <div class="w-9 h-9 rounded-xl bg-teal-600 text-white flex items-center justify-center">
+                                <span class="material-symbols-outlined text-[18px]">event</span>
+                            </div>
+                            <span class="font-bold text-slate-900 text-sm">Agenda Terdekat</span>
+                        </div>
+                        <span class="badge badge-teal">Live</span>
+                    </div>
+
+                    @if ($upcomingSchedule)
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="w-14 h-14 rounded-2xl bg-slate-900 flex flex-col items-center justify-center text-white shadow-lg shrink-0">
+                                    <span
+                                        class="text-[9px] font-bold uppercase opacity-50">{{ \Carbon\Carbon::parse($upcomingSchedule->start_time)->translatedFormat('M') }}</span>
+                                    <span
+                                        class="text-xl font-bold leading-none">{{ \Carbon\Carbon::parse($upcomingSchedule->start_time)->format('d') }}</span>
+                                </div>
+                                <div class="min-w-0">
+                                    <h4 class="font-bold text-slate-900 text-sm leading-tight truncate">
+                                        {{ $upcomingSchedule->title }}</h4>
+                                    <p class="text-xs text-slate-500 flex items-center gap-1 mt-1">
+                                        <span class="material-symbols-outlined text-[14px] text-teal-500">schedule</span>
+                                        {{ \Carbon\Carbon::parse($upcomingSchedule->start_time)->format('H:i') }} WIB
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
+                                <span
+                                    class="material-symbols-outlined text-[18px] text-teal-500 shrink-0">location_on</span>
+                                <span
+                                    class="text-sm text-slate-700 font-medium truncate">{{ $upcomingSchedule->location ?: 'Pusat Posyandu' }}</span>
+                            </div>
+                        </div>
+                    @else
+                        <div class="flex flex-col items-center py-6 text-center">
+                            <div
+                                class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300 mb-3">
+                                <span class="material-symbols-outlined text-[24px]">event_busy</span>
+                            </div>
+                            <p class="text-sm font-medium text-slate-400">Tidak ada jadwal terdekat</p>
+                        </div>
+                    @endif
+                </div>
+
+                @if ($upcomingSchedule)
+                    <div class="mt-4">
+                        <a href="{{ route('admin.schedules.index') }}"
+                            class="w-full h-11 bg-teal-600 text-white rounded-xl font-semibold text-sm flex items-center justify-center hover:bg-teal-700 transition-colors gap-2 cursor-pointer border-0">
+                            <span class="material-symbols-outlined text-[18px]">calendar_month</span>
+                            Buka Kalender
+                        </a>
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{{-- ── Main Grid (Row 2: Other Widgets) ── --}}
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+    {{-- Left: 8 Columns --}}
+    <div class="lg:col-span-8 space-y-6">
 
         {{-- Bumil Risiko Tinggi Alert Table --}}
         <div class="widget-card off-screen-widget">
@@ -1101,68 +1178,6 @@
 
     {{-- Right Side: 4 Columns --}}
     <div class="lg:col-span-4 flex flex-col gap-5">
-
-        {{-- Upcoming Schedule Widget --}}
-        <div class="widget-card p-5 relative overflow-hidden off-screen-widget">
-            <div class="absolute -right-8 -top-8 w-32 h-32 bg-teal-50 rounded-full blur-3xl pointer-events-none">
-            </div>
-            <div class="relative z-10">
-                <div class="flex items-center justify-between mb-5">
-                    <div class="flex items-center gap-2.5">
-                        <div class="w-9 h-9 rounded-xl bg-teal-600 text-white flex items-center justify-center">
-                            <span class="material-symbols-outlined text-[18px]">event</span>
-                        </div>
-                        <span class="font-bold text-slate-900 text-sm">Agenda Terdekat</span>
-                    </div>
-                    <span class="badge badge-teal">Live</span>
-                </div>
-
-                @if ($upcomingSchedule)
-                    <div class="space-y-4">
-                        <div class="flex items-center gap-4">
-                            <div
-                                class="w-14 h-14 rounded-2xl bg-slate-900 flex flex-col items-center justify-center text-white shadow-lg shrink-0">
-                                <span
-                                    class="text-[9px] font-bold uppercase opacity-50">{{ \Carbon\Carbon::parse($upcomingSchedule->start_time)->translatedFormat('M') }}</span>
-                                <span
-                                    class="text-xl font-bold leading-none">{{ \Carbon\Carbon::parse($upcomingSchedule->start_time)->format('d') }}</span>
-                            </div>
-                            <div class="min-w-0">
-                                <h4 class="font-bold text-slate-900 text-sm leading-tight truncate">
-                                    {{ $upcomingSchedule->title }}</h4>
-                                <p class="text-xs text-slate-500 flex items-center gap-1 mt-1">
-                                    <span class="material-symbols-outlined text-[14px] text-teal-500">schedule</span>
-                                    {{ \Carbon\Carbon::parse($upcomingSchedule->start_time)->format('H:i') }} WIB
-                                </p>
-                            </div>
-                        </div>
-
-                        <div class="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
-                            <span
-                                class="material-symbols-outlined text-[18px] text-teal-500 shrink-0">location_on</span>
-                            <span
-                                class="text-sm text-slate-700 font-medium truncate">{{ $upcomingSchedule->location ?: 'Pusat Posyandu' }}</span>
-                        </div>
-
-
-
-                        <a href="{{ route('admin.schedules.index') }}"
-                            class="w-full h-11 bg-teal-600 text-white rounded-xl font-semibold text-sm flex items-center justify-center hover:bg-teal-700 transition-colors gap-2">
-                            <span class="material-symbols-outlined text-[18px]">calendar_month</span>
-                            Buka Kalender
-                        </a>
-                    </div>
-                @else
-                    <div class="flex flex-col items-center py-6 text-center">
-                        <div
-                            class="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-300 mb-3">
-                            <span class="material-symbols-outlined text-[24px]">event_busy</span>
-                        </div>
-                        <p class="text-sm font-medium text-slate-400">Tidak ada jadwal terdekat</p>
-                    </div>
-                @endif
-            </div>
-        </div>
 
         {{-- Missing Immunizations Widget --}}
         <div class="widget-card p-5 relative overflow-hidden off-screen-widget">
