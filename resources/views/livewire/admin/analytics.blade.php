@@ -1315,7 +1315,7 @@
     {{-- ── ANA-22: Drill-down Modal ── --}}
     @if($showDrillDown)
     <div class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-fadeIn">
-        <div class="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[85vh] animate-scaleUp">
+        <div class="relative w-full max-w-6xl bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[85vh] animate-scaleUp">
             {{-- Modal Header --}}
             <div class="px-8 py-6 border-b border-slate-200 flex items-center justify-between bg-slate-50">
                 <div>
@@ -1592,7 +1592,7 @@
                                       } else {
                                           $tagClass = 'bg-slate-50 text-slate-650 border-slate-200';
                                       }
-                                      $statusHtml = '<span class="inline-flex px-3 py-1 rounded-full text-xs font-bold border ' . $tagClass . '" style="' . $tagStyle . '">' . $statusText . '</span>';
+                                      $statusHtml = '<span class="inline-flex px-4 py-1.5 rounded-xl text-xs font-black border whitespace-nowrap ' . $tagClass . '" style="' . $tagStyle . '">' . $statusText . '</span>';
                                   @endphp
 
                                 @if ($drillDownChartSource === 'visits_trend')
