@@ -43,9 +43,16 @@ COPY . /var/www
 RUN composer install --no-interaction --optimize-autoloader --no-dev
 RUN npm install && npm run build
 
-# Backup default public storage files before setting permissions
-RUN mkdir -p /var/www/storage_backup && \
-    if [ -d "/var/www/storage/app/public" ]; then cp -R /var/www/storage/app/public/* /var/www/storage_backup/; fi
+# Backup seed/default gallery & article images into image layer
+# These will be restored on each container start (even after Railway restarts)
+RUN mkdir -p /var/www/storage_backup/galleries \
+             /var/www/storage_backup/articles && \
+    if [ -d "/var/www/storage/app/public/galleries" ]; then \
+        cp -R /var/www/storage/app/public/galleries/. /var/www/storage_backup/galleries/; \
+    fi && \
+    if [ -d "/var/www/storage/app/public/articles" ]; then \
+        cp -R /var/www/storage/app/public/articles/. /var/www/storage_backup/articles/; \
+    fi
 
 
 # Set correct permissions for Laravel storage & cache dirs

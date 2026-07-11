@@ -38,8 +38,20 @@ mkdir -p /var/www/storage/framework/views \
 
 # Copy default images from backup if they don't exist in public storage (e.g., when a volume is mounted)
 if [ -d "/var/www/storage_backup" ]; then
-    echo "==> Restoring default assets if missing..."
-    cp -rn /var/www/storage_backup/* /var/www/storage/app/public/
+    echo "==> Restoring seed assets if missing..."
+    # Only copy individual files that don't already exist (preserves user uploads)
+    for subdir in galleries articles; do
+        if [ -d "/var/www/storage_backup/$subdir" ]; then
+            mkdir -p "/var/www/storage/app/public/$subdir"
+            for f in /var/www/storage_backup/$subdir/*; do
+                dest="/var/www/storage/app/public/$subdir/$(basename $f)"
+                if [ ! -f "$dest" ]; then
+                    cp "$f" "$dest"
+                    echo "  Restored: $subdir/$(basename $f)"
+                fi
+            done
+        fi
+    done
 fi
 
 chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
