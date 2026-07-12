@@ -52,12 +52,13 @@ class PosyanduManagement extends BaseAdminComponent
     public function render()
     {
         $balitaCategories = ['balita', 'bayi', 'baduta'];
+        $allCategories = ['balita', 'bayi', 'baduta', 'ibu_hamil', 'lansia', 'anak_sekolah'];
 
         $posyandus = Posyandu::withCount([
             'patients',
-            'patients as balita_count'     => fn ($q) => $q->whereIn('category', $balitaCategories),
-            'patients as ibu_hamil_count'  => fn ($q) => $q->where('category', 'ibu_hamil'),
-            'patients as lansia_count'     => fn ($q) => $q->where('category', 'lansia'),
+            'patients as balita_count'       => fn ($q) => $q->whereIn('category', $balitaCategories),
+            'patients as ibu_hamil_count'    => fn ($q) => $q->where('category', 'ibu_hamil'),
+            'patients as lansia_count'       => fn ($q) => $q->where('category', 'lansia'),
             'patients as anak_sekolah_count' => fn ($q) => $q->where('category', 'anak_sekolah'),
         ])
             ->when($this->search, function ($q) {
@@ -69,14 +70,19 @@ class PosyanduManagement extends BaseAdminComponent
             ->latest()
             ->paginate(10);
 
+        $totalBalita      = Patient::whereIn('category', $balitaCategories)->count();
+        $totalBumil       = Patient::where('category', 'ibu_hamil')->count();
+        $totalLansia      = Patient::where('category', 'lansia')->count();
+        $totalAnakSekolah = Patient::where('category', 'anak_sekolah')->count();
+
         return view('livewire.admin.posyandu-management.index', [
-            'posyandus'      => $posyandus,
-            'totalPosyandu'  => $posyandus->total(),
-            'totalWarga'     => Patient::count(),
-            'totalBalita'    => Patient::whereIn('category', $balitaCategories)->count(),
-            'totalBumil'     => Patient::where('category', 'ibu_hamil')->count(),
-            'totalLansia'    => Patient::where('category', 'lansia')->count(),
-            'totalAnakSekolah' => Patient::where('category', 'anak_sekolah')->count(),
+            'posyandus'        => $posyandus,
+            'totalPosyandu'    => $posyandus->total(),
+            'totalBalita'      => $totalBalita,
+            'totalBumil'       => $totalBumil,
+            'totalLansia'      => $totalLansia,
+            'totalAnakSekolah' => $totalAnakSekolah,
+            'totalWarga'       => $totalBalita + $totalBumil + $totalLansia + $totalAnakSekolah,
         ]);
     }
 }
