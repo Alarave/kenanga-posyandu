@@ -1,41 +1,42 @@
 ```
-# Compiled and build artifacts
-*.pyc
-__pycache__/
-*.o
-*.obj
-dist/
-build/
-*.class
-*.exe
-*.dll
-*.so
-*.a
-*.out
-
 # Dependencies
 node_modules/
 vendor/
-*.egg-info/
-.venv/
-venv/
+
+# Build artifacts
+dist/
+build/
+public/build/
+
+# Cache directories
+.cache/
+.storage/
+bootstrap/cache/
+storage/logs/
+storage/framework/cache/
+storage/framework/sessions/
+storage/framework/views/
+
+# Environment
 .env
 .env.local
-*.env.*
+.env.*
+!.env.example
 
-# Logs and temp files
-*.log
-*.tmp
-*.swp
-*.swo
-
-# Editors
+# IDE
 .vscode/
 .idea/
 *.swp
 *.swo
 
-# System files
+# OS
 .DS_Store
 Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*~
 ```

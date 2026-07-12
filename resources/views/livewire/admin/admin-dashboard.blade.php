@@ -427,12 +427,12 @@
                         if (this.isEmpty) return;
                 
                         const colors = nd.labels.map(label => {
-                            if (label.includes('Normal') || label.includes('Baik')) return '#10b981'; // Emerald
-                            if (label.includes('Kurang') && !label.includes('Sangat')) return '#f59e0b'; // Amber
-                            if (label.includes('Risiko') || label.includes('Berisiko')) return '#f59e0b';
-                            if (label.includes('Sangat') || label.includes('Buruk') || label.includes('Pendek')) return '#ef4444'; // Red
-                            if (label.includes('Lebih') || label.includes('Obesitas')) return '#6366f1'; // Indigo
-                            return '#94a3b8';
+                            if (label.includes('Normal') || label.includes('Baik')) return '#dcfce7'; // Green
+                            if (label.includes('Kurang') && !label.includes('Sangat')) return '#fef9c3'; // Yellow
+                            if (label.includes('Risiko') || label.includes('Berisiko')) return '#ffedd5'; // Orange
+                            if (label.includes('Sangat') || label.includes('Buruk') || label.includes('Pendek')) return '#fee2e2'; // Red
+                            if (label.includes('Lebih') || label.includes('Obesitas')) return '#ffedd5'; // Orange
+                            return '#f1f5f9';
                         });
                 
                         this.chart = new Chart(this.$refs.canvas, {

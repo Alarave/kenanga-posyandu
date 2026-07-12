@@ -448,11 +448,11 @@
                                             $st = 'Gizi Baik';
                                         }
                                         $badge = match($st) {
-                                            'Normal', 'Gizi Baik' => 'bg-emerald-50 text-emerald-700 ring-1 ring-emerald-600/20',
-                                            'Gizi Kurang', 'Kurang' => 'bg-amber-50 text-amber-700 ring-1 ring-amber-600/20',
+                                            'Normal', 'Gizi Baik' => 'bg-green-50 text-green-700 ring-1 ring-green-600/20',
+                                            'Gizi Kurang', 'Kurang' => 'bg-yellow-50 text-yellow-700 ring-1 ring-yellow-600/20',
                                             'Gizi Buruk/Stunting', 'Gizi Buruk' => 'bg-red-50 text-red-700 ring-1 ring-red-600/20',
-                                            'Gizi Lebih', 'Berisiko Gizi Lebih', 'Obesitas' => 'bg-red-50 text-red-700 ring-1 ring-red-600/20',
-                                            default => 'bg-slate-100 text-slate-500 ring-1 ring-slate-400/20',
+                                            'Gizi Lebih', 'Berisiko Gizi Lebih', 'Obesitas' => 'bg-orange-50 text-orange-700 ring-1 ring-orange-600/20',
+                                            default => 'bg-slate-50 text-slate-700 ring-1 ring-slate-600/20',
                                         };
                                     @endphp
                                     <span class="inline-flex items-center px-2.5 py-1 rounded-xl text-[10px] font-black uppercase tracking-wider {{ $badge }}">{{ $st ?? '-' }}</span>

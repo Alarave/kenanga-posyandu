@@ -1289,13 +1289,13 @@
                                         $tagStyle = '';
                                         $tagClass = '';
                                         if ($statusStr === 'gizi buruk' || $statusStr === 'buruk') {
-                                            $tagStyle = 'background-color: #FEE2E2; color: #B91C1C; border-color: rgba(185, 28, 28, 0.2);';
+                                            $tagStyle = 'background-color: #fee2e2; color: #991b1b; border-color: rgba(153, 27, 27, 0.2);';
                                         } elseif ($statusStr === 'gizi kurang' || $statusStr === 'kurang') {
-                                            $tagStyle = 'background-color: #FFEDD5; color: #C2410C; border-color: rgba(194, 65, 12, 0.2);';
+                                            $tagStyle = 'background-color: #fef9c3; color: #854d0e; border-color: rgba(133, 77, 14, 0.2);';
                                         } elseif (str_contains($statusStr, 'lebih') || str_contains($statusStr, 'obesitas')) {
-                                            $tagStyle = 'background-color: #FEF9C3; color: #A16207; border-color: rgba(161, 98, 7, 0.2);';
+                                            $tagStyle = 'background-color: #ffedd5; color: #9a3412; border-color: rgba(154, 52, 18, 0.2);';
                                         } else {
-                                            $tagClass = 'bg-emerald-50 text-emerald-700 border-emerald-200/60';
+                                            $tagStyle = 'background-color: #dcfce7; color: #166534; border-color: rgba(22, 101, 52, 0.2);';
                                         }
                                     @endphp
                                     <span class="inline-flex px-3 py-1 rounded-full text-xs font-bold border {{ $tagClass }}" style="{{ $tagStyle }}">
@@ -2384,12 +2384,12 @@ function initCharts(data = null) {
         try {
             const colors = nutLabels.map(label => {
                 const sLabel = String(label).toLowerCase();
-                if (sLabel === 'baik' || sLabel === 'normal') return '#10b981'; // emerald-500
-                if (sLabel === 'gizi baik') return '#0d9488'; // teal-500
-                if (sLabel === 'gizi kurang' || sLabel === 'kurang') return '#C2410C';
-                if (sLabel.includes('sangat') || sLabel.includes('buruk') || sLabel.includes('pendek')) return '#B91C1C';
-                if (sLabel.includes('risiko') || sLabel.includes('berisiko') || sLabel.includes('lebih') || sLabel.includes('obesitas')) return '#A16207';
-                return '#94a3b8'; // slate-400
+                if (sLabel === 'baik' || sLabel === 'normal') return '#fee2e2'; // red-100
+                if (sLabel === 'gizi baik') return '#fee2e2'; // red-100
+                if (sLabel === 'gizi kurang' || sLabel === 'kurang') return '#fee2e2'; // red-100
+                if (sLabel.includes('sangat') || sLabel.includes('buruk') || sLabel.includes('pendek')) return '#fee2e2'; // red-100
+                if (sLabel.includes('risiko') || sLabel.includes('berisiko') || sLabel.includes('lebih') || sLabel.includes('obesitas')) return '#fee2e2'; // red-100
+                return '#fee2e2'; // red-100
             });
             nutritionDonutChart = new Chart(donutCtx, {
                 type: 'doughnut',

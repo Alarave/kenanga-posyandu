@@ -73,10 +73,11 @@
                         <td class="py-6 text-right pr-4">
                             <span @class([
                                 'px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest inline-block shadow-sm',
-                                'bg-emerald-50 text-emerald-600 border border-emerald-100' => str_contains($record->nutrition_status ?? '', 'Normal') || str_contains($record->nutrition_status ?? '', 'Baik'),
-                                'bg-amber-50 text-amber-600 border border-amber-100' => str_contains($record->nutrition_status ?? '', 'Kurang'),
-                                'bg-red-50 text-red-600 border border-red-100' => str_contains($record->nutrition_status ?? '', 'Buruk'),
+                                'bg-green-50 text-green-700 border border-green-100' => str_contains($record->nutrition_status ?? '', 'Normal') || str_contains($record->nutrition_status ?? '', 'Baik'),
+                                'bg-yellow-50 text-yellow-700 border border-yellow-100' => str_contains($record->nutrition_status ?? '', 'Kurang'),
+                                'bg-red-50 text-red-700 border border-red-100' => str_contains($record->nutrition_status ?? '', 'Buruk'),
                                 'bg-slate-50 text-slate-400 border border-slate-100' => !$record->nutrition_status,
+                                'bg-orange-50 text-orange-700 border border-orange-100' => str_contains($record->nutrition_status ?? '', 'Lebih') || str_contains($record->nutrition_status ?? '', 'Obesitas'),
                             ])>
                                 {{ $record->nutrition_status === 'Normal' ? 'Gizi Baik' : ($record->nutrition_status ?: 'Data N/A') }}
                             </span>
