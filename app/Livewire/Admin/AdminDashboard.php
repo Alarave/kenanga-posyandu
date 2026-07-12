@@ -194,10 +194,10 @@ class AdminDashboard extends BaseAdminComponent
                 $query->whereHas('medicalRecords', function ($q) {
                     $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
                     $q->whereIn('id', $latestRecordSubquery)
-                      ->whereJsonExtract('data', '$.is_high_risk') = true;
+                      ->where('data->is_high_risk', true);
                 });
             } elseif ($type === 'medical_record') {
-                $query->whereJsonExtract('data', '$.is_high_risk') = true;
+                $query->where('data->is_high_risk', true);
             }
         }
 
@@ -452,7 +452,7 @@ class AdminDashboard extends BaseAdminComponent
                     return $query->whereHas('medicalRecords', function ($q) {
                         $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
                         $q->whereIn('id', $latestRecordSubquery)
-                          ->whereJsonExtract('data', '$.is_high_risk') = true;
+                          ->where('data->is_high_risk', true);
                     });
                 })
                 ->with(['medicalRecords' => fn ($q) => $q->latest('visit_date')->limit(1)])
