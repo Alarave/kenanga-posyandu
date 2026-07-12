@@ -1070,7 +1070,6 @@
                     </div>
                     <div>
                         <div class="featured-img-label-text">{{ $featured->title }}</div>
-                        <div class="featured-img-label-sub">{{ $featuredReadTime }} menit baca</div>
                     </div>
                 </div>
             </div>
@@ -1134,10 +1133,6 @@
                                     <span class="material-symbols-outlined">schedule</span>
                                     {{ ceil(str_word_count(\App\Services\ArticleService::getExcerpt($article->content, 999999)) / 200) }} mnt
                                 </span>
-                            </div>
-                            <div class="article-item-actions">
-                                <button class="action-btn" title="Bagikan"><span class="material-symbols-outlined" style="font-size:18px;">share</span></button>
-                                <button class="action-btn" title="Simpan"><span class="material-symbols-outlined" style="font-size:18px;">bookmark</span></button>
                             </div>
                         </div>
                     </div>

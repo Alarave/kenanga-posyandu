@@ -580,7 +580,7 @@
                                         <span class="text-slate-900">{{ $feComplianceRate }}%</span>
                                     </div>
                                     <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
-                                        <div class="h-full rounded-full bg-rose-500 transition-all duration-500" style="width: {{ min(100, $feComplianceRate) }}%"></div>
+                                        <div class="h-full rounded-full transition-all duration-500 {{ $feComplianceRate >= 85 ? 'bg-emerald-500' : 'bg-rose-500' }}" style="width: {{ min(100, $feComplianceRate) }}%"></div>
                                     </div>
                                     <div class="flex justify-between items-center text-[9px] font-bold mt-1 text-slate-400">
                                         <span>Target Kepatuhan: 85%</span>
@@ -1721,7 +1721,10 @@
                                   </td>
 
                                   @php
-                                      $statusText = ($row['status_info'] ?? '') !== '-' ? ($row['status_info'] ?? '') : ($row['nutrition_status'] ?? '-');
+                                      $clinicalTypes = ['pregnancy_hypertension','pregnancy_high_risk','pregnancy_kek','pregnancy_tablet_fe','pregnancy_tbc','pregnancy_k1','pregnancy_k2','pregnancy_k3','pregnancy_k4','pregnancy_k5','pregnancy_k6','pregnancy_trimester_1','pregnancy_trimester_2','pregnancy_trimester_3','pregnancy_imt_normal','pregnancy_imt_kurus','pregnancy_imt_gemuk','pregnancy_imt_obesitas','pregnancy_counseling_topic','lansia_hipertensi','lansia_hiperglikemia','lansia_hiperkolesterolemia','lansia_hiperurisemia','lansia_obesity_sentral','lansia_eye_issue','lansia_ear_issue','lansia_puma_risk','lansia_tbc_risk','lansia_mental_risk'];
+                                      $statusText = in_array($drillDownType, $clinicalTypes)
+                                          ? ($row['nutrition_status'] ?? '-')
+                                          : (!empty($row['status_info'] ?? '') && ($row['status_info'] ?? '') !== '-' ? ($row['status_info'] ?? '') : ($row['nutrition_status'] ?? '-'));
                                       $statusStr = strtolower(trim($statusText));
                                       $tagStyle = '';
                                       $tagClass = '';
