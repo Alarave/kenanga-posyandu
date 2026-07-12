@@ -697,18 +697,16 @@ class AdminDashboard extends BaseAdminComponent
             $startDate = now()->startOfMonth();
         }
 
-        // Sasaran: balita yang memiliki rekam medis SEBELUM atau SELAMA periode filter
+        // Sasaran: semua pasien yang memiliki rekam medis SEBELUM atau SELAMA periode filter
         $sasaranQuery = (clone $patientQuery)
-            ->whereIn('category', ['balita', 'bayi', 'baduta'])
             ->whereHas('medicalRecords', function ($q) use ($endDate) {
                 $q->whereDate('visit_date', '<=', $endDate);
             });
             
-        $totalBalita = $sasaranQuery->count();
+        $totalSasaran = $sasaranQuery->count();
 
-        // Hadir: balita yang memiliki rekam medis DALAM periode filter
-        $hadirQuery = (clone $patientQuery)
-            ->whereIn('category', ['balita', 'bayi', 'baduta']);
+        // Hadir: semua pasien yang memiliki rekam medis DALAM periode filter
+        $hadirQuery = (clone $patientQuery);
             
         if ($this->filterPeriode === 'semua') {
             $hadirQuery->whereHas('medicalRecords', function ($q) use ($currentMonth, $currentYear) {
@@ -725,8 +723,8 @@ class AdminDashboard extends BaseAdminComponent
 
         $hadir = $hadirQuery->count();
         
-        $tidakHadir = max(0, $totalBalita - $hadir);
-        $persentase = $totalBalita > 0 ? round(($hadir / $totalBalita) * 100, 1) : 0;
+        $tidakHadir = max(0, $totalSasaran - $hadir);
+        $persentase = $totalSasaran > 0 ? round(($hadir / $totalSasaran) * 100, 1) : 0;
 
         return ['hadir' => $hadir, 'tidak_hadir' => $tidakHadir, 'persentase' => $persentase];
     }

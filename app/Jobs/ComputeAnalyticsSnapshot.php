@@ -662,23 +662,23 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
         $rataRataUsiaKehamilan = $validBumilCount > 0 ? round($totalBumilWeeks / $validBumilCount, 1) : 0;
 
         // ── DASH-06: Kehadiran Balita ──
-        // Untuk snapshot, hitung kehadiran berdasarkan balita yang memiliki kunjungan di bulan ini
-        $totalBalitaForHadir = (clone $medicalRecordQuery)
-            ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
-            ->whereMonth('visit_date', $currentMonth)
-            ->whereYear('visit_date', $currentYear)
-            ->distinct('patient_id')
-            ->count('patient_id');
+        // Untuk snapshot, hitung kehadiran berdasarkan semua pasien yang memiliki kunjungan di bulan ini
+        $endDate = Carbon::create($currentYear, $currentMonth)->endOfMonth();
+        $totalSasaran = (clone $patientQuery)
+            ->whereHas('medicalRecords', function ($q) use ($endDate) {
+                $q->whereDate('visit_date', '<=', $endDate);
+            })
+            ->count();
         
-        $hadir = (clone $medicalRecordQuery)
-            ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
-            ->whereMonth('visit_date', $currentMonth)
-            ->whereYear('visit_date', $currentYear)
-            ->distinct('patient_id')
-            ->count('patient_id');
+        $hadir = (clone $patientQuery)
+            ->whereHas('medicalRecords', function ($q) use ($currentMonth, $currentYear) {
+                $q->whereMonth('visit_date', $currentMonth)
+                  ->whereYear('visit_date', $currentYear);
+            })
+            ->count();
         
-        $tidakHadir = max(0, $totalBalitaForHadir - $hadir);
-        $persentaseHadir = $totalBalitaForHadir > 0 ? round(($hadir / $totalBalitaForHadir) * 100, 1) : 0;
+        $tidakHadir = max(0, $totalSasaran - $hadir);
+        $persentaseHadir = $totalSasaran > 0 ? round(($hadir / $totalSasaran) * 100, 1) : 0;
         $kehadiranBalita = [
             'hadir' => $hadir,
             'tidak_hadir' => $tidakHadir,
