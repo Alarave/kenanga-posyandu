@@ -13,6 +13,12 @@
       "skillPath": "skills/performance/SKILL.md",
       "computedHash": "646931a3af896ae12a3cad3d762668cb6487fe3ab179daf8fdc974fb79acfe49"
     },
+    "rtk-tdd": {
+      "source": "rtk-ai/rtk",
+      "sourceType": "github",
+      "skillPath": ".claude/skills/rtk-tdd/SKILL.md",
+      "computedHash": "451993a2a5bb54b0e2161e8fb83ba3eed58dfee365496d8bfaae6a0f1f1d4f80"
+    },
     "webapp-testing": {
       "source": "anthropics/skills",
       "sourceType": "github",
