@@ -271,7 +271,7 @@
                 return $mr &&
                     ($mr->nutrition_status === 'Gizi Buruk' ||
                         $mr->wasting_status === 'Gizi Buruk' ||
-                        $mr->stunting_status === 'Sangat Pendek');
+                        $mr->stunting_status === \App\Models\MedicalRecord::STATUS_TB_U_SANGAT_PENDEK);
             })
             ->count();
     @endphp

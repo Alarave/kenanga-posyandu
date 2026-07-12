@@ -2083,7 +2083,7 @@ public function exportChartData(string $chartType)
                     $sub->whereHas('patient', fn ($pq) => $pq->whereIn('category', ['balita', 'bayi', 'baduta']))
                         ->where(fn ($sq) => $sq->whereIn('nutrition_status', ['Gizi Buruk', 'Berat Badan Sangat Kurang', 'Sangat Kurang'])
                                                 ->orWhereIn('wasting_status', ['Gizi Buruk', 'Sangat Kurang'])
-                                                ->orWhereIn('stunting_status', ['Pendek', 'Sangat Pendek']));
+                                                ->orWhereIn('stunting_status', [MedicalRecord::STATUS_TB_U_SANGAT_PENDEK, MedicalRecord::STATUS_TB_U_PENDEK]));
                 })
                 // Ibu Hamil risk
                 ->orWhere(function ($sub) {
@@ -2118,9 +2118,10 @@ public function exportChartData(string $chartType)
                     $gizi = $r->nutrition_status;
                     $wasting = $r->wasting_status;
                     $stunting = $r->stunting_status;
+
                     if (in_array($gizi, ['Gizi Buruk', 'Berat Badan Sangat Kurang', 'Sangat Kurang'])) $reasons[] = "BB/U: " . $gizi;
                     if (in_array($wasting, ['Gizi Buruk', 'Sangat Kurang'])) $reasons[] = "Wasting: " . $wasting;
-                    if (in_array($stunting, ['Pendek', 'Sangat Pendek'])) $reasons[] = "Stunting: " . $stunting;
+                    if (in_array($stunting, [MedicalRecord::STATUS_TB_U_PENDEK, MedicalRecord::STATUS_TB_U_SANGAT_PENDEK])) $reasons[] = "Stunting: " . $stunting;
                 } elseif ($category === 'ibu_hamil') {
                     if ($r->systolic_bp >= 140 || $r->diastolic_bp >= 90) $reasons[] = "Tensi Tinggi: {$r->systolic_bp}/{$r->diastolic_bp} mmHg";
                     if ($r->hemoglobin && $r->hemoglobin < 11 && $r->hemoglobin > 0) $reasons[] = "Anemia (Hb: {$r->hemoglobin} g/dL)";

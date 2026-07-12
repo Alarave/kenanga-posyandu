@@ -468,7 +468,7 @@ test('analytics component loads live health alerts for high risk cases', functio
     ]);
     MedicalRecord::factory()->create([
         'patient_id' => $balita->id,
-        'stunting_status' => 'Pendek',
+        'stunting_status' => \App\Models\MedicalRecord::STATUS_TB_U_PENDEK,
         'visit_date' => now(),
     ]);
 

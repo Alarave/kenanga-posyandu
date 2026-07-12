@@ -51,9 +51,9 @@ class MedicalRecord extends Model
     const STATUS_BB_U_RISIKO_LEBIH = 'Gizi Lebih';
 
     // TB/U (Height-for-Age) — Status Tinggi Badan
-    const STATUS_TB_U_SANGAT_PENDEK = 'Sangat Pendek';
+    const STATUS_TB_U_SANGAT_PENDEK = 'Sangat Pendek (Severely Stunted)';
 
-    const STATUS_TB_U_PENDEK = 'Pendek';
+    const STATUS_TB_U_PENDEK = 'Pendek (Stunted)';
 
     const STATUS_TB_U_NORMAL = 'Normal';
 

@@ -316,7 +316,7 @@ class MedicalRecordService
             $nutritionStatus = $data['nutrition_status'] ?? 'Gizi Baik';
             $stuntingStatus = $data['stunting_status'] ?? 'Normal';
 
-            if ($stuntingStatus === 'Sangat Pendek' || $stuntingStatus === 'Pendek') {
+            if ($stuntingStatus === MedicalRecord::STATUS_TB_U_SANGAT_PENDEK || $stuntingStatus === MedicalRecord::STATUS_TB_U_PENDEK) {
                 $data['diagnosis'] = 'Indikasi Stunting';
             } elseif ($nutritionStatus === 'Gizi Kurang' || $nutritionStatus === 'Gizi Buruk') {
                 $data['diagnosis'] = 'Kurang Gizi';
@@ -403,7 +403,7 @@ class MedicalRecordService
             $nutritionStatus = $data['nutrition_status'] ?? $medicalRecord->nutrition_status ?? 'Gizi Baik';
             $stuntingStatus = $data['stunting_status'] ?? $medicalRecord->stunting_status ?? 'Normal';
 
-            if ($stuntingStatus === 'Sangat Pendek' || $stuntingStatus === 'Pendek') {
+            if ($stuntingStatus === MedicalRecord::STATUS_TB_U_SANGAT_PENDEK || $stuntingStatus === MedicalRecord::STATUS_TB_U_PENDEK) {
                 $data['diagnosis'] = 'Indikasi Stunting';
             } elseif ($nutritionStatus === 'Gizi Kurang' || $nutritionStatus === 'Gizi Buruk') {
                 $data['diagnosis'] = 'Kurang Gizi';
