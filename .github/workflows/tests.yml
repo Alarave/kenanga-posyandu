@@ -45,7 +45,9 @@ jobs:
         run: php artisan key:generate
 
       - name: Build Assets
-        run: npx vite build
+        run: |
+          chmod -R +x node_modules/.bin/
+          npm run build
 
       - name: Run Tests
         run: php vendor/bin/pest
