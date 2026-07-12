@@ -51,11 +51,14 @@ class PosyanduManagement extends BaseAdminComponent
 
     public function render()
     {
+        $balitaCategories = ['balita', 'bayi', 'baduta'];
+
         $posyandus = Posyandu::withCount([
             'patients',
-            'patients as balita_count' => fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']),
-            'patients as ibu_hamil_count' => fn ($q) => $q->where('category', 'ibu_hamil'),
-            'patients as lansia_count' => fn ($q) => $q->where('category', 'lansia'),
+            'patients as balita_count'     => fn ($q) => $q->whereIn('category', $balitaCategories),
+            'patients as ibu_hamil_count'  => fn ($q) => $q->where('category', 'ibu_hamil'),
+            'patients as lansia_count'     => fn ($q) => $q->where('category', 'lansia'),
+            'patients as anak_sekolah_count' => fn ($q) => $q->where('category', 'anak_sekolah'),
         ])
             ->when($this->search, function ($q) {
                 $searchTerm = '%'.strtolower($this->search).'%';
@@ -67,12 +70,13 @@ class PosyanduManagement extends BaseAdminComponent
             ->paginate(10);
 
         return view('livewire.admin.posyandu-management.index', [
-            'posyandus' => $posyandus,
-            'totalPosyandu' => $posyandus->total(),
-            'totalWarga' => Patient::count(),
-            'totalBalita' => Patient::whereIn('category', ['balita', 'bayi', 'baduta'])->count(),
-            'totalBumil' => Patient::where('category', 'ibu_hamil')->count(),
-            'totalLansia' => Patient::where('category', 'lansia')->count(),
+            'posyandus'      => $posyandus,
+            'totalPosyandu'  => $posyandus->total(),
+            'totalWarga'     => Patient::count(),
+            'totalBalita'    => Patient::whereIn('category', $balitaCategories)->count(),
+            'totalBumil'     => Patient::where('category', 'ibu_hamil')->count(),
+            'totalLansia'    => Patient::where('category', 'lansia')->count(),
+            'totalAnakSekolah' => Patient::where('category', 'anak_sekolah')->count(),
         ]);
     }
 }
