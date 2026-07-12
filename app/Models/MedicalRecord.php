@@ -78,7 +78,7 @@ class MedicalRecord extends Model
         'tbc_screening_contact', 'tbc_screening_lethargy', 'tbc_screening_lumps',
         'other_symptoms', 'pmt_given', 'counseling_notes',
         'referral_type',
-        'blood_pressure', 'measurement_method', 'head_circumference', 'upper_arm_circumference', 'immunization',
+        'measurement_method', 'head_circumference', 'upper_arm_circumference', 'immunization',
         'vitamin_a', 'pill_fe', 'is_exclusive_breastfeeding', 'mp_asi',
         'complaint', 'diagnosis', 'disease_history', 'health_note',
         'vaccine_name', 'vaccine_dose', 'vitamin_a_color', 'deworming_medicine',

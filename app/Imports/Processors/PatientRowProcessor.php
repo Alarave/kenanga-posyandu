@@ -205,7 +205,6 @@ class PatientRowProcessor
 
             // Field khusus Lansia (Posbindu)
             'waist_circumference' => $this->parseDecimal($get('waist_circumference')),
-            'blood_pressure' => $get('blood_pressure') ?: null,
             'eye_test' => $get('eye_test') ?: null,
             'ear_test' => $get('ear_test') ?: null,
             'puma_screening' => $get('puma_screening') ?: null,

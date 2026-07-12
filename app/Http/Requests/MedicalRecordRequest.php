@@ -19,6 +19,7 @@ class MedicalRecordRequest extends FormRequest
         $patient = $patientId ? Patient::find($patientId) : null;
         $patientCategory = $patient ? $patient->category : $category;
         $isChild = in_array($patientCategory ?? 'balita', ['bayi', 'baduta', 'balita', 'anak_sekolah']);
+        $isLansia = $patientCategory === 'lansia';
 
         return [
             'patient_id' => 'required_without:full_name|exists:patients,id',
@@ -28,7 +29,7 @@ class MedicalRecordRequest extends FormRequest
             'head_circumference' => 'nullable|numeric|min:20|max:70',
             'upper_arm_circumference' => 'nullable|numeric|min:5|max:40',
             'measurement_method' => $isChild ? 'required|in:recumbent,standing' : 'nullable|in:recumbent,standing',
-            'blood_pressure' => 'nullable|string|max:20',
+            'blood_pressure' => $isLansia ? 'required|string|max:20' : 'nullable|string|max:20',
             'vitamin_a' => 'nullable|boolean',
             'pill_fe' => 'nullable|boolean',
             'is_exclusive_breastfeeding' => 'nullable|boolean',
@@ -173,6 +174,9 @@ class MedicalRecordRequest extends FormRequest
             'height_at_birth.max' => 'Tinggi badan lahir tidak boleh lebih dari 60 cm.',
             'height_at_birth.numeric' => 'Tinggi badan lahir harus berupa angka.',
             'height_at_birth.min' => 'Tinggi badan lahir minimal 30 cm.',
+            'blood_pressure.required' => 'Tekanan darah wajib diisi untuk pasien Lansia.',
+            'blood_pressure.string' => 'Tekanan darah harus berupa teks (contoh: 120/80).',
+            'blood_pressure.max' => 'Tekanan darah maksimal 20 karakter.',
         ];
     }
 

@@ -348,6 +348,7 @@ class MedicalRecordService
 
         $data['measurement_method'] = $data['measurement_method'] ?? 'recumbent';
 
+        // Process blood pressure if provided, otherwise ensure it's removed
         if (! empty($data['blood_pressure'])) {
             $bpVal = str_replace(' mmHg', '', $data['blood_pressure']);
             $bpParts = explode('/', $bpVal);
@@ -355,8 +356,9 @@ class MedicalRecordService
                 $data['systolic_bp'] = (int) trim($bpParts[0]);
                 $data['diastolic_bp'] = (int) trim($bpParts[1]);
             }
-            unset($data['blood_pressure']);
         }
+        unset($data['blood_pressure']);
+        
         if (isset($data['family_disease_history']) && is_array($data['family_disease_history'])) {
             $data['family_disease_history'] = json_encode($data['family_disease_history']);
         }
@@ -442,6 +444,7 @@ class MedicalRecordService
 
         $data['measurement_method'] = $data['measurement_method'] ?? $medicalRecord->measurement_method ?? 'recumbent';
 
+        // Process blood pressure if provided, otherwise ensure it's removed
         if (! empty($data['blood_pressure'])) {
             $bpVal = str_replace(' mmHg', '', $data['blood_pressure']);
             $bpParts = explode('/', $bpVal);
@@ -449,8 +452,9 @@ class MedicalRecordService
                 $data['systolic_bp'] = (int) trim($bpParts[0]);
                 $data['diastolic_bp'] = (int) trim($bpParts[1]);
             }
-            unset($data['blood_pressure']);
         }
+        unset($data['blood_pressure']);
+        
         if (isset($data['family_disease_history']) && is_array($data['family_disease_history'])) {
             $data['family_disease_history'] = json_encode($data['family_disease_history']);
         }
