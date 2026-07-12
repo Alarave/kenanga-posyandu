@@ -385,9 +385,9 @@
                             </div>
                             <span class="text-[10px] font-black text-slate-700 uppercase tracking-widest bg-slate-100 px-2.5 py-1 rounded-lg">Pemeriksaan</span>
                         </div>
-                        <div class="flex items-baseline gap-2 flex-wrap">
+                        <div class="flex flex-col mt-1">
                             <span class="text-5xl font-black text-slate-800 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ number_format($totalKunjungan) }}</span>
-                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Kunjungan</span>
+                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-1">Kunjungan</span>
                         </div>
                         <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Total rekam medis terdaftar di posyandu tahun terpilih.</p>
                     </div>
@@ -408,9 +408,9 @@
                             </div>
                             <span class="text-[10px] font-black text-teal-700 uppercase tracking-widest bg-teal-50 px-2.5 py-1 rounded-lg">Jiwa</span>
                         </div>
-                        <div class="flex items-baseline gap-2 flex-wrap">
+                        <div class="flex flex-col mt-1">
                             <span class="text-5xl font-black text-teal-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ number_format($totalBalita) }}</span>
-                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Terdaftar</span>
+                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-1">Terdaftar</span>
                         </div>
                         <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Kategori Balita, Bayi, Baduta &amp; Anak Sekolah.</p>
                     </div>
@@ -431,9 +431,9 @@
                             </div>
                             <span class="text-[10px] font-black text-rose-700 uppercase tracking-widest bg-rose-50 px-2.5 py-1 rounded-lg">Jiwa</span>
                         </div>
-                        <div class="flex items-baseline gap-2 flex-wrap">
+                        <div class="flex flex-col mt-1">
                             <span class="text-5xl font-black text-rose-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ number_format($totalIbuHamil) }}</span>
-                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Terdaftar</span>
+                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-1">Terdaftar</span>
                         </div>
                         <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Ibu mengandung aktif terdaftar dan terpantau.</p>
                     </div>
@@ -454,9 +454,9 @@
                             </div>
                             <span class="text-[10px] font-black text-indigo-700 uppercase tracking-widest bg-indigo-50 px-2.5 py-1 rounded-lg">Jiwa</span>
                         </div>
-                        <div class="flex items-baseline gap-2 flex-wrap">
+                        <div class="flex flex-col mt-1">
                             <span class="text-5xl font-black text-indigo-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ number_format($totalLansia) }}</span>
-                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Terdaftar</span>
+                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-1">Terdaftar</span>
                         </div>
                         <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Kelompok Lanjut Usia aktif binaan posyandu.</p>
                     </div>
@@ -477,9 +477,9 @@
                             </div>
                             <span class="text-[10px] font-black text-amber-700 uppercase tracking-widest bg-amber-50 px-2.5 py-1 rounded-lg">Kader</span>
                         </div>
-                        <div class="flex items-baseline gap-2 flex-wrap">
+                        <div class="flex flex-col mt-1">
                             <span class="text-5xl font-black text-amber-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ $kaderAktif }}</span>
-                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Personel</span>
+                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-1">Personel</span>
                         </div>
                         <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Kader aktif yang bertugas membina warga posyandu.</p>
                     </div>
@@ -2384,12 +2384,12 @@ function initCharts(data = null) {
         try {
             const colors = nutLabels.map(label => {
                 const sLabel = String(label).toLowerCase();
-                if (sLabel === 'baik' || sLabel === 'normal') return '#fee2e2'; // red-100
-                if (sLabel === 'gizi baik') return '#fee2e2'; // red-100
-                if (sLabel === 'gizi kurang' || sLabel === 'kurang') return '#fee2e2'; // red-100
-                if (sLabel.includes('sangat') || sLabel.includes('buruk') || sLabel.includes('pendek')) return '#fee2e2'; // red-100
-                if (sLabel.includes('risiko') || sLabel.includes('berisiko') || sLabel.includes('lebih') || sLabel.includes('obesitas')) return '#fee2e2'; // red-100
-                return '#fee2e2'; // red-100
+                if (sLabel === 'baik' || sLabel === 'normal') return '#10b981';
+                if (sLabel === 'gizi baik') return '#14b8a6';
+                if (sLabel === 'gizi kurang' || sLabel === 'kurang') return '#c2410c';
+                if (sLabel.includes('sangat') || sLabel.includes('buruk') || sLabel.includes('pendek')) return '#b91c1c';
+                if (sLabel.includes('risiko') || sLabel.includes('berisiko') || sLabel.includes('lebih') || sLabel.includes('obesitas')) return '#a16207';
+                return '#94a3b8';
             });
             nutritionDonutChart = new Chart(donutCtx, {
                 type: 'doughnut',
