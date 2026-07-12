@@ -583,16 +583,20 @@ class AdminDashboard extends BaseAdminComponent
 
     protected function getKehadiranBalita(Builder $patientQuery, Builder $medicalRecordQuery, $currentMonth, $currentYear): array
     {
-        // Hitung total balita yang seharusnya hadir berdasarkan periode filter
+        // Hitung total balita yang seharusnya hadir (Sasaran/D)
+        // Logika: Pasien yang memiliki rekam medis SEBELUM atau SELAMA periode filter
         if ($this->filterPeriode === 'semua') {
-            // Untuk filter "semua", hitung balita yang memiliki rekam medis di bulan ini
-            $totalBalita = (clone $medicalRecordQuery)
+            // Untuk filter "semua", sasaran adalah mereka yang punya record di bulan/tahun ini atau sebelumnya
+            $sasaranQuery = (clone $medicalRecordQuery)
                 ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
-                ->whereMonth('visit_date', $currentMonth)
-                ->whereYear('visit_date', $currentYear)
-                ->distinct('patient_id')
-                ->count('patient_id');
+                ->whereYear('visit_date', '<=', $currentYear);
             
+            // Jika ada filter bulan, batasi sampai akhir bulan tersebut
+            $sasaranQuery->whereMonth('visit_date', '<=', $currentMonth);
+            
+            $totalBalita = $sasaranQuery->distinct('patient_id')->count('patient_id');
+            
+            // Hadir: yang datang di bulan ini
             $hadirQuery = (clone $medicalRecordQuery)
                 ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
                 ->whereMonth('visit_date', $currentMonth)
@@ -601,9 +605,23 @@ class AdminDashboard extends BaseAdminComponent
             
             $hadir = $hadirQuery->count('patient_id');
         } else {
-            // Untuk filter custom, gunakan total balita dari patient query
-            $totalBalita = (clone $patientQuery)->whereIn('category', ['balita', 'bayi', 'baduta'])->count();
-            $hadirQuery = (clone $medicalRecordQuery)->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))->distinct('patient_id');
+            // Untuk filter custom, gunakan logika serupa berdasarkan tanggal custom
+            $startDate = $this->filterCustomStartDate;
+            $endDate = $this->filterCustomEndDate;
+            
+            // Sasaran: yang punya record sebelum atau selama periode filter
+            $sasaranQuery = (clone $medicalRecordQuery)
+                ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+                ->whereDate('visit_date', '<=', $endDate);
+            
+            $totalBalita = $sasaranQuery->distinct('patient_id')->count('patient_id');
+            
+            // Hadir: yang datang dalam periode filter
+            $hadirQuery = (clone $medicalRecordQuery)
+                ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+                ->whereBetween('visit_date', [$startDate, $endDate])
+                ->distinct('patient_id');
+            
             $hadir = $hadirQuery->count('patient_id');
         }
         
