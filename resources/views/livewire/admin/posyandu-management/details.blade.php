@@ -24,6 +24,9 @@
     $balitaCount = $posyandu->patients()->where('status_mutasi', 'aktif')->whereIn('category', ['balita', 'bayi', 'baduta'])->count();
     $ibuHamilCount = $posyandu->patients()->where('status_mutasi', 'aktif')->where('category', 'ibu_hamil')->count();
     $lansiaCount = $posyandu->patients()->where('status_mutasi', 'aktif')->where('category', 'lansia')->count();
+    $anakSekolahCount = $posyandu->patients()->where('status_mutasi', 'aktif')->where('category', 'anak_sekolah')->count();
+    $remajaCount = $posyandu->patients()->where('status_mutasi', 'aktif')->where('category', 'remaja')->count();
+    $umumCount = $posyandu->patients()->where('status_mutasi', 'aktif')->where('category', 'umum')->count();
     $totalCount = $posyandu->patients()->where('status_mutasi', 'aktif')->count();
 @endphp
 <div class="space-y-6">
@@ -83,7 +86,7 @@
 
                         <div class="pt-6 border-t border-gray-50">
                             <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Distribusi Pasien Terdaftar</p>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                             <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-7 gap-4">
                                 {{-- Balita --}}
                                 <div class="bg-blue-50/50 border border-blue-100/50 rounded-2xl p-4 flex flex-col justify-between group hover:shadow-xs transition-all duration-300">
                                     <div class="w-8 h-8 rounded-lg bg-blue-500 text-white flex items-center justify-center shadow-sm">
@@ -114,6 +117,39 @@
                                     <div class="mt-3">
                                         <span class="text-[9px] font-bold text-orange-600 uppercase tracking-wider block mb-0.5">Lansia</span>
                                         <p class="text-2xl font-black text-slate-800 tracking-tight">{{ $lansiaCount }} <span class="text-xs font-normal text-slate-400">jiwa</span></p>
+                                    </div>
+                                </div>
+
+                                {{-- Anak Sekolah --}}
+                                <div class="bg-amber-50/50 border border-amber-100/50 rounded-2xl p-4 flex flex-col justify-between group hover:shadow-xs transition-all duration-300">
+                                    <div class="w-8 h-8 rounded-lg bg-amber-500 text-white flex items-center justify-center shadow-sm">
+                                        <span class="material-symbols-outlined text-[18px]">school</span>
+                                    </div>
+                                    <div class="mt-3">
+                                        <span class="text-[9px] font-bold text-amber-600 uppercase tracking-wider block mb-0.5">Anak Sekolah</span>
+                                        <p class="text-2xl font-black text-slate-800 tracking-tight">{{ $anakSekolahCount }} <span class="text-xs font-normal text-slate-400">siswa</span></p>
+                                    </div>
+                                </div>
+
+                                {{-- Remaja --}}
+                                <div class="bg-indigo-50/50 border border-indigo-100/50 rounded-2xl p-4 flex flex-col justify-between group hover:shadow-xs transition-all duration-300">
+                                    <div class="w-8 h-8 rounded-lg bg-indigo-500 text-white flex items-center justify-center shadow-sm">
+                                        <span class="material-symbols-outlined text-[18px]">directions_run</span>
+                                    </div>
+                                    <div class="mt-3">
+                                        <span class="text-[9px] font-bold text-indigo-650 uppercase tracking-wider block mb-0.5">Remaja</span>
+                                        <p class="text-2xl font-black text-slate-800 tracking-tight">{{ $remajaCount }} <span class="text-xs font-normal text-slate-400">jiwa</span></p>
+                                    </div>
+                                </div>
+
+                                {{-- Umum --}}
+                                <div class="bg-sky-50/50 border border-sky-100/50 rounded-2xl p-4 flex flex-col justify-between group hover:shadow-xs transition-all duration-300">
+                                    <div class="w-8 h-8 rounded-lg bg-sky-500 text-white flex items-center justify-center shadow-sm">
+                                        <span class="material-symbols-outlined text-[18px]">person</span>
+                                    </div>
+                                    <div class="mt-3">
+                                        <span class="text-[9px] font-bold text-sky-600 uppercase tracking-wider block mb-0.5">Umum</span>
+                                        <p class="text-2xl font-black text-slate-800 tracking-tight">{{ $umumCount }} <span class="text-xs font-normal text-slate-400">jiwa</span></p>
                                     </div>
                                 </div>
 

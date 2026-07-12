@@ -24,9 +24,8 @@
         </div>
     </div>
 
-    {{-- ── Summary Stats ── --}}
     <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
-        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 divide-y sm:divide-y-0 divide-x-0 sm:divide-x divide-slate-100">
+        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 divide-y sm:divide-y-0 divide-x-0 sm:divide-x divide-slate-100">
 
             {{-- Total Unit --}}
             <div class="flex items-center gap-4 px-6 py-5 group hover:bg-slate-50/60 transition-colors">
@@ -81,6 +80,28 @@
                 <div>
                     <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Anak Sekolah</p>
                     <p class="text-2xl font-black text-slate-900 tracking-tight leading-none">{{ number_format($totalAnakSekolah) }}</p>
+                </div>
+            </div>
+
+            {{-- Remaja --}}
+            <div class="flex items-center gap-4 px-6 py-5 group hover:bg-slate-50/60 transition-colors">
+                <div class="w-11 h-11 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 group-hover:bg-indigo-600 group-hover:text-white transition-all duration-200">
+                    <span class="material-symbols-outlined text-[20px]">directions_run</span>
+                </div>
+                <div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Remaja</p>
+                    <p class="text-2xl font-black text-slate-900 tracking-tight leading-none">{{ number_format($totalRemaja) }}</p>
+                </div>
+            </div>
+
+            {{-- Umum --}}
+            <div class="flex items-center gap-4 px-6 py-5 group hover:bg-slate-50/60 transition-colors">
+                <div class="w-11 h-11 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-all duration-200">
+                    <span class="material-symbols-outlined text-[20px]">person</span>
+                </div>
+                <div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Umum</p>
+                    <p class="text-2xl font-black text-slate-900 tracking-tight leading-none">{{ number_format($totalUmum) }}</p>
                 </div>
             </div>
 
@@ -207,6 +228,18 @@
                                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-100">
                                             <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
                                             {{ number_format($posyandu->anak_sekolah_count) }} Anak Sekolah
+                                        </span>
+                                        @endif
+                                        @if(($posyandu->remaja_count ?? 0) > 0)
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-100">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0"></span>
+                                            {{ number_format($posyandu->remaja_count) }} Remaja
+                                        </span>
+                                        @endif
+                                        @if(($posyandu->umum_count ?? 0) > 0)
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-100">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></span>
+                                            {{ number_format($posyandu->umum_count) }} Umum
                                         </span>
                                         @endif
                                     </div>
