@@ -30,17 +30,23 @@
                     <div class="relative z-10">
                         <div class="flex items-center gap-4 mb-8">
                             @php
-                                $colors = [
-                                    'upcoming' => 'bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-900/30',
-                                    'ongoing' => 'bg-teal-50 text-teal-600 border-teal-100 dark:bg-teal-950/30 dark:text-teal-400 dark:border-teal-900/30',
-                                    'completed' => 'bg-green-50 text-green-600 border-green-100 dark:bg-green-950/30 dark:text-green-400 dark:border-green-900/30',
-                                    'cancelled' => 'bg-red-50 text-red-600 border-red-100 dark:bg-red-950/30 dark:text-red-400 dark:border-red-900/30',
-                                ];
-                            @endphp
-                            <span
-                                class="px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border {{ $colors[$schedule->status] ?? 'bg-slate-50' }}">
-                                {{ $schedule->status }}
-                            </span>
+                                    $colors = [
+                                        'upcoming' => 'bg-blue-50 text-blue-600 border-blue-100 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-900/30',
+                                        'ongoing' => 'bg-teal-50 text-teal-600 border-teal-100 dark:bg-teal-950/30 dark:text-teal-400 dark:border-teal-900/30',
+                                        'completed' => 'bg-green-50 text-green-600 border-green-100 dark:bg-green-950/30 dark:text-green-400 dark:border-green-900/30',
+                                        'cancelled' => 'bg-red-50 text-red-600 border-red-100 dark:bg-red-950/30 dark:text-red-400 dark:border-red-900/30',
+                                    ];
+                                    $statusLabels = [
+                                        'upcoming' => 'Mendatang',
+                                        'ongoing' => 'Berlangsung',
+                                        'completed' => 'Selesai',
+                                        'cancelled' => 'Dibatalkan',
+                                    ];
+                                @endphp
+                                <span
+                                    class="px-5 py-2 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] border {{ $colors[$schedule->status] ?? 'bg-slate-50' }}">
+                                    {{ $statusLabels[$schedule->status] ?? $schedule->status }}
+                                </span>
                             <span
                                 class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">{{ $schedule->posyandu->name ?? 'Semua Unit' }}</span>
                         </div>

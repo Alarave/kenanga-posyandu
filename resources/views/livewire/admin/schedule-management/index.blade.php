@@ -244,10 +244,16 @@
                                         'completed' => 'bg-green-50 text-green-600 border-green-100 dark:bg-green-950/30 dark:text-green-400 dark:border-green-900/30',
                                         'cancelled' => 'bg-red-50 text-red-600 border-red-100 dark:bg-red-950/30 dark:text-red-400 dark:border-red-900/30',
                                     ];
+                                    $statusLabels = [
+                                        'upcoming' => 'Mendatang',
+                                        'ongoing' => 'Berlangsung',
+                                        'completed' => 'Selesai',
+                                        'cancelled' => 'Dibatalkan',
+                                    ];
                                 @endphp
                                 <span
                                     class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border {{ $colors[$schedule->status] ?? 'bg-slate-50' }}">
-                                    {{ $schedule->status }}
+                                    {{ $statusLabels[$schedule->status] ?? $schedule->status }}
                                 </span>
                             </td>
                             <td class="px-5 py-4 text-center">
