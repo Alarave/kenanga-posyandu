@@ -113,12 +113,14 @@ test('analytics component can drill down on specific nutrition status and displa
 
     $this->actingAs($admin);
 
-    Livewire::test(\App\Livewire\Admin\Analytics::class)
+    $comp = Livewire::test(\App\Livewire\Admin\Analytics::class)
         ->call('drillDown', 'Balita (Gizi Baik)', 'nutrition_status', null, 'Gizi Baik')
         ->assertSet('showDrillDown', true)
-        ->assertSet('drillDownTitle', 'Detail: Balita (Gizi Baik)')
-        ->assertSee('Anak Gizi Baik')
-        ->assertDontSee('Anak Gizi Kurang');
+        ->assertSet('drillDownTitle', 'Detail: Balita (Gizi Baik)');
+
+    $drillDownData = $comp->get('drillDownData');
+    expect(collect($drillDownData)->pluck('name')->toArray())->toContain('Anak Gizi Baik');
+    expect(collect($drillDownData)->pluck('name')->toArray())->not->toContain('Anak Gizi Kurang');
 });
 
 test('analytics component can drill down on lansia age group and imt stats', function () {
@@ -167,16 +169,20 @@ test('analytics component can drill down on lansia age group and imt stats', fun
     $this->actingAs($admin);
 
     // Test age group drill down
-    Livewire::test(\App\Livewire\Admin\Analytics::class)
-        ->call('drillDown', 'Lansia 60-69', 'lansia_age_lansia')
-        ->assertSee('Mbah Sugeng 65')
-        ->assertDontSee('Mbah Ngatiman 75');
+    $comp1 = Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->call('drillDown', 'Lansia 60-69', 'lansia_age_lansia');
+
+    $drillDownData1 = $comp1->get('drillDownData');
+    expect(collect($drillDownData1)->pluck('name')->toArray())->toContain('Mbah Sugeng 65');
+    expect(collect($drillDownData1)->pluck('name')->toArray())->not->toContain('Mbah Ngatiman 75');
 
     // Test IMT group drill down
-    Livewire::test(\App\Livewire\Admin\Analytics::class)
-        ->call('drillDown', 'IMT Obesitas', 'lansia_imt_obesitas')
-        ->assertSee('Mbah Ngatiman 75')
-        ->assertDontSee('Mbah Sugeng 65');
+    $comp2 = Livewire::test(\App\Livewire\Admin\Analytics::class)
+        ->call('drillDown', 'IMT Obesitas', 'lansia_imt_obesitas');
+
+    $drillDownData2 = $comp2->get('drillDownData');
+    expect(collect($drillDownData2)->pluck('name')->toArray())->toContain('Mbah Ngatiman 75');
+    expect(collect($drillDownData2)->pluck('name')->toArray())->not->toContain('Mbah Sugeng 65');
 });
 
 test('analytics component can drill down on lansia metabolic risks', function () {

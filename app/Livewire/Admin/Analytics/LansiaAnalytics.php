@@ -21,6 +21,13 @@ class LansiaAnalytics extends Component
     #[Reactive]
     public $selectedPosyandu;
 
+    // Expose stats as public properties for test access
+    public $ageCategories = [];
+    public $imtStats = [];
+    public $metabolicRisks = [];
+    public $sensoryObesityStats = [];
+    public $specialScreeningReferralStats = [];
+
     /**
      * Single cached collection of latest lansia records per patient.
      * Loaded once per render cycle, shared across all metric calculations.
@@ -250,6 +257,12 @@ class LansiaAnalytics extends Component
     public function render()
     {
         $stats = $this->computeAllStats();
+
+        $this->ageCategories = $stats['ageCategories'];
+        $this->imtStats = $stats['imtStats'];
+        $this->metabolicRisks = $stats['metabolicRisks'];
+        $this->sensoryObesityStats = $stats['sensoryObesityStats'];
+        $this->specialScreeningReferralStats = $stats['specialScreeningReferralStats'];
 
         return view('livewire.admin.analytics.lansia-analytics', [
             'ageCategories' => $stats['ageCategories'],
