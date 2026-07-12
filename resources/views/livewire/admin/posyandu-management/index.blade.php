@@ -24,8 +24,8 @@
         </div>
     </div>
 
-    {{-- ── Summary Stats (5 cards) ── --}}
-    <div class="grid grid-cols-2 lg:grid-cols-5 gap-4">
+    {{-- ── Summary Stats (6 cards) ── --}}
+    <div class="grid grid-cols-2 lg:grid-cols-6 gap-4">
 
         {{-- Total Unit --}}
         <div class="relative overflow-hidden bg-white rounded-[2rem] border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between group hover:shadow-md hover:border-teal-500/20 hover:-translate-y-1 transition-all duration-300">
@@ -38,7 +38,7 @@
             </div>
         </div>
 
-        {{-- Total Balita --}}
+        {{-- Total Balita (includes bayi & baduta) --}}
         <div class="relative overflow-hidden bg-white rounded-[2rem] border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between group hover:shadow-md hover:border-violet-500/20 hover:-translate-y-1 transition-all duration-300">
             <div class="w-10 h-10 rounded-xl bg-violet-50 text-violet-600 group-hover:bg-violet-600 group-hover:text-white group-hover:scale-105 group-hover:shadow-sm flex items-center justify-center transition-all duration-300">
                 <span class="material-symbols-outlined text-[18px]">child_care</span>
@@ -46,6 +46,7 @@
             <div class="mt-4">
                 <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Balita</span>
                 <p class="text-3xl font-extrabold text-slate-900 tracking-tight">{{ number_format($totalBalita) }}</p>
+                <span class="text-[9px] text-slate-400 font-semibold mt-1 block">Bayi, Baduta & Balita</span>
             </div>
         </div>
 
@@ -60,7 +61,7 @@
             </div>
         </div>
 
-        {{-- Lansia (putih) --}}
+        {{-- Lansia --}}
         <div class="relative overflow-hidden bg-white rounded-[2rem] border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between group hover:shadow-md hover:border-emerald-500/20 hover:-translate-y-1 transition-all duration-300">
             <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white group-hover:scale-105 group-hover:shadow-sm flex items-center justify-center transition-all duration-300">
                 <span class="material-symbols-outlined text-[18px]">elderly</span>
@@ -68,6 +69,17 @@
             <div class="mt-4">
                 <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Lansia</span>
                 <p class="text-3xl font-extrabold text-slate-900 tracking-tight">{{ number_format($totalLansia) }}</p>
+            </div>
+        </div>
+
+        {{-- Anak Sekolah --}}
+        <div class="relative overflow-hidden bg-white rounded-[2rem] border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between group hover:shadow-md hover:border-amber-500/20 hover:-translate-y-1 transition-all duration-300">
+            <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 group-hover:bg-amber-600 group-hover:text-white group-hover:scale-105 group-hover:shadow-sm flex items-center justify-center transition-all duration-300">
+                <span class="material-symbols-outlined text-[18px]">school</span>
+            </div>
+            <div class="mt-4">
+                <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Anak Sekolah</span>
+                <p class="text-3xl font-extrabold text-slate-900 tracking-tight">{{ number_format($totalAnakSekolah) }}</p>
             </div>
         </div>
 
@@ -188,6 +200,12 @@
                                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
                                             {{ number_format($posyandu->lansia_count ?? 0) }} Lansia
                                         </span>
+                                        @if(($posyandu->anak_sekolah_count ?? 0) > 0)
+                                        <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-100">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
+                                            {{ number_format($posyandu->anak_sekolah_count) }} Anak Sekolah
+                                        </span>
+                                        @endif
                                     </div>
                                 </div>
                             </td>
