@@ -1128,11 +1128,6 @@
                                     <span class="material-symbols-outlined">calendar_today</span>
                                     {{ $article->published_at ? \Carbon\Carbon::parse($article->published_at)->translatedFormat('d M Y') : $article->created_at->translatedFormat('d M Y') }}
                                 </span>
-                                <span class="dot-sep"></span>
-                                <span style="display:flex;align-items:center;gap:4px;">
-                                    <span class="material-symbols-outlined">schedule</span>
-                                    {{ ceil(str_word_count(\App\Services\ArticleService::getExcerpt($article->content, 999999)) / 200) }} mnt
-                                </span>
                             </div>
                         </div>
                     </div>

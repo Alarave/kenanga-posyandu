@@ -60,11 +60,6 @@
                             <span class="material-symbols-outlined text-[14px]">calendar_today</span>
                             {{ $article->published_at ? \Carbon\Carbon::parse($article->published_at)->translatedFormat('d M Y') : $article->created_at->translatedFormat('d M Y') }}
                         </span>
-                        <span class="w-1 h-1 rounded-full bg-slate-200"></span>
-                        <span class="flex items-center gap-1.5">
-                            <span class="material-symbols-outlined text-[14px]">schedule</span>
-                            {{ ceil(str_word_count(\App\Services\ArticleService::getExcerpt($article->content, 999999)) / 200) }} mnt baca
-                        </span>
                     </div>
                 </div>
             </div>

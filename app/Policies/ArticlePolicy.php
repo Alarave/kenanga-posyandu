@@ -46,11 +46,11 @@ class ArticlePolicy
      */
     public function delete(User $user, Article $article): bool
     {
-        // Superadmin can delete any, Kader/Admin can delete their own
-        if ($user->isSuperAdmin()) {
+        // Superadmin and Admin can delete any, Kader can delete their own
+        if ($user->isSuperAdmin() || $user->isAdmin()) {
             return true;
         }
 
-        return ($user->isAdmin() || $user->isKader()) && $user->id === $article->user_id;
+        return $user->isKader() && $user->id === $article->user_id;
     }
 }

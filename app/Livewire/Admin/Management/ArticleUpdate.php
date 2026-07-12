@@ -36,7 +36,7 @@ class ArticleUpdate extends BaseAdminComponent
         $this->content = $article->content ?? '';
         $this->status = $article->status;
         $this->category_id = $article->category_id;
-        $this->existingCover = $article->thumbnail;
+        $this->existingCover = $article->thumbnail_url;
     }
 
     protected function rules(): array
