@@ -494,8 +494,10 @@
             {{-- Widget 3: Rangkuman Indikator Kesehatan Utama (Horizontal Layout, Below Main KPIs, Premium Redesign) --}}
             <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
                 <div class="mb-6">
-                    <div class="flex items-center gap-2">
-                        <span class="material-symbols-outlined text-teal-600 text-[24px] bg-teal-50 p-1.5 rounded-xl border border-teal-100">clinical_notes</span>
+                    <div class="flex items-center gap-3">
+                        <div class="shrink-0 w-10 h-10 flex items-center justify-center bg-teal-50 rounded-xl border border-teal-100 shadow-sm">
+                            <span class="material-symbols-outlined text-teal-600 text-[24px]">clinical_notes</span>
+                        </div>
                         <div>
                             <h3 class="text-lg font-black text-slate-900 tracking-tight">
                                 Pusat Deteksi Dini &amp; Indikator Kesehatan Utama
