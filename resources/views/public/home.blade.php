@@ -729,15 +729,18 @@
         }
 
         .schedule-grid {
-            display: grid;
-            grid-template-columns: 1fr;
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
             gap: 24px;
+            scroll-snap-type: x mandatory;
+            padding: 8px 4px 16px 4px;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
-        @media (min-width: 768px) {
-            .schedule-grid {
-                grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            }
+        .schedule-grid::-webkit-scrollbar {
+            display: none;
         }
 
         .schedule-card {
@@ -752,6 +755,20 @@
             justify-content: space-between;
             transition: all 450ms cubic-bezier(0.16, 1, 0.3, 1);
             box-shadow: 0 4px 30px rgba(0, 0, 0, 0.01);
+            flex: 0 0 100%;
+            scroll-snap-align: start;
+        }
+
+        @media (min-width: 640px) {
+            .schedule-card {
+                flex: 0 0 calc(50% - 12px);
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .schedule-card {
+                flex: 0 0 calc(33.333% - 16px);
+            }
         }
 
         .schedule-card:hover {
@@ -1391,11 +1408,20 @@
 
         {{-- ══ JADWAL KEGIATAN ══ --}}
         <section id="jadwal" class="section" style="scroll-margin-top: 24px;">
-            <div class="schedule-header" id="jadwal-header">
+            <div class="schedule-header" id="jadwal-header" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 32px;">
                 <div>
-                    <h2 class="section-heading">Jadwal <em>Kegiatan Posyandu.</em></h2>
+                    <h2 class="section-heading" style="margin: 0;">Jadwal <em>Kegiatan Posyandu.</em></h2>
                 </div>
-                <div class="section-divider"></div>
+                @if ($schedules->count() > 0)
+                <div class="flex items-center gap-3" style="display: flex; gap: 12px; align-items: center; justify-content: flex-end; margin-left: auto;">
+                    <button id="prev-schedule" class="w-10 h-10 rounded-full border border-teal-500/20 bg-white text-teal-600 hover:bg-teal-50 flex items-center justify-center transition-all cursor-pointer shadow-xs" style="width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(13,148,136,0.2); background: white; color: #0d9488; display: flex; align-items: center; justify-content: center; transition: all 0.2s; cursor: pointer;">
+                        <span class="material-symbols-outlined text-[20px]" style="font-size: 20px;">chevron_left</span>
+                    </button>
+                    <button id="next-schedule" class="w-10 h-10 rounded-full border border-teal-500/20 bg-white text-teal-600 hover:bg-teal-50 flex items-center justify-center transition-all cursor-pointer shadow-xs" style="width: 40px; height: 40px; border-radius: 50%; border: 1px solid rgba(13,148,136,0.2); background: white; color: #0d9488; display: flex; align-items: center; justify-content: center; transition: all 0.2s; cursor: pointer;">
+                        <span class="material-symbols-outlined text-[20px]" style="font-size: 20px;">chevron_right</span>
+                    </button>
+                </div>
+                @endif
             </div>
 
             @if ($schedules->count() > 0)
@@ -1442,6 +1468,32 @@
                         </div>
                     @endforeach
                 </div>
+
+                <script>
+                    document.addEventListener('DOMContentLoaded', () => {
+                        const grid = document.getElementById('jadwal-grid');
+                        const prev = document.getElementById('prev-schedule');
+                        const next = document.getElementById('next-schedule');
+                        
+                        if (grid && prev && next) {
+                            prev.addEventListener('click', () => {
+                                const card = grid.querySelector('.schedule-card');
+                                if (card) {
+                                    const cardWidth = card.offsetWidth + 24;
+                                    grid.scrollBy({ left: -cardWidth, behavior: 'smooth' });
+                                }
+                            });
+                            
+                            next.addEventListener('click', () => {
+                                const card = grid.querySelector('.schedule-card');
+                                if (card) {
+                                    const cardWidth = card.offsetWidth + 24;
+                                    grid.scrollBy({ left: cardWidth, behavior: 'smooth' });
+                                }
+                            });
+                        }
+                    });
+                </script>
             @else
                 <div class="empty-state">
                     <div class="empty-icon">
