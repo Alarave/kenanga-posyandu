@@ -385,7 +385,7 @@
                             </div>
                             <span class="text-[10px] font-black text-slate-700 uppercase tracking-widest bg-slate-100 px-2.5 py-1 rounded-lg">Pemeriksaan</span>
                         </div>
-                        <div class="flex items-baseline gap-2">
+                        <div class="flex items-baseline gap-2 flex-wrap">
                             <span class="text-5xl font-black text-slate-800 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ number_format($totalKunjungan) }}</span>
                             <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Kunjungan</span>
                         </div>
@@ -408,7 +408,7 @@
                             </div>
                             <span class="text-[10px] font-black text-teal-700 uppercase tracking-widest bg-teal-50 px-2.5 py-1 rounded-lg">Jiwa</span>
                         </div>
-                        <div class="flex items-baseline gap-2">
+                        <div class="flex items-baseline gap-2 flex-wrap">
                             <span class="text-5xl font-black text-teal-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ number_format($totalBalita) }}</span>
                             <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Terdaftar</span>
                         </div>
@@ -431,7 +431,7 @@
                             </div>
                             <span class="text-[10px] font-black text-rose-700 uppercase tracking-widest bg-rose-50 px-2.5 py-1 rounded-lg">Jiwa</span>
                         </div>
-                        <div class="flex items-baseline gap-2">
+                        <div class="flex items-baseline gap-2 flex-wrap">
                             <span class="text-5xl font-black text-rose-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ number_format($totalIbuHamil) }}</span>
                             <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Terdaftar</span>
                         </div>
@@ -454,7 +454,7 @@
                             </div>
                             <span class="text-[10px] font-black text-indigo-700 uppercase tracking-widest bg-indigo-50 px-2.5 py-1 rounded-lg">Jiwa</span>
                         </div>
-                        <div class="flex items-baseline gap-2">
+                        <div class="flex items-baseline gap-2 flex-wrap">
                             <span class="text-5xl font-black text-indigo-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ number_format($totalLansia) }}</span>
                             <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Terdaftar</span>
                         </div>
@@ -477,7 +477,7 @@
                             </div>
                             <span class="text-[10px] font-black text-amber-700 uppercase tracking-widest bg-amber-50 px-2.5 py-1 rounded-lg">Kader</span>
                         </div>
-                        <div class="flex items-baseline gap-2">
+                        <div class="flex items-baseline gap-2 flex-wrap">
                             <span class="text-5xl font-black text-amber-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ $kaderAktif }}</span>
                             <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Personel</span>
                         </div>
