@@ -96,7 +96,9 @@
                     <div class="relative">
                         <select wire:model.live="posyandu_id"
                             class="w-full h-12 pl-4 pr-10 rounded-xl border border-slate-200 bg-slate-50 text-sm font-bold text-slate-800 focus:ring-teal-500 focus:border-teal-500 appearance-none transition-all">
-                            <option value="">-- Pilih Posyandu --</option>
+                            @if(count($posyandus) > 1)
+                                <option value="">-- Pilih Posyandu --</option>
+                            @endif
                             @foreach($posyandus as $p)
                                 <option value="{{ $p->id }}">{{ $p->name }}</option>
                             @endforeach
