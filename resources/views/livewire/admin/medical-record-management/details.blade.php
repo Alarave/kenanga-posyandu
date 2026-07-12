@@ -115,9 +115,11 @@
                 <span class="material-symbols-outlined text-[20px]">print</span>
                 Cetak
             </button>
+            @can('update', $medicalRecord)
             <x-button href="{{ route('admin.medical-records.edit', $medicalRecord->id) }}" variant="primary" size="md" icon="edit" class="h-12 shadow-lg shadow-primary/20">
                 Edit Data
             </x-button>
+            @endcan
         </div>
     </div>
 

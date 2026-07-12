@@ -1130,7 +1130,8 @@
             </div>
         </div>
 
-                {{-- Quick Actions Widget --}}
+        @if(!auth()->user()->isKader())
+        {{-- Quick Actions Widget --}}
         <div class="widget-card p-5 relative overflow-hidden off-screen-widget">
             <div class="absolute -right-8 -top-8 w-32 h-32 bg-indigo-50 rounded-full blur-3xl pointer-events-none">
             </div>
@@ -1180,7 +1181,7 @@
                 </div>
             </div>
         </div>
-
+        @endif
     </div>
 </div>
 

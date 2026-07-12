@@ -121,9 +121,6 @@ class LansiaAnalytics extends Component
         $gula = 0;
         $kolesterol = 0;
         $asamUrat = 0;
-        $totalWaist = 0;
-        $countWaist = 0;
-        $obesitySentral = 0;
         $eyeIssue = 0;
         $earIssue = 0;
         $pumaCount = 0;
@@ -164,17 +161,6 @@ class LansiaAnalytics extends Component
                 $asamUrat++;
             }
 
-            // AL-07: Obesitas Sentral & Gangguan Indra
-            $gender = $r->patient?->gender ?? '';
-            $wc = $r->waist_circumference ? (float) $r->waist_circumference : 0;
-            if ($wc > 0) {
-                $totalWaist += $wc;
-                $countWaist++;
-                if (($gender === 'L' && $wc > 90) || ($gender === 'P' && $wc > 80)) {
-                    $obesitySentral++;
-                }
-            }
-
             $eye = strtolower(trim($r->eye_test ?? ''));
             if ($eye !== '' && $eye !== '-' && $eye !== 'normal') {
                 $eyeIssue++;
@@ -205,8 +191,6 @@ class LansiaAnalytics extends Component
         }
 
         // Computed percentages
-        $avgWaist = $countWaist > 0 ? round($totalWaist / $countWaist, 1) : 0;
-        $obesityPct = $totalValidLansia > 0 ? round(($obesitySentral / $totalValidLansia) * 100) : 0;
         $eyePct = $totalValidLansia > 0 ? round(($eyeIssue / $totalValidLansia) * 100) : 0;
         $earPct = $totalValidLansia > 0 ? round(($earIssue / $totalValidLansia) * 100) : 0;
         $pumaPct = $totalValidLansia > 0 ? round(($pumaCount / $totalValidLansia) * 100) : 0;
@@ -242,7 +226,6 @@ class LansiaAnalytics extends Component
             'imtStats' => ['kurang' => $imtKurang, 'normal' => $imtNormal, 'lebih' => $imtLebih, 'obesitas' => $imtObesitas],
             'metabolicRisks' => ['hipertensi' => $hipertensi, 'gula' => $gula, 'kolesterol' => $kolesterol, 'asamUrat' => $asamUrat],
             'sensoryObesityStats' => [
-                'avgWaist' => $avgWaist, 'obesitySentral' => $obesitySentral, 'obesityPct' => $obesityPct,
                 'eyeIssue' => $eyeIssue, 'eyePct' => $eyePct, 'earIssue' => $earIssue, 'earPct' => $earPct,
                 'total' => $totalValidLansia,
             ],

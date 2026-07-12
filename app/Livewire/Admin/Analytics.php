@@ -1331,10 +1331,10 @@ class Analytics extends BaseAdminComponent
             }
 
             $normal = $group->whereIn('nutrition_status', [MedicalRecord::STATUS_BB_U_NORMAL, MedicalRecord::STATUS_GIZI_BAIK])->count();
-            $stunting = $group->where(function ($r) {
-                return in_array($r->nutrition_status, [MedicalRecord::STATUS_BB_U_SANGAT_KURANG, MedicalRecord::STATUS_GIZI_BURUK]) ||
-                       in_array($r->wasting_status, [MedicalRecord::STATUS_BB_U_SANGAT_KURANG, MedicalRecord::STATUS_GIZI_BURUK]);
-            })->count();
+            $stunting = $group->whereIn('stunting_status', [
+                MedicalRecord::STATUS_TB_U_SANGAT_PENDEK,
+                MedicalRecord::STATUS_TB_U_PENDEK,
+            ])->count();
             $risk = $group->where(function ($r) {
                 return in_array($r->nutrition_status, [MedicalRecord::STATUS_BB_U_RISIKO_LEBIH, MedicalRecord::STATUS_GIZI_BERISIKO_LEBIH, MedicalRecord::STATUS_GIZI_LEBIH, MedicalRecord::STATUS_GIZI_OBESITAS, MedicalRecord::STATUS_BB_U_KURANG, MedicalRecord::STATUS_GIZI_KURANG]) ||
                        in_array($r->wasting_status, [MedicalRecord::STATUS_BB_U_RISIKO_LEBIH, MedicalRecord::STATUS_GIZI_BERISIKO_LEBIH, MedicalRecord::STATUS_GIZI_LEBIH, MedicalRecord::STATUS_GIZI_OBESITAS, MedicalRecord::STATUS_BB_U_KURANG, MedicalRecord::STATUS_GIZI_KURANG]);

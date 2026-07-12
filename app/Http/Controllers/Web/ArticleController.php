@@ -50,6 +50,7 @@ class ArticleController extends Controller
 
     public function edit(Article $article)
     {
+        $this->authorize('update', $article);
         $categories = Category::all();
 
         return view('livewire.admin.article-management.update', compact('article', 'categories'));
@@ -57,6 +58,7 @@ class ArticleController extends Controller
 
     public function update(ArticleRequest $request, Article $article, ArticleService $articleService)
     {
+        $this->authorize('update', $article);
         $articleService->updateArticle($article, $request->validated());
 
         return redirect()->route('admin.articles.index')->with('success', 'Artikel berhasil diperbarui.');
@@ -64,6 +66,7 @@ class ArticleController extends Controller
 
     public function destroy(Article $article, ArticleService $articleService)
     {
+        $this->authorize('delete', $article);
         $articleService->deleteArticle($article);
 
         return redirect()->route('admin.articles.index')->with('success', 'Artikel berhasil dihapus.');

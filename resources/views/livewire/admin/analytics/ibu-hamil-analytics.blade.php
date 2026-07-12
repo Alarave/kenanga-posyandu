@@ -10,7 +10,7 @@
         {{-- Stats Grid Ibu Hamil --}}
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {{-- Card 1: AH-02 & 03: Pregnancy Safety --}}
-            <div wire:click="$parent.drillDown('Ibu Hamil - Risiko Tinggi &amp; 4T', 'pregnancy_high_risk', {{ $selectedMonth ?? 'null' }})"
+            <div wire:click="$parent.drillDown('Ibu Hamil - Risiko Tinggi &amp; 4T', 'pregnancy_high_risk', {{ $selectedMonth ?: 'null' }})"
                  class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between hover:shadow-lg hover:-translate-y-1 hover:border-emerald-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group pregnancy-card">
                 
                 {{-- Background Watermark Icon --}}
@@ -46,7 +46,7 @@
             </div>
 
             {{-- Card 2: AH-07: KEK --}}
-            <div wire:click="$parent.drillDown('Ibu Hamil - Kasus KEK', 'pregnancy_kek', {{ $selectedMonth ?? 'null' }})"
+            <div wire:click="$parent.drillDown('Ibu Hamil - Kasus KEK', 'pregnancy_kek', {{ $selectedMonth ?: 'null' }})"
                  class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between hover:shadow-lg hover:-translate-y-1 hover:border-purple-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group pregnancy-card">
                 
                 {{-- Background Watermark Icon --}}
@@ -81,7 +81,7 @@
             </div>
     
             {{-- Card 3: AH-06: Tekanan Darah --}}
-            <div wire:click="$parent.drillDown('Ibu Hamil - Kasus Hipertensi', 'pregnancy_hypertension', {{ $selectedMonth ?? 'null' }})"
+            <div wire:click="$parent.drillDown('Ibu Hamil - Kasus Hipertensi', 'pregnancy_hypertension', {{ $selectedMonth ?: 'null' }})"
                  class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between hover:shadow-lg hover:-translate-y-1 hover:border-rose-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group pregnancy-card">
                 
                 {{-- Background Watermark Icon --}}
@@ -116,7 +116,7 @@
             </div>
 
             {{-- Card 4: AH-08: Skrining TBC --}}
-            <div wire:click="$parent.drillDown('Ibu Hamil - Skrining Gejala TBC', 'pregnancy_tbc', {{ $selectedMonth ?? 'null' }})"
+            <div wire:click="$parent.drillDown('Ibu Hamil - Skrining Gejala TBC', 'pregnancy_tbc', {{ $selectedMonth ?: 'null' }})"
                  class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between hover:shadow-lg hover:-translate-y-1 hover:border-amber-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group pregnancy-card">
                 
                 {{-- Background Watermark Icon --}}
@@ -151,7 +151,7 @@
             </div>
 
             {{-- Card 5: AH-04: TTD --}}
-            <div wire:click="$parent.drillDown('Ibu Hamil - Pemberian Tablet Fe', 'pregnancy_tablet_fe', {{ $selectedMonth ?? 'null' }})"
+            <div wire:click="$parent.drillDown('Ibu Hamil - Pemberian Tablet Fe', 'pregnancy_tablet_fe', {{ $selectedMonth ?: 'null' }})"
                  class="relative overflow-hidden bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between hover:shadow-lg hover:-translate-y-1 hover:border-teal-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group pregnancy-card">
                 
                 {{-- Background Watermark Icon --}}
@@ -372,7 +372,7 @@
                             'k5' => ['label' => 'K5 (TM 3)', 'trimester' => 'Trimester III', 'desc' => 'Perencanaan persalinan aman', 'color' => 'emerald'], 
                             'k6' => ['label' => 'K6 (TM 3)', 'trimester' => 'Trimester III', 'desc' => 'Pemeriksaan posisi akhir janin', 'color' => 'emerald']
                         ] as $key => $info)
-                        <div wire:click="$parent.drillDown('Ibu Hamil - Kunjungan {{ strtoupper($key) }}', 'pregnancy_{{ $key }}', {{ $selectedMonth ?? 'null' }})"
+                        <div wire:click="$parent.drillDown('Ibu Hamil - Kunjungan {{ strtoupper($key) }}', 'pregnancy_{{ $key }}', {{ $selectedMonth ?: 'null' }})"
                                  class="p-3 bg-gradient-to-br from-white to-slate-50 border border-slate-200/50 rounded-xl flex flex-col justify-between transition-all duration-300 hover:shadow-sm hover:border-slate-350 hover:-translate-y-0.5 cursor-pointer select-none active:scale-[0.98] group">
                             <div>
                                 <div class="flex items-center justify-between mb-1">

@@ -79,6 +79,7 @@ class MonthlyReport extends BaseAdminComponent
             [$year, $month] = explode('-', $value);
             $this->startYear = (int) $year;
             $this->startMonth = (int) $month;
+            $this->loadStats();
         }
     }
 
@@ -88,6 +89,7 @@ class MonthlyReport extends BaseAdminComponent
             [$year, $month] = explode('-', $value);
             $this->endYear = (int) $year;
             $this->endMonth = (int) $month;
+            $this->loadStats();
         }
     }
 
@@ -142,8 +144,19 @@ class MonthlyReport extends BaseAdminComponent
             })
             ->count();
 
-        $this->totalIbuHamil = (clone $basePatientQuery)->where('category', 'ibu_hamil')->count();
-        $this->totalLansia = (clone $basePatientQuery)->where('category', 'lansia')->count();
+        $this->totalIbuHamil = (clone $basePatientQuery)
+            ->where('category', 'ibu_hamil')
+            ->whereHas('medicalRecords', function ($q) use ($startDate, $endDate) {
+                $q->whereBetween('visit_date', [$startDate, $endDate]);
+            })
+            ->count();
+
+        $this->totalLansia = (clone $basePatientQuery)
+            ->where('category', 'lansia')
+            ->whereHas('medicalRecords', function ($q) use ($startDate, $endDate) {
+                $q->whereBetween('visit_date', [$startDate, $endDate]);
+            })
+            ->count();
 
         $totalBalitaKunjungan = (clone $baseRecordQuery)
             ->whereHas('patient', fn ($q) => $q->where('category', 'balita'))

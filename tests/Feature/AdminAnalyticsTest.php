@@ -638,19 +638,11 @@ test('analytics component can calculate lansia obesity, sensory, and screening s
     ]);
 
     $sensoryObesity = $comp->get('sensoryObesityStats');
-    expect($sensoryObesity['avgWaist'])->toBe(95.0);
-    expect($sensoryObesity['obesitySentral'])->toBe(1);
     expect($sensoryObesity['eyeIssue'])->toBe(1);
 
     $screening = $comp->get('specialScreeningReferralStats');
     expect($screening['pumaCount'])->toBe(1);
     expect($screening['referrals'])->toHaveCount(1);
-
-    $drillObesity = Livewire::test(\App\Livewire\Admin\Analytics::class)
-        ->set('activeTab', 'lansia')
-        ->call('drillDown', 'Lansia - Obesitas Sentral', 'lansia_obesity_sentral', now()->month)
-        ->get('drillDownData');
-    expect(collect($drillObesity)->pluck('name')->toArray())->toContain($p1->full_name);
 
     $drillEye = Livewire::test(\App\Livewire\Admin\Analytics::class)
         ->set('activeTab', 'lansia')

@@ -9,7 +9,7 @@
     {{-- Metabolic Risks Grid (AL-03 to AL-06) --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {{-- Hipertensi --}}
-        <div wire:click="$parent.drillDown('Lansia - Hipertensi', 'lansia_hipertensi', {{ $selectedMonth ?? 'null' }})"
+        <div wire:click="$parent.drillDown('Lansia - Hipertensi', 'lansia_hipertensi', {{ $selectedMonth ?: 'null' }})"
              class="relative overflow-hidden bg-gradient-to-br from-white to-rose-50/10 rounded-3xl p-6 border border-rose-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-rose-100/40 hover:-translate-y-1 hover:border-rose-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group metabolic-card">
             
             {{-- Background Watermark Icon --}}
@@ -36,7 +36,7 @@
         </div>
 
         {{-- Hiperglikemia --}}
-        <div wire:click="$parent.drillDown('Lansia - Hiperglikemia', 'lansia_hiperglikemia', {{ $selectedMonth ?? 'null' }})"
+        <div wire:click="$parent.drillDown('Lansia - Hiperglikemia', 'lansia_hiperglikemia', {{ $selectedMonth ?: 'null' }})"
              class="relative overflow-hidden bg-gradient-to-br from-white to-amber-50/10 rounded-3xl p-6 border border-amber-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-amber-100/40 hover:-translate-y-1 hover:border-amber-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group metabolic-card">
             
             {{-- Background Watermark Icon --}}
@@ -63,7 +63,7 @@
         </div>
 
         {{-- Kolesterol Tinggi --}}
-        <div wire:click="$parent.drillDown('Lansia - Hiperkolesterolemia', 'lansia_hiperkolesterolemia', {{ $selectedMonth ?? 'null' }})"
+        <div wire:click="$parent.drillDown('Lansia - Hiperkolesterolemia', 'lansia_hiperkolesterolemia', {{ $selectedMonth ?: 'null' }})"
              class="relative overflow-hidden bg-gradient-to-br from-white to-blue-50/10 rounded-3xl p-6 border border-blue-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-blue-100/40 hover:-translate-y-1 hover:border-blue-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group metabolic-card">
             
             {{-- Background Watermark Icon --}}
@@ -90,7 +90,7 @@
         </div>
 
         {{-- Asam Urat Tinggi --}}
-        <div wire:click="$parent.drillDown('Lansia - Hiperurisemia', 'lansia_hiperurisemia', {{ $selectedMonth ?? 'null' }})"
+        <div wire:click="$parent.drillDown('Lansia - Hiperurisemia', 'lansia_hiperurisemia', {{ $selectedMonth ?: 'null' }})"
              class="relative overflow-hidden bg-gradient-to-br from-white to-purple-50/10 rounded-3xl p-6 border border-purple-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-purple-100/40 hover:-translate-y-1 hover:border-purple-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group metabolic-card">
             
             {{-- Background Watermark Icon --}}
@@ -238,43 +238,23 @@
         </div>
     </div>
     
-    {{-- Row 3: Obesitas Sentral, Panca Indra & Rujukan Lansia --}}
+    {{-- Row 3: Gangguan Indra & Rujukan Lansia --}}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-        {{-- Obesitas Sentral & Gangguan Indra --}}
+        {{-- Gangguan Indra --}}
         <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between relative overflow-hidden">
             <div>
-                <div class="flex items-center gap-3 mb-4">
+                <div class="flex items-center gap-3 mb-6">
                     <span class="material-symbols-outlined text-teal-600 text-[26px]">medical_information</span>
                     <div>
-                        <h3 class="text-lg font-bold text-slate-900">Obesitas Sentral &amp; Gangguan Indra</h3>
-                        <p class="text-xs text-slate-500 font-semibold mt-0.5">Analisis lingkar perut dan fungsi indera sensorik lansia</p>
-                    </div>
-                </div>
-
-                {{-- Average Waist Circumference card --}}
-                <div class="grid grid-cols-1 gap-4 mb-6">
-                    <div class="bg-slate-50 border border-slate-100 rounded-2xl p-4 flex flex-col items-center justify-center text-center">
-                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-1">RATA-RATA LINGKAR PERUT</span>
-                        <span class="text-3xl font-black text-slate-800">{{ $sensoryObesityStats['avgWaist'] }} cm</span>
+                        <h3 class="text-lg font-bold text-slate-900">Gangguan Indra</h3>
+                        <p class="text-xs text-slate-500 font-semibold mt-0.5">Analisis fungsi indera sensorik lansia</p>
                     </div>
                 </div>
 
                 <div class="space-y-4">
-                    {{-- Obesitas Sentral --}}
-                    <div wire:click="$parent.drillDown('Lansia - Obesitas Sentral', 'lansia_obesity_sentral', {{ $selectedMonth ?? 'null' }})"
-                         class="cursor-pointer hover:bg-slate-50 px-2 -mx-2 py-1 rounded-xl transition-colors group/item"
-                         title="Klik untuk melihat daftar lansia dengan obesitas sentral">
-                        <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-1.5">
-                            <span class="hover:underline hover:text-teal-600 transition-colors">Obesitas Sentral</span>
-                            <span class="text-slate-900 font-extrabold">{{ $sensoryObesityStats['obesitySentral'] }} Jiwa ({{ $sensoryObesityStats['obesityPct'] }}%)</span>
-                        </div>
-                        <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                            <div class="h-full bg-teal-500 rounded-full transition-all" style="width: {{ $sensoryObesityStats['obesityPct'] }}%"></div>
-                        </div>
-                    </div>
 
                     {{-- Gangguan Penglihatan --}}
-                    <div wire:click="$parent.drillDown('Lansia - Gangguan Penglihatan', 'lansia_eye_issue', {{ $selectedMonth ?? 'null' }})"
+                    <div wire:click="$parent.drillDown('Lansia - Gangguan Penglihatan', 'lansia_eye_issue', {{ $selectedMonth ?: 'null' }})"
                          class="cursor-pointer hover:bg-slate-50 px-2 -mx-2 py-1 rounded-xl transition-colors group/item"
                          title="Klik untuk melihat daftar lansia dengan gangguan penglihatan">
                         <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-1.5">
@@ -287,7 +267,7 @@
                     </div>
 
                     {{-- Gangguan Pendengaran --}}
-                    <div wire:click="$parent.drillDown('Lansia - Gangguan Pendengaran', 'lansia_ear_issue', {{ $selectedMonth ?? 'null' }})"
+                    <div wire:click="$parent.drillDown('Lansia - Gangguan Pendengaran', 'lansia_ear_issue', {{ $selectedMonth ?: 'null' }})"
                          class="cursor-pointer hover:bg-slate-50 px-2 -mx-2 py-1 rounded-xl transition-colors group/item"
                          title="Klik untuk melihat daftar lansia dengan gangguan pendengaran">
                         <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-1.5">
@@ -315,21 +295,21 @@
 
                 {{-- Mini progress bars for PUMA, TBC, Mental --}}
                 <div class="grid grid-cols-3 gap-3 mb-6">
-                    <div wire:click="$parent.drillDown('Lansia - Risiko PPOK (PUMA)', 'lansia_puma_risk', {{ $selectedMonth ?? 'null' }})"
+                    <div wire:click="$parent.drillDown('Lansia - Risiko PPOK (PUMA)', 'lansia_puma_risk', {{ $selectedMonth ?: 'null' }})"
                          class="bg-rose-50/50 border border-rose-100 hover:bg-rose-50/80 hover:border-rose-300 transition-all rounded-2xl p-3 text-center cursor-pointer group/card">
                         <span class="block text-[9px] font-black text-rose-700 uppercase tracking-wider mb-1">PUMA (Paru)</span>
                         <span class="text-xl font-black text-rose-600 block">{{ $specialScreeningReferralStats['pumaCount'] }}</span>
                         <span class="text-[9px] font-extrabold text-rose-500 block mt-0.5">{{ $specialScreeningReferralStats['pumaPct'] }}% Berisiko</span>
                     </div>
 
-                    <div wire:click="$parent.drillDown('Lansia - Terduga Gejala TBC', 'lansia_tbc_risk', {{ $selectedMonth ?? 'null' }})"
+                    <div wire:click="$parent.drillDown('Lansia - Terduga Gejala TBC', 'lansia_tbc_risk', {{ $selectedMonth ?: 'null' }})"
                          class="bg-amber-50/50 border border-amber-100 hover:bg-amber-50/80 hover:border-amber-300 transition-all rounded-2xl p-3 text-center cursor-pointer group/card">
                         <span class="block text-[9px] font-black text-amber-700 uppercase tracking-wider mb-1">Skrining TBC</span>
                         <span class="text-xl font-black text-amber-600 block">{{ $specialScreeningReferralStats['tbcCount'] }}</span>
                         <span class="text-[9px] font-extrabold text-amber-500 block mt-0.5">{{ $specialScreeningReferralStats['tbcPct'] }}% Gejala</span>
                     </div>
 
-                    <div wire:click="$parent.drillDown('Lansia - Risiko Kesehatan Jiwa', 'lansia_mental_risk', {{ $selectedMonth ?? 'null' }})"
+                    <div wire:click="$parent.drillDown('Lansia - Risiko Kesehatan Jiwa', 'lansia_mental_risk', {{ $selectedMonth ?: 'null' }})"
                          class="bg-purple-50/50 border border-purple-100 hover:bg-purple-50/80 hover:border-purple-300 transition-all rounded-2xl p-3 text-center cursor-pointer group/card">
                         <span class="block text-[9px] font-black text-purple-700 uppercase tracking-wider mb-1">Skrining Jiwa</span>
                         <span class="text-xl font-black text-purple-600 block">{{ $specialScreeningReferralStats['mentalCount'] }}</span>
