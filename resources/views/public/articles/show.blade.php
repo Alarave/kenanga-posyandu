@@ -28,8 +28,6 @@
                         <h4 class="text-[15px] font-black text-slate-900 tracking-tight">{{ $article->user->name ?? 'Tim Redaksi' }}</h4>
                     </div>
                     <div class="flex items-center gap-3 mt-1">
-                        <span class="text-[12px] text-slate-400 font-medium italic">{{ ceil(str_word_count(\App\Services\ArticleService::getExcerpt($article->content, 999999)) / 200) }} mnt baca</span>
-                        <span class="w-1 h-1 rounded-full bg-slate-200"></span>
                         <span class="text-[12px] text-slate-400 font-medium">{{ $article->published_at ? \Carbon\Carbon::parse($article->published_at)->translatedFormat('d M Y') : $article->created_at->translatedFormat('d M Y') }}</span>
                     </div>
                 </div>

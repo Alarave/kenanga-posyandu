@@ -1041,10 +1041,7 @@
                         Mulai Membaca
                         <span class="material-symbols-outlined" style="font-size:18px;">arrow_forward</span>
                     </a>
-                    <span class="featured-meta">
-                        <span class="material-symbols-outlined" style="font-size:14px;">schedule</span>
-                        {{ $featuredReadTime }} mnt baca
-                    </span>
+
                 </div>
                 <div class="featured-author-row">
                     <div class="featured-author-avatar">{{ $featuredInitial }}</div>
@@ -1133,7 +1130,7 @@
                     </div>
                     <div class="article-item-thumb">
                         <img src="{{ $article->thumbnail ? $article->thumbnail_url : 'https://images.unsplash.com/photo-1576091160550-217359f4ecf8?q=80&w=600&auto=format&fit=crop' }}"
-                             alt="{{ $article->title }}" loading="lazy" decoding="async">
+                            alt="{{ $article->title }}" loading="lazy" decoding="async">
                     </div>
                 </div>
                 @empty
