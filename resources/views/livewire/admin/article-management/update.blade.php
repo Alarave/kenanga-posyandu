@@ -1,5 +1,5 @@
 <div
-    x-data="articleEditorUpdate(@js($article->content ?? ''), @js($article->title), @js($article->status), @js($article->category_id), @js($article->category?->name ?? ''), @js($existingCover ? asset('storage/'.$existingCover) : null))"
+    x-data="articleEditorUpdate(@js($article->content ?? ''), @js($article->title), @js($article->status), @js($article->category_id), @js($article->category?->name ?? ''), @js($existingCover))"
     x-init="init()"
     @keydown.window="onWindowKeydown($event)"
     class="min-h-screen bg-[#f8f8f7]"

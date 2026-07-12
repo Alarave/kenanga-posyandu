@@ -539,7 +539,13 @@ class Analytics extends BaseAdminComponent
                 'patient_id' => $r->patient_id,
                 'category_warga' => 'Lansia',
                 'kategori_gizi' => '-',
-                'status_info' => '-',
+                'status_info' => (function() use ($r) {
+                    $age = $r->patient?->age ?? 0;
+                    if ($age >= 70) return 'Lansia Risiko Tinggi';
+                    if ($age >= 60) return 'Lansia';
+                    if ($age >= 45) return 'Pra-Lansia';
+                    return 'Lansia';
+                })(),
                 'month_name' => $r->visit_date ? match($r->visit_date->month) {
                     1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni',
                     7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
@@ -961,7 +967,21 @@ class Analytics extends BaseAdminComponent
                 if (stripos($gizi, 'gizi buruk') !== false || stripos($gizi, 'stunting') !== false) return 'Stunting';
                 return '-';
             })(),
-            'status_info' => (function() use ($r) {
+            'status_info' => (function() use ($r, $type) {
+                // Khusus untuk filter stunting, tampilkan status stunting
+                if ($type === 'stunting' || $type === 'balita_stunting_buruk') {
+                    if (in_array($r->stunting_status, [MedicalRecord::STATUS_TB_U_SANGAT_PENDEK, MedicalRecord::STATUS_GIZI_BURUK])) {
+                        return 'Stunting (Sangat Pendek)';
+                    }
+                    if ($r->stunting_status === MedicalRecord::STATUS_TB_U_PENDEK) {
+                        return 'Stunting (Pendek)';
+                    }
+                    if (stripos($r->nutrition_status ?? '', 'gizi buruk') !== false) {
+                        return 'Gizi Buruk';
+                    }
+                    return $r->stunting_status ?? $r->nutrition_status ?? '-';
+                }
+                
                 if (in_array($r->patient?->category, ['balita', 'bayi', 'baduta'])) {
                     return $r->nutrition_status ?: '-';
                 }

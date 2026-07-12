@@ -89,8 +89,8 @@ class MedicalRecordRequest extends FormRequest
             'kpsp_note' => 'nullable|string',
 
             // Lansia Metrics
-            'systolic_bp' => $isLansia ? 'required|integer|min:30|max:300' : 'nullable|integer|min:30|max:300',
-            'diastolic_bp' => $isLansia ? 'required|integer|min:20|max:200' : 'nullable|integer|min:20|max:200',
+            'systolic_bp' => 'nullable|integer|min:30|max:300',
+            'diastolic_bp' => 'nullable|integer|min:20|max:200',
             'blood_sugar' => 'nullable|integer|min:10|max:1000',
             'uric_acid' => 'nullable|numeric|min:0.1|max:30',
             'cholesterol' => 'nullable|integer|min:50|max:600',

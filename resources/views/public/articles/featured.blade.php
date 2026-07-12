@@ -18,9 +18,6 @@
                class="h-14 px-10 flex items-center justify-center bg-slate-900 text-white rounded-2xl text-[11px] font-black uppercase tracking-[0.2em] hover:bg-indigo-600 transition-all shadow-xl active:scale-95">
                 Mulai Membaca
             </a>
-            <span class="text-slate-400 text-[11px] font-bold uppercase tracking-widest flex items-center gap-2">
-                {{ ceil(str_word_count(\App\Services\ArticleService::getExcerpt($featured->content, 999999)) / 200) }} mnt baca
-            </span>
         </div>
     </div>
     <div class="lg:col-span-5">

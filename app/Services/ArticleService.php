@@ -58,6 +58,8 @@ class ArticleService
                     Storage::disk($disk)->delete($article->thumbnail);
                 }
                 $data['thumbnail'] = $data['thumbnail']->store('articles', $disk);
+            } else {
+                unset($data['thumbnail']);
             }
 
             $article->update($data);

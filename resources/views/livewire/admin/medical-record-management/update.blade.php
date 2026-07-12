@@ -176,19 +176,14 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="space-y-2">
-                        <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Nama Lengkap Ibu *</label>
+                    <div class="space-y-2 md:col-span-2">
+                        <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Nama Lengkap / NIK Ibu *</label>
                         <input type="hidden" name="patient_id" value="{{ $record->patient_id }}">
                         <select id="ibu-hamil-select" disabled required placeholder="Cari nama atau NIK ibu hamil..."
                                 class="w-full h-12 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 bg-slate-50 cursor-not-allowed">
                             <option value="{{ $record->patient_id }}">{{ $record->patient->full_name }} — NIK: {{ $record->patient->id_number }}</option>
                         </select>
                         <p class="text-[10px] text-slate-400 italic ml-1">Nama sasaran tidak dapat diubah setelah rekam dibuat.</p>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">NIK</label>
-                        <input type="text" name="id_number" placeholder="16 digit NIK" value="{{ old('id_number', $record->patient->id_number) }}"
-                               class="w-full h-12 px-4 border border-slate-200 rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all">
                     </div>
                     <div class="space-y-2">
                         <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Tanggal Lahir</label>
@@ -575,19 +570,14 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="space-y-2">
-                        <label class="text-xs font-bold text-slate-600">Nama Lengkap</label>
+                    <div class="space-y-2 md:col-span-2">
+                        <label class="text-xs font-bold text-slate-600">Nama Lengkap / NIK Lansia</label>
                         <input type="hidden" name="patient_id" value="{{ $record->patient_id }}">
                         <select id="lansia-select" disabled required placeholder="Cari nama atau NIK lansia..."
                                 class="w-full h-[44px] px-4 border border-slate-200 bg-slate-50 cursor-not-allowed rounded-xl text-sm font-semibold text-slate-700 focus:outline-none">
                             <option value="{{ $record->patient_id }}">{{ $record->patient->full_name }} — NIK: {{ $record->patient->id_number }}</option>
                         </select>
                         <p class="text-[10px] text-slate-400 italic ml-1">Nama sasaran tidak dapat diubah setelah rekam dibuat.</p>
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-xs font-bold text-slate-600">NIK (Nomor Induk Kependudukan)</label>
-                        <input type="text" name="id_number" placeholder="16 digit nomor identitas" value="{{ old('id_number', $record->patient->id_number) }}" required
-                               class="w-full h-[44px] px-4 border border-[#D9D9D9] rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:border-[#006C49] focus:ring-4 focus:ring-[#006C49]/5 transition-all bg-white">
                     </div>
                     <div class="space-y-2">
                         <label class="text-xs font-bold text-slate-600">Tanggal Lahir</label>
