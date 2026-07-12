@@ -135,8 +135,10 @@ class LansiaAnalytics extends Component
 
         foreach ($records as $r) {
             // AL-02: IMT
-            if ($r->weight && $r->height) {
-                $imt = $r->weight / (($r->height / 100) ** 2);
+            $w = (float) $r->weight;
+            $h = (float) $r->height;
+            if ($w > 0 && $h > 0) {
+                $imt = $w / (($h / 100) ** 2);
                 if ($imt < 18.5) {
                     $imtKurang++;
                 } elseif ($imt < 25) {

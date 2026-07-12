@@ -437,10 +437,12 @@ class Analytics extends BaseAdminComponent
             $records = $query->get()->unique('patient_id');
 
             $filteredRecords = $records->filter(function ($r) use ($type) {
-                if (! $r->weight || ! $r->height) {
+                $w = (float) $r->weight;
+                $h = (float) $r->height;
+                if ($w <= 0 || $h <= 0) {
                     return false;
                 }
-                $imt = $r->weight / (($r->height / 100) ** 2);
+                $imt = $w / (($h / 100) ** 2);
 
                 return match ($type) {
                     'lansia_imt_kurang' => $imt < 18.5,
@@ -455,7 +457,11 @@ class Analytics extends BaseAdminComponent
                 'name' => $r->patient?->full_name ?? '-',
                 'nik' => $r->patient?->id_number ?? '-',
                 'posyandu' => $r->patient?->posyandu?->name ?? '-',
-                'nutrition_status' => 'IMT: '.number_format($r->weight / (($r->height / 100) ** 2), 2),
+                'nutrition_status' => (function() use ($r) {
+                    $w = (float) $r->weight;
+                    $h = (float) $r->height;
+                    return ($w > 0 && $h > 0) ? 'IMT: '.number_format($w / (($h / 100) ** 2), 2) : '-';
+                })(),
                 'visit_date' => $r->visit_date?->format('d M Y') ?? '-',
                 'weight' => $r->weight ? $r->weight . ' kg' : '-',
                 'height' => $r->height ? $r->height . ' cm' : '-',
