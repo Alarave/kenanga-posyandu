@@ -1065,16 +1065,14 @@
                                 $pct = $sum > 0 ? round(($val / $sum) * 100, 1) : 0;
                                 
                                 $sLabel = strtolower($label);
-                                if ($sLabel === 'baik' || $sLabel === 'normal') {
+                                if ($sLabel === 'baik' || $sLabel === 'normal' || $sLabel === 'gizi baik') {
                                     $bulletColor = 'bg-emerald-500';
-                                } elseif ($sLabel === 'gizi baik') {
-                                    $bulletColor = 'bg-teal-500';
                                 } elseif ($sLabel === 'gizi kurang' || $sLabel === 'kurang') {
-                                    $bulletColor = 'bg-[#C2410C]';
+                                    $bulletColor = 'bg-amber-500';
                                 } elseif (str_contains($sLabel, 'sangat') || str_contains($sLabel, 'buruk') || str_contains($sLabel, 'pendek')) {
-                                    $bulletColor = 'bg-[#B91C1C]';
+                                    $bulletColor = 'bg-red-500';
                                 } elseif (str_contains($sLabel, 'risiko') || str_contains($sLabel, 'berisiko') || str_contains($sLabel, 'lebih') || str_contains($sLabel, 'obesitas')) {
-                                    $bulletColor = 'bg-[#A16207]';
+                                    $bulletColor = 'bg-violet-500';
                                 } else {
                                     $bulletColor = 'bg-slate-400';
                                 }
@@ -2386,11 +2384,10 @@ function initCharts(data = null) {
         try {
             const colors = nutLabels.map(label => {
                 const sLabel = String(label).toLowerCase();
-                if (sLabel === 'baik' || sLabel === 'normal') return '#10b981';
-                if (sLabel === 'gizi baik') return '#14b8a6';
-                if (sLabel === 'gizi kurang' || sLabel === 'kurang') return '#c2410c';
-                if (sLabel.includes('sangat') || sLabel.includes('buruk') || sLabel.includes('pendek')) return '#b91c1c';
-                if (sLabel.includes('risiko') || sLabel.includes('berisiko') || sLabel.includes('lebih') || sLabel.includes('obesitas')) return '#a16207';
+                if (sLabel === 'baik' || sLabel === 'normal' || sLabel === 'gizi baik') return '#10b981';
+                if (sLabel === 'gizi kurang' || sLabel === 'kurang') return '#f59e0b';
+                if (sLabel.includes('sangat') || sLabel.includes('buruk') || sLabel.includes('pendek')) return '#ef4444';
+                if (sLabel.includes('risiko') || sLabel.includes('berisiko') || sLabel.includes('lebih') || sLabel.includes('obesitas')) return '#8b5cf6';
                 return '#94a3b8';
             });
             nutritionDonutChart = new Chart(donutCtx, {

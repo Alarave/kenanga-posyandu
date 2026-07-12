@@ -1407,27 +1407,37 @@ class Analytics extends BaseAdminComponent
             $trendAvgHeight[] = $heightVals->count() > 0 ? round($heightVals->average(), 2) : 0;
         }
 
-        $dist = (clone $medicalRecordQuery)
+        $rawDist = (clone $medicalRecordQuery)
             ->whereIn('id', $latestRecordSubquery)
             ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
             ->whereNotNull('nutrition_status')
             ->select('nutrition_status', DB::raw('COUNT(*) as total'))
             ->groupBy('nutrition_status')
-            ->pluck('total', 'nutrition_status')
-            ->toArray();
+            ->pluck('total', 'nutrition_status');
 
-        $sortOrder = [
-            'Gizi Baik' => 1,
-            'baik' => 2,
-            'Gizi Kurang' => 3,
-            'Gizi Buruk' => 4,
+        $standardCategories = [
+            'Gizi Baik' => 0,
+            'Gizi Kurang' => 0,
+            'Gizi Buruk' => 0,
+            'Gizi Lebih' => 0,
         ];
-        uksort($dist, function ($a, $b) use ($sortOrder) {
-            $orderA = $sortOrder[$a] ?? 99;
-            $orderB = $sortOrder[$b] ?? 99;
 
-            return $orderA <=> $orderB;
-        });
+        foreach ($rawDist as $status => $count) {
+            $lower = strtolower($status);
+            if (str_contains($lower, 'baik') || str_contains($lower, 'normal')) {
+                $standardCategories['Gizi Baik'] += $count;
+            } elseif (str_contains($lower, 'buruk') || str_contains($lower, 'sangat kurang')) {
+                $standardCategories['Gizi Buruk'] += $count;
+            } elseif (str_contains($lower, 'kurang')) {
+                $standardCategories['Gizi Kurang'] += $count;
+            } elseif (str_contains($lower, 'lebih') || str_contains($lower, 'obesitas')) {
+                $standardCategories['Gizi Lebih'] += $count;
+            } else {
+                $standardCategories['Gizi Baik'] += $count;
+            }
+        }
+
+        $dist = $standardCategories;
 
         $posyandus = $this->getAllowedPosyandus();
         $posyanduIds = $posyandus->pluck('id');
