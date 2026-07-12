@@ -222,24 +222,18 @@
                                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></span>
                                             {{ number_format($posyandu->lansia_count ?? 0) }} Lansia
                                         </span>
-                                        @if(($posyandu->anak_sekolah_count ?? 0) > 0)
                                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-100">
                                             <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shrink-0"></span>
-                                            {{ number_format($posyandu->anak_sekolah_count) }} Anak Sekolah
+                                            {{ number_format($posyandu->anak_sekolah_count ?? 0) }} Anak Sekolah
                                         </span>
-                                        @endif
-                                        @if(($posyandu->remaja_count ?? 0) > 0)
                                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-indigo-50 text-indigo-700 border border-indigo-100">
                                             <span class="w-1.5 h-1.5 rounded-full bg-indigo-500 shrink-0"></span>
-                                            {{ number_format($posyandu->remaja_count) }} Remaja
+                                            {{ number_format($posyandu->remaja_count ?? 0) }} Remaja
                                         </span>
-                                        @endif
-                                        @if(($posyandu->umum_count ?? 0) > 0)
                                         <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider bg-blue-50 text-blue-700 border border-blue-100">
                                             <span class="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></span>
-                                            {{ number_format($posyandu->umum_count) }} Umum
+                                            {{ number_format($posyandu->umum_count ?? 0) }} Umum
                                         </span>
-                                        @endif
                                     </div>
                                 </div>
                             </td>
