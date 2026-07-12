@@ -191,13 +191,31 @@ class AdminDashboard extends BaseAdminComponent
         // 3. Risk Level Filtering (for bumil/ibu hamil only)
         if ($this->filterRisiko === 'risiko_tinggi') {
             if ($type === 'patient') {
-                $query->whereHas('medicalRecords', function ($q) {
-                    $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
-                    $q->whereIn('id', $latestRecordSubquery)
-                      ->where('data->is_high_risk', true);
+                $query->where(function ($q) {
+                    $q->whereHas('medicalRecords', function ($mq) {
+                        $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+                        $mq->whereIn('id', $latestRecordSubquery)
+                           ->where(function ($sq) {
+                               $sq->where('upper_arm_circumference', '<', 23.5)
+                                  ->orWhere('systolic_bp', '>=', 140)
+                                  ->orWhere('diastolic_bp', '>=', 90);
+                           });
+                    })->orWhere(function ($pq) {
+                        $pq->where('birth_date', '>', now()->subYears(20))
+                           ->orWhere('birth_date', '<', now()->subYears(35));
+                    });
                 });
             } elseif ($type === 'medical_record') {
-                $query->where('data->is_high_risk', true);
+                $query->where(function ($q) {
+                    $q->whereHas('patient', function ($pq) {
+                        $pq->where('birth_date', '>', now()->subYears(20))
+                           ->orWhere('birth_date', '<', now()->subYears(35));
+                    })->orWhere(function ($mq) {
+                        $mq->where('upper_arm_circumference', '<', 23.5)
+                           ->orWhere('systolic_bp', '>=', 140)
+                           ->orWhere('diastolic_bp', '>=', 90);
+                    });
+                });
             }
         }
 
@@ -433,25 +451,18 @@ class AdminDashboard extends BaseAdminComponent
 
             $this->bumilRisikoTinggi = (clone $patientQuery)
                 ->where('category', 'ibu_hamil')
-                ->where(function ($query) use ($latestRecordSubquery) {
-                    $query->whereHas('medicalRecords', function ($q) use ($latestRecordSubquery) {
-                        $q->whereIn('id', $latestRecordSubquery)
+                ->where(function ($q) use ($latestRecordSubquery) {
+                    $q->whereHas('medicalRecords', function ($query) use ($latestRecordSubquery) {
+                        $query->whereIn('id', $latestRecordSubquery)
                             ->where(function ($sq) {
                                 $sq->where('upper_arm_circumference', '<', 23.5)
                                     ->orWhere('systolic_bp', '>=', 140)
                                     ->orWhere('diastolic_bp', '>=', 90);
                             });
                     })
-                    ->orWhere(function ($sq) {
-                        $sq->where('birth_date', '>', now()->subYears(20))
+                    ->orWhere(function ($query) {
+                        $query->where('birth_date', '>', now()->subYears(20))
                             ->orWhere('birth_date', '<', now()->subYears(35));
-                    });
-                })
-                ->when($this->filterRisiko === 'risiko_tinggi', function ($query) {
-                    return $query->whereHas('medicalRecords', function ($q) {
-                        $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
-                        $q->whereIn('id', $latestRecordSubquery)
-                          ->where('data->is_high_risk', true);
                     });
                 })
                 ->with(['medicalRecords' => fn ($q) => $q->latest('visit_date')->limit(1)])
