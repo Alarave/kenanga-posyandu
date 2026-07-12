@@ -145,21 +145,25 @@
         </div>
 
         <div class="flex flex-row items-center gap-3 w-full lg:w-auto shrink-0">
-            <x-forms.select-input wire:model.live="status" placeholder="Semua Status" :placeholderDisabled="false"
-                value="{{ $status }}" class="flex-1 lg:flex-initial lg:w-[140px]">
-                <option value="upcoming">Mendatang</option>
-                <option value="ongoing">Berlangsung</option>
-                <option value="completed">Selesai</option>
-                <option value="cancelled">Dibatalkan</option>
-            </x-forms.select-input>
+            <div class="flex-1 lg:flex-initial lg:w-[140px]">
+                <x-forms.select-input wire:model.live="status" placeholder="Semua Status" :placeholderDisabled="false"
+                    value="{{ $status }}">
+                    <option value="upcoming">Mendatang</option>
+                    <option value="ongoing">Berlangsung</option>
+                    <option value="completed">Selesai</option>
+                    <option value="cancelled">Dibatalkan</option>
+                </x-forms.select-input>
+            </div>
 
             @if (auth()->user()->isSuperAdmin())
-                <x-forms.select-input wire:model.live="posyandu_id" placeholder="Seluruh Unit" :placeholderDisabled="false"
-                    value="{{ $posyandu_id }}" class="flex-1 lg:flex-initial lg:w-[150px]">
-                    @foreach ($posyandus as $p)
-                        <option value="{{ $p->id }}">{{ $p->name }}</option>
-                    @endforeach
-                </x-forms.select-input>
+                <div class="flex-1 lg:flex-initial lg:w-[150px]">
+                    <x-forms.select-input wire:model.live="posyandu_id" placeholder="Seluruh Unit" :placeholderDisabled="false"
+                        value="{{ $posyandu_id }}">
+                        @foreach ($posyandus as $p)
+                            <option value="{{ $p->id }}">{{ $p->name }}</option>
+                        @endforeach
+                    </x-forms.select-input>
+                </div>
             @endif
 
             @if ($search || $status || $posyandu_id)
