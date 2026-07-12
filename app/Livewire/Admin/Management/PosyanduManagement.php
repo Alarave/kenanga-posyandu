@@ -53,7 +53,7 @@ class PosyanduManagement extends BaseAdminComponent
     {
         $posyandus = Posyandu::withCount([
             'patients',
-            'patients as balita_count' => fn ($q) => $q->where('category', 'balita'),
+            'patients as balita_count' => fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']),
             'patients as ibu_hamil_count' => fn ($q) => $q->where('category', 'ibu_hamil'),
             'patients as lansia_count' => fn ($q) => $q->where('category', 'lansia'),
         ])
@@ -70,7 +70,7 @@ class PosyanduManagement extends BaseAdminComponent
             'posyandus' => $posyandus,
             'totalPosyandu' => $posyandus->total(),
             'totalWarga' => Patient::count(),
-            'totalBalita' => Patient::where('category', 'balita')->count(),
+            'totalBalita' => Patient::whereIn('category', ['balita', 'bayi', 'baduta'])->count(),
             'totalBumil' => Patient::where('category', 'ibu_hamil')->count(),
             'totalLansia' => Patient::where('category', 'lansia')->count(),
         ]);
