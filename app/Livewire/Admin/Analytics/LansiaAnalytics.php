@@ -70,6 +70,7 @@ class LansiaAnalytics extends Component
 
     /**
      * Load lansia patients ONCE for age categories.
+     * Only includes patients who have medical records in the selected period.
      */
     private function getLansiaPatients()
     {
@@ -80,6 +81,12 @@ class LansiaAnalytics extends Component
         $this->cachedPatients = $this->applyPosyanduScope(Patient::query(), $this->selectedPosyandu)
             ->where('category', 'lansia')
             ->where('status_mutasi', 'aktif')
+            ->whereHas('medicalRecords', function ($q) {
+                $q->whereYear('visit_date', $this->selectedYear);
+                if ($this->selectedMonth) {
+                    $q->whereMonth('visit_date', $this->selectedMonth);
+                }
+            })
             ->select(['id', 'birth_date'])
             ->get();
 
