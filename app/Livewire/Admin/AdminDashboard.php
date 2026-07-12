@@ -654,7 +654,30 @@ class AdminDashboard extends BaseAdminComponent
     {
         $distribution = (clone $medicalRecordQuery)->whereIn('id', $latestRecordSubquery)->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))->whereNotNull('nutrition_status')->select('nutrition_status', DB::raw('COUNT(*) as total'))->groupBy('nutrition_status')->pluck('total', 'nutrition_status');
 
-        return ['labels' => $distribution->keys()->toArray(), 'data' => $distribution->values()->toArray()];
+        // Normalize to 4 standard categories
+        $standardCategories = [
+            'Gizi Baik' => 0,
+            'Gizi Kurang' => 0,
+            'Gizi Buruk' => 0,
+            'Gizi Lebih' => 0,
+        ];
+
+        foreach ($distribution as $status => $count) {
+            $lower = strtolower($status);
+            if (str_contains($lower, 'baik') || str_contains($lower, 'normal')) {
+                $standardCategories['Gizi Baik'] += $count;
+            } elseif (str_contains($lower, 'buruk') || str_contains($lower, 'sangat kurang')) {
+                $standardCategories['Gizi Buruk'] += $count;
+            } elseif (str_contains($lower, 'kurang')) {
+                $standardCategories['Gizi Kurang'] += $count;
+            } elseif (str_contains($lower, 'lebih') || str_contains($lower, 'obesitas')) {
+                $standardCategories['Gizi Lebih'] += $count;
+            } else {
+                $standardCategories['Gizi Baik'] += $count; // default to Gizi Baik
+            }
+        }
+
+        return ['labels' => array_keys($standardCategories), 'data' => array_values($standardCategories)];
     }
 
     protected function getMonthlyWeighingData(Builder $medicalRecordQuery): array

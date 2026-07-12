@@ -426,12 +426,12 @@
                         if (this.isEmpty) return;
                 
                         const colors = nd.labels.map(label => {
-                            if (label.includes('Normal') || label.includes('Baik')) return '#dcfce7'; // Green
-                            if (label.includes('Kurang') && !label.includes('Sangat')) return '#fef9c3'; // Yellow
-                            if (label.includes('Risiko') || label.includes('Berisiko')) return '#ffedd5'; // Orange
-                            if (label.includes('Sangat') || label.includes('Buruk') || label.includes('Pendek')) return '#fee2e2'; // Red
-                            if (label.includes('Lebih') || label.includes('Obesitas')) return '#ffedd5'; // Orange
-                            return '#f1f5f9';
+                            if (label.includes('Normal') || label.includes('Baik')) return '#10b981'; // Green
+                            if (label.includes('Kurang') && !label.includes('Sangat')) return '#f59e0b'; // Yellow
+                            if (label.includes('Sangat') || label.includes('Buruk') || label.includes('Pendek')) return '#ef4444'; // Red
+                            if (label.includes('Lebih') || label.includes('Obesitas')) return '#8b5cf6'; // Purple
+                            if (label.includes('Risiko') || label.includes('Berisiko')) return '#f97316'; // Orange
+                            return '#94a3b8';
                         });
                 
                         this.chart = new Chart(this.$refs.canvas, {
@@ -504,7 +504,7 @@
                                 str_contains($label, 'Kurang') && !str_contains($label, 'Sangat') => '#f59e0b',
                                 str_contains($label, 'Risiko') || str_contains($label, 'Berisiko') => '#f59e0b',
                                 str_contains($label, 'Sangat') || str_contains($label, 'Buruk') || str_contains($label, 'Pendek') => '#ef4444',
-                                str_contains($label, 'Lebih') || str_contains($label, 'Obesitas') => '#6366f1',
+                                str_contains($label, 'Lebih') || str_contains($label, 'Obesitas') => '#8b5cf6',
                                 default => '#94a3b8',
                             };
                         @endphp
