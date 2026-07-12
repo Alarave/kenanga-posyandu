@@ -199,9 +199,8 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
         }
 
         $dist = (clone $medicalRecordQuery)
+            ->whereIn('id', $latestRecordSubquery)
             ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
-            ->whereYear('visit_date', $year)
-            ->when($month, fn ($q) => $q->whereMonth('visit_date', $month))
             ->whereNotNull('nutrition_status')
             ->select('nutrition_status', DB::raw('COUNT(*) as total'))
             ->groupBy('nutrition_status')

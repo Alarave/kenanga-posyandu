@@ -196,8 +196,7 @@ class Analytics extends BaseAdminComponent
         $this->filterNutritionStatus = '';
         $this->drillDownData = [];
         $this->showDrillDown = false;
-        // Only reload recent records + alerts for the new tab — no full recalculation
-        $this->loadRecentRecords();
+        $this->loadData();
     }
 
     // ── ANA-15: Search filter updates ──
@@ -1368,9 +1367,8 @@ class Analytics extends BaseAdminComponent
         }
 
         $dist = (clone $medicalRecordQuery)
+            ->whereIn('id', $latestRecordSubquery)
             ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
-            ->whereYear('visit_date', $selectedYear)
-            ->when($selectedMonth, fn ($q) => $q->whereMonth('visit_date', $selectedMonth))
             ->whereNotNull('nutrition_status')
             ->select('nutrition_status', DB::raw('COUNT(*) as total'))
             ->groupBy('nutrition_status')
