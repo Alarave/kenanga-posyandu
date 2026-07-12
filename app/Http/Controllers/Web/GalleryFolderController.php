@@ -30,11 +30,10 @@ class GalleryFolderController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string|max:1000',
-            'posyandu_id' => $isSuperAdmin ? 'required|exists:posyandus,id' : 'nullable|exists:posyandus,id',
+            'posyandu_id' => 'nullable|exists:posyandus,id',
             'cover_photo' => 'required|image|max:10240', // Maks 10MB, wajib diisi
         ], [
             'cover_photo.required' => 'Foto sampul folder wajib diunggah.',
-            'posyandu_id.required' => 'Unit Posyandu wajib dipilih.',
         ]);
 
         $user = auth()->user();
