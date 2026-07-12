@@ -408,7 +408,7 @@ class AdminDashboard extends BaseAdminComponent
             $this->missingImmunizations = (clone $patientQuery)
                 ->whereIn('category', ['balita', 'bayi', 'baduta'])
                 ->where('status_mutasi', 'aktif')
-                ->with('medicalRecords')
+                ->with(['medicalRecords:id,patient_id,immunization,vaccine_name,visit_date'])
                 ->get()
                 ->map(function ($patient) {
                     $missing = $patient->getMissingVaccines();
@@ -433,20 +433,19 @@ class AdminDashboard extends BaseAdminComponent
 
             $this->bumilRisikoTinggi = (clone $patientQuery)
                 ->where('category', 'ibu_hamil')
-                ->whereHas('medicalRecords', function ($query) use ($latestRecordSubquery) {
-                    $query->whereIn('id', $latestRecordSubquery)
-                        ->where(function ($sq) {
-                            $sq->where('upper_arm_circumference', '<', 23.5)
-                                ->orWhere('systolic_bp', '>=', 140)
-                                ->orWhere('diastolic_bp', '>=', 90);
-                        });
-                })
-                ->orWhere(function ($query) {
-                    $query->where('category', 'ibu_hamil')
-                        ->where(function ($sq) {
-                            $sq->where('birth_date', '>', now()->subYears(20))
-                                ->orWhere('birth_date', '<', now()->subYears(35));
-                        });
+                ->where(function ($query) use ($latestRecordSubquery) {
+                    $query->whereHas('medicalRecords', function ($q) use ($latestRecordSubquery) {
+                        $q->whereIn('id', $latestRecordSubquery)
+                            ->where(function ($sq) {
+                                $sq->where('upper_arm_circumference', '<', 23.5)
+                                    ->orWhere('systolic_bp', '>=', 140)
+                                    ->orWhere('diastolic_bp', '>=', 90);
+                            });
+                    })
+                    ->orWhere(function ($sq) {
+                        $sq->where('birth_date', '>', now()->subYears(20))
+                            ->orWhere('birth_date', '<', now()->subYears(35));
+                    });
                 })
                 ->when($this->filterRisiko === 'risiko_tinggi', function ($query) {
                     return $query->whereHas('medicalRecords', function ($q) {
