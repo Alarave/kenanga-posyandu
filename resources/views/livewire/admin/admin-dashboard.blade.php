@@ -290,10 +290,17 @@
                         atau Sangat Pendek yang memerlukan penanganan segera.</p>
                 </div>
             </div>
-            <a href="{{ route('admin.patients.index') }}"
-                class="shrink-0 bg-white text-red-600 px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-red-50 transition-colors shadow-sm">
-                Lihat Data Pasien
-            </a>
+            @if ($balitaStunting && count($balitaStunting) === 1)
+                <a href="{{ route('admin.patients.show', $balitaStunting[0]->id) }}"
+                    class="shrink-0 bg-white text-red-600 px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-red-50 transition-colors shadow-sm">
+                    Lihat Data Pasien
+                </a>
+            @else
+                <a href="#prioritas-atensi-gizi"
+                    class="shrink-0 bg-white text-red-600 px-5 py-2.5 rounded-xl font-bold text-sm hover:bg-red-50 transition-colors shadow-sm">
+                    Lihat Data Pasien
+                </a>
+            @endif
         </div>
     @endif
 
@@ -794,7 +801,7 @@
     <div class="lg:col-span-8 space-y-6">
 
         {{-- Stunting Alert Table --}}
-        <div class="widget-card off-screen-widget">
+        <div id="prioritas-atensi-gizi" class="widget-card off-screen-widget">
             <div class="widget-header">
                 <div class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-xl bg-red-50 text-red-500 flex items-center justify-center shrink-0">
