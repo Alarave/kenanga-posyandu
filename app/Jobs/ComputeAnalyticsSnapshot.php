@@ -116,12 +116,9 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
 
         $stuntingCount = (clone $baseBalitaWithRecords)
             ->whereHas('medicalRecords', fn ($q) => $q->where(function ($sq) {
-                $sq->whereIn('nutrition_status', [
-                    MedicalRecord::STATUS_BB_U_SANGAT_KURANG,
-                    MedicalRecord::STATUS_GIZI_BURUK,
-                ])->orWhereIn('wasting_status', [
-                    MedicalRecord::STATUS_BB_U_SANGAT_KURANG,
-                    MedicalRecord::STATUS_GIZI_BURUK,
+                $sq->whereIn('stunting_status', [
+                    MedicalRecord::STATUS_TB_U_SANGAT_PENDEK,
+                    MedicalRecord::STATUS_TB_U_PENDEK,
                 ]);
             })->whereYear('visit_date', $year)
                 ->when($month, fn ($mq) => $mq->whereMonth('visit_date', $month))
@@ -238,8 +235,10 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
         $stuntingPerPosyandu = Patient::whereIn('posyandu_id', $posyanduIds)
             ->whereIn('category', ['balita', 'bayi', 'baduta'])
             ->whereHas('medicalRecords', fn ($q) => $q->where(function ($sq) {
-                $sq->whereIn('nutrition_status', [MedicalRecord::STATUS_BB_U_SANGAT_KURANG, MedicalRecord::STATUS_GIZI_BURUK])
-                    ->orWhereIn('wasting_status', [MedicalRecord::STATUS_BB_U_SANGAT_KURANG, MedicalRecord::STATUS_GIZI_BURUK]);
+                $sq->whereIn('stunting_status', [
+                    MedicalRecord::STATUS_TB_U_SANGAT_PENDEK,
+                    MedicalRecord::STATUS_TB_U_PENDEK,
+                ]);
             })
                 ->whereYear('visit_date', $year)
                 ->when($month, fn ($mq) => $mq->whereMonth('visit_date', $month))

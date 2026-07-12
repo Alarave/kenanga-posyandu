@@ -1293,12 +1293,9 @@ class Analytics extends BaseAdminComponent
 
         $stuntingCount = (clone $baseBalitaWithRecords)
             ->whereHas('medicalRecords', fn ($q) => $q->where(function ($sq) {
-                $sq->whereIn('nutrition_status', [
-                    MedicalRecord::STATUS_BB_U_SANGAT_KURANG,
-                    MedicalRecord::STATUS_GIZI_BURUK,
-                ])->orWhereIn('wasting_status', [
-                    MedicalRecord::STATUS_BB_U_SANGAT_KURANG,
-                    MedicalRecord::STATUS_GIZI_BURUK,
+                $sq->whereIn('stunting_status', [
+                    MedicalRecord::STATUS_TB_U_SANGAT_PENDEK,
+                    MedicalRecord::STATUS_TB_U_PENDEK,
                 ]);
             })->whereYear('visit_date', $selectedYear)
                 ->when($selectedMonth, fn ($mq) => $mq->whereMonth('visit_date', $selectedMonth))
@@ -1404,15 +1401,17 @@ class Analytics extends BaseAdminComponent
             ->pluck('count', 'posyandu_id');
 
         $stuntingPerPosyandu = Patient::whereIn('posyandu_id', $posyanduIds)
-            ->whereIn('category', ['balita', 'bayi', 'baduta'])
-            ->whereHas('medicalRecords', fn ($q) => $q->where(function ($sq) {
-                $sq->whereIn('nutrition_status', [MedicalRecord::STATUS_BB_U_SANGAT_KURANG, MedicalRecord::STATUS_GIZI_BURUK])
-                    ->orWhereIn('wasting_status', [MedicalRecord::STATUS_BB_U_SANGAT_KURANG, MedicalRecord::STATUS_GIZI_BURUK]);
-            })
-                ->whereYear('visit_date', $selectedYear)
-                ->when($selectedMonth, fn ($mq) => $mq->whereMonth('visit_date', $selectedMonth))
-                ->whereIn('id', $latestRecordSubquery)
-            )
+             ->whereIn('category', ['balita', 'bayi', 'baduta'])
+             ->whereHas('medicalRecords', fn ($q) => $q->where(function ($sq) {
+                 $sq->whereIn('stunting_status', [
+                     MedicalRecord::STATUS_TB_U_SANGAT_PENDEK,
+                     MedicalRecord::STATUS_TB_U_PENDEK,
+                 ]);
+             })
+                 ->whereYear('visit_date', $selectedYear)
+                 ->when($selectedMonth, fn ($mq) => $mq->whereMonth('visit_date', $selectedMonth))
+                 ->whereIn('id', $latestRecordSubquery)
+             )
             ->select('posyandu_id', DB::raw('COUNT(*) as count'))
             ->groupBy('posyandu_id')
             ->pluck('count', 'posyandu_id');
