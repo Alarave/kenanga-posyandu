@@ -781,9 +781,10 @@ class Analytics extends BaseAdminComponent
         match ($type) {
             'all', 'semua' => null,
             'stunting' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
-                ->where(fn ($q) => $q->where('nutrition_status', 'like', '%Stunting%')
-                    ->orWhere('nutrition_status', 'like', '%Pendek%')
-                    ->orWhere('stunting_status', '!=', 'Normal')),
+                ->whereIn('stunting_status', [
+                    MedicalRecord::STATUS_TB_U_SANGAT_PENDEK,
+                    MedicalRecord::STATUS_TB_U_PENDEK,
+                ]),
             'gizi_buruk' => $query->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
                 ->where(fn ($q) => $q->where('nutrition_status', 'like', '%Buruk%')
                     ->orWhere('wasting_status', 'Gizi Buruk')),

@@ -679,7 +679,10 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
                 $query->whereIn('id', $latestRecordSubquery)
                     ->where(function ($sq) {
                         $sq->whereIn('nutrition_status', ['Berat Badan Kurang', 'Berat Badan Sangat Kurang', 'Gizi Kurang', 'Gizi Buruk'])
-                            ->orWhereIn('stunting_status', ['Pendek', 'Sangat Pendek'])
+                            ->orWhereIn('stunting_status', [
+                                MedicalRecord::STATUS_TB_U_PENDEK,
+                                MedicalRecord::STATUS_TB_U_SANGAT_PENDEK,
+                            ])
                             ->orWhereIn('wasting_status', ['Gizi Kurang', 'Gizi Buruk']);
                     });
             })
