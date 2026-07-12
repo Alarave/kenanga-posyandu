@@ -372,8 +372,8 @@
     @if($activeTab === 'overview')
         {{-- ================= OVERVIEW TAB ================= --}}
         <div class="space-y-4 sm:space-y-6 animate-fadeIn">
-            {{-- Stats Grid: 1 col mobile, 4 cols desktop --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {{-- Stats Grid: 1 col mobile, 5 cols desktop --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
                 {{-- Total Kunjungan --}}
                 <div wire:click="drillDown('Overview - Total Kunjungan', 'all')"
                      class="relative overflow-hidden bg-gradient-to-br from-white to-slate-50 rounded-3xl p-6 border border-slate-200 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-slate-200/40 hover:-translate-y-1 hover:border-slate-350 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group">
@@ -462,6 +462,29 @@
                     </div>
                     <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between pr-2">
                         <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Lihat Daftar Lansia</span>
+                        <span class="material-symbols-outlined text-[14px] text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100">arrow_forward</span>
+                    </div>
+                </div>
+
+                {{-- Kader Lapangan --}}
+                <div wire:click="drillDown('Kader Lapangan - Posyandu', 'kader')"
+                     class="relative overflow-hidden bg-gradient-to-br from-white to-amber-50/10 rounded-3xl p-6 border border-amber-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-amber-100/40 hover:-translate-y-1 hover:border-amber-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group">
+                    <span class="material-symbols-outlined absolute -bottom-6 -right-6 text-[120px] text-amber-500 opacity-[0.04] transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 pointer-events-none">badge</span>
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-11 h-11 rounded-2xl bg-amber-50 text-amber-650 flex items-center justify-center border border-amber-200/50 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:bg-amber-100">
+                                <span class="material-symbols-outlined text-[24px]">badge</span>
+                            </div>
+                            <span class="text-[10px] font-black text-amber-700 uppercase tracking-widest bg-amber-50 px-2.5 py-1 rounded-lg">Kader</span>
+                        </div>
+                        <div class="flex items-baseline gap-2">
+                            <span class="text-5xl font-black text-amber-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ $kaderAktif }}</span>
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Personel</span>
+                        </div>
+                        <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Kader aktif yang bertugas membina warga posyandu.</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between pr-2">
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Lihat Daftar Kader</span>
                         <span class="material-symbols-outlined text-[14px] text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100">arrow_forward</span>
                     </div>
                 </div>
@@ -891,8 +914,8 @@
         @if($activeTab === 'balita')
         {{-- ================= BALITA TAB ================= --}}
         <div class="space-y-8 animate-fadeIn">
-            {{-- Stats Grid: 1 col mobile, 4 cols desktop --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {{-- Stats Grid: 1 col mobile, 3 cols desktop --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {{-- Total Balita --}}
                 <div wire:click="drillDown('Balita - Terdaftar', 'balita')"
                      class="relative overflow-hidden bg-gradient-to-br from-white to-teal-50/10 rounded-3xl p-6 border border-teal-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-teal-100/40 hover:-translate-y-1 hover:border-teal-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group">
@@ -958,29 +981,6 @@
                     </div>
                     <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between pr-2">
                         <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Lihat Data Imunisasi</span>
-                        <span class="material-symbols-outlined text-[14px] text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100">arrow_forward</span>
-                    </div>
-                </div>
-
-                {{-- Kader Lapangan --}}
-                <div wire:click="drillDown('Kader Lapangan - Posyandu', 'kader')"
-                     class="relative overflow-hidden bg-gradient-to-br from-white to-amber-50/10 rounded-3xl p-6 border border-amber-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-amber-100/40 hover:-translate-y-1 hover:border-amber-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group">
-                    <span class="material-symbols-outlined absolute -bottom-6 -right-6 text-[120px] text-amber-500 opacity-[0.04] transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 pointer-events-none">badge</span>
-                    <div>
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-11 h-11 rounded-2xl bg-amber-50 text-amber-650 flex items-center justify-center border border-amber-200/50 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:bg-amber-100">
-                                <span class="material-symbols-outlined text-[24px]">badge</span>
-                            </div>
-                            <span class="text-[10px] font-black text-amber-700 uppercase tracking-widest bg-amber-50 px-2.5 py-1 rounded-lg">Kader</span>
-                        </div>
-                        <div class="flex items-baseline gap-2">
-                            <span class="text-5xl font-black text-amber-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ $kaderAktif }}</span>
-                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Personel</span>
-                        </div>
-                        <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Kader aktif yang bertugas membina warga posyandu.</p>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between pr-2">
-                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Lihat Daftar Kader</span>
                         <span class="material-symbols-outlined text-[14px] text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100">arrow_forward</span>
                     </div>
                 </div>
