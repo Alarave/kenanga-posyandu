@@ -1,21 +1,16 @@
 {
-  "_chart-DU5eDjOK.js": {
-    "file": "assets/chart-DU5eDjOK.js",
-    "name": "chart"
-  },
   "resources/css/app.css": {
-    "file": "assets/app-By-DpOps.css",
+    "file": "assets/app-Chio4uH0.css",
     "src": "resources/css/app.css",
     "isEntry": true
   },
   "resources/js/admin.js": {
-    "file": "assets/admin-C9V8jSbj.js",
+    "file": "assets/admin-BgzgEirD.js",
     "name": "admin",
     "src": "resources/js/admin.js",
     "isEntry": true,
     "imports": [
-      "resources/js/app.js",
-      "_chart-DU5eDjOK.js"
+      "resources/js/app.js"
     ]
   },
   "resources/js/app.js": {
@@ -25,12 +20,9 @@
     "isEntry": true
   },
   "resources/js/charts.js": {
-    "file": "assets/charts-CPA9ZYB3.js",
+    "file": "assets/charts-B75udMC2.js",
     "name": "charts",
     "src": "resources/js/charts.js",
-    "isEntry": true,
-    "imports": [
-      "_chart-DU5eDjOK.js"
-    ]
+    "isEntry": true
   }
 }

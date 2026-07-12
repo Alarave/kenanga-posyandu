@@ -191,13 +191,31 @@ class AdminDashboard extends BaseAdminComponent
         // 3. Risk Level Filtering (for bumil/ibu hamil only)
         if ($this->filterRisiko === 'risiko_tinggi') {
             if ($type === 'patient') {
-                $query->whereHas('medicalRecords', function ($q) {
-                    $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
-                    $q->whereIn('id', $latestRecordSubquery)
-                      ->where('data->is_high_risk', true);
+                $query->where(function ($q) {
+                    $q->whereHas('medicalRecords', function ($mq) {
+                        $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+                        $mq->whereIn('id', $latestRecordSubquery)
+                           ->where(function ($sq) {
+                               $sq->where('upper_arm_circumference', '<', 23.5)
+                                  ->orWhere('systolic_bp', '>=', 140)
+                                  ->orWhere('diastolic_bp', '>=', 90);
+                           });
+                    })->orWhere(function ($pq) {
+                        $pq->where('birth_date', '>', now()->subYears(20))
+                           ->orWhere('birth_date', '<', now()->subYears(35));
+                    });
                 });
             } elseif ($type === 'medical_record') {
-                $query->where('data->is_high_risk', true);
+                $query->where(function ($q) {
+                    $q->whereHas('patient', function ($pq) {
+                        $pq->where('birth_date', '>', now()->subYears(20))
+                           ->orWhere('birth_date', '<', now()->subYears(35));
+                    })->orWhere(function ($mq) {
+                        $mq->where('upper_arm_circumference', '<', 23.5)
+                           ->orWhere('systolic_bp', '>=', 140)
+                           ->orWhere('diastolic_bp', '>=', 90);
+                    });
+                });
             }
         }
 
@@ -355,7 +373,7 @@ class AdminDashboard extends BaseAdminComponent
                 if ($this->rataRataUsiaKehamilan == 0 || $this->rataRataUsiaLansia == 0) {
                     $patientQuery = $this->applyDashboardFilters(Patient::query(), 'patient');
                     $medicalRecordQuery = $this->applyDashboardFilters(MedicalRecord::query(), 'medical_record');
-                    $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+                    $latestRecordSubquery = (clone $medicalRecordQuery)->selectRaw('MAX(id) as id')->groupBy('patient_id');
                     if ($this->rataRataUsiaKehamilan == 0) {
                         $this->getBumilTrimester($medicalRecordQuery, $latestRecordSubquery);
                     }
@@ -387,7 +405,7 @@ class AdminDashboard extends BaseAdminComponent
             $patientQuery = $this->applyDashboardFilters($patientQuery, 'patient');
 
             // Stunting alerts
-            $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+            $latestRecordSubquery = (clone $medicalRecordQuery)->selectRaw('MAX(id) as id')->groupBy('patient_id');
             $this->balitaStunting = (clone $patientQuery)
                 ->whereIn('category', ['balita', 'bayi', 'baduta'])
                 ->whereHas('medicalRecords', function ($query) use ($latestRecordSubquery) {
@@ -408,7 +426,7 @@ class AdminDashboard extends BaseAdminComponent
             $this->missingImmunizations = (clone $patientQuery)
                 ->whereIn('category', ['balita', 'bayi', 'baduta'])
                 ->where('status_mutasi', 'aktif')
-                ->with('medicalRecords')
+                ->with(['medicalRecords:id,patient_id,immunization,vaccine_name,visit_date'])
                 ->get()
                 ->map(function ($patient) {
                     $missing = $patient->getMissingVaccines();
@@ -433,26 +451,18 @@ class AdminDashboard extends BaseAdminComponent
 
             $this->bumilRisikoTinggi = (clone $patientQuery)
                 ->where('category', 'ibu_hamil')
-                ->whereHas('medicalRecords', function ($query) use ($latestRecordSubquery) {
-                    $query->whereIn('id', $latestRecordSubquery)
-                        ->where(function ($sq) {
-                            $sq->where('upper_arm_circumference', '<', 23.5)
-                                ->orWhere('systolic_bp', '>=', 140)
-                                ->orWhere('diastolic_bp', '>=', 90);
-                        });
-                })
-                ->orWhere(function ($query) {
-                    $query->where('category', 'ibu_hamil')
-                        ->where(function ($sq) {
-                            $sq->where('birth_date', '>', now()->subYears(20))
-                                ->orWhere('birth_date', '<', now()->subYears(35));
-                        });
-                })
-                ->when($this->filterRisiko === 'risiko_tinggi', function ($query) {
-                    return $query->whereHas('medicalRecords', function ($q) {
-                        $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
-                        $q->whereIn('id', $latestRecordSubquery)
-                          ->where('data->is_high_risk', true);
+                ->where(function ($q) use ($latestRecordSubquery) {
+                    $q->whereHas('medicalRecords', function ($query) use ($latestRecordSubquery) {
+                        $query->whereIn('id', $latestRecordSubquery)
+                            ->where(function ($sq) {
+                                $sq->where('upper_arm_circumference', '<', 23.5)
+                                    ->orWhere('systolic_bp', '>=', 140)
+                                    ->orWhere('diastolic_bp', '>=', 90);
+                            });
+                    })
+                    ->orWhere(function ($query) {
+                        $query->where('birth_date', '>', now()->subYears(20))
+                            ->orWhere('birth_date', '<', now()->subYears(35));
                     });
                 })
                 ->with(['medicalRecords' => fn ($q) => $q->latest('visit_date')->limit(1)])
@@ -508,7 +518,7 @@ class AdminDashboard extends BaseAdminComponent
                 });
             })->count();
 
-        $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+        $latestRecordSubquery = (clone $medicalRecordQuery)->selectRaw('MAX(id) as id')->groupBy('patient_id');
 
         $this->nutritionStatusDistribution = $this->getNutritionStatusDistribution($medicalRecordQuery, $latestRecordSubquery);
         $this->monthlyWeighingData = $this->getMonthlyWeighingData($medicalRecordQuery);
@@ -583,47 +593,56 @@ class AdminDashboard extends BaseAdminComponent
 
     protected function getKehadiranBalita(Builder $patientQuery, Builder $medicalRecordQuery, $currentMonth, $currentYear): array
     {
-        // Hitung total balita yang seharusnya hadir (Sasaran/D)
-        // Logika: Pasien yang memiliki rekam medis SEBELUM atau SELAMA periode filter
-        if ($this->filterPeriode === 'semua') {
-            // Untuk filter "semua", sasaran adalah mereka yang punya record di bulan/tahun ini atau sebelumnya
-            $sasaranQuery = (clone $medicalRecordQuery)
-                ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
-                ->whereYear('visit_date', '<=', $currentYear);
-            
-            // Jika ada filter bulan, batasi sampai akhir bulan tersebut
-            $sasaranQuery->whereMonth('visit_date', '<=', $currentMonth);
-            
-            $totalBalita = $sasaranQuery->distinct('patient_id')->count('patient_id');
-            
-            // Hadir: yang datang di bulan ini
-            $hadirQuery = (clone $medicalRecordQuery)
-                ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
-                ->whereMonth('visit_date', $currentMonth)
-                ->whereYear('visit_date', $currentYear)
-                ->distinct('patient_id');
-            
-            $hadir = $hadirQuery->count('patient_id');
-        } else {
-            // Untuk filter custom, gunakan logika serupa berdasarkan tanggal custom
-            $startDate = $this->filterCustomStartDate;
-            $endDate = $this->filterCustomEndDate;
-            
-            // Sasaran: yang punya record sebelum atau selama periode filter
-            $sasaranQuery = (clone $medicalRecordQuery)
-                ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
-                ->whereDate('visit_date', '<=', $endDate);
-            
-            $totalBalita = $sasaranQuery->distinct('patient_id')->count('patient_id');
-            
-            // Hadir: yang datang dalam periode filter
-            $hadirQuery = (clone $medicalRecordQuery)
-                ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
-                ->whereBetween('visit_date', [$startDate, $endDate])
-                ->distinct('patient_id');
-            
-            $hadir = $hadirQuery->count('patient_id');
+        $endDate = now()->endOfMonth();
+        $startDate = now()->startOfMonth();
+
+        if ($this->filterPeriode === 'bulan_ini') {
+            $startDate = now()->startOfMonth();
+            $endDate = now()->endOfMonth();
+        } elseif ($this->filterPeriode === 'bulan_lalu') {
+            $startDate = now()->subMonth()->startOfMonth();
+            $endDate = now()->subMonth()->endOfMonth();
+        } elseif ($this->filterPeriode === 'tahun_ini') {
+            $startDate = now()->startOfYear();
+            $endDate = now()->endOfYear();
+        } elseif ($this->filterPeriode === 'tahun_lalu') {
+            $startDate = now()->subYear()->startOfYear();
+            $endDate = now()->subYear()->endOfYear();
+        } elseif ($this->filterPeriode === 'custom' && $this->filterCustomStartDate && $this->filterCustomEndDate) {
+            $startDate = \Carbon\Carbon::parse($this->filterCustomStartDate)->startOfDay();
+            $endDate = \Carbon\Carbon::parse($this->filterCustomEndDate)->endOfDay();
+        } elseif ($this->filterPeriode === 'semua') {
+            $endDate = now()->endOfMonth();
+            $startDate = now()->startOfMonth();
         }
+
+        // Sasaran: balita yang memiliki rekam medis SEBELUM atau SELAMA periode filter
+        $sasaranQuery = (clone $patientQuery)
+            ->whereIn('category', ['balita', 'bayi', 'baduta'])
+            ->whereHas('medicalRecords', function ($q) use ($endDate) {
+                $q->whereDate('visit_date', '<=', $endDate);
+            });
+            
+        $totalBalita = $sasaranQuery->count();
+
+        // Hadir: balita yang memiliki rekam medis DALAM periode filter
+        $hadirQuery = (clone $patientQuery)
+            ->whereIn('category', ['balita', 'bayi', 'baduta']);
+            
+        if ($this->filterPeriode === 'semua') {
+            $hadirQuery->whereHas('medicalRecords', function ($q) use ($currentMonth, $currentYear) {
+                $q->whereMonth('visit_date', $currentMonth)
+                  ->whereYear('visit_date', $currentYear);
+            });
+        } else {
+            if ($startDate && $endDate) {
+                $hadirQuery->whereHas('medicalRecords', function ($q) use ($startDate, $endDate) {
+                    $q->whereBetween('visit_date', [$startDate, $endDate]);
+                });
+            }
+        }
+
+        $hadir = $hadirQuery->count();
         
         $tidakHadir = max(0, $totalBalita - $hadir);
         $persentase = $totalBalita > 0 ? round(($hadir / $totalBalita) * 100, 1) : 0;
@@ -635,7 +654,30 @@ class AdminDashboard extends BaseAdminComponent
     {
         $distribution = (clone $medicalRecordQuery)->whereIn('id', $latestRecordSubquery)->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))->whereNotNull('nutrition_status')->select('nutrition_status', DB::raw('COUNT(*) as total'))->groupBy('nutrition_status')->pluck('total', 'nutrition_status');
 
-        return ['labels' => $distribution->keys()->toArray(), 'data' => $distribution->values()->toArray()];
+        // Normalize to 4 standard categories
+        $standardCategories = [
+            'Gizi Baik' => 0,
+            'Gizi Kurang' => 0,
+            'Gizi Buruk' => 0,
+            'Gizi Lebih' => 0,
+        ];
+
+        foreach ($distribution as $status => $count) {
+            $lower = strtolower($status);
+            if (str_contains($lower, 'baik') || str_contains($lower, 'normal')) {
+                $standardCategories['Gizi Baik'] += $count;
+            } elseif (str_contains($lower, 'buruk') || str_contains($lower, 'sangat kurang')) {
+                $standardCategories['Gizi Buruk'] += $count;
+            } elseif (str_contains($lower, 'kurang')) {
+                $standardCategories['Gizi Kurang'] += $count;
+            } elseif (str_contains($lower, 'lebih') || str_contains($lower, 'obesitas')) {
+                $standardCategories['Gizi Lebih'] += $count;
+            } else {
+                $standardCategories['Gizi Baik'] += $count; // default to Gizi Baik
+            }
+        }
+
+        return ['labels' => array_keys($standardCategories), 'data' => array_values($standardCategories)];
     }
 
     protected function getMonthlyWeighingData(Builder $medicalRecordQuery): array
@@ -688,7 +730,7 @@ class AdminDashboard extends BaseAdminComponent
         $this->lansiaDemografiNames = ['60_69' => $group60, '70_plus' => $group70];
 
         // 2. Bumil Names
-        $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+        $latestRecordSubquery = (clone $medicalRecordQuery)->selectRaw('MAX(id) as id')->groupBy('patient_id');
         $records = (clone $medicalRecordQuery)
             ->whereIn('id', $latestRecordSubquery)
             ->whereHas('patient', fn ($q) => $q->where('category', 'ibu_hamil'))
@@ -735,7 +777,7 @@ class AdminDashboard extends BaseAdminComponent
         }
 
         $medicalRecordQuery = $this->applyDashboardFilters(MedicalRecord::query(), 'medical_record');
-        $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+        $latestRecordSubquery = (clone $medicalRecordQuery)->selectRaw('MAX(id) as id')->groupBy('patient_id');
 
         $records = $medicalRecordQuery
             ->whereIn('id', $latestRecordSubquery)
@@ -776,7 +818,7 @@ class AdminDashboard extends BaseAdminComponent
         
         $patientQuery = $this->applyDashboardFilters(Patient::query(), 'patient');
         $medicalRecordQuery = $this->applyDashboardFilters(MedicalRecord::query(), 'medical_record');
-        $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+        $latestRecordSubquery = (clone $medicalRecordQuery)->selectRaw('MAX(id) as id')->groupBy('patient_id');
 
         $records = $medicalRecordQuery
             ->whereIn('id', $latestRecordSubquery)

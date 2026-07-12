@@ -89,7 +89,7 @@
 
             .off-screen-widget {
                 content-visibility: auto;
-                contain-intrinsic-size: auto 300px;
+                contain-intrinsic-size: auto 500px;
             }
         </style>
     @endpush
@@ -118,9 +118,8 @@
     <section class="relative rounded-2xl overflow-hidden no-print" style="background:#0f172a;">
         {{-- Background layers --}}
         <div class="absolute inset-0 hero-gradient"></div>
-        <div class="absolute top-0 left-1/4 w-72 h-72 hero-orb-1 rounded-full filter blur-[60px] animate-pulse"></div>
-        <div class="absolute bottom-0 right-1/4 w-72 h-72 hero-orb-2 rounded-full filter blur-[60px]"
-            style="animation:pulse 4s ease-in-out 1.5s infinite;"></div>
+        <div class="absolute top-0 left-1/4 w-72 h-72 hero-orb-1 rounded-full filter blur-[60px]"></div>
+        <div class="absolute bottom-0 right-1/4 w-72 h-72 hero-orb-2 rounded-full filter blur-[60px]"></div>
         {{-- Grid overlay --}}
         <div class="absolute inset-0 opacity-[0.04]"
             style="background-image:url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjAuNSIgZmlsbD0ibm9uZSI+PHBhdGggZD0iTTQwIDBMMCA0ME0wIDBsNDAgNDAiLz48L2c+PC9zdmc+');">
@@ -427,12 +426,12 @@
                         if (this.isEmpty) return;
                 
                         const colors = nd.labels.map(label => {
-                            if (label.includes('Normal') || label.includes('Baik')) return '#dcfce7'; // Green
-                            if (label.includes('Kurang') && !label.includes('Sangat')) return '#fef9c3'; // Yellow
-                            if (label.includes('Risiko') || label.includes('Berisiko')) return '#ffedd5'; // Orange
-                            if (label.includes('Sangat') || label.includes('Buruk') || label.includes('Pendek')) return '#fee2e2'; // Red
-                            if (label.includes('Lebih') || label.includes('Obesitas')) return '#ffedd5'; // Orange
-                            return '#f1f5f9';
+                            if (label.includes('Normal') || label.includes('Baik')) return '#10b981'; // Green
+                            if (label.includes('Kurang') && !label.includes('Sangat')) return '#f59e0b'; // Yellow
+                            if (label.includes('Sangat') || label.includes('Buruk') || label.includes('Pendek')) return '#ef4444'; // Red
+                            if (label.includes('Lebih') || label.includes('Obesitas')) return '#8b5cf6'; // Purple
+                            if (label.includes('Risiko') || label.includes('Berisiko')) return '#f97316'; // Orange
+                            return '#94a3b8';
                         });
                 
                         this.chart = new Chart(this.$refs.canvas, {
@@ -505,7 +504,7 @@
                                 str_contains($label, 'Kurang') && !str_contains($label, 'Sangat') => '#f59e0b',
                                 str_contains($label, 'Risiko') || str_contains($label, 'Berisiko') => '#f59e0b',
                                 str_contains($label, 'Sangat') || str_contains($label, 'Buruk') || str_contains($label, 'Pendek') => '#ef4444',
-                                str_contains($label, 'Lebih') || str_contains($label, 'Obesitas') => '#6366f1',
+                                str_contains($label, 'Lebih') || str_contains($label, 'Obesitas') => '#8b5cf6',
                                 default => '#94a3b8',
                             };
                         @endphp
@@ -1247,7 +1246,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($recentActivities as $activity)
+                        @forelse ($recentActivities as $activity)
                             <tr class="table-row-hover transition-colors dark:hover:bg-slate-800/40" style="border-bottom:1px solid rgba(0,0,0,0.04);" wire:key="activity-row-{{ $activity->id }}">
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-3">
@@ -1274,7 +1273,13 @@
                                     {{ $activity->user->name ?? '-' }}
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="4" class="px-6 py-12 text-center text-slate-400 text-sm">
+                                    Belum ada data pemeriksaan terbaru.
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
@@ -1355,6 +1360,8 @@
                                     @if($gallery->photo)
                                         <img src="{{ asset('storage/' . $gallery->photo) }}" 
                                              alt="{{ $gallery->title }}" 
+                                             loading="lazy"
+                                             decoding="async"
                                              class="w-full h-full object-cover group-hover/gallery:scale-110 transition-transform duration-300">
                                     @else
                                         <div class="w-full h-full flex items-center justify-center text-slate-350">

@@ -1315,7 +1315,7 @@ class Analytics extends BaseAdminComponent
         $basePatientFilter = fn ($q) => $q->whereYear('visit_date', $selectedYear)
             ->when($selectedMonth, fn ($mq) => $mq->whereMonth('visit_date', $selectedMonth));
 
-        $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')
+        $latestRecordSubquery = (clone $medicalRecordQuery)->selectRaw('MAX(id) as id')
             ->whereYear('visit_date', $selectedYear)
             ->when($selectedMonth, fn ($q) => $q->whereMonth('visit_date', $selectedMonth))
             ->groupBy('patient_id');
@@ -1342,8 +1342,13 @@ class Analytics extends BaseAdminComponent
 
         $balitaWithImunisasi = (clone $medicalRecordQuery)
             ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
-            ->whereNotNull('immunization')
-            ->where('immunization', '!=', '')
+            ->where(function ($query) {
+                $query->where(function ($q) {
+                    $q->whereNotNull('immunization')->where('immunization', '!=', '')->where('immunization', '!=', 'Tidak ada');
+                })->orWhere(function ($q) {
+                    $q->whereNotNull('vaccine_name')->where('vaccine_name', '!=', '')->where('vaccine_name', '!=', 'Tidak ada');
+                });
+            })
             ->whereYear('visit_date', $selectedYear)
             ->when($selectedMonth, fn ($q) => $q->whereMonth('visit_date', $selectedMonth))
             ->distinct('patient_id')

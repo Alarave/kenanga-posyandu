@@ -372,8 +372,8 @@
     @if($activeTab === 'overview')
         {{-- ================= OVERVIEW TAB ================= --}}
         <div class="space-y-4 sm:space-y-6 animate-fadeIn">
-            {{-- Stats Grid: 1 col mobile, 4 cols desktop --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {{-- Stats Grid: 1 col mobile, 5 cols desktop --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
                 {{-- Total Kunjungan --}}
                 <div wire:click="drillDown('Overview - Total Kunjungan', 'all')"
                      class="relative overflow-hidden bg-gradient-to-br from-white to-slate-50 rounded-3xl p-6 border border-slate-200 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-slate-200/40 hover:-translate-y-1 hover:border-slate-350 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group">
@@ -385,9 +385,9 @@
                             </div>
                             <span class="text-[10px] font-black text-slate-700 uppercase tracking-widest bg-slate-100 px-2.5 py-1 rounded-lg">Pemeriksaan</span>
                         </div>
-                        <div class="flex items-baseline gap-2">
+                        <div class="flex flex-col mt-1">
                             <span class="text-5xl font-black text-slate-800 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ number_format($totalKunjungan) }}</span>
-                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Kunjungan</span>
+                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-1">Kunjungan</span>
                         </div>
                         <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Total rekam medis terdaftar di posyandu tahun terpilih.</p>
                     </div>
@@ -408,9 +408,9 @@
                             </div>
                             <span class="text-[10px] font-black text-teal-700 uppercase tracking-widest bg-teal-50 px-2.5 py-1 rounded-lg">Jiwa</span>
                         </div>
-                        <div class="flex items-baseline gap-2">
+                        <div class="flex flex-col mt-1">
                             <span class="text-5xl font-black text-teal-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ number_format($totalBalita) }}</span>
-                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Terdaftar</span>
+                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-1">Terdaftar</span>
                         </div>
                         <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Kategori Balita, Bayi, Baduta &amp; Anak Sekolah.</p>
                     </div>
@@ -431,9 +431,9 @@
                             </div>
                             <span class="text-[10px] font-black text-rose-700 uppercase tracking-widest bg-rose-50 px-2.5 py-1 rounded-lg">Jiwa</span>
                         </div>
-                        <div class="flex items-baseline gap-2">
+                        <div class="flex flex-col mt-1">
                             <span class="text-5xl font-black text-rose-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ number_format($totalIbuHamil) }}</span>
-                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Terdaftar</span>
+                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-1">Terdaftar</span>
                         </div>
                         <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Ibu mengandung aktif terdaftar dan terpantau.</p>
                     </div>
@@ -454,14 +454,37 @@
                             </div>
                             <span class="text-[10px] font-black text-indigo-700 uppercase tracking-widest bg-indigo-50 px-2.5 py-1 rounded-lg">Jiwa</span>
                         </div>
-                        <div class="flex items-baseline gap-2">
+                        <div class="flex flex-col mt-1">
                             <span class="text-5xl font-black text-indigo-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ number_format($totalLansia) }}</span>
-                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Terdaftar</span>
+                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-1">Terdaftar</span>
                         </div>
                         <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Kelompok Lanjut Usia aktif binaan posyandu.</p>
                     </div>
                     <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between pr-2">
                         <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Lihat Daftar Lansia</span>
+                        <span class="material-symbols-outlined text-[14px] text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100">arrow_forward</span>
+                    </div>
+                </div>
+
+                {{-- Kader Lapangan --}}
+                <div wire:click="drillDown('Kader Lapangan - Posyandu', 'kader')"
+                     class="relative overflow-hidden bg-gradient-to-br from-white to-amber-50/10 rounded-3xl p-6 border border-amber-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-amber-100/40 hover:-translate-y-1 hover:border-amber-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group">
+                    <span class="material-symbols-outlined absolute -bottom-6 -right-6 text-[120px] text-amber-500 opacity-[0.04] transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 pointer-events-none">badge</span>
+                    <div>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="w-11 h-11 rounded-2xl bg-amber-50 text-amber-650 flex items-center justify-center border border-amber-200/50 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:bg-amber-100">
+                                <span class="material-symbols-outlined text-[24px]">badge</span>
+                            </div>
+                            <span class="text-[10px] font-black text-amber-700 uppercase tracking-widest bg-amber-50 px-2.5 py-1 rounded-lg">Kader</span>
+                        </div>
+                        <div class="flex flex-col mt-1">
+                            <span class="text-5xl font-black text-amber-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ $kaderAktif }}</span>
+                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mt-1">Personel</span>
+                        </div>
+                        <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Kader aktif yang bertugas membina warga posyandu.</p>
+                    </div>
+                    <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between pr-2">
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Lihat Daftar Kader</span>
                         <span class="material-symbols-outlined text-[14px] text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100">arrow_forward</span>
                     </div>
                 </div>
@@ -471,8 +494,10 @@
             {{-- Widget 3: Rangkuman Indikator Kesehatan Utama (Horizontal Layout, Below Main KPIs, Premium Redesign) --}}
             <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
                 <div class="mb-6">
-                    <div class="flex items-center gap-2">
-                        <span class="material-symbols-outlined text-teal-600 text-[24px] bg-teal-50 p-1.5 rounded-xl border border-teal-100">clinical_notes</span>
+                    <div class="flex items-center gap-3">
+                        <div class="shrink-0 w-10 h-10 flex items-center justify-center bg-teal-50 rounded-xl border border-teal-100 shadow-sm">
+                            <span class="material-symbols-outlined text-teal-600 text-[24px]">clinical_notes</span>
+                        </div>
                         <div>
                             <h3 class="text-lg font-black text-slate-900 tracking-tight">
                                 Pusat Deteksi Dini &amp; Indikator Kesehatan Utama
@@ -891,8 +916,8 @@
         @if($activeTab === 'balita')
         {{-- ================= BALITA TAB ================= --}}
         <div class="space-y-8 animate-fadeIn">
-            {{-- Stats Grid: 1 col mobile, 4 cols desktop --}}
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {{-- Stats Grid: 1 col mobile, 3 cols desktop --}}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {{-- Total Balita --}}
                 <div wire:click="drillDown('Balita - Terdaftar', 'balita')"
                      class="relative overflow-hidden bg-gradient-to-br from-white to-teal-50/10 rounded-3xl p-6 border border-teal-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-teal-100/40 hover:-translate-y-1 hover:border-teal-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group">
@@ -958,29 +983,6 @@
                     </div>
                     <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between pr-2">
                         <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Lihat Data Imunisasi</span>
-                        <span class="material-symbols-outlined text-[14px] text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100">arrow_forward</span>
-                    </div>
-                </div>
-
-                {{-- Kader Lapangan --}}
-                <div wire:click="drillDown('Kader Lapangan - Posyandu', 'kader')"
-                     class="relative overflow-hidden bg-gradient-to-br from-white to-amber-50/10 rounded-3xl p-6 border border-amber-100 shadow-xs flex flex-col justify-between hover:shadow-lg hover:shadow-amber-100/40 hover:-translate-y-1 hover:border-amber-300 transition-all duration-300 cursor-pointer select-none active:scale-[0.98] group">
-                    <span class="material-symbols-outlined absolute -bottom-6 -right-6 text-[120px] text-amber-500 opacity-[0.04] transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 pointer-events-none">badge</span>
-                    <div>
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="w-11 h-11 rounded-2xl bg-amber-50 text-amber-650 flex items-center justify-center border border-amber-200/50 shadow-xs transition-all duration-300 group-hover:scale-110 group-hover:bg-amber-100">
-                                <span class="material-symbols-outlined text-[24px]">badge</span>
-                            </div>
-                            <span class="text-[10px] font-black text-amber-700 uppercase tracking-widest bg-amber-50 px-2.5 py-1 rounded-lg">Kader</span>
-                        </div>
-                        <div class="flex items-baseline gap-2">
-                            <span class="text-5xl font-black text-amber-600 tracking-tight transition-transform duration-300 group-hover:scale-105 inline-block">{{ $kaderAktif }}</span>
-                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Personel</span>
-                        </div>
-                        <p class="text-xs font-semibold text-slate-500 mt-4 leading-relaxed">Kader aktif yang bertugas membina warga posyandu.</p>
-                    </div>
-                    <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between pr-2">
-                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-wider">Lihat Daftar Kader</span>
                         <span class="material-symbols-outlined text-[14px] text-slate-400 transition-all duration-300 -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100">arrow_forward</span>
                     </div>
                 </div>
@@ -2384,12 +2386,12 @@ function initCharts(data = null) {
         try {
             const colors = nutLabels.map(label => {
                 const sLabel = String(label).toLowerCase();
-                if (sLabel === 'baik' || sLabel === 'normal') return '#fee2e2'; // red-100
-                if (sLabel === 'gizi baik') return '#fee2e2'; // red-100
-                if (sLabel === 'gizi kurang' || sLabel === 'kurang') return '#fee2e2'; // red-100
-                if (sLabel.includes('sangat') || sLabel.includes('buruk') || sLabel.includes('pendek')) return '#fee2e2'; // red-100
-                if (sLabel.includes('risiko') || sLabel.includes('berisiko') || sLabel.includes('lebih') || sLabel.includes('obesitas')) return '#fee2e2'; // red-100
-                return '#fee2e2'; // red-100
+                if (sLabel === 'baik' || sLabel === 'normal') return '#10b981';
+                if (sLabel === 'gizi baik') return '#14b8a6';
+                if (sLabel === 'gizi kurang' || sLabel === 'kurang') return '#c2410c';
+                if (sLabel.includes('sangat') || sLabel.includes('buruk') || sLabel.includes('pendek')) return '#b91c1c';
+                if (sLabel.includes('risiko') || sLabel.includes('berisiko') || sLabel.includes('lebih') || sLabel.includes('obesitas')) return '#a16207';
+                return '#94a3b8';
             });
             nutritionDonutChart = new Chart(donutCtx, {
                 type: 'doughnut',
