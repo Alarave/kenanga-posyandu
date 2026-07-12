@@ -175,6 +175,7 @@ class MedicalRecordRequest extends FormRequest
             'height_at_birth.min' => 'Tinggi badan lahir minimal 30 cm.',
             'systolic_bp.required' => 'Tekanan darah sistolik wajib diisi untuk pasien Lansia.',
             'diastolic_bp.required' => 'Tekanan darah diastolik wajib diisi untuk pasien Lansia.',
+            'uric_acid.max' => 'Nilai asam urat tidak boleh lebih dari 30.',
         ];
     }
 
