@@ -1258,6 +1258,9 @@ class Analytics extends BaseAdminComponent
             'trendVisitsBalita' => $trendVisitsBalita,
             'trendVisitsIbuHamil' => $trendVisitsIbuHamil,
             'trendVisitsLansia' => $trendVisitsLansia,
+            'balitaBerkunjung' => $balitaBerkunjung,
+            'ibuHamilBerkunjung' => $ibuHamilBerkunjung,
+            'lansiaBerkunjung' => $lansiaBerkunjung,
         ];
     }
 

@@ -83,6 +83,22 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
             ->when($this->posyanduId, fn ($q) => $q->where('posyandu_id', $this->posyanduId))
             ->count();
 
+        // Yang sudah berkunjung di tahun/bulan yang dipilih
+        $balitaBerkunjung = (clone $patientQuery)
+            ->whereIn('category', ['balita', 'bayi', 'baduta'])
+            ->whereHas('medicalRecords', $basePatientFilter)
+            ->count();
+
+        $ibuHamilBerkunjung = (clone $patientQuery)
+            ->where('category', 'ibu_hamil')
+            ->whereHas('medicalRecords', $basePatientFilter)
+            ->count();
+
+        $lansiaBerkunjung = (clone $patientQuery)
+            ->where('category', 'lansia')
+            ->whereHas('medicalRecords', $basePatientFilter)
+            ->count();
+
         // Combined Monthly Visits Trend (12 Months)
         $recordsYear = (clone $medicalRecordQuery)
             ->with('patient')
@@ -481,6 +497,9 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
             'trendVisitsBalita' => $trendVisitsBalita,
             'trendVisitsIbuHamil' => $trendVisitsIbuHamil,
             'trendVisitsLansia' => $trendVisitsLansia,
+            'balitaBerkunjung' => $balitaBerkunjung,
+            'ibuHamilBerkunjung' => $ibuHamilBerkunjung,
+            'lansiaBerkunjung' => $lansiaBerkunjung,
             // Balita
             'stuntingRate' => $stuntingRate,
             'cakupanImunisasi' => $cakupanImunisasi,
