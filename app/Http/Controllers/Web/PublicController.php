@@ -28,13 +28,12 @@ class PublicController extends Controller
             ->where('end_time', '>=', $now)
             ->update(['status' => 'ongoing']);
 
-        // Get 3 upcoming or ongoing schedules (not ended yet and not completed/cancelled)
+        // Get 6 upcoming or ongoing schedules (not ended yet and not completed/cancelled) with pagination
         $schedules = Schedule::with('posyandu')
             ->where('end_time', '>=', $now)
             ->whereNotIn('status', ['completed', 'cancelled', 'Completed', 'Cancelled'])
             ->orderBy('start_time', 'asc')
-            ->limit(3)
-            ->get();
+            ->paginate(6);
 
         // Get 3 latest published articles
         $articles = Article::with(['category', 'user'])

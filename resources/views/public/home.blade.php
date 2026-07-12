@@ -1442,6 +1442,10 @@
                         </div>
                     @endforeach
                 </div>
+
+                <div class="mt-12 flex justify-center items-center gap-2 public-pagination">
+                    {{ $schedules->fragment('jadwal')->links() }}
+                </div>
             @else
                 <div class="empty-state">
                     <div class="empty-icon">

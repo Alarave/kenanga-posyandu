@@ -93,10 +93,10 @@ describe('konten halaman beranda', function () {
         $response->assertSee($this->article->title);
     });
 
-    it('tidak menampilkan lebih dari 3 jadwal terdekat', function () {
-        // Create 5 schedules
+    it('tidak menampilkan lebih dari 6 jadwal terdekat', function () {
+        // Create 8 schedules
         $startTime = now()->addDays(1);
-        Schedule::factory()->count(5)->create([
+        Schedule::factory()->count(8)->create([
             'posyandu_id' => $this->posyandu->id,
             'start_time' => $startTime,
             'end_time' => $startTime->copy()->addHours(2),
@@ -106,7 +106,11 @@ describe('konten halaman beranda', function () {
         $response = $this->get('/');
 
         $response->assertOk();
-        // Verify only 3 schedules are shown (implementation specific)
+        // Verify only 6 schedules are shown
+        $html = $response->getContent();
+        $count = substr_count($html, 'class="schedule-card"');
+        // Total of 9 schedules exist, page 1 should display exactly 6
+        expect($count)->toBe(6);
     });
 
     it('tidak menampilkan lebih dari 3 artikel terbaru', function () {
