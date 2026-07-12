@@ -86,7 +86,7 @@
 
                         <div class="pt-6 border-t border-gray-50">
                             <p class="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">Distribusi Pasien Terdaftar</p>
-                             <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-7 gap-4">
+                             <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                                 {{-- Balita --}}
                                 <div class="bg-blue-50/50 border border-blue-100/50 rounded-2xl p-4 flex flex-col justify-between group hover:shadow-xs transition-all duration-300">
                                     <div class="w-8 h-8 rounded-lg bg-blue-500 text-white flex items-center justify-center shadow-sm">
@@ -154,7 +154,7 @@
                                 </div>
 
                                 {{-- Total Warga --}}
-                                <div class="bg-emerald-50/50 border border-emerald-100/50 rounded-2xl p-4 flex flex-col justify-between group hover:shadow-xs transition-all duration-300">
+                                <div class="col-span-2 md:col-span-2 bg-emerald-50/50 border border-emerald-100/50 rounded-2xl p-4 flex flex-col justify-between group hover:shadow-xs transition-all duration-300">
                                     <div class="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center shadow-sm">
                                         <span class="material-symbols-outlined text-[18px]">groups</span>
                                     </div>
