@@ -417,13 +417,23 @@
                     isEmpty: false,
                     init() {
                         if (typeof Chart === 'undefined') { setTimeout(() => this.init(), 100); return; }
+                        this.renderChart();
+                        this.$watch('$wire.nutritionStatusDistribution', () => {
+                            this.renderChart();
+                        });
+                    },
+                    renderChart() {
                         const nd = $wire.nutritionStatusDistribution;
                         if (!nd || !nd.labels || !nd.data || nd.data.length === 0) {
                             this.isEmpty = true;
+                            if (this.chart) { this.chart.destroy(); this.chart = null; }
                             return;
                         }
                         this.isEmpty = nd.data.every(v => parseInt(v) === 0);
-                        if (this.isEmpty) return;
+                        if (this.isEmpty) {
+                            if (this.chart) { this.chart.destroy(); this.chart = null; }
+                            return;
+                        }
                 
                         const colors = nd.labels.map(label => {
                             if (label.includes('Normal') || label.includes('Baik')) return '#10b981'; // Green
@@ -434,40 +444,47 @@
                             return '#94a3b8';
                         });
                 
-                        this.chart = new Chart(this.$refs.canvas, {
-                            type: 'doughnut',
-                            data: {
-                                labels: nd.labels,
-                                datasets: [{
-                                    data: nd.data,
-                                    backgroundColor: colors,
-                                    borderWidth: 2,
-                                    borderColor: '#ffffff',
-                                    hoverOffset: 6
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                cutout: '75%',
-                                animation: { duration: 800, easing: 'easeOutQuart' },
-                                onClick: (event, activeElements) => {
-                                    if (activeElements && activeElements.length > 0) {
-                                        const index = activeElements[0].index;
-                                        const label = nd.labels[index];
-                                        $wire.selectNutritionStatus(label);
-                                    }
+                        if (this.chart) {
+                            this.chart.data.labels = nd.labels;
+                            this.chart.data.datasets[0].data = nd.data;
+                            this.chart.data.datasets[0].backgroundColor = colors;
+                            this.chart.update();
+                        } else {
+                            this.chart = new Chart(this.$refs.canvas, {
+                                type: 'doughnut',
+                                data: {
+                                    labels: nd.labels,
+                                    datasets: [{
+                                        data: nd.data,
+                                        backgroundColor: colors,
+                                        borderWidth: 2,
+                                        borderColor: '#ffffff',
+                                        hoverOffset: 6
+                                    }]
                                 },
-                                plugins: {
-                                    legend: { display: false },
-                                    tooltip: {
-                                        cornerRadius: 8,
-                                        padding: 8,
-                                        bodyFont: { family: '\'Public Sans\', sans-serif', size: 11 }
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    cutout: '75%',
+                                    animation: { duration: 800, easing: 'easeOutQuart' },
+                                    onClick: (event, activeElements) => {
+                                        if (activeElements && activeElements.length > 0) {
+                                            const index = activeElements[0].index;
+                                            const label = nd.labels[index];
+                                            $wire.selectNutritionStatus(label);
+                                        }
+                                    },
+                                    plugins: {
+                                        legend: { display: false },
+                                        tooltip: {
+                                            cornerRadius: 8,
+                                            padding: 8,
+                                            bodyFont: { family: '\'Public Sans\', sans-serif', size: 11 }
+                                        }
                                     }
                                 }
-                            }
-                        });
+                            });
+                        }
                     },
                     toggleVisibility(index) {
                         if (!this.chart) return;
@@ -548,52 +565,70 @@
                 <div x-data="{
                     chart: null,
                     hiddenItems: [],
-                    isEmpty: {{ $isEmptyBumil ? 'true' : 'false' }},
+                    isEmpty: false,
                     init() {
                         if (typeof Chart === 'undefined') { setTimeout(() => this.init(), 100); return; }
-                        if (this.isEmpty) return;
+                        this.renderChart();
+                        this.$watch('$wire.bumilTrimester', () => {
+                            this.renderChart();
+                        });
+                    },
+                    renderChart() {
+                        const bt = $wire.bumilTrimester;
                         const data = [
-                            {{ $bumilTrimester['T1'] ?? 0 }},
-                            {{ $bumilTrimester['T2'] ?? 0 }},
-                            {{ $bumilTrimester['T3'] ?? 0 }}
+                            parseInt(bt.T1 || 0),
+                            parseInt(bt.T2 || 0),
+                            parseInt(bt.T3 || 0)
                         ];
+                        const totalBumil = data.reduce((a, b) => a + b, 0);
+                        this.isEmpty = totalBumil === 0;
+                        if (this.isEmpty) {
+                            if (this.chart) { this.chart.destroy(); this.chart = null; }
+                            return;
+                        }
+
                         const labels = ['Trimester 1', 'Trimester 2', 'Trimester 3'];
                         const colors = ['#f472b6', '#db2777', '#9d174d']; // Soft, Med, Dark Pink
                 
-                        this.chart = new Chart(this.$refs.canvas, {
-                            type: 'doughnut',
-                            data: {
-                                labels: labels,
-                                datasets: [{
-                                    data: data,
-                                    backgroundColor: colors,
-                                    borderWidth: 2,
-                                    borderColor: '#ffffff',
-                                    hoverOffset: 6
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                cutout: '75%',
-                                animation: { duration: 800, easing: 'easeOutQuart' },
-                                onClick: (event, activeElements) => {
-                                    if (activeElements && activeElements.length > 0) {
-                                        const index = activeElements[0].index;
-                                        const label = labels[index];
-                                        $wire.selectBumilTrimester(label);
-                                    }
+                        if (this.chart) {
+                            this.chart.data.datasets[0].data = data;
+                            this.chart.update();
+                        } else {
+                            this.chart = new Chart(this.$refs.canvas, {
+                                type: 'doughnut',
+                                data: {
+                                    labels: labels,
+                                    datasets: [{
+                                        data: data,
+                                        backgroundColor: colors,
+                                        borderWidth: 2,
+                                        borderColor: '#ffffff',
+                                        hoverOffset: 6
+                                    }]
                                 },
-                                plugins: {
-                                    legend: { display: false },
-                                    tooltip: {
-                                        cornerRadius: 8,
-                                        padding: 8,
-                                        bodyFont: { family: '\'Public Sans\', sans-serif', size: 11 }
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    cutout: '75%',
+                                    animation: { duration: 800, easing: 'easeOutQuart' },
+                                    onClick: (event, activeElements) => {
+                                        if (activeElements && activeElements.length > 0) {
+                                            const index = activeElements[0].index;
+                                            const label = labels[index];
+                                            $wire.selectBumilTrimester(label);
+                                        }
+                                    },
+                                    plugins: {
+                                        legend: { display: false },
+                                        tooltip: {
+                                            cornerRadius: 8,
+                                            padding: 8,
+                                            bodyFont: { family: '\'Public Sans\', sans-serif', size: 11 }
+                                        }
                                     }
                                 }
-                            }
-                        });
+                            });
+                        }
                     },
                     toggleVisibility(index) {
                         if (!this.chart) return;
@@ -682,51 +717,69 @@
                 <div x-data="{
                     chart: null,
                     hiddenItems: [],
-                    isEmpty: {{ $isEmptyLansia ? 'true' : 'false' }},
+                    isEmpty: false,
                     init() {
                         if (typeof Chart === 'undefined') { setTimeout(() => this.init(), 100); return; }
-                        if (this.isEmpty) return;
+                        this.renderChart();
+                        this.$watch('$wire.lansiaDemografi', () => {
+                            this.renderChart();
+                        });
+                    },
+                    renderChart() {
+                        const ld = $wire.lansiaDemografi;
                         const data = [
-                            {{ $lansiaDemografi['60_69'] ?? 0 }},
-                            {{ $lansiaDemografi['70_plus'] ?? 0 }}
+                            parseInt(ld['60_69'] || 0),
+                            parseInt(ld['70_plus'] || 0)
                         ];
+                        const totalLansia = data.reduce((a, b) => a + b, 0);
+                        this.isEmpty = totalLansia === 0;
+                        if (this.isEmpty) {
+                            if (this.chart) { this.chart.destroy(); this.chart = null; }
+                            return;
+                        }
+
                         const labels = ['60–69 Tahun', '70+ Tahun'];
                         const colors = ['#f97316', '#ef4444']; // Orange, Red
                 
-                        this.chart = new Chart(this.$refs.canvas, {
-                            type: 'doughnut',
-                            data: {
-                                labels: labels,
-                                datasets: [{
-                                    data: data,
-                                    backgroundColor: colors,
-                                    borderWidth: 2,
-                                    borderColor: '#ffffff',
-                                    hoverOffset: 6
-                                }]
-                            },
-                            options: {
-                                responsive: true,
-                                maintainAspectRatio: false,
-                                cutout: '75%',
-                                animation: { duration: 800, easing: 'easeOutQuart' },
-                                onClick: (event, activeElements) => {
-                                    if (activeElements && activeElements.length > 0) {
-                                        const index = activeElements[0].index;
-                                        const label = labels[index];
-                                        $wire.selectLansiaGroup(label);
-                                    }
+                        if (this.chart) {
+                            this.chart.data.datasets[0].data = data;
+                            this.chart.update();
+                        } else {
+                            this.chart = new Chart(this.$refs.canvas, {
+                                type: 'doughnut',
+                                data: {
+                                    labels: labels,
+                                    datasets: [{
+                                        data: data,
+                                        backgroundColor: colors,
+                                        borderWidth: 2,
+                                        borderColor: '#ffffff',
+                                        hoverOffset: 6
+                                    }]
                                 },
-                                plugins: {
-                                    legend: { display: false },
-                                    tooltip: {
-                                        cornerRadius: 8,
-                                        padding: 8,
-                                        bodyFont: { family: '\'Public Sans\', sans-serif', size: 11 }
+                                options: {
+                                    responsive: true,
+                                    maintainAspectRatio: false,
+                                    cutout: '75%',
+                                    animation: { duration: 800, easing: 'easeOutQuart' },
+                                    onClick: (event, activeElements) => {
+                                        if (activeElements && activeElements.length > 0) {
+                                            const index = activeElements[0].index;
+                                            const label = labels[index];
+                                            $wire.selectLansiaGroup(label);
+                                        }
+                                    },
+                                    plugins: {
+                                        legend: { display: false },
+                                        tooltip: {
+                                            cornerRadius: 8,
+                                            padding: 8,
+                                            bodyFont: { family: '\'Public Sans\', sans-serif', size: 11 }
+                                        }
                                     }
                                 }
-                            }
-                        });
+                            });
+                        }
                     },
                     toggleVisibility(index) {
                         if (!this.chart) return;
@@ -1430,111 +1483,126 @@
         chart: null,
         init() {
             if (typeof Chart === 'undefined') { setTimeout(() => this.init(), 100); return; }
+            this.renderChart();
+            this.$watch('$wire.monthlyWeighingData', () => {
+                this.renderChart();
+            });
+        },
+        renderChart() {
             const wd = $wire.monthlyWeighingData;
-            if (!wd || !wd.labels || !wd.data || wd.data.length === 0) return;
+            if (!wd || !wd.labels || !wd.data || wd.data.length === 0) {
+                if (this.chart) { this.chart.destroy(); this.chart = null; }
+                return;
+            }
     
             const ctx = this.$refs.canvas.getContext('2d');
             const gradient = ctx.createLinearGradient(0, 0, 0, 280);
             gradient.addColorStop(0, 'rgba(0, 108, 73, 0.18)');
             gradient.addColorStop(1, 'rgba(0, 108, 73, 0)');
     
-            this.chart = new Chart(this.$refs.canvas, {
-                type: 'line',
-                data: {
-                    labels: wd.labels,
-                    datasets: [{
-                        label: 'Penimbangan',
-                        data: wd.data,
-                        borderColor: '#006c49',
-                        borderWidth: 2.5,
-                        fill: true,
-                        backgroundColor: gradient,
-                        tension: 0.4,
-                        pointRadius: 5,
-                        pointBackgroundColor: '#006c49',
-                        pointBorderColor: '#ffffff',
-                        pointBorderWidth: 2,
-                        pointHoverRadius: 8,
-                        pointHoverBackgroundColor: '#006c49',
-                        pointHoverBorderColor: '#ffffff',
-                        pointHoverBorderWidth: 3
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    animation: { duration: 1000, easing: 'easeOutQuart' },
-                    onClick: (event, activeElements) => {
-                        if (activeElements && activeElements.length > 0) {
-                            const index = activeElements[0].index;
-                            const label = wd.labels[index];
-                            $wire.selectMonthActivity(label);
-                        }
+            if (this.chart) {
+                this.chart.data.labels = wd.labels;
+                this.chart.data.datasets[0].data = wd.data;
+                this.chart.update();
+            } else {
+                this.chart = new Chart(this.$refs.canvas, {
+                    type: 'line',
+                    data: {
+                        labels: wd.labels,
+                        datasets: [{
+                            label: 'Penimbangan',
+                            data: wd.data,
+                            borderColor: '#006c49',
+                            borderWidth: 2.5,
+                            fill: true,
+                            backgroundColor: gradient,
+                            tension: 0.4,
+                            pointRadius: 5,
+                            pointBackgroundColor: '#006c49',
+                            pointBorderColor: '#ffffff',
+                            pointBorderWidth: 2,
+                            pointHoverRadius: 8,
+                            pointHoverBackgroundColor: '#006c49',
+                            pointHoverBorderColor: '#ffffff',
+                            pointHoverBorderWidth: 3
+                        }]
                     },
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            cornerRadius: 10,
-                            padding: 12,
-                            mode: 'index',
-                            intersect: false,
-                            backgroundColor: '#1e293b',
-                            titleColor: '#94a3b8',
-                            bodyColor: '#f1f5f9',
-                            titleFont: { family: '\'Public Sans\', sans-serif', size: 11 },
-                            bodyFont: { family: '\'Public Sans\', sans-serif', size: 13, weight: 'bold' },
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) label += ': ';
-                                    if (context.parsed.y !== null) label += context.parsed.y + ' Kunjungan';
-                                    return label;
-                                },
-                                afterLabel: function(context) {
-                                    const dataIndex = context.dataIndex;
-                                    if (dataIndex > 0) {
-                                        const current = context.parsed.y;
-                                        const previous = context.dataset.data[dataIndex - 1];
-                                        if (previous > 0) {
-                                            const diff = current - previous;
-                                            const percent = ((diff / previous) * 100).toFixed(1);
-                                            if (diff > 0) return `▲ Naik ${percent}% dari bulan lalu`;
-                                            if (diff < 0) return `▼ Turun ${Math.abs(percent)}% dari bulan lalu`;
-                                            return `▶ Stabil (0%)`;
-                                        } else if (current > 0) {
-                                            return `▲ Naik 100% dari bulan lalu`;
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        animation: { duration: 1000, easing: 'easeOutQuart' },
+                        onClick: (event, activeElements) => {
+                            if (activeElements && activeElements.length > 0) {
+                                const index = activeElements[0].index;
+                                const label = wd.labels[index];
+                                $wire.selectMonthActivity(label);
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                cornerRadius: 10,
+                                padding: 12,
+                                mode: 'index',
+                                intersect: false,
+                                backgroundColor: '#1e293b',
+                                titleColor: '#94a3b8',
+                                bodyColor: '#f1f5f9',
+                                titleFont: { family: '\'Public Sans\', sans-serif', size: 11 },
+                                bodyFont: { family: '\'Public Sans\', sans-serif', size: 13, weight: 'bold' },
+                                callbacks: {
+                                    label: function(context) {
+                                        let label = context.dataset.label || '';
+                                        if (label) label += ': ';
+                                        if (context.parsed.y !== null) label += context.parsed.y + ' Kunjungan';
+                                        return label;
+                                    },
+                                    afterLabel: function(context) {
+                                        const dataIndex = context.dataIndex;
+                                        if (dataIndex > 0) {
+                                            const current = context.parsed.y;
+                                            const previous = context.dataset.data[dataIndex - 1];
+                                            if (previous > 0) {
+                                                const diff = current - previous;
+                                                const percent = ((diff / previous) * 100).toFixed(1);
+                                                if (diff > 0) return `▲ Naik ${percent}% dari bulan lalu`;
+                                                if (diff < 0) return `▼ Turun ${Math.abs(percent)}% dari bulan lalu`;
+                                                return `▶ Stabil (0%)`;
+                                            } else if (current > 0) {
+                                                return `▲ Naik 100% dari bulan lalu`;
+                                            }
                                         }
+                                        return '';
                                     }
-                                    return '';
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                grid: { color: 'rgba(0,0,0,0.04)', drawTicks: false },
+                                border: { display: false },
+                                ticks: {
+                                    font: { family: '\'Public Sans\', sans-serif', size: 12 },
+                                    color: '#94a3b8',
+                                    padding: 8,
+                                    precision: 0,
+                                    stepSize: 1
+                                }
+                            },
+                            x: {
+                                grid: { display: false },
+                                border: { display: false },
+                                ticks: {
+                                    font: { family: '\'Public Sans\', sans-serif', size: 12 },
+                                    color: '#94a3b8',
+                                    padding: 6
                                 }
                             }
                         }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: { color: 'rgba(0,0,0,0.04)', drawTicks: false },
-                            border: { display: false },
-                            ticks: {
-                                font: { family: '\'Public Sans\', sans-serif', size: 12 },
-                                color: '#94a3b8',
-                                padding: 8,
-                                precision: 0,
-                                stepSize: 1
-                            }
-                        },
-                        x: {
-                            grid: { display: false },
-                            border: { display: false },
-                            ticks: {
-                                font: { family: '\'Public Sans\', sans-serif', size: 12 },
-                                color: '#94a3b8',
-                                padding: 6
-                            }
-                        }
                     }
-                }
-            });
+                });
+            }
         }
     }" wire:ignore class="h-72 -mx-2">
         <canvas x-ref="canvas"></canvas>
