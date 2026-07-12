@@ -110,6 +110,18 @@ class ScheduleManagement extends BaseAdminComponent
     public function render(): View
     {
         $now = now();
+
+        // 1. Update any past schedules to 'completed'
+        Schedule::where('status', '!=', 'completed')
+            ->where('end_time', '<', $now)
+            ->update(['status' => 'completed']);
+
+        // 2. Update any currently running schedules to 'ongoing'
+        Schedule::where('status', 'upcoming')
+            ->where('start_time', '<=', $now)
+            ->where('end_time', '>=', $now)
+            ->update(['status' => 'ongoing']);
+
         $baseQuery = $this->applyPosyanduScope(Schedule::with('posyandu'));
 
         $schedules = (clone $baseQuery)
