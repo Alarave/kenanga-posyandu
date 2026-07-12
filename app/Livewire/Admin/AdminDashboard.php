@@ -583,47 +583,56 @@ class AdminDashboard extends BaseAdminComponent
 
     protected function getKehadiranBalita(Builder $patientQuery, Builder $medicalRecordQuery, $currentMonth, $currentYear): array
     {
-        // Hitung total balita yang seharusnya hadir (Sasaran/D)
-        // Logika: Pasien yang memiliki rekam medis SEBELUM atau SELAMA periode filter
-        if ($this->filterPeriode === 'semua') {
-            // Untuk filter "semua", sasaran adalah mereka yang punya record di bulan/tahun ini atau sebelumnya
-            $sasaranQuery = (clone $medicalRecordQuery)
-                ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
-                ->whereYear('visit_date', '<=', $currentYear);
-            
-            // Jika ada filter bulan, batasi sampai akhir bulan tersebut
-            $sasaranQuery->whereMonth('visit_date', '<=', $currentMonth);
-            
-            $totalBalita = $sasaranQuery->distinct('patient_id')->count('patient_id');
-            
-            // Hadir: yang datang di bulan ini
-            $hadirQuery = (clone $medicalRecordQuery)
-                ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
-                ->whereMonth('visit_date', $currentMonth)
-                ->whereYear('visit_date', $currentYear)
-                ->distinct('patient_id');
-            
-            $hadir = $hadirQuery->count('patient_id');
-        } else {
-            // Untuk filter custom, gunakan logika serupa berdasarkan tanggal custom
-            $startDate = $this->filterCustomStartDate;
-            $endDate = $this->filterCustomEndDate;
-            
-            // Sasaran: yang punya record sebelum atau selama periode filter
-            $sasaranQuery = (clone $medicalRecordQuery)
-                ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
-                ->whereDate('visit_date', '<=', $endDate);
-            
-            $totalBalita = $sasaranQuery->distinct('patient_id')->count('patient_id');
-            
-            // Hadir: yang datang dalam periode filter
-            $hadirQuery = (clone $medicalRecordQuery)
-                ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
-                ->whereBetween('visit_date', [$startDate, $endDate])
-                ->distinct('patient_id');
-            
-            $hadir = $hadirQuery->count('patient_id');
+        $endDate = now()->endOfMonth();
+        $startDate = now()->startOfMonth();
+
+        if ($this->filterPeriode === 'bulan_ini') {
+            $startDate = now()->startOfMonth();
+            $endDate = now()->endOfMonth();
+        } elseif ($this->filterPeriode === 'bulan_lalu') {
+            $startDate = now()->subMonth()->startOfMonth();
+            $endDate = now()->subMonth()->endOfMonth();
+        } elseif ($this->filterPeriode === 'tahun_ini') {
+            $startDate = now()->startOfYear();
+            $endDate = now()->endOfYear();
+        } elseif ($this->filterPeriode === 'tahun_lalu') {
+            $startDate = now()->subYear()->startOfYear();
+            $endDate = now()->subYear()->endOfYear();
+        } elseif ($this->filterPeriode === 'custom' && $this->filterCustomStartDate && $this->filterCustomEndDate) {
+            $startDate = \Carbon\Carbon::parse($this->filterCustomStartDate)->startOfDay();
+            $endDate = \Carbon\Carbon::parse($this->filterCustomEndDate)->endOfDay();
+        } elseif ($this->filterPeriode === 'semua') {
+            $endDate = now()->endOfMonth();
+            $startDate = now()->startOfMonth();
         }
+
+        // Sasaran: balita yang memiliki rekam medis SEBELUM atau SELAMA periode filter
+        $sasaranQuery = (clone $patientQuery)
+            ->whereIn('category', ['balita', 'bayi', 'baduta'])
+            ->whereHas('medicalRecords', function ($q) use ($endDate) {
+                $q->whereDate('visit_date', '<=', $endDate);
+            });
+            
+        $totalBalita = $sasaranQuery->count();
+
+        // Hadir: balita yang memiliki rekam medis DALAM periode filter
+        $hadirQuery = (clone $patientQuery)
+            ->whereIn('category', ['balita', 'bayi', 'baduta']);
+            
+        if ($this->filterPeriode === 'semua') {
+            $hadirQuery->whereHas('medicalRecords', function ($q) use ($currentMonth, $currentYear) {
+                $q->whereMonth('visit_date', $currentMonth)
+                  ->whereYear('visit_date', $currentYear);
+            });
+        } else {
+            if ($startDate && $endDate) {
+                $hadirQuery->whereHas('medicalRecords', function ($q) use ($startDate, $endDate) {
+                    $q->whereBetween('visit_date', [$startDate, $endDate]);
+                });
+            }
+        }
+
+        $hadir = $hadirQuery->count();
         
         $tidakHadir = max(0, $totalBalita - $hadir);
         $persentase = $totalBalita > 0 ? round(($hadir / $totalBalita) * 100, 1) : 0;
