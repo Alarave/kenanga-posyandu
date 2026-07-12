@@ -24,76 +24,79 @@
         </div>
     </div>
 
-    {{-- ── Summary Stats (6 cards) ── --}}
-    <div class="grid grid-cols-2 lg:grid-cols-6 gap-4">
+    {{-- ── Summary Stats ── --}}
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 divide-y sm:divide-y-0 divide-x-0 sm:divide-x divide-slate-100">
 
-        {{-- Total Unit --}}
-        <div class="relative overflow-hidden bg-white rounded-[2rem] border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between group hover:shadow-md hover:border-teal-500/20 hover:-translate-y-1 transition-all duration-300">
-            <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-600 group-hover:bg-teal-600 group-hover:text-white group-hover:scale-105 group-hover:shadow-sm flex items-center justify-center transition-all duration-300">
-                <span class="material-symbols-outlined text-[18px]">home_health</span>
+            {{-- Total Unit --}}
+            <div class="flex items-center gap-4 px-6 py-5 group hover:bg-slate-50/60 transition-colors">
+                <div class="w-11 h-11 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center shrink-0 group-hover:bg-teal-600 group-hover:text-white transition-all duration-200">
+                    <span class="material-symbols-outlined text-[20px]">home_health</span>
+                </div>
+                <div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Total Unit</p>
+                    <p class="text-2xl font-black text-slate-900 tracking-tight leading-none">{{ $totalPosyandu }}</p>
+                </div>
             </div>
-            <div class="mt-4">
-                <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Total Unit</span>
-                <p class="text-3xl font-extrabold text-slate-900 tracking-tight">{{ $totalPosyandu }}</p>
-            </div>
-        </div>
 
-        {{-- Total Balita (includes bayi & baduta) --}}
-        <div class="relative overflow-hidden bg-white rounded-[2rem] border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between group hover:shadow-md hover:border-violet-500/20 hover:-translate-y-1 transition-all duration-300">
-            <div class="w-10 h-10 rounded-xl bg-violet-50 text-violet-600 group-hover:bg-violet-600 group-hover:text-white group-hover:scale-105 group-hover:shadow-sm flex items-center justify-center transition-all duration-300">
-                <span class="material-symbols-outlined text-[18px]">child_care</span>
+            {{-- Balita --}}
+            <div class="flex items-center gap-4 px-6 py-5 group hover:bg-slate-50/60 transition-colors">
+                <div class="w-11 h-11 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center shrink-0 group-hover:bg-violet-600 group-hover:text-white transition-all duration-200">
+                    <span class="material-symbols-outlined text-[20px]">child_care</span>
+                </div>
+                <div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Balita</p>
+                    <p class="text-2xl font-black text-slate-900 tracking-tight leading-none">{{ number_format($totalBalita) }}</p>
+                    <p class="text-[9px] text-slate-400 font-semibold mt-0.5">Bayi, Baduta & Balita</p>
+                </div>
             </div>
-            <div class="mt-4">
-                <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Balita</span>
-                <p class="text-3xl font-extrabold text-slate-900 tracking-tight">{{ number_format($totalBalita) }}</p>
-                <span class="text-[9px] text-slate-400 font-semibold mt-1 block">Bayi, Baduta & Balita</span>
-            </div>
-        </div>
 
-        {{-- Ibu Hamil --}}
-        <div class="relative overflow-hidden bg-white rounded-[2rem] border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between group hover:shadow-md hover:border-rose-500/20 hover:-translate-y-1 transition-all duration-300">
-            <div class="w-10 h-10 rounded-xl bg-rose-50 text-rose-600 group-hover:bg-rose-600 group-hover:text-white group-hover:scale-105 group-hover:shadow-sm flex items-center justify-center transition-all duration-300">
-                <span class="material-symbols-outlined text-[18px]">pregnant_woman</span>
+            {{-- Ibu Hamil --}}
+            <div class="flex items-center gap-4 px-6 py-5 group hover:bg-slate-50/60 transition-colors">
+                <div class="w-11 h-11 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center shrink-0 group-hover:bg-rose-600 group-hover:text-white transition-all duration-200">
+                    <span class="material-symbols-outlined text-[20px]">pregnant_woman</span>
+                </div>
+                <div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Ibu Hamil</p>
+                    <p class="text-2xl font-black text-slate-900 tracking-tight leading-none">{{ number_format($totalBumil) }}</p>
+                </div>
             </div>
-            <div class="mt-4">
-                <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Ibu Hamil</span>
-                <p class="text-3xl font-extrabold text-slate-900 tracking-tight">{{ number_format($totalBumil) }}</p>
-            </div>
-        </div>
 
-        {{-- Lansia --}}
-        <div class="relative overflow-hidden bg-white rounded-[2rem] border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between group hover:shadow-md hover:border-emerald-500/20 hover:-translate-y-1 transition-all duration-300">
-            <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white group-hover:scale-105 group-hover:shadow-sm flex items-center justify-center transition-all duration-300">
-                <span class="material-symbols-outlined text-[18px]">elderly</span>
+            {{-- Lansia --}}
+            <div class="flex items-center gap-4 px-6 py-5 group hover:bg-slate-50/60 transition-colors">
+                <div class="w-11 h-11 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 group-hover:bg-emerald-600 group-hover:text-white transition-all duration-200">
+                    <span class="material-symbols-outlined text-[20px]">elderly</span>
+                </div>
+                <div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Lansia</p>
+                    <p class="text-2xl font-black text-slate-900 tracking-tight leading-none">{{ number_format($totalLansia) }}</p>
+                </div>
             </div>
-            <div class="mt-4">
-                <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Lansia</span>
-                <p class="text-3xl font-extrabold text-slate-900 tracking-tight">{{ number_format($totalLansia) }}</p>
-            </div>
-        </div>
 
-        {{-- Anak Sekolah --}}
-        <div class="relative overflow-hidden bg-white rounded-[2rem] border border-slate-200/80 p-5 shadow-xs flex flex-col justify-between group hover:shadow-md hover:border-amber-500/20 hover:-translate-y-1 transition-all duration-300">
-            <div class="w-10 h-10 rounded-xl bg-amber-50 text-amber-600 group-hover:bg-amber-600 group-hover:text-white group-hover:scale-105 group-hover:shadow-sm flex items-center justify-center transition-all duration-300">
-                <span class="material-symbols-outlined text-[18px]">school</span>
+            {{-- Anak Sekolah --}}
+            <div class="flex items-center gap-4 px-6 py-5 group hover:bg-slate-50/60 transition-colors">
+                <div class="w-11 h-11 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0 group-hover:bg-amber-600 group-hover:text-white transition-all duration-200">
+                    <span class="material-symbols-outlined text-[20px]">school</span>
+                </div>
+                <div>
+                    <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Anak Sekolah</p>
+                    <p class="text-2xl font-black text-slate-900 tracking-tight leading-none">{{ number_format($totalAnakSekolah) }}</p>
+                </div>
             </div>
-            <div class="mt-4">
-                <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest block mb-1">Anak Sekolah</span>
-                <p class="text-3xl font-extrabold text-slate-900 tracking-tight">{{ number_format($totalAnakSekolah) }}</p>
-            </div>
-        </div>
 
-        {{-- Total Warga (hijau gradient) --}}
-        <div class="relative overflow-hidden bg-gradient-to-br from-emerald-600 to-teal-500 rounded-[2rem] p-5 text-white shadow-md border border-white/10 group hover:-translate-y-1 transition-all duration-300">
-            <div class="absolute -bottom-6 -right-6 w-24 h-24 bg-white/10 rounded-full blur-3xl"></div>
-            <div class="relative z-10 w-10 h-10 rounded-xl bg-white/15 backdrop-blur-md flex items-center justify-center border border-white/10">
-                <span class="material-symbols-outlined text-[18px] text-white">groups</span>
+            {{-- Total Warga (accent) --}}
+            <div class="flex items-center gap-4 px-6 py-5 bg-gradient-to-br from-teal-600 to-emerald-500 relative overflow-hidden">
+                <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,rgba(255,255,255,0.12),transparent)]"></div>
+                <div class="relative w-11 h-11 rounded-xl bg-white/20 text-white flex items-center justify-center shrink-0 border border-white/20">
+                    <span class="material-symbols-outlined text-[20px]">groups</span>
+                </div>
+                <div class="relative">
+                    <p class="text-[10px] font-black text-emerald-100 uppercase tracking-widest leading-none mb-1">Total Warga</p>
+                    <p class="text-2xl font-black text-white tracking-tight leading-none">{{ number_format($totalWarga) }}</p>
+                    <p class="text-[9px] text-emerald-100/70 font-semibold mt-0.5">Semua Kategori</p>
+                </div>
             </div>
-            <div class="relative z-10 mt-4">
-                <span class="text-[9px] font-black text-emerald-50/80 uppercase tracking-widest block mb-1">Total Warga</span>
-                <p class="text-3xl font-black tracking-tight">{{ number_format($totalWarga) }}</p>
-                <span class="text-[9px] text-emerald-50/60 font-bold uppercase tracking-widest mt-1 block">semua kategori</span>
-            </div>
+
         </div>
     </div>
 

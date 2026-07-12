@@ -54,11 +54,11 @@ class PosyanduManagement extends BaseAdminComponent
         $balitaCategories = ['balita', 'bayi', 'baduta'];
 
         $posyandus = Posyandu::withCount([
-            'patients' => fn ($q) => $q->where('status_mutasi', 'aktif'),
-            'patients as balita_count'     => fn ($q) => $q->where('status_mutasi', 'aktif')->whereIn('category', $balitaCategories),
-            'patients as ibu_hamil_count'  => fn ($q) => $q->where('status_mutasi', 'aktif')->where('category', 'ibu_hamil'),
-            'patients as lansia_count'     => fn ($q) => $q->where('status_mutasi', 'aktif')->where('category', 'lansia'),
-            'patients as anak_sekolah_count' => fn ($q) => $q->where('status_mutasi', 'aktif')->where('category', 'anak_sekolah'),
+            'patients',
+            'patients as balita_count'       => fn ($q) => $q->whereIn('category', $balitaCategories),
+            'patients as ibu_hamil_count'    => fn ($q) => $q->where('category', 'ibu_hamil'),
+            'patients as lansia_count'       => fn ($q) => $q->where('category', 'lansia'),
+            'patients as anak_sekolah_count' => fn ($q) => $q->where('category', 'anak_sekolah'),
         ])
             ->when($this->search, function ($q) {
                 $searchTerm = '%'.strtolower($this->search).'%';
@@ -69,14 +69,19 @@ class PosyanduManagement extends BaseAdminComponent
             ->latest()
             ->paginate(10);
 
+        $totalBalita      = Patient::whereIn('category', $balitaCategories)->count();
+        $totalBumil       = Patient::where('category', 'ibu_hamil')->count();
+        $totalLansia      = Patient::where('category', 'lansia')->count();
+        $totalAnakSekolah = Patient::where('category', 'anak_sekolah')->count();
+
         return view('livewire.admin.posyandu-management.index', [
-            'posyandus'      => $posyandus,
-            'totalPosyandu'  => $posyandus->total(),
-            'totalWarga'     => Patient::where('status_mutasi', 'aktif')->count(),
-            'totalBalita'    => Patient::where('status_mutasi', 'aktif')->whereIn('category', $balitaCategories)->count(),
-            'totalBumil'     => Patient::where('status_mutasi', 'aktif')->where('category', 'ibu_hamil')->count(),
-            'totalLansia'    => Patient::where('status_mutasi', 'aktif')->where('category', 'lansia')->count(),
-            'totalAnakSekolah' => Patient::where('status_mutasi', 'aktif')->where('category', 'anak_sekolah')->count(),
+            'posyandus'        => $posyandus,
+            'totalPosyandu'    => $posyandus->total(),
+            'totalBalita'      => $totalBalita,
+            'totalBumil'       => $totalBumil,
+            'totalLansia'      => $totalLansia,
+            'totalAnakSekolah' => $totalAnakSekolah,
+            'totalWarga'       => $totalBalita + $totalBumil + $totalLansia + $totalAnakSekolah,
         ]);
     }
 }
