@@ -29,13 +29,5 @@
             </div>
         </div>
 
-        <div class="hidden sm:flex items-center gap-3">
-            <button class="w-10 h-10 flex items-center justify-center rounded-full border border-slate-100 text-slate-400 hover:text-indigo-600 hover:bg-slate-50 transition-all">
-                <span class="material-symbols-outlined text-[20px]">share</span>
-            </button>
-            <button class="w-10 h-10 flex items-center justify-center rounded-full border border-slate-100 text-slate-400 hover:text-red-500 hover:bg-slate-50 transition-all">
-                <span class="material-symbols-outlined text-[20px]">bookmark</span>
-            </button>
-        </div>
     </div>
 </header>

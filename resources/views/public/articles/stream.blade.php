@@ -64,6 +64,17 @@
                         <span class="flex items-center gap-1.5">
                             <span class="material-symbols-outlined text-[14px]">schedule</span>
                             {{ ceil(str_word_count(\App\Services\ArticleService::getExcerpt($article->content, 999999)) / 200) }} mnt baca
+                        </span>
+                    </div>
+                    
+                    {{-- Social/Bookmark Action Buttons --}}
+                    <div class="flex items-center gap-2 opacity-65 group-hover:opacity-100 transition-opacity duration-300">
+                        <button class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 transition-all duration-300" title="Bagikan">
+                            <span class="material-symbols-outlined text-[18px]">share</span>
+                        </button>
+                        <button class="w-8 h-8 rounded-full flex items-center justify-center text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all duration-300" title="Simpan">
+                            <span class="material-symbols-outlined text-[18px]">bookmark</span>
+                        </button>
                     </div>
                 </div>
             </div>
