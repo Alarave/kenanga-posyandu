@@ -15,9 +15,22 @@ class PublicController extends Controller
      */
     public function home()
     {
+        $now = now();
+
+        // 1. Update any past schedules to 'completed'
+        Schedule::where('status', '!=', 'completed')
+            ->where('end_time', '<', $now)
+            ->update(['status' => 'completed']);
+
+        // 2. Update any currently running schedules to 'ongoing'
+        Schedule::where('status', 'upcoming')
+            ->where('start_time', '<=', $now)
+            ->where('end_time', '>=', $now)
+            ->update(['status' => 'ongoing']);
+
         // Get 3 upcoming or ongoing schedules (not ended yet and not completed/cancelled)
         $schedules = Schedule::with('posyandu')
-            ->where('end_time', '>=', now())
+            ->where('end_time', '>=', $now)
             ->whereNotIn('status', ['completed', 'cancelled', 'Completed', 'Cancelled'])
             ->orderBy('start_time', 'asc')
             ->limit(3)
