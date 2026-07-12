@@ -662,13 +662,21 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
         $rataRataUsiaKehamilan = $validBumilCount > 0 ? round($totalBumilWeeks / $validBumilCount, 1) : 0;
 
         // ── DASH-06: Kehadiran Balita ──
-        $totalBalitaForHadir = (clone $patientQuery)->whereIn('category', ['balita', 'bayi', 'baduta'])->count();
+        // Untuk snapshot, hitung kehadiran berdasarkan balita yang memiliki kunjungan di bulan ini
+        $totalBalitaForHadir = (clone $medicalRecordQuery)
+            ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+            ->whereMonth('visit_date', $currentMonth)
+            ->whereYear('visit_date', $currentYear)
+            ->distinct('patient_id')
+            ->count('patient_id');
+        
         $hadir = (clone $medicalRecordQuery)
             ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
             ->whereMonth('visit_date', $currentMonth)
             ->whereYear('visit_date', $currentYear)
             ->distinct('patient_id')
             ->count('patient_id');
+        
         $tidakHadir = max(0, $totalBalitaForHadir - $hadir);
         $persentaseHadir = $totalBalitaForHadir > 0 ? round(($hadir / $totalBalitaForHadir) * 100, 1) : 0;
         $kehadiranBalita = [

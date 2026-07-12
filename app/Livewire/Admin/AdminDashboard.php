@@ -188,6 +188,19 @@ class AdminDashboard extends BaseAdminComponent
             }
         }
 
+        // 3. Risk Level Filtering (for bumil/ibu hamil only)
+        if ($this->filterRisiko === 'risiko_tinggi') {
+            if ($type === 'patient') {
+                $query->whereHas('medicalRecords', function ($q) {
+                    $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+                    $q->whereIn('id', $latestRecordSubquery)
+                      ->whereJsonExtract('data', '$.is_high_risk') = true;
+                });
+            } elseif ($type === 'medical_record') {
+                $query->whereJsonExtract('data', '$.is_high_risk') = true;
+            }
+        }
+
         return $query;
     }
 
@@ -435,6 +448,13 @@ class AdminDashboard extends BaseAdminComponent
                                 ->orWhere('birth_date', '<', now()->subYears(35));
                         });
                 })
+                ->when($this->filterRisiko === 'risiko_tinggi', function ($query) {
+                    return $query->whereHas('medicalRecords', function ($q) {
+                        $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+                        $q->whereIn('id', $latestRecordSubquery)
+                          ->whereJsonExtract('data', '$.is_high_risk') = true;
+                    });
+                })
                 ->with(['medicalRecords' => fn ($q) => $q->latest('visit_date')->limit(1)])
                 ->limit(10)
                 ->get();
@@ -563,12 +583,30 @@ class AdminDashboard extends BaseAdminComponent
 
     protected function getKehadiranBalita(Builder $patientQuery, Builder $medicalRecordQuery, $currentMonth, $currentYear): array
     {
-        $totalBalita = (clone $patientQuery)->whereIn('category', ['balita', 'bayi', 'baduta'])->count();
-        $hadirQuery = (clone $medicalRecordQuery)->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))->distinct('patient_id');
+        // Hitung total balita yang seharusnya hadir berdasarkan periode filter
         if ($this->filterPeriode === 'semua') {
-            $hadirQuery->whereMonth('visit_date', $currentMonth)->whereYear('visit_date', $currentYear);
+            // Untuk filter "semua", hitung balita yang memiliki rekam medis di bulan ini
+            $totalBalita = (clone $medicalRecordQuery)
+                ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+                ->whereMonth('visit_date', $currentMonth)
+                ->whereYear('visit_date', $currentYear)
+                ->distinct('patient_id')
+                ->count('patient_id');
+            
+            $hadirQuery = (clone $medicalRecordQuery)
+                ->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))
+                ->whereMonth('visit_date', $currentMonth)
+                ->whereYear('visit_date', $currentYear)
+                ->distinct('patient_id');
+            
+            $hadir = $hadirQuery->count('patient_id');
+        } else {
+            // Untuk filter custom, gunakan total balita dari patient query
+            $totalBalita = (clone $patientQuery)->whereIn('category', ['balita', 'bayi', 'baduta'])->count();
+            $hadirQuery = (clone $medicalRecordQuery)->whereHas('patient', fn ($q) => $q->whereIn('category', ['balita', 'bayi', 'baduta']))->distinct('patient_id');
+            $hadir = $hadirQuery->count('patient_id');
         }
-        $hadir = $hadirQuery->count('patient_id');
+        
         $tidakHadir = max(0, $totalBalita - $hadir);
         $persentase = $totalBalita > 0 ? round(($hadir / $totalBalita) * 100, 1) : 0;
 
