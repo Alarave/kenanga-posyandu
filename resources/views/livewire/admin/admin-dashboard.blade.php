@@ -1246,7 +1246,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($recentActivities as $activity)
+                        @forelse ($recentActivities as $activity)
                             <tr class="table-row-hover transition-colors dark:hover:bg-slate-800/40" style="border-bottom:1px solid rgba(0,0,0,0.04);" wire:key="activity-row-{{ $activity->id }}">
                                 <td class="px-6 py-4">
                                     <div class="flex items-center gap-3">
@@ -1273,7 +1273,13 @@
                                     {{ $activity->user->name ?? '-' }}
                                 </td>
                             </tr>
-                        @endforeach
+                        @empty
+                            <tr>
+                                <td colspan="4" class="px-6 py-12 text-center text-slate-400 text-sm">
+                                    Belum ada data pemeriksaan terbaru.
+                                </td>
+                            </tr>
+                        @endforelse
                     </tbody>
                 </table>
             </div>
