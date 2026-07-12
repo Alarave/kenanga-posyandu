@@ -168,8 +168,8 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <div class="space-y-2">
-                        <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Nama Lengkap Ibu *</label>
+                    <div class="space-y-2 md:col-span-2">
+                        <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Nama Lengkap / NIK Ibu *</label>
                         <select name="patient_id" id="ibu-hamil-select" required placeholder="Cari nama atau NIK ibu hamil..."
                                 class="w-full h-12 border @error('patient_id') border-rose-500 bg-rose-50/20 @else border-slate-200 @enderror rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all">
                             <option value="">Cari nama atau NIK ibu hamil...</option>
@@ -189,14 +189,6 @@
                             @endforeach
                         </select>
                         @error('patient_id')
-                            <p class="text-xs text-rose-500 mt-1 font-semibold">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">NIK</label>
-                        <input type="text" name="id_number" placeholder="16 digit NIK" value="{{ old('id_number') }}"
-                               class="w-full h-12 px-4 border @error('id_number') border-rose-500 bg-rose-50/20 @else border-slate-200 @enderror rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:border-teal-500 focus:ring-4 focus:ring-teal-500/5 transition-all">
-                        @error('id_number')
                             <p class="text-xs text-rose-500 mt-1 font-semibold">{{ $message }}</p>
                         @enderror
                     </div>
@@ -782,8 +774,8 @@
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div class="space-y-2">
-                        <label class="text-xs font-bold text-slate-600">Nama Lengkap</label>
+                    <div class="space-y-2 md:col-span-2">
+                        <label class="text-xs font-bold text-slate-600">Nama Lengkap / NIK Lansia</label>
                         <select name="patient_id" id="lansia-select" required placeholder="Cari nama atau NIK lansia..."
                                 class="w-full h-[44px] px-4 border @error('patient_id') border-rose-500 bg-rose-50/20 @else border-[#D9D9D9] @enderror rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:border-[#006C49] focus:ring-4 focus:ring-[#006C49]/5 transition-all bg-white">
                             <option value="">Cari nama atau NIK lansia...</option>
@@ -802,14 +794,6 @@
                             @endforeach
                         </select>
                         @error('patient_id')
-                            <p class="text-xs text-rose-500 mt-1 font-semibold">{{ $message }}</p>
-                        @enderror
-                    </div>
-                    <div class="space-y-2">
-                        <label class="text-xs font-bold text-slate-600">NIK (Nomor Induk Kependudukan)</label>
-                        <input type="text" name="id_number" placeholder="16 digit nomor identitas" value="{{ old('id_number') }}" required
-                               class="w-full h-[44px] px-4 border @error('id_number') border-rose-500 bg-rose-50/20 @else border-[#D9D9D9] @enderror rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:border-[#006C49] focus:ring-4 focus:ring-[#006C49]/5 transition-all bg-white">
-                        @error('id_number')
                             <p class="text-xs text-rose-500 mt-1 font-semibold">{{ $message }}</p>
                         @enderror
                     </div>
