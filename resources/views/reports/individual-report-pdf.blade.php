@@ -110,12 +110,12 @@
             color: #991b1b;
         }
         .badge-info {
-            background-color: #dbeafe;
-            color: #1e40af;
+            background-color: #fee2e2;
+            color: #991b1b;
         }
         .badge-orange {
-            background-color: #ffedd5;
-            color: #ea580c;
+            background-color: #fee2e2;
+            color: #991b1b;
         }
 
         .chart-box {
