@@ -146,9 +146,7 @@ class AboutPageService
      */
     public function getSasaranCount(): int
     {
-        return Patient::where('status_mutasi', 'aktif')
-            ->whereIn('category', ['balita', 'bayi', 'baduta', 'ibu_hamil', 'lansia'])
-            ->count();
+        return Patient::where('status_mutasi', 'aktif')->count();
     }
 
     /**

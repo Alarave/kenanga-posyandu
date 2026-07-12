@@ -38,6 +38,8 @@ class AdminDashboard extends BaseAdminComponent
 
     public $totalLansia = 0;
 
+    public $totalWarga = 0;
+
     public $totalPemeriksaan = 0;
 
     public $totalImunisasi = 0;
@@ -578,9 +580,10 @@ class AdminDashboard extends BaseAdminComponent
         $currentMonth = now()->month;
         $currentYear = now()->year;
 
-        $this->totalBalita = (clone $patientQuery)->whereIn('category', ['balita', 'bayi', 'baduta'])->count();
-        $this->totalIbuHamil = (clone $patientQuery)->where('category', 'ibu_hamil')->count();
-        $this->totalLansia = (clone $patientQuery)->where('category', 'lansia')->count();
+        $this->totalBalita = (clone $patientQuery)->where('status_mutasi', 'aktif')->whereIn('category', ['balita', 'bayi', 'baduta'])->count();
+        $this->totalIbuHamil = (clone $patientQuery)->where('status_mutasi', 'aktif')->where('category', 'ibu_hamil')->count();
+        $this->totalLansia = (clone $patientQuery)->where('status_mutasi', 'aktif')->where('category', 'lansia')->count();
+        $this->totalWarga = (clone $patientQuery)->where('status_mutasi', 'aktif')->count();
 
         if ($this->filterPeriode === 'semua') {
             $this->kunjunganBaru = (clone $medicalRecordQuery)->whereMonth('visit_date', $currentMonth)->whereYear('visit_date', $currentYear)->count();

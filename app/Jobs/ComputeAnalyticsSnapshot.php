@@ -554,10 +554,11 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
         $currentYear = now()->year;
 
         $counts = (object) [
-            'balita' => (clone $patientQuery)->whereIn('category', ['balita', 'bayi', 'baduta'])->count(),
-            'ibu_hamil' => (clone $patientQuery)->where('category', 'ibu_hamil')->count(),
-            'remaja' => (clone $patientQuery)->where('category', 'remaja')->count(),
-            'lansia' => (clone $patientQuery)->where('category', 'lansia')->count(),
+            'balita' => (clone $patientQuery)->where('status_mutasi', 'aktif')->whereIn('category', ['balita', 'bayi', 'baduta'])->count(),
+            'ibu_hamil' => (clone $patientQuery)->where('status_mutasi', 'aktif')->where('category', 'ibu_hamil')->count(),
+            'remaja' => (clone $patientQuery)->where('status_mutasi', 'aktif')->where('category', 'remaja')->count(),
+            'lansia' => (clone $patientQuery)->where('status_mutasi', 'aktif')->where('category', 'lansia')->count(),
+            'total_warga' => (clone $patientQuery)->where('status_mutasi', 'aktif')->count(),
         ];
 
         $kunjunganBaru = (clone $medicalRecordQuery)
@@ -833,6 +834,7 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
             'totalIbuHamil' => $counts->ibu_hamil ?? 0,
             'totalRemaja' => $counts->remaja ?? 0,
             'totalLansia' => $counts->lansia ?? 0,
+            'totalWarga' => $counts->total_warga ?? 0,
             'kunjunganBaru' => $kunjunganBaru,
             'totalPemeriksaan' => $totalPemeriksaan,
             'totalImunisasi' => $totalImunisasi,
