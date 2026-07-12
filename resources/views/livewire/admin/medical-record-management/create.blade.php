@@ -386,10 +386,18 @@
                                 @enderror
                             </div>
                             <div class="space-y-1">
-                                <label class="text-[10px] font-bold text-slate-400 uppercase">Tekanan Darah (mmHg)</label>
-                                <input type="text" name="blood_pressure" placeholder="120/80" value="{{ old('blood_pressure') }}"
-                                       class="w-full h-10 px-3 border @error('blood_pressure') border-rose-500 bg-rose-50/20 @else border-slate-200 @enderror rounded-lg text-xs font-semibold text-slate-700 focus:outline-none focus:border-teal-500">
-                                @error('blood_pressure')
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Tekanan Darah Sistolik (mmHg)</label>
+                                <input type="number" name="systolic_bp" placeholder="120" value="{{ old('systolic_bp') }}"
+                                       class="w-full h-10 px-3 border @error('systolic_bp') border-rose-500 bg-rose-50/20 @else border-slate-200 @enderror rounded-lg text-xs font-semibold text-slate-700 focus:outline-none focus:border-teal-500">
+                                @error('systolic_bp')
+                                    <p class="text-[10px] text-rose-500 mt-0.5 font-semibold">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Tekanan Darah Diastolik (mmHg)</label>
+                                <input type="number" name="diastolic_bp" placeholder="80" value="{{ old('diastolic_bp') }}"
+                                       class="w-full h-10 px-3 border @error('diastolic_bp') border-rose-500 bg-rose-50/20 @else border-slate-200 @enderror rounded-lg text-xs font-semibold text-slate-700 focus:outline-none focus:border-teal-500">
+                                @error('diastolic_bp')
                                     <p class="text-[10px] text-rose-500 mt-0.5 font-semibold">{{ $message }}</p>
                                 @enderror
                             </div>
@@ -579,10 +587,18 @@
                                 @enderror
                             </div>
                             <div class="space-y-1">
-                                <label class="text-[10px] font-bold text-slate-400 uppercase">Tekanan Darah</label>
-                                <input type="text" id="postpartum_bp" placeholder="Tekanan darah"
-                                       class="w-full h-10 px-3 border @error('blood_pressure') border-rose-500 bg-rose-50/20 @else border-slate-200 @enderror rounded-lg text-xs font-semibold text-slate-700 focus:outline-none focus:border-teal-500">
-                                @error('blood_pressure')
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Tekanan Darah Sistolik</label>
+                                <input type="number" id="postpartum_systolic_bp" placeholder="Sistolik"
+                                       class="w-full h-10 px-3 border @error('systolic_bp') border-rose-500 bg-rose-50/20 @else border-slate-200 @enderror rounded-lg text-xs font-semibold text-slate-700 focus:outline-none focus:border-teal-500">
+                                @error('systolic_bp')
+                                    <p class="text-[10px] text-rose-500 mt-0.5 font-semibold">{{ $message }}</p>
+                                @enderror
+                            </div>
+                            <div class="space-y-1">
+                                <label class="text-[10px] font-bold text-slate-400 uppercase">Tekanan Darah Diastolik</label>
+                                <input type="number" id="postpartum_diastolic_bp" placeholder="Diastolik"
+                                       class="w-full h-10 px-3 border @error('diastolic_bp') border-rose-500 bg-rose-50/20 @else border-slate-200 @enderror rounded-lg text-xs font-semibold text-slate-700 focus:outline-none focus:border-teal-500">
+                                @error('diastolic_bp')
                                     <p class="text-[10px] text-rose-500 mt-0.5 font-semibold">{{ $message }}</p>
                                 @enderror
                             </div>
@@ -944,10 +960,18 @@
                         @enderror
                     </div>
                     <div class="md:col-span-3 space-y-2">
-                        <label class="text-xs font-bold text-slate-600">Tekanan Darah (mmHg)</label>
-                        <input type="text" name="blood_pressure" placeholder="120/80" value="{{ old('blood_pressure') }}"
-                               class="w-full h-[44px] px-4 border @error('blood_pressure') border-rose-500 bg-rose-50/20 @else border-[#D9D9D9] @enderror rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:border-[#006C49] focus:ring-4 focus:ring-[#006C49]/5 transition-all bg-white">
-                        @error('blood_pressure')
+                        <label class="text-xs font-bold text-slate-600">Tekanan Darah Sistolik (mmHg)</label>
+                        <input type="number" name="systolic_bp" placeholder="120" value="{{ old('systolic_bp') }}"
+                               class="w-full h-[44px] px-4 border @error('systolic_bp') border-rose-500 bg-rose-50/20 @else border-[#D9D9D9] @enderror rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:border-[#006C49] focus:ring-4 focus:ring-[#006C49]/5 transition-all bg-white">
+                        @error('systolic_bp')
+                            <p class="text-xs text-rose-500 mt-1 font-semibold">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <div class="md:col-span-3 space-y-2">
+                        <label class="text-xs font-bold text-slate-600">Tekanan Darah Diastolik (mmHg)</label>
+                        <input type="number" name="diastolic_bp" placeholder="80" value="{{ old('diastolic_bp') }}"
+                               class="w-full h-[44px] px-4 border @error('diastolic_bp') border-rose-500 bg-rose-50/20 @else border-[#D9D9D9] @enderror rounded-xl text-sm font-semibold text-slate-700 focus:outline-none focus:border-[#006C49] focus:ring-4 focus:ring-[#006C49]/5 transition-all bg-white">
+                        @error('diastolic_bp')
                             <p class="text-xs text-rose-500 mt-1 font-semibold">{{ $message }}</p>
                         @enderror
                     </div>
@@ -2104,11 +2128,13 @@ document.addEventListener('DOMContentLoaded', function() {
     const birthDateInput = document.getElementById('birth_date');
     const ageDisplay = document.getElementById('age_display');
     const postpartumWeight = document.getElementById('postpartum_weight');
-    const postpartumBp = document.getElementById('postpartum_bp');
+    const postpartumSystolicBp = document.getElementById('postpartum_systolic_bp');
+    const postpartumDiastolicBp = document.getElementById('postpartum_diastolic_bp');
     const mainWeight = document.querySelector('input[name="weight"]');
-    const mainBp = document.querySelector('input[name="blood_pressure"]');
+    const mainSystolicBp = document.querySelector('input[name="systolic_bp"]');
+    const mainDiastolicBp = document.querySelector('input[name="diastolic_bp"]');
 
-    // Sync Section 3 BB and TD to standard fields
+    // Sync Section 3 BB to standard fields
     if (postpartumWeight && mainWeight) {
         postpartumWeight.addEventListener('input', function() {
             mainWeight.value = postpartumWeight.value;
@@ -2118,12 +2144,22 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    if (postpartumBp && mainBp) {
-        postpartumBp.addEventListener('input', function() {
-            mainBp.value = postpartumBp.value;
+    // Sync Section 3 TD Sistolik dan Diastolik ke standard fields
+    if (postpartumSystolicBp && mainSystolicBp) {
+        postpartumSystolicBp.addEventListener('input', function() {
+            mainSystolicBp.value = postpartumSystolicBp.value;
         });
-        mainBp.addEventListener('input', function() {
-            postpartumBp.value = mainBp.value;
+        mainSystolicBp.addEventListener('input', function() {
+            postpartumSystolicBp.value = mainSystolicBp.value;
+        });
+    }
+
+    if (postpartumDiastolicBp && mainDiastolicBp) {
+        postpartumDiastolicBp.addEventListener('input', function() {
+            mainDiastolicBp.value = postpartumDiastolicBp.value;
+        });
+        mainDiastolicBp.addEventListener('input', function() {
+            postpartumDiastolicBp.value = mainDiastolicBp.value;
         });
     }
 
