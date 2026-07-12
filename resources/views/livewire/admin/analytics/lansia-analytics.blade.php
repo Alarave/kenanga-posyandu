@@ -238,49 +238,8 @@
         </div>
     </div>
     
-    {{-- Row 3: Gangguan Indra & Rujukan Lansia --}}
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-        {{-- Gangguan Indra --}}
-        <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between relative overflow-hidden">
-            <div>
-                <div class="flex items-center gap-3 mb-6">
-                    <span class="material-symbols-outlined text-teal-600 text-[26px]">medical_information</span>
-                    <div>
-                        <h3 class="text-lg font-bold text-slate-900">Gangguan Indra</h3>
-                        <p class="text-xs text-slate-500 font-semibold mt-0.5">Analisis fungsi indera sensorik lansia</p>
-                    </div>
-                </div>
-
-                <div class="space-y-4">
-
-                    {{-- Gangguan Penglihatan --}}
-                    <div wire:click="$parent.drillDown('Lansia - Gangguan Penglihatan', 'lansia_eye_issue', {{ $selectedMonth ?: 'null' }})"
-                         class="cursor-pointer hover:bg-slate-50 px-2 -mx-2 py-1 rounded-xl transition-colors group/item"
-                         title="Klik untuk melihat daftar lansia dengan gangguan penglihatan">
-                        <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-1.5">
-                            <span class="hover:underline hover:text-indigo-600 transition-colors">Gangguan Penglihatan</span>
-                            <span class="text-slate-900 font-extrabold">{{ $sensoryObesityStats['eyeIssue'] }} Jiwa ({{ $sensoryObesityStats['eyePct'] }}%)</span>
-                        </div>
-                        <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                            <div class="h-full bg-indigo-500 rounded-full transition-all" style="width: {{ $sensoryObesityStats['eyePct'] }}%"></div>
-                        </div>
-                    </div>
-
-                    {{-- Gangguan Pendengaran --}}
-                    <div wire:click="$parent.drillDown('Lansia - Gangguan Pendengaran', 'lansia_ear_issue', {{ $selectedMonth ?: 'null' }})"
-                         class="cursor-pointer hover:bg-slate-50 px-2 -mx-2 py-1 rounded-xl transition-colors group/item"
-                         title="Klik untuk melihat daftar lansia dengan gangguan pendengaran">
-                        <div class="flex justify-between items-center text-xs font-bold text-slate-700 mb-1.5">
-                            <span class="hover:underline hover:text-pink-600 transition-colors">Gangguan Pendengaran</span>
-                            <span class="text-slate-900 font-extrabold">{{ $sensoryObesityStats['earIssue'] }} Jiwa ({{ $sensoryObesityStats['earPct'] }}%)</span>
-                        </div>
-                        <div class="h-2.5 w-full bg-slate-100 rounded-full overflow-hidden">
-                            <div class="h-full bg-pink-500 rounded-full transition-all" style="width: {{ $sensoryObesityStats['earPct'] }}%"></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+    {{-- Row 3: Rujukan & Skrining Lansia --}}
+    <div class="grid grid-cols-1 gap-6 mt-6">
 
         {{-- Skrining Khusus Lansia & Rujukan --}}
         <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex flex-col justify-between relative overflow-hidden">

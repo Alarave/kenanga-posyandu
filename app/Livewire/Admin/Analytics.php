@@ -849,15 +849,15 @@ class Analytics extends BaseAdminComponent
                     } elseif (str_contains($sf, 'BCG')) {
                         $q->where('vaccine_name', 'like', '%BCG%');
                     } elseif (str_contains($sf, 'POLIO')) {
-                        $q->where('vaccine_name', 'like', "%{$sf}%");
+                        $q->where('vaccine_name', 'like', "%{$statusFilter}%");
                     } elseif (str_contains($sf, 'DPT')) {
-                        $q->where('vaccine_name', 'like', "%{$sf}%")->orWhere('vaccine_name', 'like', "%PENTABIO%");
+                        $q->where('vaccine_name', 'like', "%{$statusFilter}%")->orWhere('vaccine_name', 'like', "%PENTABIO%");
                     } elseif (str_contains($sf, 'PCV')) {
-                        $q->where('vaccine_name', 'like', "%{$sf}%");
+                        $q->where('vaccine_name', 'like', "%{$statusFilter}%");
                     } elseif (str_contains($sf, 'RV')) {
-                        $q->where('vaccine_name', 'like', "%{$sf}%")->orWhere('vaccine_name', 'like', "%ROTAVIRUS%");
+                        $q->where('vaccine_name', 'like', "%{$statusFilter}%")->orWhere('vaccine_name', 'like', "%ROTAVIRUS%");
                     } elseif (str_contains($sf, 'IPV')) {
-                        $q->where('vaccine_name', 'like', "%{$sf}%");
+                        $q->where('vaccine_name', 'like', "%{$statusFilter}%");
                     } elseif (str_contains($sf, 'MR')) {
                         $q->where('vaccine_name', 'like', '%MR%')->orWhere('vaccine_name', 'like', '%CAMPAK%');
                     } else {
