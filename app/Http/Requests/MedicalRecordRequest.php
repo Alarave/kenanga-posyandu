@@ -107,7 +107,7 @@ class MedicalRecordRequest extends FormRequest
             'imt' => 'nullable|numeric',
             'education' => 'nullable|string',
             'gender' => 'nullable|in:L,P',
-            'category' => 'nullable|string|in:ibu_hamil,lansia,balita',
+            'category' => 'nullable|string|in:ibu_hamil,lansia,balita,bayi,baduta,anak_sekolah',
 
             // Section 2 additions
             'gestational_age' => 'nullable|string|max:255',

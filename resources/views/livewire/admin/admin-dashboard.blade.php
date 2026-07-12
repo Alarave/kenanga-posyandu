@@ -1191,7 +1191,7 @@
 
     {{-- Left: 8 Columns (Riwayat Aktivitas - Stretched) --}}
     <div class="lg:col-span-8 flex">
-        <div class="widget-card off-screen-widget w-full flex flex-col justify-between" x-data="{ activeTab: 'pemeriksaan' }">
+        <div class="widget-card off-screen-widget w-full flex flex-col gap-5" x-data="{ activeTab: 'pemeriksaan' }">
                     {{-- Riwayat Aktivitas & Imunisasi Tabbed Widget --}}
         
             <div class="widget-header flex-col sm:flex-row gap-4 items-start sm:items-center">
