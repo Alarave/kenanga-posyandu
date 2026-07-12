@@ -188,32 +188,100 @@ class AdminDashboard extends BaseAdminComponent
             }
         }
 
-        // 3. Risk Level Filtering (for bumil/ibu hamil only)
+        // 3. Risk Level Filtering
         if ($this->filterRisiko === 'risiko_tinggi') {
             if ($type === 'patient') {
                 $query->where(function ($q) {
-                    $q->whereHas('medicalRecords', function ($mq) {
-                        $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
-                        $mq->whereIn('id', $latestRecordSubquery)
-                           ->where(function ($sq) {
-                               $sq->where('upper_arm_circumference', '<', 23.5)
-                                  ->orWhere('systolic_bp', '>=', 140)
-                                  ->orWhere('diastolic_bp', '>=', 90);
-                           });
-                    })->orWhere(function ($pq) {
-                        $pq->where('birth_date', '>', now()->subYears(20))
-                           ->orWhere('birth_date', '<', now()->subYears(35));
+                    // Category 1: Ibu Hamil
+                    $q->where(function ($sub) {
+                        $sub->where('category', 'ibu_hamil')
+                            ->where(function ($riskQuery) {
+                                $riskQuery->whereHas('medicalRecords', function ($mq) {
+                                    $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+                                    $mq->whereIn('id', $latestRecordSubquery)
+                                       ->where(function ($sq) {
+                                           $sq->where('upper_arm_circumference', '<', 23.5)
+                                              ->orWhere('systolic_bp', '>=', 140)
+                                              ->orWhere('diastolic_bp', '>=', 90);
+                                       });
+                                })->orWhere(function ($pq) {
+                                    $pq->where('birth_date', '>', now()->subYears(20))
+                                       ->orWhere('birth_date', '<', now()->subYears(35));
+                                });
+                            });
+                    })
+                    // Category 2: Lansia
+                    ->orWhere(function ($sub) {
+                        $sub->where('category', 'lansia')
+                            ->where(function ($riskQuery) {
+                                $riskQuery->whereHas('medicalRecords', function ($mq) {
+                                    $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+                                    $mq->whereIn('id', $latestRecordSubquery)
+                                       ->where(function ($sq) {
+                                           $sq->where('systolic_bp', '>=', 140)
+                                              ->orWhere('diastolic_bp', '>=', 90)
+                                              ->orWhere('blood_sugar', '>=', 200)
+                                              ->orWhere('cholesterol', '>=', 200)
+                                              ->orWhere('uric_acid', '>=', 7.0);
+                                       });
+                                })->orWhere('birth_date', '<=', now()->subYears(70));
+                            });
+                    })
+                    // Category 3: Balita / Bayi / Baduta
+                    ->orWhere(function ($sub) {
+                        $sub->whereIn('category', ['balita', 'bayi', 'baduta'])
+                            ->whereHas('medicalRecords', function ($mq) {
+                                $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+                                $mq->whereIn('id', $latestRecordSubquery)
+                                   ->where(function ($sq) {
+                                       $sq->whereIn('nutrition_status', ['Berat Badan Kurang', 'Berat Badan Sangat Kurang', 'Gizi Kurang', 'Gizi Buruk'])
+                                          ->orWhereIn('stunting_status', [
+                                              MedicalRecord::STATUS_TB_U_PENDEK,
+                                              MedicalRecord::STATUS_TB_U_SANGAT_PENDEK,
+                                          ])
+                                          ->orWhereIn('wasting_status', ['Gizi Kurang', 'Gizi Buruk']);
+                                   });
+                            });
                     });
                 });
             } elseif ($type === 'medical_record') {
                 $query->where(function ($q) {
-                    $q->whereHas('patient', function ($pq) {
-                        $pq->where('birth_date', '>', now()->subYears(20))
-                           ->orWhere('birth_date', '<', now()->subYears(35));
-                    })->orWhere(function ($mq) {
-                        $mq->where('upper_arm_circumference', '<', 23.5)
-                           ->orWhere('systolic_bp', '>=', 140)
-                           ->orWhere('diastolic_bp', '>=', 90);
+                    // Category 1: Ibu Hamil records
+                    $q->where(function ($sub) {
+                        $sub->whereHas('patient', fn ($pq) => $pq->where('category', 'ibu_hamil'))
+                            ->where(function ($riskQuery) {
+                                $riskQuery->whereHas('patient', function ($pq) {
+                                    $pq->where('birth_date', '>', now()->subYears(20))
+                                       ->orWhere('birth_date', '<', now()->subYears(35));
+                                })->orWhere('upper_arm_circumference', '<', 23.5)
+                                  ->orWhere('systolic_bp', '>=', 140)
+                                  ->orWhere('diastolic_bp', '>=', 90);
+                            });
+                    })
+                    // Category 2: Lansia records
+                    ->orWhere(function ($sub) {
+                        $sub->whereHas('patient', fn ($pq) => $pq->where('category', 'lansia'))
+                            ->where(function ($riskQuery) {
+                                $riskQuery->whereHas('patient', function ($pq) {
+                                    $pq->where('birth_date', '<=', now()->subYears(70));
+                                })->orWhere('systolic_bp', '>=', 140)
+                                  ->orWhere('diastolic_bp', '>=', 90)
+                                  ->orWhere('blood_sugar', '>=', 200)
+                                  ->orWhere('cholesterol', '>=', 200)
+                                  ->orWhere('uric_acid', '>=', 7.0);
+                            });
+                    })
+                    // Category 3: Balita records
+                    ->orWhere(function ($sub) {
+                        $sub->whereHas('patient', fn ($pq) => $pq->whereIn('category', ['balita', 'bayi', 'baduta']))
+                            ->where(function ($riskQuery) {
+                                $riskQuery->whereIn('nutrition_status', ['Berat Badan Kurang', 'Berat Badan Sangat Kurang', 'Gizi Kurang', 'Gizi Buruk'])
+                                          ->orWhereIn('stunting_status', [
+                                              MedicalRecord::STATUS_TB_U_PENDEK,
+                                              MedicalRecord::STATUS_TB_U_SANGAT_PENDEK,
+                                          ])
+                                          ->orWhereIn('wasting_status', ['Gizi Kurang', 'Gizi Buruk']);
+                            });
                     });
                 });
             }

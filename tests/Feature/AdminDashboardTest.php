@@ -225,3 +225,87 @@ test('admin dashboard allows selecting nutrition status and viewing balita list'
         ->assertSee('12.50 kg')
         ->assertSee('85.00 cm');
 });
+
+test('admin dashboard filters stats correctly when Hanya Risiko Tinggi is selected', function () {
+    /** @var TestCase $this */
+    $pedukuhan = Pedukuhan::factory()->create();
+    $posyandu = Posyandu::factory()->create(['pedukuhan_id' => $pedukuhan->id]);
+
+    $admin = User::factory()->create([
+        'role' => 'admin',
+        'posyandu_id' => $posyandu->id,
+    ]);
+
+    // 1. Children: 1 high-risk (Gizi Buruk), 1 normal
+    $childHighRisk = Patient::factory()->create(['posyandu_id' => $posyandu->id, 'category' => 'balita']);
+    MedicalRecord::factory()->create([
+        'patient_id' => $childHighRisk->id,
+        'nutrition_status' => 'Gizi Buruk',
+        'visit_date' => now(),
+    ]);
+    $childNormal = Patient::factory()->create(['posyandu_id' => $posyandu->id, 'category' => 'balita']);
+    MedicalRecord::factory()->create([
+        'patient_id' => $childNormal->id,
+        'nutrition_status' => 'Gizi Baik',
+        'visit_date' => now(),
+    ]);
+
+    // 2. Pregnant Women: 1 high-risk (upper_arm_circumference < 23.5), 1 normal (25 years old)
+    $bumilHighRisk = Patient::factory()->create([
+        'posyandu_id' => $posyandu->id,
+        'category' => 'ibu_hamil',
+        'birth_date' => now()->subYears(25),
+    ]);
+    MedicalRecord::factory()->create([
+        'patient_id' => $bumilHighRisk->id,
+        'upper_arm_circumference' => 20.0,
+        'visit_date' => now(),
+    ]);
+    $bumilNormal = Patient::factory()->create([
+        'posyandu_id' => $posyandu->id,
+        'category' => 'ibu_hamil',
+        'birth_date' => now()->subYears(25),
+    ]);
+    MedicalRecord::factory()->create([
+        'patient_id' => $bumilNormal->id,
+        'upper_arm_circumference' => 25.0,
+        'systolic_bp' => 120,
+        'diastolic_bp' => 80,
+        'visit_date' => now(),
+    ]);
+
+    // 3. Elderly: 1 high-risk (age >= 70), 1 normal (62 years old)
+    $lansiaHighRisk = Patient::factory()->create([
+        'posyandu_id' => $posyandu->id,
+        'category' => 'lansia',
+        'birth_date' => now()->subYears(72),
+    ]);
+    $lansiaNormal = Patient::factory()->create([
+        'posyandu_id' => $posyandu->id,
+        'category' => 'lansia',
+        'birth_date' => now()->subYears(62),
+    ]);
+    MedicalRecord::factory()->create([
+        'patient_id' => $lansiaNormal->id,
+        'systolic_bp' => 120,
+        'diastolic_bp' => 80,
+        'blood_sugar' => 120,
+        'cholesterol' => 150,
+        'uric_acid' => 5.0,
+        'visit_date' => now(),
+    ]);
+
+    $this->actingAs($admin);
+
+    // Verify initial values with no filter active (should count all)
+    Livewire::test(AdminDashboard::class)
+        ->assertSet('totalBalita', 2)
+        ->assertSet('totalIbuHamil', 2)
+        ->assertSet('totalLansia', 2)
+        // Apply "Hanya Risiko Tinggi" filter
+        ->set('filterRisiko', 'risiko_tinggi')
+        ->assertSet('totalBalita', 1)
+        ->assertSet('totalIbuHamil', 1)
+        ->assertSet('totalLansia', 1);
+});
+
