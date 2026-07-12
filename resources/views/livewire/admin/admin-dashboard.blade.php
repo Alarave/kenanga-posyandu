@@ -89,7 +89,7 @@
 
             .off-screen-widget {
                 content-visibility: auto;
-                contain-intrinsic-size: auto 300px;
+                contain-intrinsic-size: auto 500px;
             }
         </style>
     @endpush
@@ -118,9 +118,8 @@
     <section class="relative rounded-2xl overflow-hidden no-print" style="background:#0f172a;">
         {{-- Background layers --}}
         <div class="absolute inset-0 hero-gradient"></div>
-        <div class="absolute top-0 left-1/4 w-72 h-72 hero-orb-1 rounded-full filter blur-[60px] animate-pulse"></div>
-        <div class="absolute bottom-0 right-1/4 w-72 h-72 hero-orb-2 rounded-full filter blur-[60px]"
-            style="animation:pulse 4s ease-in-out 1.5s infinite;"></div>
+        <div class="absolute top-0 left-1/4 w-72 h-72 hero-orb-1 rounded-full filter blur-[60px]"></div>
+        <div class="absolute bottom-0 right-1/4 w-72 h-72 hero-orb-2 rounded-full filter blur-[60px]"></div>
         {{-- Grid overlay --}}
         <div class="absolute inset-0 opacity-[0.04]"
             style="background-image:url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGcgc3Ryb2tlPSIjZmZmIiBzdHJva2Utd2lkdGg9IjAuNSIgZmlsbD0ibm9uZSI+PHBhdGggZD0iTTQwIDBMMCA0ME0wIDBsNDAgNDAiLz48L2c+PC9zdmc+');">
@@ -1355,6 +1354,8 @@
                                     @if($gallery->photo)
                                         <img src="{{ asset('storage/' . $gallery->photo) }}" 
                                              alt="{{ $gallery->title }}" 
+                                             loading="lazy"
+                                             decoding="async"
                                              class="w-full h-full object-cover group-hover/gallery:scale-110 transition-transform duration-300">
                                     @else
                                         <div class="w-full h-full flex items-center justify-center text-slate-350">

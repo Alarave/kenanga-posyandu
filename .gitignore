@@ -1,1 +1,39 @@
-Nothing should be ignored in this case, as only a PHP source file was modified and no build artifacts, dependencies, or temporary files were detected.
+```
+# Dependencies
+node_modules/
+
+# Build artifacts
+public/build/
+
+# Temporary files
+*.tmp
+*.swp
+
+# Logs
+*.log
+
+# Environment files
+.env
+.env.local
+*.env.*
+
+# Editor/IDE files
+.vscode/
+.idea/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Coverage reports
+coverage/
+htmlcov/
+.coverage
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+```
