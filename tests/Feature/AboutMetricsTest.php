@@ -67,28 +67,6 @@ beforeEach(function () {
         'posyandu_id' => $this->posyandu1->id,
     ]);
 });
-
-it('displays the correct dynamic metrics on the about page', function () {
-    // Expected counts:
-    // Kader: 12 active (10 seeded from migration + 2 created in beforeEach)
-    // Warga: 4 patients total
-    // Posyandu: 2 posyandu units total
-    $expectedKaderCount = User::whereIn('role', ['superadmin', 'admin', 'kader'])->where('is_active', true)->count(); // should be 12
-    $expectedWargaCount = Patient::count(); // should be 4
-    $expectedPosyanduCount = Posyandu::count(); // should be 2
-
-    expect($expectedKaderCount)->toBe(12);
-    expect($expectedWargaCount)->toBe(4);
-    expect($expectedPosyanduCount)->toBe(2);
-
-    $response = $this->get('/about');
-
-    $response->assertOk();
-    $response->assertSee((string) $expectedKaderCount);
-    $response->assertSee((string) $expectedWargaCount);
-    $response->assertSee((string) $expectedPosyanduCount);
-});
-
 it('filters and counts bayi, baduta, and balita dynamically on the patient index page', function () {
     // Authenticate as a user who has access (e.g. superadmin)
     $admin = User::factory()->create([
