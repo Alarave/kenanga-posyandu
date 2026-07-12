@@ -962,7 +962,21 @@ class Analytics extends BaseAdminComponent
                 if (stripos($gizi, 'gizi buruk') !== false || stripos($gizi, 'stunting') !== false) return 'Stunting';
                 return '-';
             })(),
-            'status_info' => in_array($r->patient?->category, ['balita', 'bayi', 'baduta']) ? ($r->nutrition_status ?: '-') : '-',
+            'status_info' => (function() use ($r) {
+                if (in_array($r->patient?->category, ['balita', 'bayi', 'baduta'])) {
+                    return $r->nutrition_status ?: '-';
+                }
+                if ($r->patient?->category === 'lansia' && $r->patient?->birth_date) {
+                    $age = $r->patient->birth_date->age;
+                    if ($age >= 45 && $age <= 59) return 'Pra-Lansia';
+                    if ($age >= 60 && $age <= 69) return 'Lansia';
+                    if ($age >= 70) return 'Lansia Risiko Tinggi';
+                }
+                if ($r->patient?->category === 'ibu_hamil') {
+                    return 'Ibu Hamil';
+                }
+                return '-';
+            })(),
             'month_name' => $r->visit_date ? match($r->visit_date->month) {
                 1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April', 5 => 'Mei', 6 => 'Juni',
                 7 => 'Juli', 8 => 'Agustus', 9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember',
