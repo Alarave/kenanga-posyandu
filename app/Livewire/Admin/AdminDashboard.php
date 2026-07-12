@@ -373,7 +373,7 @@ class AdminDashboard extends BaseAdminComponent
                 if ($this->rataRataUsiaKehamilan == 0 || $this->rataRataUsiaLansia == 0) {
                     $patientQuery = $this->applyDashboardFilters(Patient::query(), 'patient');
                     $medicalRecordQuery = $this->applyDashboardFilters(MedicalRecord::query(), 'medical_record');
-                    $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+                    $latestRecordSubquery = (clone $medicalRecordQuery)->selectRaw('MAX(id) as id')->groupBy('patient_id');
                     if ($this->rataRataUsiaKehamilan == 0) {
                         $this->getBumilTrimester($medicalRecordQuery, $latestRecordSubquery);
                     }
@@ -405,7 +405,7 @@ class AdminDashboard extends BaseAdminComponent
             $patientQuery = $this->applyDashboardFilters($patientQuery, 'patient');
 
             // Stunting alerts
-            $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+            $latestRecordSubquery = (clone $medicalRecordQuery)->selectRaw('MAX(id) as id')->groupBy('patient_id');
             $this->balitaStunting = (clone $patientQuery)
                 ->whereIn('category', ['balita', 'bayi', 'baduta'])
                 ->whereHas('medicalRecords', function ($query) use ($latestRecordSubquery) {
@@ -518,7 +518,7 @@ class AdminDashboard extends BaseAdminComponent
                 });
             })->count();
 
-        $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+        $latestRecordSubquery = (clone $medicalRecordQuery)->selectRaw('MAX(id) as id')->groupBy('patient_id');
 
         $this->nutritionStatusDistribution = $this->getNutritionStatusDistribution($medicalRecordQuery, $latestRecordSubquery);
         $this->monthlyWeighingData = $this->getMonthlyWeighingData($medicalRecordQuery);
@@ -707,7 +707,7 @@ class AdminDashboard extends BaseAdminComponent
         $this->lansiaDemografiNames = ['60_69' => $group60, '70_plus' => $group70];
 
         // 2. Bumil Names
-        $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+        $latestRecordSubquery = (clone $medicalRecordQuery)->selectRaw('MAX(id) as id')->groupBy('patient_id');
         $records = (clone $medicalRecordQuery)
             ->whereIn('id', $latestRecordSubquery)
             ->whereHas('patient', fn ($q) => $q->where('category', 'ibu_hamil'))
@@ -754,7 +754,7 @@ class AdminDashboard extends BaseAdminComponent
         }
 
         $medicalRecordQuery = $this->applyDashboardFilters(MedicalRecord::query(), 'medical_record');
-        $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+        $latestRecordSubquery = (clone $medicalRecordQuery)->selectRaw('MAX(id) as id')->groupBy('patient_id');
 
         $records = $medicalRecordQuery
             ->whereIn('id', $latestRecordSubquery)
@@ -795,7 +795,7 @@ class AdminDashboard extends BaseAdminComponent
         
         $patientQuery = $this->applyDashboardFilters(Patient::query(), 'patient');
         $medicalRecordQuery = $this->applyDashboardFilters(MedicalRecord::query(), 'medical_record');
-        $latestRecordSubquery = MedicalRecord::selectRaw('MAX(id) as id')->groupBy('patient_id');
+        $latestRecordSubquery = (clone $medicalRecordQuery)->selectRaw('MAX(id) as id')->groupBy('patient_id');
 
         $records = $medicalRecordQuery
             ->whereIn('id', $latestRecordSubquery)
