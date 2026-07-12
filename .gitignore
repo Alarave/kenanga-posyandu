@@ -1,16 +1,32 @@
+```
+# Compiled and build artifacts
+*.pyc
+__pycache__/
+*.o
+*.obj
+*.class
+*.so
+*.dll
+*.exe
+*.out
+
 # Dependencies
-vendor/
+.venv/
+venv/
+.env
+.env.local
+.env.*
 
 # Logs and temp files
 *.log
 *.tmp
+*.swp
+*.swo
 
-# Environment
-.env
-.env.local
-.env.testing
-.env.production
-!.env.example
+# Coverage reports
+.coverage
+coverage/
+htmlcov/
 
 # Editors
 .vscode/
@@ -20,68 +36,7 @@ vendor/
 .DS_Store
 Thumbs.db
 
-# Build artifacts
-dist/
-build/
-*.o
-*.obj
-*.out
-
 # Cache directories
-__pycache__/
-.cache/
-.php_cs.cache
-
-# Composer
-composer.phar
-vendor/composer/installed.json
-
-# Laravel specific
-bootstrap/cache/
-storage/logs/
-storage/framework/
-public/storage
-
-# Test coverage
-coverage/
-htmlcov/
-.coverage
-
-# Temporary files
-*.swp
-*.swo
-
-# Compression files
-*.zip
-*.gz
-*.tar
-*.tgz
-*.bz2
-*.xz
-*.7z
-*.rar
-*.zst
-*.lz4
-*.lzh
-*.cab
-*.arj
-*.rpm
-*.deb
-*.Z
-*.lz
-*.lzo
-*.tar.gz
-*.tar.bz2
-*.tar.xz
-*.tar.zst
-
-# Node dependencies
-node_modules/
-
-# Local/tool-specific files
-/scratch/
-/.kiro/
-
-# Laravel Vite build artifacts
-/public/hot
-/public/build
+.mypy_cache/
+.pytest_cache/
+```
