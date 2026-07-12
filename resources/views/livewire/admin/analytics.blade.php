@@ -580,7 +580,7 @@
                                         <span class="text-slate-900">{{ $feComplianceRate }}%</span>
                                     </div>
                                     <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
-                                        <div class="h-full rounded-full bg-rose-500 transition-all duration-500" style="width: {{ min(100, $feComplianceRate) }}%"></div>
+                                        <div class="h-full rounded-full transition-all duration-500 {{ $feComplianceRate >= 85 ? 'bg-emerald-500' : 'bg-rose-500' }}" style="width: {{ min(100, $feComplianceRate) }}%"></div>
                                     </div>
                                     <div class="flex justify-between items-center text-[9px] font-bold mt-1 text-slate-400">
                                         <span>Target Kepatuhan: 85%</span>

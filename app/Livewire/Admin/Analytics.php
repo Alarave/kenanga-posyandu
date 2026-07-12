@@ -316,7 +316,6 @@ class Analytics extends BaseAdminComponent
         if ($type === 'kader') {
             $user = Auth::user();
             $kaders = User::where('is_active', true)
-                ->when(! $user->isSuperAdmin() && $user->posyandu_id, fn ($q) => $q->where('posyandu_id', $user->posyandu_id))
                 ->get();
             $this->drillDownData = $kaders->map(fn ($k) => [
                 'name' => $k->name ?? '-',
@@ -1149,7 +1148,6 @@ class Analytics extends BaseAdminComponent
             ->count();
 
         $kaderAktif = User::where('is_active', true)
-            ->when(! $user->isSuperAdmin() && $user->posyandu_id, fn ($q) => $q->where('posyandu_id', $user->posyandu_id))
             ->count();
 
         $dbDriver = DB::getDriverName();
