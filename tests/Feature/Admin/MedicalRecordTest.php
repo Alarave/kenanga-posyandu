@@ -844,6 +844,8 @@ describe('fitur pemilihan kategori dan validasi dinamis', function () {
             'weight' => 55.0,
             'height' => 150.0,
             'measurement_method' => null, // Not required for elderly
+            'systolic_bp' => 120,
+            'diastolic_bp' => 80,
             'blood_sugar' => 110,
             'uric_acid' => 5.2,
             'cholesterol' => 190,

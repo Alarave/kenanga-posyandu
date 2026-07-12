@@ -1002,8 +1002,8 @@ class Analytics extends BaseAdminComponent
         $user = Auth::user();
         $posyanduId = $user->isSuperAdmin() ? null : $user->posyandu_id;
 
-        // Dispatch job for all relevant keys (current year, and optionally current month)
-        ComputeAnalyticsSnapshot::dispatch($posyanduId, $this->selectedYear, $this->selectedMonth);
+        // Run job synchronously so snapshot is fully computed before loading data
+        ComputeAnalyticsSnapshot::dispatchSync($posyanduId, $this->selectedYear, $this->selectedMonth);
 
         $this->loadData();
     }

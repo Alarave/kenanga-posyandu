@@ -209,6 +209,8 @@ test('medical record does not calculate nutrition status for non-balita categori
         'visit_date' => now()->format('Y-m-d'),
         'weight' => 70.0,
         'height' => 170.0,
+        'systolic_bp' => 120,
+        'diastolic_bp' => 80,
         'immunization' => 'Influenza',
         'diagnosis' => 'Sehat',
         'measurement_method' => 'standing',
