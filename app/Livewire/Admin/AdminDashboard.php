@@ -674,54 +674,49 @@ class AdminDashboard extends BaseAdminComponent
 
     protected function getKehadiranBalita(Builder $patientQuery, Builder $medicalRecordQuery, $currentMonth, $currentYear): array
     {
-        $endDate = now()->endOfMonth();
-        $startDate = now()->startOfMonth();
-
-        if ($this->filterPeriode === 'bulan_ini') {
-            $startDate = now()->startOfMonth();
-            $endDate = now()->endOfMonth();
-        } elseif ($this->filterPeriode === 'bulan_lalu') {
-            $startDate = now()->subMonth()->startOfMonth();
-            $endDate = now()->subMonth()->endOfMonth();
-        } elseif ($this->filterPeriode === 'tahun_ini') {
-            $startDate = now()->startOfYear();
-            $endDate = now()->endOfYear();
-        } elseif ($this->filterPeriode === 'tahun_lalu') {
-            $startDate = now()->subYear()->startOfYear();
-            $endDate = now()->subYear()->endOfYear();
-        } elseif ($this->filterPeriode === 'custom' && $this->filterCustomStartDate && $this->filterCustomEndDate) {
-            $startDate = \Carbon\Carbon::parse($this->filterCustomStartDate)->startOfDay();
-            $endDate = \Carbon\Carbon::parse($this->filterCustomEndDate)->endOfDay();
-        } elseif ($this->filterPeriode === 'semua') {
-            $endDate = now()->endOfMonth();
-            $startDate = now()->startOfMonth();
-        }
-
-        // Sasaran: semua pasien yang memiliki rekam medis SEBELUM atau SELAMA periode filter
-        $sasaranQuery = (clone $patientQuery)
-            ->whereHas('medicalRecords', function ($q) use ($endDate) {
-                $q->whereDate('visit_date', '<=', $endDate);
-            });
-            
-        $totalSasaran = $sasaranQuery->count();
-
-        // Hadir: semua pasien yang memiliki rekam medis DALAM periode filter
-        $hadirQuery = (clone $patientQuery);
-            
         if ($this->filterPeriode === 'semua') {
-            $hadirQuery->whereHas('medicalRecords', function ($q) use ($currentMonth, $currentYear) {
-                $q->whereMonth('visit_date', $currentMonth)
-                  ->whereYear('visit_date', $currentYear);
-            });
+            $totalSasaran = (clone $patientQuery)->count();
+            $hadir = (clone $patientQuery)->whereHas('medicalRecords')->count();
         } else {
+            $endDate = now()->endOfMonth();
+            $startDate = now()->startOfMonth();
+
+            if ($this->filterPeriode === 'bulan_ini') {
+                $startDate = now()->startOfMonth();
+                $endDate = now()->endOfMonth();
+            } elseif ($this->filterPeriode === 'bulan_lalu') {
+                $startDate = now()->subMonth()->startOfMonth();
+                $endDate = now()->subMonth()->endOfMonth();
+            } elseif ($this->filterPeriode === 'tahun_ini') {
+                $startDate = now()->startOfYear();
+                $endDate = now()->endOfYear();
+            } elseif ($this->filterPeriode === 'tahun_lalu') {
+                $startDate = now()->subYear()->startOfYear();
+                $endDate = now()->subYear()->endOfYear();
+            } elseif ($this->filterPeriode === 'custom' && $this->filterCustomStartDate && $this->filterCustomEndDate) {
+                $startDate = \Carbon\Carbon::parse($this->filterCustomStartDate)->startOfDay();
+                $endDate = \Carbon\Carbon::parse($this->filterCustomEndDate)->endOfDay();
+            }
+
+            // Sasaran: semua pasien yang memiliki rekam medis SEBELUM atau SELAMA periode filter
+            $sasaranQuery = (clone $patientQuery)
+                ->whereHas('medicalRecords', function ($q) use ($endDate) {
+                    $q->whereDate('visit_date', '<=', $endDate);
+                });
+                
+            $totalSasaran = $sasaranQuery->count();
+
+            // Hadir: semua pasien yang memiliki rekam medis DALAM periode filter
+            $hadirQuery = (clone $patientQuery);
+                
             if ($startDate && $endDate) {
                 $hadirQuery->whereHas('medicalRecords', function ($q) use ($startDate, $endDate) {
                     $q->whereBetween('visit_date', [$startDate, $endDate]);
                 });
             }
-        }
 
-        $hadir = $hadirQuery->count();
+            $hadir = $hadirQuery->count();
+        }
         
         $tidakHadir = max(0, $totalSasaran - $hadir);
         $persentase = $totalSasaran > 0 ? round(($hadir / $totalSasaran) * 100, 1) : 0;
