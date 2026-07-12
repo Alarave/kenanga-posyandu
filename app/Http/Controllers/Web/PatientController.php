@@ -296,12 +296,6 @@ class PatientController extends Controller
                     'suami', 'apakah_hamil',
                     'RT', 'RW', 'desa_kelurahan', 'kecamatan', 'ALAMAT',
                 ],
-                // Baris Contoh
-                [
-                    '3275011234567890', 'Siti Rahayu', '1995-08-15', 'P', 'Bandung', '08123456789',
-                    'Budi Santoso', 'Ya',
-                    '003', '001', 'Cigondewah', 'Bandung Barat', 'Jl. Contoh No. 1 RT 003/001',
-                ],
             ];
         }
 
@@ -311,11 +305,6 @@ class PatientController extends Controller
                 [
                     'NIK', 'nama', 'tgl_lahir', 'jk', 'tempat_lahir', 'phone_number',
                     'RT', 'RW', 'desa_kelurahan', 'kecamatan', 'ALAMAT',
-                ],
-                // Baris Contoh
-                [
-                    '3275019876543210', 'Hj. Sumiyati', '1955-03-20', 'P', 'Yogyakarta', '08987654321',
-                    '002', '001', 'Mawar', 'Melati', 'Jl. Mawar No. 5 RT 002/001',
                 ],
             ];
         }
@@ -327,12 +316,6 @@ class PatientController extends Controller
                 'NIK', 'nama_anak', 'tempat_lahir', 'tgl_lahir', 'jk',
                 'ayah', 'ibu', 'BB_lahir', 'PB_lahir', 'NIK_ibu', 'kepemilikan_buku_kia',
                 'phone_number', 'RT', 'RW', 'desa_kelurahan', 'kecamatan', 'ALAMAT',
-            ],
-            // Baris Contoh
-            [
-                '3275011112223334', 'Anak Sehat', 'Bandung', '2022-06-10', 'L',
-                'Budi Santoso', 'Siti Rahayu', '3.2', '50.5', '3275011234567890', '1',
-                '08123456789', '003', '001', 'Cigondewah', 'Bandung Barat', 'Jl. Contoh No. 1 RT 003/001',
             ],
         ];
     }
