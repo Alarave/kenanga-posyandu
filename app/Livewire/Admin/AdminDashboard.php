@@ -460,6 +460,19 @@ class AdminDashboard extends BaseAdminComponent
         }
 
         // Un-snapshotted logic (recent, alerts)
+        $now = now();
+
+        // 1. Update any past schedules to 'completed'
+        Schedule::where('status', '!=', 'completed')
+            ->where('end_time', '<', $now)
+            ->update(['status' => 'completed']);
+
+        // 2. Update any currently running schedules to 'ongoing'
+        Schedule::where('status', 'upcoming')
+            ->where('start_time', '<=', $now)
+            ->where('end_time', '>=', $now)
+            ->update(['status' => 'ongoing']);
+
         $scheduleQuery = clone Schedule::query();
         $scheduleQuery = $this->applyDashboardFilters($scheduleQuery, 'schedule');
         $this->upcomingSchedule = $scheduleQuery->where('start_time', '>=', now())->orderBy('start_time')->first();
