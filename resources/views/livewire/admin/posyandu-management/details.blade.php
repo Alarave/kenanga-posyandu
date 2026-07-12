@@ -21,10 +21,10 @@
 
 @section('admin-content')
 @php
-    $balitaCount = $posyandu->patients()->where('category', 'balita')->count();
-    $ibuHamilCount = $posyandu->patients()->where('category', 'ibu_hamil')->count();
-    $lansiaCount = $posyandu->patients()->where('category', 'lansia')->count();
-    $totalCount = $posyandu->patients()->count();
+    $balitaCount = $posyandu->patients()->where('status_mutasi', 'aktif')->whereIn('category', ['balita', 'bayi', 'baduta'])->count();
+    $ibuHamilCount = $posyandu->patients()->where('status_mutasi', 'aktif')->where('category', 'ibu_hamil')->count();
+    $lansiaCount = $posyandu->patients()->where('status_mutasi', 'aktif')->where('category', 'lansia')->count();
+    $totalCount = $posyandu->patients()->where('status_mutasi', 'aktif')->count();
 @endphp
 <div class="space-y-6">
     {{-- Main Info Section --}}
