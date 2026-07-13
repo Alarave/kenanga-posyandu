@@ -1031,7 +1031,7 @@
             <div class="featured-hero-text">
                 <div class="featured-badge">
                     <span class="featured-badge-dot"></span>
-                    Artikel Terpopuler
+                    Artikel Terbaru
                 </div>
                 <span class="featured-title-bar"></span>
                 <h1 class="featured-title">{{ $featured->title }}</h1>

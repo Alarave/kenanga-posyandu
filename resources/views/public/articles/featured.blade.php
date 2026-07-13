@@ -2,7 +2,7 @@
     <div class="lg:col-span-7 space-y-8">
         <div class="inline-flex items-center gap-3 px-5 py-2 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-600">
             <span class="material-symbols-outlined text-[18px] animate-pulse">star</span>
-            <span class="text-[10px] font-black uppercase tracking-[0.2em]">Artikel Terpopuler</span>
+            <span class="text-[10px] font-black uppercase tracking-[0.2em]">Artikel Terbaru</span>
         </div>
         
         <h1 class="text-4xl md:text-6xl font-black text-slate-900 leading-tight tracking-tight">
