@@ -587,7 +587,8 @@
                         const data = [
                             parseInt(bt.T1 || 0),
                             parseInt(bt.T2 || 0),
-                            parseInt(bt.T3 || 0)
+                            parseInt(bt.T3 || 0),
+                            parseInt(bt.T0 || 0)
                         ];
                         const totalBumil = data.reduce((a, b) => a + b, 0);
                         this.isEmpty = totalBumil === 0;
@@ -596,8 +597,8 @@
                             return;
                         }
 
-                        const labels = ['Trimester 1', 'Trimester 2', 'Trimester 3'];
-                        const colors = ['#f472b6', '#db2777', '#9d174d']; // Soft, Med, Dark Pink
+                        const labels = ['Trimester 1', 'Trimester 2', 'Trimester 3', 'Belum Terdata'];
+                        const colors = ['#f472b6', '#db2777', '#9d174d', '#94a3b8']; // Soft, Med, Dark Pink, Gray
                 
                         if (this.chart) {
                             this.chart.data.datasets[0].data = data;
@@ -669,14 +670,15 @@
                         'T1' => ['label' => 'Trimester 1', 'sub' => '0–13 mg', 'color' => '#f472b6'],
                         'T2' => ['label' => 'Trimester 2', 'sub' => '14–27 mg', 'color' => '#db2777'],
                         'T3' => ['label' => 'Trimester 3', 'sub' => '28+ mg', 'color' => '#9d174d'],
+                        'T0' => ['label' => 'Belum Terdata', 'sub' => 'Unknown', 'color' => '#94a3b8'],
                     ] as $key => $info)
                         @php
                             $count = $bumilTrimester[$key] ?? 0;
                             $percentage = $totalBumil > 0 ? round(($count / $totalBumil) * 100, 1) : 0;
                         @endphp
                         <div class="flex flex-col gap-1 text-xs">
-                            <div class="flex items-center gap-2" :class="hiddenItems.includes({{ array_search($key, ['T1', 'T2', 'T3']) }}) ? 'opacity-40' : ''">
-                                <span class="w-2 h-2 rounded-full shrink-0 cursor-pointer" style="background:{{ $info['color'] }}" @click="toggleVisibility({{ array_search($key, ['T1', 'T2', 'T3']) }})"></span>
+                            <div class="flex items-center gap-2" :class="hiddenItems.includes({{ array_search($key, ['T1', 'T2', 'T3', 'T0']) }}) ? 'opacity-40' : ''">
+                                <span class="w-2 h-2 rounded-full shrink-0 cursor-pointer" style="background:{{ $info['color'] }}" @click="toggleVisibility({{ array_search($key, ['T1', 'T2', 'T3', 'T0']) }})"></span>
                                 <span class="text-slate-650 flex-1 truncate font-medium cursor-pointer hover:text-pink-600 hover:underline" wire:click="selectBumilTrimester('{{ $info['label'] }}')">
                                     {{ $info['label'] }} <span class="text-[10px] text-slate-400 font-normal">({{ $info['sub'] }})</span>
                                 </span>

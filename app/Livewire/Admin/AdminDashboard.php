@@ -67,9 +67,9 @@ class AdminDashboard extends BaseAdminComponent
 
     public array $lansiaDemografiNames = ['60_69' => [], '70_plus' => []];
 
-    public $bumilTrimester = ['T1' => 0, 'T2' => 0, 'T3' => 0];
+    public $bumilTrimester = ['T1' => 0, 'T2' => 0, 'T3' => 0, 'T0' => 0];
 
-    public array $bumilTrimesterNames = ['T1' => [], 'T2' => [], 'T3' => []];
+    public array $bumilTrimesterNames = ['T1' => [], 'T2' => [], 'T3' => [], 'T0' => []];
 
     public $kehadiranBalita = ['hadir' => 0, 'tidak_hadir' => 0, 'persentase' => 0];
 
@@ -675,6 +675,7 @@ class AdminDashboard extends BaseAdminComponent
         $t1 = 0;
         $t2 = 0;
         $t3 = 0;
+        $t0 = 0;
         $totalWeeks = 0;
         $validCount = 0;
 
@@ -690,12 +691,21 @@ class AdminDashboard extends BaseAdminComponent
                 } else {
                     $t3++;
                 }
+            } else {
+                $t0++;
             }
+        }
+
+        $patientQuery = $this->applyDashboardFilters(Patient::query(), 'patient');
+        $totalPatientsCount = (clone $patientQuery)->where('status_mutasi', 'aktif')->where('category', 'ibu_hamil')->count();
+        $processedRecordsCount = $t1 + $t2 + $t3 + $t0;
+        if ($totalPatientsCount > $processedRecordsCount) {
+            $t0 += ($totalPatientsCount - $processedRecordsCount);
         }
 
         $this->rataRataUsiaKehamilan = $validCount > 0 ? round($totalWeeks / $validCount, 1) : 0;
 
-        return ['T1' => $t1, 'T2' => $t2, 'T3' => $t3];
+        return ['T1' => $t1, 'T2' => $t2, 'T3' => $t3, 'T0' => $t0];
     }
 
     protected function getKehadiranBalita(Builder $patientQuery, Builder $medicalRecordQuery, $currentMonth, $currentYear): array
@@ -840,6 +850,7 @@ class AdminDashboard extends BaseAdminComponent
         $t1 = [];
         $t2 = [];
         $t3 = [];
+        $t0 = [];
 
         foreach ($records as $record) {
             $weeks = (int) filter_var($record->gestational_age, FILTER_SANITIZE_NUMBER_INT);
@@ -856,9 +867,32 @@ class AdminDashboard extends BaseAdminComponent
                 } else {
                     $t3[] = $patientData;
                 }
+            } elseif ($record->patient) {
+                $t0[] = [
+                    'id' => $record->patient->id,
+                    'name' => $record->patient->full_name,
+                    'gestational_age' => 'Tidak Terdata',
+                ];
             }
         }
-        $this->bumilTrimesterNames = ['T1' => $t1, 'T2' => $t2, 'T3' => $t3];
+
+        $allBumils = (clone $patientQuery)
+            ->where('category', 'ibu_hamil')
+            ->where('status_mutasi', 'aktif')
+            ->get(['id', 'full_name']);
+        
+        $processedPatientIds = $records->pluck('patient_id')->toArray();
+        foreach ($allBumils as $bumil) {
+            if (!in_array($bumil->id, $processedPatientIds)) {
+                $t0[] = [
+                    'id' => $bumil->id,
+                    'name' => $bumil->full_name,
+                    'gestational_age' => 'Belum Periksa',
+                ];
+            }
+        }
+
+        $this->bumilTrimesterNames = ['T1' => $t1, 'T2' => $t2, 'T3' => $t3, 'T0' => $t0];
     }
 
     public function selectNutritionStatus(string $status)
@@ -954,6 +988,37 @@ class AdminDashboard extends BaseAdminComponent
                 }
             }
         }
+
+        if (str_contains($label, 'Terdata') || str_contains($label, 'Belum')) {
+            $allBumils = $patientQuery
+                ->where('category', 'ibu_hamil')
+                ->where('status_mutasi', 'aktif')
+                ->with(['posyandu'])
+                ->get();
+            
+            $processedRecordIds = [];
+            foreach ($records as $record) {
+                $weeks = (int) filter_var($record->gestational_age, FILTER_SANITIZE_NUMBER_INT);
+                if ($weeks > 0 && $record->patient) {
+                    $processedRecordIds[] = $record->patient->id;
+                }
+            }
+
+            foreach ($allBumils as $bumil) {
+                if (!in_array($bumil->id, $processedRecordIds)) {
+                    $record = $records->firstWhere('patient_id', $bumil->id);
+                    $bumils[] = [
+                        'id' => $bumil->id,
+                        'name' => $bumil->full_name,
+                        'age' => $bumil->age,
+                        'gestational_age' => $record ? ($record->gestational_age ?: 'Tidak Terdata') : 'Belum Periksa',
+                        'posyandu_name' => $bumil->posyandu?->name ?? '-',
+                        'visit_date' => $record ? Carbon::parse($record->visit_date)->translatedFormat('d M Y') : '-',
+                    ];
+                }
+            }
+        }
+
         $this->bumilsForSelectedTrimester = $bumils;
     }
 
