@@ -2128,7 +2128,13 @@ public function exportChartData(string $chartType)
 
         $alertQuery = MedicalRecord::query()
             ->with(['patient.posyandu'])
-            ->where(function ($q) {
+            ->whereYear('visit_date', $this->selectedYear);
+
+        if ($this->selectedMonth) {
+            $alertQuery->whereMonth('visit_date', $this->selectedMonth);
+        }
+
+        $alertQuery->where(function ($q) {
                 // Balita risk
                 $q->where(function ($sub) {
                     $sub->whereHas('patient', fn ($pq) => $pq->whereIn('category', ['balita', 'bayi', 'baduta']))
