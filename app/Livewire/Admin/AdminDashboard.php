@@ -157,7 +157,7 @@ class AdminDashboard extends BaseAdminComponent
         $user = Auth::user();
         if ($user->isSuperAdmin()) {
             if ($this->filterPosyandu !== 'semua') {
-                if ($type === 'patient' || $type === 'schedule' || $type === 'gallery') {
+                if ($type === 'patient' || $type === 'patient_no_date' || $type === 'schedule' || $type === 'gallery') {
                     $query->where('posyandu_id', $this->filterPosyandu);
                 } elseif ($type === 'medical_record') {
                     $query->whereHas('patient', function ($q) {
@@ -166,7 +166,7 @@ class AdminDashboard extends BaseAdminComponent
                 }
             }
         } else {
-            if ($type === 'patient' || $type === 'schedule' || $type === 'gallery') {
+            if ($type === 'patient' || $type === 'patient_no_date' || $type === 'schedule' || $type === 'gallery') {
                 $query->where('posyandu_id', Auth::user()->posyandu_id);
             } elseif ($type === 'medical_record') {
                 $query->whereHas('patient', function ($q) {
@@ -188,11 +188,33 @@ class AdminDashboard extends BaseAdminComponent
             } elseif ($this->filterPeriode === 'custom' && $this->filterCustomStartDate && $this->filterCustomEndDate) {
                 $query->whereBetween('visit_date', [$this->filterCustomStartDate, $this->filterCustomEndDate]);
             }
+        } elseif ($type === 'patient') {
+            if ($this->filterPeriode === 'bulan_ini') {
+                $query->whereHas('medicalRecords', function ($q) {
+                    $q->whereMonth('visit_date', now()->month)->whereYear('visit_date', now()->year);
+                });
+            } elseif ($this->filterPeriode === 'bulan_lalu') {
+                $query->whereHas('medicalRecords', function ($q) {
+                    $q->whereMonth('visit_date', now()->subMonth()->month)->whereYear('visit_date', now()->subMonth()->year);
+                });
+            } elseif ($this->filterPeriode === 'tahun_ini') {
+                $query->whereHas('medicalRecords', function ($q) {
+                    $q->whereYear('visit_date', now()->year);
+                });
+            } elseif ($this->filterPeriode === 'tahun_lalu') {
+                $query->whereHas('medicalRecords', function ($q) {
+                    $q->whereYear('visit_date', now()->subYear()->year);
+                });
+            } elseif ($this->filterPeriode === 'custom' && $this->filterCustomStartDate && $this->filterCustomEndDate) {
+                $query->whereHas('medicalRecords', function ($q) {
+                    $q->whereBetween('visit_date', [$this->filterCustomStartDate, $this->filterCustomEndDate]);
+                });
+            }
         }
 
         // 3. Risk Level Filtering
         if ($this->filterRisiko === 'risiko_tinggi') {
-            if ($type === 'patient') {
+            if ($type === 'patient' || $type === 'patient_no_date') {
                 $query->where(function ($q) {
                     // Category 1: Ibu Hamil
                     $q->where(function ($sub) {
@@ -576,6 +598,7 @@ class AdminDashboard extends BaseAdminComponent
     protected function computeDashboardStatsRealtime()
     {
         $patientQuery = $this->applyDashboardFilters(Patient::query(), 'patient');
+        $patientQueryNoDate = $this->applyDashboardFilters(Patient::query(), 'patient_no_date');
         $medicalRecordQuery = $this->applyDashboardFilters(MedicalRecord::query(), 'medical_record');
         $currentMonth = now()->month;
         $currentYear = now()->year;
@@ -610,7 +633,7 @@ class AdminDashboard extends BaseAdminComponent
         $this->bumilTrimester = $this->getBumilTrimester($medicalRecordQuery, $latestRecordSubquery);
         $this->kehadiranBalita = $this->getKehadiranBalita($patientQuery, $medicalRecordQuery, $currentMonth, $currentYear);
 
-        $this->kelahiranBulanIni = (clone $patientQuery)
+        $this->kelahiranBulanIni = (clone $patientQueryNoDate)
             ->whereIn('category', ['bayi', 'baduta', 'balita'])
             ->whereMonth('birth_date', $currentMonth)
             ->whereYear('birth_date', $currentYear)

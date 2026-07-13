@@ -15,7 +15,7 @@
                         <i class="fas fa-heartbeat text-lg"></i>
                     </div>
                     <span class="ml-3 text-lg font-extrabold tracking-tight bg-linear-to-r from-slate-900 via-slate-800 to-slate-700 bg-clip-text text-transparent">
-                        Posyandu <span class="text-emerald-700">Digital</span>
+                        Posyandu <span class="text-emerald-700">Kenanga</span>
                     </span>
                 </div>
                 <p class="text-slate-600 text-sm leading-relaxed mb-6">

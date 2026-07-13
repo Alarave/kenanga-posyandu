@@ -6,7 +6,7 @@
                 <i class="fas fa-heartbeat"></i>
             </div>
             <div class="nav-logo-text">
-                <span class="nav-logo-name">Posyandu <span>Digital</span></span>
+                <span class="nav-logo-name">Posyandu <span>Kenanga</span></span>
                 <span class="nav-logo-sub">Bekasi Timur</span>
             </div>
         </a>

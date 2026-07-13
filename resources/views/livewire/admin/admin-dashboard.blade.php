@@ -1519,7 +1519,7 @@
                     data: {
                         labels: wd.labels,
                         datasets: [{
-                            label: 'Penimbangan',
+                            label: 'aktifitas kunjungan terakhir',
                             data: wd.data,
                             borderColor: '#006c49',
                             borderWidth: 2.5,
