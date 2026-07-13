@@ -43,6 +43,14 @@ class BulkMeasurementEntry extends Component
         }
     }
 
+    public function updatedPosyanduId()
+    {
+        // Reset daftar balita saat posyandu berubah agar tidak menampilkan data posyandu sebelumnya
+        $this->measurements = [];
+        $this->search = '';
+        $this->searchResults = [];
+    }
+
     public function updatedSearch()
     {
         if (strlen($this->search) < 2) {
