@@ -203,7 +203,7 @@
                         </div>
                         <p class="mt-1.5 text-xs text-gray-400 dark:text-gray-500">
                             <i class="fas fa-circle-info mr-1"></i>
-                            Minimal 8 karakter, kombinasi huruf dan angka
+                            Minimal 8 karakter, kombinasi huruf besar, huruf kecil dan angka
                         </p>
                         @error('password')
                             <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
