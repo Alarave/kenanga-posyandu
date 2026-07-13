@@ -286,7 +286,7 @@
         {{-- ── Pagination ── --}}
         @if($activityLogs->hasPages())
         <div class="px-8 py-6 bg-slate-50/50 border-t border-slate-100">
-            <x-layouts.ui.pagination :paginator="$activityLogs" />
+            <x-layouts.ui.pagination :paginator="$activityLogs" label="aktivitas" />
         </div>
         @endif
     </div>
