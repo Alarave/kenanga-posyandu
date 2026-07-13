@@ -495,7 +495,7 @@ class Analytics extends BaseAdminComponent
                     case 'lansia_obesity_sentral':
                         $gender = $r->patient?->gender ?? '';
                         $wc = $r->waist_circumference ? (float) $r->waist_circumference : 0;
-                        return ($gender === 'L' && $wc > 90) || ($gender === 'P' && $wc > 80);
+                        return ($gender === 'M' && $wc > 90) || ($gender === 'F' && $wc > 80);
                     case 'lansia_eye_issue':
                         $eye = strtolower(trim($r->eye_test ?? ''));
                         return $eye !== '' && $eye !== '-' && $eye !== 'normal';

@@ -251,8 +251,8 @@
                                 bgColors.push('#f59e0b'); // Amber
                                 borderColors.push('#f59e0b');
                             } else if (status.includes('Lebih') || status.includes('Tinggi') || status.includes('Obesitas') || status.includes('Berisiko')) {
-                                bgColors.push('#3b82f6'); // Blue
-                                borderColors.push('#3b82f6');
+                                bgColors.push('#8B5CF6'); // Purple
+                                borderColors.push('#8B5CF6');
                             } else {
                                 bgColors.push('#10b981'); // Green
                                 borderColors.push('#10b981');
