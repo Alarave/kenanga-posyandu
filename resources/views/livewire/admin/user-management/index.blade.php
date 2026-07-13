@@ -153,7 +153,7 @@
                                     </label>
                                     <span
                                         class="text-[10px] font-black uppercase tracking-widest {{ $user->isAdmin() ? 'text-teal-600' : 'text-slate-400' }}">
-                                        {{ $user->isAdmin() ? 'Administrator' : 'Kader' }}
+                                        {{ $user->isAdmin() ? 'Administrator' : ($user->cadre_role ?? 'Kader') }}
                                     </span>
                                 </div>
                             @endif

@@ -103,6 +103,47 @@
                 </div>
             </div>
 
+            @if($user->cadre_role || $user->nik || $user->ttl || $user->pendidikan || $user->alamat || $user->hp)
+            <!-- Kader Info -->
+            <div class="bg-white rounded-[2.5rem] p-10 shadow-2xl shadow-slate-200/60 border border-slate-50 relative overflow-hidden">
+                <div class="relative space-y-10">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-10 h-10 bg-teal-50 rounded-xl flex items-center justify-center text-teal-600">
+                            <i class="fas fa-id-card"></i>
+                        </div>
+                        <h4 class="text-sm font-black text-slate-800 uppercase tracking-widest">Profil Lengkap Kader</h4>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-y-8 gap-x-12">
+                        <div>
+                            <label class="text-[10px] font-black text-slate-300 uppercase tracking-widest block mb-2">NIK</label>
+                            <p class="text-slate-700 font-bold tracking-tight">{{ $user->nik ?? '-' }}</p>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-black text-slate-300 uppercase tracking-widest block mb-2">Jabatan / Peran</label>
+                            <p class="text-slate-700 font-bold tracking-tight">{{ $user->cadre_role ?? '-' }}</p>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-black text-slate-300 uppercase tracking-widest block mb-2">Tempat, Tanggal Lahir</label>
+                            <p class="text-slate-700 font-bold tracking-tight">{{ $user->ttl ?? '-' }}</p>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-black text-slate-300 uppercase tracking-widest block mb-2">No. HP / Telepon</label>
+                            <p class="text-slate-700 font-bold tracking-tight">{{ $user->hp ?? '-' }}</p>
+                        </div>
+                        <div>
+                            <label class="text-[10px] font-black text-slate-300 uppercase tracking-widest block mb-2">Pendidikan Terakhir</label>
+                            <p class="text-slate-700 font-bold tracking-tight">{{ $user->pendidikan ?? '-' }}</p>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="text-[10px] font-black text-slate-300 uppercase tracking-widest block mb-2">Alamat Lengkap</label>
+                            <p class="text-slate-700 font-bold tracking-tight leading-relaxed">{{ $user->alamat ?? '-' }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endif
+
             <!-- Activity / System Info -->
             <div class="bg-white rounded-[2.5rem] p-10 shadow-2xl shadow-slate-200/60 border border-slate-50 relative overflow-hidden">
                 <div class="relative space-y-10">
