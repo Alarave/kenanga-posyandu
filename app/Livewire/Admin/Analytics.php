@@ -493,9 +493,11 @@ class Analytics extends BaseAdminComponent
                     case 'lansia_hiperurisemia':
                         return $r->uric_acid >= 7.0;
                     case 'lansia_obesity_sentral':
-                        $gender = $r->patient?->gender ?? '';
+                        $gender = strtoupper(trim($r->patient?->gender ?? ''));
                         $wc = $r->waist_circumference ? (float) $r->waist_circumference : 0;
-                        return ($gender === 'M' && $wc > 90) || ($gender === 'F' && $wc > 80);
+                        $isMale = in_array($gender, ['L', 'M']);
+                        $isFemale = in_array($gender, ['P', 'F', 'W']);
+                        return ($isMale && $wc > 90) || ($isFemale && $wc > 80);
                     case 'lansia_eye_issue':
                         $eye = strtolower(trim($r->eye_test ?? ''));
                         return $eye !== '' && $eye !== '-' && $eye !== 'normal';

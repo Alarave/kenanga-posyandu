@@ -925,7 +925,7 @@ class AdminDashboard extends BaseAdminComponent
                 'id' => $record->patient->id,
                 'name' => $record->patient->full_name,
                 'age' => $record->patient->age,
-                'gender' => $record->patient->gender === 'M' ? 'Laki-laki' : 'Perempuan',
+                'gender' => in_array(strtoupper(trim($record->patient->gender)), ['L', 'M']) ? 'Laki-laki' : 'Perempuan',
                 'weight' => $record->weight,
                 'height' => $record->height,
                 'posyandu_name' => $record->patient->posyandu?->name ?? '-',
@@ -1060,7 +1060,7 @@ class AdminDashboard extends BaseAdminComponent
                         'id' => $l->id,
                         'name' => $l->full_name,
                         'age' => $age,
-                        'gender' => $l->gender === 'M' ? 'Laki-laki' : 'Perempuan',
+                        'gender' => in_array(strtoupper(trim($l->gender)), ['L', 'M']) ? 'Laki-laki' : 'Perempuan',
                         'posyandu_name' => $l->posyandu?->name ?? '-',
                     ];
                 }
