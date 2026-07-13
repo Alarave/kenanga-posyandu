@@ -178,12 +178,68 @@
 
                     <!-- Password -->
                     <x-forms.form-group label="Password Baru" for="password">
-                        <x-forms.text-input type="password" name="password" placeholder="Minimal 8 karakter" />
+                        <div class="relative w-full">
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Minimal 8 karakter"
+                                x-data="{ show: false }"
+                                :type="show ? 'text' : 'password'"
+                                class="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 pr-11 text-sm shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-3 transition duration-150 bg-white text-gray-800 border-gray-300 focus:border-blue-500 focus:ring-3 focus:ring-blue-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"
+                                wire:model="password"
+                            >
+                            <button
+                                type="button"
+                                x-data="{ show: false }"
+                                @click="show = !show; document.getElementById('password').type = show ? 'text' : 'password'"
+                                class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition"
+                                tabindex="-1"
+                            >
+                                <i class="fas fa-eye text-sm" id="icon-password"
+                                    x-bind:class="show ? 'fa-eye-slash' : 'fa-eye'"
+                                ></i>
+                            </button>
+                        </div>
+                        <p class="mt-1.5 text-xs text-gray-400 dark:text-gray-500">
+                            <i class="fas fa-circle-info mr-1"></i>
+                            Minimal 8 karakter, kombinasi huruf dan angka
+                        </p>
+                        @error('password')
+                            <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                        @enderror
                     </x-forms.form-group>
 
                     <!-- Password Confirmation -->
                     <x-forms.form-group label="Konfirmasi Password Baru" for="password_confirmation">
-                        <x-forms.text-input type="password" name="password_confirmation" placeholder="Ulangi password" />
+                        <div class="relative w-full">
+                            <input
+                                type="password"
+                                id="password_confirmation"
+                                name="password_confirmation"
+                                placeholder="Ulangi password baru"
+                                class="h-11 w-full rounded-lg border appearance-none px-4 py-2.5 pr-11 text-sm shadow-sm placeholder:text-gray-400 focus:outline-none focus:ring-3 transition duration-150 bg-white text-gray-800 border-gray-300 focus:border-blue-500 focus:ring-3 focus:ring-blue-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90"
+                                wire:model="password_confirmation"
+                            >
+                            <button
+                                type="button"
+                                x-data="{ show: false }"
+                                @click="show = !show; document.getElementById('password_confirmation').type = show ? 'text' : 'password'"
+                                class="absolute inset-y-0 right-0 flex items-center px-3 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition"
+                                tabindex="-1"
+                            >
+                                <i class="fas fa-eye text-sm"
+                                    x-bind:class="show ? 'fa-eye-slash' : 'fa-eye'"
+                                ></i>
+                            </button>
+                        </div>
+                        <p class="mt-1.5 text-xs text-gray-400 dark:text-gray-500">
+                            <i class="fas fa-shield-halved mr-1"></i>
+                            Harus sama persis dengan password baru
+                        </p>
+                        @error('password_confirmation')
+                            <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
+                        @enderror
                     </x-forms.form-group>
 
                     <!-- Active Status -->
