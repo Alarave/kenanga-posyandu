@@ -240,21 +240,53 @@
                     const bgColors = [];
                     const borderColors = [];
                     const statuses = data.nutrition_statuses || data.stunting_statuses || [];
+
+                    // Extract reference line data for zone-based fallback coloring
+                    const refPlus3 = plus3Dataset ? plus3Dataset.data : [];
+                    const refPlus2 = plus2Dataset ? plus2Dataset.data : [];
+                    const refMinus2 = minus2Dataset ? minus2Dataset.data : [];
+                    const refMinus3 = minus3Dataset ? minus3Dataset.data : [];
                     
                     for (let i = 0; i <= 60; i++) {
                         const status = statuses[i];
+                        const childValue = childDataset.data[i];
+
                         if (status) {
+                            // Use stored status string
                             if (status.includes('Buruk') || status.includes('Sangat Pendek')) {
-                                bgColors.push('#ef4444'); // Red
-                                borderColors.push('#ef4444');
+                                bgColors.push('#EF4444'); // Red
+                                borderColors.push('#EF4444');
                             } else if (status.includes('Kurang') || status.includes('Pendek')) {
-                                bgColors.push('#f59e0b'); // Amber
-                                borderColors.push('#f59e0b');
+                                bgColors.push('#F59E0B'); // Amber
+                                borderColors.push('#F59E0B');
                             } else if (status.includes('Lebih') || status.includes('Tinggi') || status.includes('Obesitas') || status.includes('Berisiko')) {
                                 bgColors.push('#8B5CF6'); // Purple
                                 borderColors.push('#8B5CF6');
                             } else {
-                                bgColors.push('#10b981'); // Green
+                                bgColors.push('#10b981'); // Green (Normal)
+                                borderColors.push('#10b981');
+                            }
+                        } else if (childValue !== null && childValue !== undefined) {
+                            // Fallback: determine zone from SD reference lines
+                            const p3 = refPlus3[i];
+                            const p2 = refPlus2[i];
+                            const m2 = refMinus2[i];
+                            const m3 = refMinus3[i];
+
+                            if (m3 !== undefined && childValue < m3) {
+                                bgColors.push('#EF4444'); // Gizi Buruk / Sangat Pendek
+                                borderColors.push('#EF4444');
+                            } else if (m2 !== undefined && childValue < m2) {
+                                bgColors.push('#F59E0B'); // Gizi Kurang / Pendek
+                                borderColors.push('#F59E0B');
+                            } else if (p3 !== undefined && childValue > p3) {
+                                bgColors.push('#8B5CF6'); // Gizi Lebih / Obesitas / Tinggi
+                                borderColors.push('#8B5CF6');
+                            } else if (p2 !== undefined && childValue > p2) {
+                                bgColors.push('#8B5CF6'); // Risiko Gizi Lebih / Tinggi
+                                borderColors.push('#8B5CF6');
+                            } else {
+                                bgColors.push('#10b981'); // Normal
                                 borderColors.push('#10b981');
                             }
                         } else {
