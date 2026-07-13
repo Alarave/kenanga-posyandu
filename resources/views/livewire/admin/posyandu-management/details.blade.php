@@ -195,16 +195,20 @@
             <div class="bg-slate-900 rounded-2xl p-6 text-white">
                 <h4 class="font-bold text-xs uppercase tracking-widest opacity-60 mb-4">Aksi Cepat</h4>
                 <div class="grid grid-cols-2 gap-3">
+                    @can('create', App\Models\Patient::class)
                     <a href="{{ route('admin.patients.create', ['posyandu_id' => $posyandu->id]) }}" 
                        class="p-3 rounded-xl bg-white/10 hover:bg-white/20 transition text-center">
                         <span class="material-symbols-outlined block mb-1">person_add</span>
                         <span class="text-[10px] font-bold">Warga</span>
                     </a>
+                    @endcan
+                    @can('create', App\Models\Schedule::class)
                     <a href="{{ route('admin.schedules.create', ['posyandu_id' => $posyandu->id]) }}" 
                        class="p-3 rounded-xl bg-white/10 hover:bg-white/20 transition text-center">
                         <span class="material-symbols-outlined block mb-1">event</span>
                         <span class="text-[10px] font-bold">Jadwal</span>
                     </a>
+                    @endcan
                 </div>
             </div>
         </div>

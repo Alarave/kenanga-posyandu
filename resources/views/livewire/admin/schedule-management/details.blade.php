@@ -160,10 +160,12 @@
                     <p class="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-2">Rekam Medis Terinput</p>
                     <h3 class="text-5xl font-black text-slate-900 dark:text-slate-100 tracking-tighter mb-6">
                         {{ $schedule->medical_records_count ?? 0 }}</h3>
+                    @can('create', App\Models\MedicalRecord::class)
                     <a href="{{ route('admin.medical-records.create', ['schedule_id' => $schedule->id]) }}"
                         class="flex items-center justify-center w-full h-12 bg-slate-50 dark:bg-slate-950 text-slate-650 dark:text-slate-450 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-indigo-700 hover:text-white transition-all border border-transparent dark:border-slate-800">
                         Input Rekam Medis Baru
                     </a>
+                    @endcan
                 </div>
             </div>
         </div>
