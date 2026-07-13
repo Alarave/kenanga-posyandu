@@ -1,6 +1,6 @@
 {{-- ── C. DETAIL MODAL DIALOG ── --}}
 <div id="kaderModal" class="fixed inset-0 z-50 hidden bg-slate-950/70 backdrop-blur-md items-center justify-center p-4 transition-opacity duration-300">
-    <div class="bg-white/95 dark:bg-slate-900/95 border border-white/20 dark:border-slate-800 rounded-[2.5rem] max-w-2xl w-full overflow-hidden shadow-2xl relative transform scale-95 opacity-0 transition-all duration-300 flex flex-col md:flex-row" id="kaderModalContent">
+    <div class="bg-white/95 dark:bg-slate-900/95 border border-white/20 dark:border-slate-800 rounded-[2.5rem] max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl relative transform scale-95 opacity-0 transition-all duration-300 flex flex-col md:flex-row" id="kaderModalContent">
         
         {{-- Close button --}}
         <button onclick="closeKaderModal()" class="absolute top-6 right-6 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 z-10 w-10 h-10 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center transition-transform hover:rotate-90 duration-300 shadow-sm">

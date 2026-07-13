@@ -1,7 +1,7 @@
 {{-- ── 6. BIODATA KADER POSYANDU ── --}}
 <section class="py-14 border-t border-slate-100 dark:border-slate-800">
     <div class="max-w-7xl mx-auto px-4 md:px-8">
-        <div class="max-w-xl mx-auto sm:text-center">
+        <div class="max-w-2xl mx-auto sm:text-center">
             <h2 class="text-slate-900 dark:text-white text-3xl md:text-5xl font-black font-jakarta tracking-tight py-2">
                 Tim Pelaksana
             </h2>
