@@ -1072,44 +1072,44 @@ class Analytics extends BaseAdminComponent
         }
 
         // Dispatch event to update charts in frontend
-        $this->dispatch('charts-updated',
-            trendLabels: $this->trendLabels,
+        $this->dispatch('charts-updated', [
+            'trendLabels' => $this->trendLabels,
 
             // Overview Trend
-            trendVisitsBalita: $this->trendVisitsBalita,
-            trendVisitsIbuHamil: $this->trendVisitsIbuHamil,
-            trendVisitsLansia: $this->trendVisitsLansia,
+            'trendVisitsBalita' => $this->trendVisitsBalita,
+            'trendVisitsIbuHamil' => $this->trendVisitsIbuHamil,
+            'trendVisitsLansia' => $this->trendVisitsLansia,
 
             // Balita Charts
-            trendNormal: $this->trendNormal,
-            trendStunting: $this->trendStunting,
-            trendRisk: $this->trendRisk,
-            nutritionLabels: $this->nutritionLabels,
-            nutritionData: $this->nutritionData,
-            vaccineLabels: $this->vaccineLabels,
-            vaccineData: $this->vaccineData,
+            'trendNormal' => $this->trendNormal,
+            'trendStunting' => $this->trendStunting,
+            'trendRisk' => $this->trendRisk,
+            'nutritionLabels' => $this->nutritionLabels,
+            'nutritionData' => $this->nutritionData,
+            'vaccineLabels' => $this->vaccineLabels,
+            'vaccineData' => $this->vaccineData,
 
             // Ibu Hamil Charts
-            trendPregnancyHypertension: $this->trendPregnancyHypertension,
-            trendPregnancyFe: $this->trendPregnancyFe,
+            'trendPregnancyHypertension' => $this->trendPregnancyHypertension,
+            'trendPregnancyFe' => $this->trendPregnancyFe,
 
             // Additional Chart Data
-            trendCompareCurrent: $this->trendCompareCurrent,
-            trendComparePrevious: $this->trendComparePrevious,
-            trendLabelsPrevious: $this->trendLabelsPrevious,
-            viewMode: $this->viewMode,
-            compareMode: $this->compareMode,
+            'trendCompareCurrent' => $this->trendCompareCurrent,
+            'trendComparePrevious' => $this->trendComparePrevious,
+            'trendLabelsPrevious' => $this->trendLabelsPrevious,
+            'viewMode' => $this->viewMode,
+            'compareMode' => $this->compareMode,
 
             // Balita Growth
-            trendAvgWeight: $this->trendAvgWeight,
-            trendAvgHeight: $this->trendAvgHeight,
+            'trendAvgWeight' => $this->trendAvgWeight,
+            'trendAvgHeight' => $this->trendAvgHeight,
 
             // Lansia Charts
-            trendLansiaHypertension: $this->trendLansiaHypertension,
-            trendLansiaHyperglycemia: $this->trendLansiaHyperglycemia,
-            trendLansiaHypercholesterolemia: $this->trendLansiaHypercholesterolemia,
-            trendLansiaHyperuricemia: $this->trendLansiaHyperuricemia
-        );
+            'trendLansiaHypertension' => $this->trendLansiaHypertension,
+            'trendLansiaHyperglycemia' => $this->trendLansiaHyperglycemia,
+            'trendLansiaHypercholesterolemia' => $this->trendLansiaHypercholesterolemia,
+            'trendLansiaHyperuricemia' => $this->trendLansiaHyperuricemia
+        ]);
 
         // Load recent records only for the active tab
         $this->loadRecentRecords();
