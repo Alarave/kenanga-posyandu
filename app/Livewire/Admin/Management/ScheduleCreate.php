@@ -98,7 +98,7 @@ class ScheduleCreate extends Component
 
         session()->flash('success', 'Jadwal kegiatan berhasil ditambahkan.');
 
-        return redirect()->route('admin.schedules.index');
+        return $this->redirectRoute('admin.schedules.index', navigate: true);
     }
 
     /**

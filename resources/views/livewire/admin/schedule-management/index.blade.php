@@ -20,7 +20,7 @@
 
         <div class="flex flex-wrap gap-3 items-center">
             @can('create', App\Models\Schedule::class)
-                <a href="{{ route('admin.schedules.create') }}"
+                <a href="{{ route('admin.schedules.create') }}" wire:navigate
                     class="h-16 px-8 bg-primary text-white rounded-[1.5rem] font-black text-xs uppercase tracking-widest flex items-center gap-3 hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 group">
                     <span
                         class="material-symbols-outlined text-[20px] group-hover:rotate-90 transition-transform">calendar_add_on</span>
@@ -258,13 +258,13 @@
                             </td>
                             <td class="px-5 py-4 text-center">
                                 <div class="flex items-center justify-center gap-2">
-                                    <a href="{{ route('admin.schedules.show', $schedule->id) }}"
+                                    <a href="{{ route('admin.schedules.show', $schedule->id) }}" wire:navigate
                                         class="w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-teal-600 hover:text-white transition-all shadow-sm hover:shadow-teal-500/20 group/btn"
                                         title="Lihat Detail">
                                         <span class="material-symbols-outlined text-[22px]">visibility</span>
                                     </a>
                                     @can('update', $schedule)
-                                        <a href="{{ route('admin.schedules.edit', $schedule->id) }}"
+                                        <a href="{{ route('admin.schedules.edit', $schedule->id) }}" wire:navigate
                                             class="w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-indigo-600 hover:text-white transition-all shadow-sm hover:shadow-indigo-500/20 group/btn"
                                             title="Edit Jadwal">
                                             <span class="material-symbols-outlined text-[22px]">edit</span>
@@ -272,15 +272,13 @@
                                     @endcan
                                     
                                     @can('delete', $schedule)
-                                        <form action="{{ route('admin.schedules.destroy', $schedule->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus jadwal ini? Tindakan ini tidak dapat dibatalkan.')" class="inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit"
-                                                class="w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-red-600 hover:text-white transition-all shadow-sm hover:shadow-red-500/20 group/btn"
-                                                title="Hapus Jadwal">
-                                                <span class="material-symbols-outlined text-[22px]">delete</span>
-                                            </button>
-                                        </form>
+                                        <button type="button"
+                                            wire:click="deleteSchedule({{ $schedule->id }})"
+                                            wire:confirm="Apakah Anda yakin ingin menghapus jadwal ini? Tindakan ini tidak dapat dibatalkan."
+                                            class="w-11 h-11 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-500 hover:bg-red-600 hover:text-white transition-all shadow-sm hover:shadow-red-500/20 group/btn"
+                                            title="Hapus Jadwal">
+                                            <span class="material-symbols-outlined text-[22px]">delete</span>
+                                        </button>
                                     @endcan
                                 </div>
                             </td>
