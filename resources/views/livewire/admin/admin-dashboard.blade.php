@@ -1181,7 +1181,7 @@
                         <div class="w-9 h-9 rounded-xl bg-emerald-500 text-white flex items-center justify-center">
                             <span class="material-symbols-outlined text-[18px]">how_to_reg</span>
                         </div>
-                        <span class="font-bold text-slate-900 text-sm">Partisipasi (D/S)</span>
+                        <span class="font-bold text-slate-900 text-sm">Partisipasi</span>
                     </div>
                     <span class="badge badge-emerald">{{ $kehadiranBalita['persentase'] }}%</span>
                 </div>
