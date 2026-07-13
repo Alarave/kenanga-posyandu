@@ -118,8 +118,8 @@
                 @if($hasLogo)
                     <img src="{{ $logoPath }}" style="height: 45px; width: auto; float: left; margin-right: 10px; margin-bottom: 5px;" />
                 @endif
-                <div class="title" style="text-align: left; margin-bottom: 0; padding-top: 5px;">LAPORAN POSYANDU UNTUK POKJA IV</div>
-                <div style="font-size: 8pt; font-weight: bold; color: #475569; text-align: left; margin-top: 2px;">Posyandu {{ $reportData['posyandu']['name'] }}</div>
+                <div class="title" style="text-align: left; margin-bottom: 0; padding-top: 5px;">LAPORAN POSYANDU</div>
+                <div style="font-size: 8pt; font-weight: bold; color: #475569; text-align: left; margin-top: 2px;">{{ $reportData['posyandu']['name'] }}</div>
             </td>
             <td style="border: none; padding: 0; vertical-align: top; width: 220px; text-align: right;">
                 <div class="header-meta" style="float: right; margin-bottom: 0; width: 220px;">
