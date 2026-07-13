@@ -214,3 +214,100 @@
         </div>
     </div>
 </div>
+
+{{-- Riwayat Pemeriksaan Table --}}
+<div class="bg-white rounded-[3rem] border border-slate-100 p-10 shadow-[0_8px_30px_rgb(0,0,0,0.02)] mt-8">
+    <div class="flex items-center gap-4 mb-8">
+        <div class="w-10 h-10 rounded-xl bg-slate-50 text-slate-600 flex items-center justify-center">
+            <span class="material-symbols-outlined text-[20px]">history</span>
+        </div>
+        <h4 class="text-sm font-black text-slate-800 uppercase tracking-widest">Riwayat Pemeriksaan Lansia</h4>
+    </div>
+
+    <div class="overflow-x-auto rounded-2xl border border-slate-100">
+        <table class="w-full text-left border-collapse">
+            <thead class="bg-slate-50/50">
+                <tr class="border-b border-slate-100">
+                    <th class="py-4 px-5 text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">Tanggal</th>
+                    <th class="py-4 px-5 text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">BB / TB</th>
+                    <th class="py-4 px-5 text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">Tekanan Darah</th>
+                    <th class="py-4 px-5 text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">Gula Darah</th>
+                    <th class="py-4 px-5 text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">Asam Urat</th>
+                    <th class="py-4 px-5 text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">Kolesterol</th>
+                    <th class="py-4 px-5 text-[10px] font-black text-slate-400 uppercase tracking-widest whitespace-nowrap">Obat Saat Ini</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-50">
+                @forelse($patient->medicalRecords()->orderBy('visit_date', 'desc')->get() as $record)
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                        <td class="py-4 px-5 text-sm font-bold text-slate-700 whitespace-nowrap">{{ \Carbon\Carbon::parse($record->visit_date)->translatedFormat('d M Y') }}</td>
+                        <td class="py-4 px-5 text-sm font-semibold text-slate-600 whitespace-nowrap">{{ $record->weight ?? '-' }} kg / {{ $record->height ?? '-' }} cm</td>
+                        <td class="py-4 px-5 text-sm font-semibold text-slate-600 whitespace-nowrap">
+                            @if(isset($record->systolic_bp) && isset($record->diastolic_bp))
+                                <span>{{ $record->systolic_bp }}/{{ $record->diastolic_bp }} mmHg</span>
+                                @php
+                                    $isHighBp = $record->systolic_bp >= 140 || $record->diastolic_bp >= 90;
+                                    $isLowBp = $record->systolic_bp < 90 || $record->diastolic_bp < 60;
+                                @endphp
+                                @if($isHighBp)
+                                    <span class="ml-1 inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-black bg-red-50 text-red-600 border border-red-100">Hipertensi</span>
+                                @elseif($isLowBp)
+                                    <span class="ml-1 inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-black bg-blue-50 text-blue-600 border border-blue-100">Hipotensi</span>
+                                @endif
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td class="py-4 px-5 text-sm font-semibold text-slate-600 whitespace-nowrap">
+                            @if(isset($record->blood_sugar))
+                                <span>{{ $record->blood_sugar }} mg/dL</span>
+                                @if($record->blood_sugar >= 200)
+                                    <span class="ml-1 inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-black bg-red-50 text-red-600 border border-red-100">Tinggi</span>
+                                @elseif($record->blood_sugar < 70)
+                                    <span class="ml-1 inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-black bg-blue-50 text-blue-600 border border-blue-100">Rendah</span>
+                                @endif
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td class="py-4 px-5 text-sm font-semibold text-slate-600 whitespace-nowrap">
+                            @if(isset($record->uric_acid))
+                                <span>{{ number_format($record->uric_acid, 1) }} mg/dL</span>
+                                @php
+                                    $isHighUric = ($patient->gender == 'L' || $patient->gender == 'M') ? ($record->uric_acid >= 7.0) : ($record->uric_acid >= 6.0);
+                                @endphp
+                                @if($isHighUric)
+                                    <span class="ml-1 inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-black bg-red-50 text-red-600 border border-red-100">Tinggi</span>
+                                @endif
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td class="py-4 px-5 text-sm font-semibold text-slate-600 whitespace-nowrap">
+                            @if(isset($record->cholesterol))
+                                <span>{{ $record->cholesterol }} mg/dL</span>
+                                @if($record->cholesterol >= 200)
+                                    <span class="ml-1 inline-flex items-center px-1.5 py-0.5 rounded text-[8px] font-black bg-red-50 text-red-600 border border-red-100">Tinggi</span>
+                                @endif
+                            @else
+                                -
+                            @endif
+                        </td>
+                        <td class="py-4 px-5 text-sm font-semibold text-slate-650 max-w-xs truncate" title="{{ $record->current_medication ?? '-' }}">
+                            {{ $record->current_medication ?? '-' }}
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="7" class="py-12 text-center">
+                            <div class="inline-flex flex-col items-center justify-center text-slate-400">
+                                <span class="material-symbols-outlined text-[48px] font-light mb-3">clinical_notes</span>
+                                <span class="text-sm font-semibold">Belum ada riwayat pemeriksaan</span>
+                            </div>
+                        </td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+</div>
