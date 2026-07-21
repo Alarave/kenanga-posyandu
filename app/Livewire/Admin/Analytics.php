@@ -1014,11 +1014,17 @@ class Analytics extends BaseAdminComponent
     {
         /** @var User $user */
         $user = Auth::user();
-        $posyanduId = $user->isSuperAdmin() ? null : $user->posyandu_id;
+        $posyanduId = $this->selectedPosyandu ?? ($user->isSuperAdmin() ? null : $user->posyandu_id);
+        
+        // Prevent non-superadmin users from escaping their posyandu scope
+        if (! $user->isSuperAdmin() && $this->selectedPosyandu && $this->selectedPosyandu != $user->posyandu_id) {
+            $posyanduId = $user->posyandu_id;
+        }
+
         $key = "year_{$this->selectedYear}".($this->selectedMonth ? "_month_{$this->selectedMonth}" : '');
 
-        // Bypass snapshot if custom filters are active (DASH-09, DASH-10, DASH-11, DASH-12, DASH-31, DASH-32)
-        $isCustomFilterActive = $this->selectedMonth || $this->selectedPosyandu || $this->compareMode || $this->viewMode === 'yearly';
+        // Bypass snapshot only for compareMode or yearly view mode
+        $isCustomFilterActive = $this->compareMode || $this->viewMode === 'yearly';
 
         if (! $isCustomFilterActive) {
             $snapshot = AnalyticsSnapshot::where('posyandu_id', $posyanduId)
