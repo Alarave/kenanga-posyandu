@@ -162,14 +162,14 @@
         display: inline-flex;
         align-items: center;
         gap: 12px;
-        padding: 14px 20px;
+        padding: 16px 24px;
         border-radius: 16px;
         background: rgba(255, 255, 255, 0.08);
         border: 1px solid rgba(255, 255, 255, 0.12);
         color: #ffffff;
         text-decoration: none;
         font-weight: 700;
-        font-size: 14px;
+        font-size: 16px;
         transition: all 300ms cubic-bezier(0.16, 1, 0.3, 1);
         word-break: break-all;
         backdrop-filter: blur(8px);
@@ -188,14 +188,14 @@
         gap: 16px;
     }
     .step-number {
-        width: 44px;
-        height: 44px;
+        width: 48px;
+        height: 48px;
         border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
         font-weight: 800;
-        font-size: 16px;
+        font-size: 18px;
         color: #ffffff;
         background: linear-gradient(135deg, #0d9488 0%, #006c49 100%);
         box-shadow: 0 4px 12px rgba(13, 148, 136, 0.25);
@@ -204,12 +204,12 @@
     .step-title {
         font-weight: 800;
         color: #0f172a;
-        font-size: 16px;
+        font-size: 18px;
         margin-bottom: 4px;
     }
     .step-desc {
         color: #64748b;
-        font-size: 13px;
+        font-size: 15px;
         line-height: 1.6;
     }
 
@@ -217,10 +217,10 @@
         display: inline-flex;
         align-items: center;
         gap: 10px;
-        padding: 14px 28px;
+        padding: 16px 32px;
         border-radius: 16px;
         color: #ffffff;
-        font-size: 13px;
+        font-size: 14px;
         font-weight: 750;
         letter-spacing: 0.04em;
         text-transform: uppercase;
@@ -359,11 +359,7 @@
 
         {{-- Left: Editorial copy --}}
         <div class="flex flex-col justify-center px-10 md:px-16 py-16 relative z-10">
-            {{-- Badge --}}
-            <div class="badge-status-light">
-                <span class="dot"></span>
-                <span class="text">Bantuan &amp; Layanan</span>
-            </div>
+
 
             <h1 class="text-6xl md:text-8xl font-black text-slate-900 leading-[1] tracking-tight font-jakarta mb-8" style="text-wrap:balance">
                 Hubungi<br>
@@ -408,39 +404,34 @@
     <section class="email-feature mb-8 reveal reveal-d1" aria-label="Kontak email utama">
         <div class="email-dark-panel">
             <div class="relative z-10">
-                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full mb-6"
-                     style="background:rgba(255, 255, 255, 0.08); border:1px solid rgba(255, 255, 255, 0.15)">
-                    <span class="w-1.5 h-1.5 rounded-full bg-teal-300"></span>
-                    <p class="text-[9px] font-black uppercase tracking-[0.22em] text-teal-300">Kontak Resmi</p>
-                </div>
-                <h2 class="text-3xl md:text-4xl font-black text-white leading-tight font-jakarta mb-4" style="text-wrap:balance">
+                <h2 class="text-4xl md:text-5xl font-black text-white leading-tight font-jakarta mb-4" style="text-wrap:balance">
                     Punya<br>Pertanyaan?
                 </h2>
-                <p class="text-sm font-medium leading-relaxed mb-8" style="color:rgba(255,255,255,.7);max-width:320px">
+                <p class="text-base font-medium leading-relaxed mb-8" style="color:rgba(255,255,255,.7);max-width:360px">
                     Jika ada pertanyaan mengenai jadwal kegiatan, pendaftaran layanan posyandu, kerja sama, atau saran lainnya, silakan hubungi kami. Kami siap membaca dan membalas pesan Anda.
                 </p>
                 <a href="{!! $obfuscatedGmailLink !!}"
                    target="_blank" rel="noopener noreferrer"
                    class="email-address-link"
                    aria-label="Kirim email ke {{ $email }} via Gmail">
-                    <span class="material-symbols-outlined text-teal-300 text-[20px] shrink-0">mail</span>
+                    <span class="material-symbols-outlined text-teal-300 text-[24px] shrink-0">mail</span>
                     <span>{!! $obfuscatedEmail !!}</span>
                 </a>
             </div>
             <div class="relative z-10 flex gap-6 mt-10">
                 <div>
-                    <p class="text-2xl font-black text-white font-jakarta">08.00</p>
-                    <p class="text-[9px] font-black uppercase tracking-widest" style="color:rgba(255,255,255,.4)">Buka</p>
+                    <p class="text-3xl font-black text-white font-jakarta">08.00</p>
+                    <p class="text-xs font-black uppercase tracking-widest" style="color:rgba(255,255,255,.4)">Buka</p>
                 </div>
                 <div class="w-px self-stretch" style="background:rgba(255,255,255,.12)"></div>
                 <div>
-                    <p class="text-2xl font-black text-white font-jakarta">16.00</p>
-                    <p class="text-[9px] font-black uppercase tracking-widest" style="color:rgba(255,255,255,.4)">Tutup</p>
+                    <p class="text-3xl font-black text-white font-jakarta">16.00</p>
+                    <p class="text-xs font-black uppercase tracking-widest" style="color:rgba(255,255,255,.4)">Tutup</p>
                 </div>
                 <div class="w-px self-stretch" style="background:rgba(255,255,255,.12)"></div>
                 <div>
-                    <p class="text-2xl font-black text-white font-jakarta">WIB</p>
-                    <p class="text-[9px] font-black uppercase tracking-widest" style="color:rgba(255,255,255,.4)">Zona</p>
+                    <p class="text-3xl font-black text-white font-jakarta">WIB</p>
+                    <p class="text-xs font-black uppercase tracking-widest" style="color:rgba(255,255,255,.4)">Zona</p>
                 </div>
             </div>
         </div>
@@ -448,7 +439,7 @@
             <div class="absolute inset-0 pointer-events-none"
                  style="background-image:radial-gradient(#bbf7d0 1px,transparent 1px);background-size:22px 22px;opacity:.45"></div>
             <div class="relative z-10">
-                <p class="text-xs font-black uppercase tracking-[0.22em] text-teal-600 mb-8">Cara Menghubungi</p>
+                <p class="text-sm font-black uppercase tracking-[0.22em] text-teal-600 mb-8">Cara Menghubungi</p>
                 <div class="space-y-6 mb-10">
                     @foreach([
                         ['num'=>'1','title'=>'Tulis pesan','desc'=>'Sampaikan pertanyaan atau kebutuhan Anda dengan jelas.'],
@@ -486,12 +477,6 @@
                  style="background-image:radial-gradient(#a7f3d0 1.2px,transparent 1.2px);background-size:24px 24px;opacity:.35"></div>
 
             <div class="relative z-10">
-                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-6"
-                     style="background:rgba(13, 148, 136, 0.06); border:1px solid rgba(13, 148, 136, 0.15)">
-                    <span class="material-symbols-outlined text-teal-800 text-[14px]">location_on</span>
-                    <p class="text-[9px] font-black uppercase tracking-[0.22em] text-teal-800">Temukan Kami</p>
-                </div>
-
                 <h2 class="text-4xl md:text-5xl font-black leading-tight font-jakarta mb-6 tracking-tight text-slate-900">
                     Kunjungi<br>
                     <span class="gradient-text">Lokasi Kami.</span>
@@ -521,43 +506,16 @@
             </div>
         </div>
 
-        {{-- Static Map Screenshot with Animated Overlays --}}
-        <div class="map-photo relative overflow-hidden" style="background:#0d3b29">
-            <img src="{{ asset('assets/img/peta-lokasi.png') }}"
-                 alt="Peta wilayah Jl. Pulau Lombok I, Bekasi Timur"
-                 class="absolute inset-0 w-full h-full object-cover opacity-70" loading="lazy">
-
-            {{-- Green tint overlay --}}
-            <div class="absolute inset-0" style="background:linear-gradient(145deg,rgba(13,59,41,.4) 0%,rgba(0,108,73,.1) 50%,transparent 80%)"></div>
-
-            {{-- Floating Unit Count --}}
-            <div class="absolute top-8 right-8 px-4 py-3 rounded-2xl shadow-xl bg-white/95 backdrop-filter backdrop-blur-[12px] border border-white/10">
-                <p class="text-[9px] font-black uppercase tracking-widest text-slate-400 mb-0.5">Unit Posyandu</p>
-                <p class="text-2xl font-black text-slate-900 font-jakarta">2</p>
-            </div>
-
-            {{-- Animated pin --}}
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                <div class="relative">
-                    <div class="absolute inset-0 w-16 h-16 rounded-full animate-ping -translate-x-1 -translate-y-1"
-                         style="background:rgba(0,168,107,.35)"></div>
-                    <div class="w-14 h-14 rounded-full flex items-center justify-center relative"
-                         style="background:linear-gradient(135deg,#006c49,#00a86b);box-shadow:0 0 0 5px rgba(255,255,255,.25),0 10px 32px rgba(0,108,73,.6)">
-                        <span class="material-symbols-outlined text-white text-[22px]">push_pin</span>
-                    </div>
-                    {{-- Ripple rings --}}
-                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-24 h-24 rounded-full border border-white/20 animate-ping" style="animation-duration:2s"></div>
-                    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-36 h-36 rounded-full border border-white/10 animate-ping" style="animation-duration:2.5s"></div>
-                </div>
-            </div>
-
-            {{-- Bottom label --}}
-            <div class="absolute bottom-6 left-6 right-6">
-                <div class="badge-glass-dark">
-                    <span class="dot animate-pulse"></span>
-                    <span class="text">Bekasi Timur, Jawa Barat</span>
-                </div>
-            </div>
+        {{-- Interactive Google Map --}}
+        <div class="map-photo relative overflow-hidden" style="background:#0d3b29; width: 100%; height: 100%;">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3965.986326162319!2d107.03145517590858!3d-6.248386393739796!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e698ef3b1f96e2d%3A0x6b6411d4927c81b2!2sJl.%20Pulau%20Lombok%20I%2C%20RT.005%2FRW.011%2C%20Aren%20Jaya%2C%20Kec.%20Bekasi%20Tim.%2C%20Kota%20Bks%2C%20Jawa%20Barat%2017111!5e0!3m2!1sen!2sid!4v1717316712345!5m2!1sen!2sid"
+                class="absolute inset-0 w-full h-full"
+                style="border:0;"
+                allowfullscreen=""
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
         </div>
 
     </section>

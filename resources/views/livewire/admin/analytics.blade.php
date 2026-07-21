@@ -147,14 +147,6 @@
                 {{-- Left: Title block --}}
                 <div class="min-w-0">
                     {{-- Live badge --}}
-                    <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full mb-3 sm:mb-5"
-                        style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.18);">
-                        <span class="relative flex h-1.5 w-1.5 shrink-0">
-                            <span class="animate-ping-slow absolute inline-flex h-full w-full rounded-full bg-teal-200 opacity-75"></span>
-                            <span class="relative inline-flex h-1.5 w-1.5 rounded-full bg-teal-300"></span>
-                        </span>
-                        <span class="text-[10px] font-bold text-teal-100 tracking-wider uppercase leading-none">Analitik &middot; Posyandu Kenanga</span>
-                    </div>
 
                     <h1 class="text-[1.6rem] sm:text-3xl md:text-4xl lg:text-[2.75rem] font-black text-white leading-[1.1] mb-2 sm:mb-3" style="letter-spacing:-0.03em; font-family:'Outfit',sans-serif;">
                         Wawasan &amp; Data Kesehatan
@@ -993,7 +985,7 @@
                 <div class="flex items-start justify-between gap-4 mb-6">
                     <div>
                         <h3 class="text-lg md:text-xl font-extrabold text-slate-900 tracking-tight">Prevalensi Pertumbuhan Balita</h3>
-                        <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Tren bulanan persentase status gizi balita: Normal, Risiko, dan Stunting/Gizi Buruk</p>
+                        <p class="text-xs md:text-sm text-slate-500 font-semibold mt-1">Tren bulanan persentase status gizi balita: Gizi Baik, Gizi Kurang, Gizi Buruk, dan Gizi Lebih</p>
                     </div>
                     <div class="flex items-center gap-2">
                         <button onclick="downloadChart(nutritionTrendChart, 'tren_status_gizi_balita')" class="shrink-0 p-2.5 text-slate-500 hover:text-slate-800 rounded-xl bg-slate-50 border border-slate-300 transition-colors shadow-xs cursor-pointer flex items-center justify-center" title="Unduh Gambar Grafik">
@@ -1006,15 +998,19 @@
                 <div class="flex flex-wrap gap-3 mb-6">
                     <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200/60">
                         <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span>
-                        <span class="text-xs font-bold text-emerald-700">Normal</span>
+                        <span class="text-xs font-bold text-emerald-700">Gizi Baik</span>
                     </div>
                     <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-200/60">
-                        <span class="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block"></span>
-                        <span class="text-xs font-bold text-amber-700">Risiko Gizi</span>
+                        <span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span>
+                        <span class="text-xs font-bold text-amber-700">Gizi Kurang</span>
                     </div>
                     <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-red-50 border border-red-200/60">
                         <span class="w-2.5 h-2.5 rounded-full bg-red-500 inline-block"></span>
-                        <span class="text-xs font-bold text-red-700">Stunting / Gizi Buruk</span>
+                        <span class="text-xs font-bold text-red-700">Gizi Buruk</span>
+                    </div>
+                    <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-purple-50 border border-purple-200/60">
+                        <span class="w-2.5 h-2.5 rounded-full bg-purple-500 inline-block"></span>
+                        <span class="text-xs font-bold text-purple-700">Gizi Lebih</span>
                     </div>
                 </div>
 
@@ -1175,7 +1171,7 @@
                     <h3 class="text-lg font-bold text-slate-900 mb-6">Prevalensi Stunting per Wilayah Posyandu</h3>
                     <div class="space-y-6">
                         @forelse($stuntingByPosyandu as $item)
-                        <div class="cursor-pointer hover:bg-slate-50 p-2 -mx-2 rounded-lg transition-colors" wire:dblclick="drillDown('Stunting - {{ $item['name'] ?? '' }}', 'balita_stunting_buruk', null, null, null, {{ $item['id'] ?? 'null' }}, 'stunting_posyandu')">
+                        <div class="cursor-pointer hover:bg-slate-50 p-2 -mx-2 rounded-lg transition-colors" wire:dblclick="drillDown('Stunting - {{ $item['name'] ?? '' }}', 'stunting', null, null, null, {{ $item['id'] ?? 'null' }}, 'stunting_posyandu')">
                             <div class="flex justify-between items-end mb-2 text-xs font-bold text-slate-700">
                                 <span>{{ $item['name'] }} ({{ $item['stunting'] }}/{{ $item['total'] }} Balita)</span>
                                 <span class="font-extrabold text-slate-900">{{ $item['rate'] }}%</span>
@@ -1291,9 +1287,9 @@
                                         if ($statusStr === 'gizi buruk' || $statusStr === 'buruk') {
                                             $tagStyle = 'background-color: #fee2e2; color: #991b1b; border-color: rgba(153, 27, 27, 0.2);';
                                         } elseif ($statusStr === 'gizi kurang' || $statusStr === 'kurang') {
-                                            $tagStyle = 'background-color: #fef9c3; color: #854d0e; border-color: rgba(133, 77, 14, 0.2);';
+                                            $tagStyle = 'background-color: #ffedd5; color: #c2410c; border-color: rgba(194, 65, 12, 0.2);';
                                         } elseif (str_contains($statusStr, 'lebih') || str_contains($statusStr, 'obesitas')) {
-                                            $tagStyle = 'background-color: #ffedd5; color: #9a3412; border-color: rgba(154, 52, 18, 0.2);';
+                                            $tagStyle = 'background-color: #f3e8ff; color: #6b21a8; border-color: rgba(107, 33, 168, 0.2);';
                                         } else {
                                             $tagStyle = 'background-color: #dcfce7; color: #166534; border-color: rgba(22, 101, 52, 0.2);';
                                         }
@@ -1487,22 +1483,27 @@
             {{-- Modal Body --}}
             <div class="flex-1 overflow-y-auto p-6 space-y-4">
                 {{-- Balita Category Tabs --}}
-                @if(in_array($drillDownType, ['balita_normal', 'balita_risiko', 'balita_stunting_buruk']))
-                <div class="flex gap-2 p-1.5 bg-slate-100 rounded-2xl w-fit">
-                    <button wire:click="switchDrillDownCategory('balita_normal')" 
-                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'balita_normal' ? 'bg-white text-emerald-700 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                @if(in_array($drillDownType, ['balita_gizi_baik', 'balita_gizi_kurang', 'balita_gizi_buruk', 'balita_gizi_lebih']))
+                <div class="flex flex-wrap gap-2 p-1.5 bg-slate-100 rounded-2xl w-fit">
+                    <button wire:click="switchDrillDownCategory('balita_gizi_baik')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'balita_gizi_baik' ? 'bg-white text-emerald-700 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
                         <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-                        Normal
+                        Gizi Baik
                     </button>
-                    <button wire:click="switchDrillDownCategory('balita_risiko')" 
-                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'balita_risiko' ? 'bg-white text-amber-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                    <button wire:click="switchDrillDownCategory('balita_gizi_kurang')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'balita_gizi_kurang' ? 'bg-white text-amber-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
                         <span class="w-2 h-2 rounded-full bg-amber-400"></span>
-                        Risiko Gizi
+                        Gizi Kurang
                     </button>
-                    <button wire:click="switchDrillDownCategory('balita_stunting_buruk')" 
-                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'balita_stunting_buruk' ? 'bg-white text-rose-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                    <button wire:click="switchDrillDownCategory('balita_gizi_buruk')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'balita_gizi_buruk' ? 'bg-white text-rose-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
                         <span class="w-2 h-2 rounded-full bg-rose-500"></span>
-                        Stunting / Gizi Buruk
+                        Gizi Buruk
+                    </button>
+                    <button wire:click="switchDrillDownCategory('balita_gizi_lebih')" 
+                            class="px-5 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-2 {{ $drillDownType === 'balita_gizi_lebih' ? 'bg-white text-purple-600 shadow-xs' : 'text-slate-500 hover:text-slate-800' }}">
+                        <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+                        Gizi Lebih
                     </button>
                 </div>
                 @endif
@@ -1739,7 +1740,7 @@
                                       } elseif (str_contains($statusStr, 'gizi kurang') || $statusStr === 'kurang') {
                                           $customStyle = 'background-color: #FFEDD5; color: #C2410C; border-color: rgba(194, 65, 12, 0.15);';
                                       } elseif (str_contains($statusStr, 'gizi lebih') || str_contains($statusStr, 'lebih') || str_contains($statusStr, 'obesitas')) {
-                                          $customStyle = 'background-color: #FEF9C3; color: #A16207; border-color: rgba(161, 98, 7, 0.15);';
+                                          $customStyle = 'background-color: #F3E8FF; color: #6B21A8; border-color: rgba(107, 33, 168, 0.15);';
                                       } elseif (str_contains($statusStr, 'gizi baik') || $statusStr === 'baik' || str_contains($statusStr, 'normal')) {
                                           $customStyle = 'background-color: #DCFCE7; color: #15803D; border-color: rgba(21, 128, 61, 0.15);';
                                       } elseif (str_contains($statusStr, 'sangat kurang') || str_contains($statusStr, 'belum') || str_contains($statusStr, 'anemia') || str_contains($statusStr, 'risiko')) {
@@ -2088,9 +2089,10 @@ function initCharts(data = null) {
     const trendLabelsPrevious = getArr(data, 'trendLabelsPrevious');
 
     // Balita trend
-    const normal = getArr(data, 'trendNormal');
-    const stunting = getArr(data, 'trendStunting');
-    const risk = getArr(data, 'trendRisk');
+    const giziBaik = getArr(data, 'trendGiziBaik');
+    const giziKurang = getArr(data, 'trendGiziKurang');
+    const giziBuruk = getArr(data, 'trendGiziBuruk');
+    const giziLebih = getArr(data, 'trendGiziLebih');
     const avgWeight = getArr(data, 'trendAvgWeight');
     const avgHeight = getArr(data, 'trendAvgHeight');
     const nutLabels = getArr(data, 'nutritionLabels');
@@ -2278,41 +2280,53 @@ function initCharts(data = null) {
                     labels: labels,
                     datasets: [
                         {
-                            label: 'Normal',
-                            data: normal,
-                            borderColor: '#059669',
-                            backgroundColor: 'rgba(5, 150, 105, 0.10)',
+                            label: 'Gizi Baik',
+                            data: giziBaik,
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.10)',
                             borderWidth: 3,
                             tension: 0.4,
                             fill: true,
-                            pointBackgroundColor: '#059669',
+                            pointBackgroundColor: '#10b981',
                             pointRadius: 4,
                             pointHoverRadius: 7,
                         },
                         {
-                            label: 'Risiko Gizi',
-                            data: risk,
-                            borderColor: '#C2410C',
-                            backgroundColor: 'rgba(194, 65, 12, 0.10)',
+                            label: 'Gizi Kurang',
+                            data: giziKurang,
+                            borderColor: '#f59e0b',
+                            backgroundColor: 'rgba(245, 158, 11, 0.10)',
                             borderWidth: 3,
                             tension: 0.4,
                             fill: true,
-                            pointBackgroundColor: '#C2410C',
+                            pointBackgroundColor: '#f59e0b',
                             pointRadius: 4,
                             pointHoverRadius: 7,
                         },
                         {
-                            label: 'Stunting / Gizi Buruk',
-                            data: stunting,
-                            borderColor: '#B91C1C',
-                            backgroundColor: 'rgba(185, 28, 28, 0.10)',
+                            label: 'Gizi Buruk',
+                            data: giziBuruk,
+                            borderColor: '#ef4444',
+                            backgroundColor: 'rgba(239, 68, 68, 0.10)',
                             borderWidth: 3,
                             tension: 0.4,
                             fill: true,
-                            pointBackgroundColor: '#B91C1C',
+                            pointBackgroundColor: '#ef4444',
                             pointRadius: 4,
                             pointHoverRadius: 7,
-                        }
+                        },
+                        {
+                                                            label: 'Gizi Lebih',
+                                                            data: giziLebih,
+                                                            borderColor: '#8b5cf6',
+                                                            backgroundColor: 'rgba(139, 92, 246, 0.10)',
+                                                            borderWidth: 3,
+                                                            tension: 0.4,
+                                                            fill: true,
+                                                            pointBackgroundColor: '#8b5cf6',
+                                                            pointRadius: 4,
+                                                            pointHoverRadius: 7,
+                                                        }
                     ]
                 },
                 options: {
@@ -2339,9 +2353,10 @@ function initCharts(data = null) {
 
                         // Map dataset index → nama & type backend
                         const datasetMap = [
-                            { name: 'Normal',                type: 'balita_normal' },
-                            { name: 'Risiko Gizi',           type: 'balita_risiko' },
-                            { name: 'Stunting / Gizi Buruk', type: 'balita_stunting_buruk' },
+                            { name: 'Gizi Baik',   type: 'balita_gizi_baik' },
+                            { name: 'Gizi Kurang', type: 'balita_gizi_kurang' },
+                            { name: 'Gizi Buruk',  type: 'balita_gizi_buruk' },
+                            { name: 'Gizi Lebih',  type: 'balita_gizi_lebih' },
                         ];
                         const { name: datasetLabel, type } = datasetMap[datasetIndex]
                             ?? { name: 'Balita', type: 'balita' };

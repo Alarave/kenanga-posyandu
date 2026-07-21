@@ -23,7 +23,7 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 1.5rem;
-    height: 76px;
+    height: 96px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -31,7 +31,7 @@
 }
 
 #publicNav.scrolled .nav-inner {
-    height: 64px;
+    height: 76px;
 }
 
 /* Logo */
@@ -259,7 +259,7 @@
 /* Mobile Menu full-width panel */
 #mobileMenu {
     position: fixed;
-    top: 76px;
+    top: 96px;
     left: 0;
     right: 0;
     background: rgba(255, 255, 255, 0.96);
@@ -276,7 +276,7 @@
 }
 
 #publicNav.scrolled ~ #mobileMenu {
-    top: 64px;
+    top: 76px;
 }
 
 #mobileMenu.open {

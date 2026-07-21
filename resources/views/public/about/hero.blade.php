@@ -9,15 +9,6 @@
             
             {{-- Hero Left: Content --}}
             <div class="lg:col-span-7 space-y-6 text-left">
-                <div class="space-y-3">
-                    <div>
-                        <span class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-primary/10 dark:bg-primary/25 rounded-full border border-primary/20 dark:border-primary/45 text-xs md:text-sm font-black text-primary dark:text-teal-300 uppercase tracking-[0.2em]">
-                            <span class="material-symbols-outlined text-base">info</span>
-                            Profil & Editorial
-                        </span>
-                    </div>
-                </div>
-                
                 <h1 class="text-4xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tight font-jakarta leading-[1.15] py-2">
                     Mitra Masyarakat<br/>
                     <span class="inline-block text-transparent bg-clip-text bg-linear-to-r from-primary to-teal-500 dark:from-teal-300 dark:to-emerald-400 italic pl-2 pr-8 py-2 -mr-6">Menuju Hidup Sehat.</span>

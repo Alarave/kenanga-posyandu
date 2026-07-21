@@ -95,7 +95,7 @@
             </div>
         </div>
 
-        <form method="GET" action="{{ route('admin.activity-logs.index') }}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-6 gap-6">
+        <form method="GET" action="{{ route('admin.activity-logs.index') }}" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {{-- Search Input --}}
             <div class="space-y-2">
                 <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Pencarian</label>
@@ -112,7 +112,7 @@
                 <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Pengguna</label>
                 <div class="relative">
                     <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" style="font-size:20px; z-index:10;">person</span>
-                    <select name="user_id" class="w-full h-12 pl-11 pr-4 rounded-xl border border-slate-200 bg-slate-50/50 text-sm font-bold text-slate-900 focus:outline-none focus:border-teal-500 focus:bg-white transition-all appearance-none">
+                    <select name="user_id" class="w-full h-12 pl-11 pr-10 rounded-xl border border-slate-200 bg-slate-50/50 text-sm font-bold text-slate-900 focus:outline-none focus:border-teal-500 focus:bg-white transition-all appearance-none">
                         <option value="">Semua Kader / System</option>
                         @foreach($users as $user)
                             <option value="{{ $user->user_id }}" {{ request('user_id') == $user->user_id ? 'selected' : '' }}>
@@ -129,7 +129,7 @@
                 <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-1">Jenis Aksi</label>
                 <div class="relative">
                     <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" style="font-size:20px; z-index:10;">bolt</span>
-                    <select name="action_type" class="w-full h-12 pl-11 pr-4 rounded-xl border border-slate-200 bg-slate-50/50 text-sm font-bold text-slate-900 focus:outline-none focus:border-teal-500 focus:bg-white transition-all appearance-none">
+                    <select name="action_type" class="w-full h-12 pl-11 pr-10 rounded-xl border border-slate-200 bg-slate-50/50 text-sm font-bold text-slate-900 focus:outline-none focus:border-teal-500 focus:bg-white transition-all appearance-none">
                         <option value="">Semua Aksi</option>
                         @foreach($actionTypes as $type)
                             <option value="{{ $type }}" {{ request('action_type') == $type ? 'selected' : '' }}>

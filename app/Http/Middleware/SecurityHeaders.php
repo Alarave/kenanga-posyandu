@@ -47,8 +47,8 @@ class SecurityHeaders
             "img-src 'self' data: blob: https:",
             "connect-src 'self'",
             // Izinkan YouTube dan Google Drive untuk embed iframe artikel
-            "frame-src 'self' https://www.youtube.com https://youtube.com https://youtu.be https://drive.google.com",
-            "child-src 'self' https://www.youtube.com https://youtube.com https://drive.google.com blob:",
+            "frame-src 'self' https://www.youtube.com https://youtube.com https://youtu.be https://drive.google.com https://www.google.com",
+            "child-src 'self' https://www.youtube.com https://youtube.com https://drive.google.com blob: https://www.google.com",
             "media-src 'self' blob:",
             "frame-ancestors 'self'",
             "base-uri 'self'",

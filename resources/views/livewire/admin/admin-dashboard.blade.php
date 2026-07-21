@@ -126,17 +126,8 @@
         </div>
 
         <div class="relative z-10 px-8 py-10 md:px-12 md:py-12 max-w-3xl">
-            {{-- Live badge --}}
-            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full mb-6"
-                style="background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.1);">
-                <span class="relative flex h-2 w-2">
-                    <span
-                        class="animate-ping-slow absolute inline-flex h-full w-full rounded-full bg-teal-400 opacity-75"></span>
-                    <span class="relative inline-flex h-2 w-2 rounded-full bg-teal-400"></span>
-                </span>
-                <span class="text-xs font-semibold text-teal-100 tracking-wide">Sistem Informasi Posyandu Aktif</span>
-            </div>
 
+          
             <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 leading-tight"
                 style="letter-spacing:-0.02em;">
                 {{ $sapa }},

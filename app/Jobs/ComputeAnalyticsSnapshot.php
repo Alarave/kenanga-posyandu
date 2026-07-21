@@ -178,33 +178,31 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
                 return (object) ['normal_rate' => 0, 'stunting_rate' => 0, 'risk_rate' => 0];
             }
 
-            $normal = $group->whereIn('nutrition_status', [MedicalRecord::STATUS_BB_U_NORMAL, MedicalRecord::STATUS_GIZI_BAIK])->count();
-            $stunting = $group->whereIn('stunting_status', [
-                MedicalRecord::STATUS_TB_U_SANGAT_PENDEK,
-                MedicalRecord::STATUS_TB_U_PENDEK,
-            ])->count();
-            $risk = $group->where(function ($r) {
-                return in_array($r->nutrition_status, [MedicalRecord::STATUS_BB_U_RISIKO_LEBIH, MedicalRecord::STATUS_GIZI_BERISIKO_LEBIH, MedicalRecord::STATUS_GIZI_LEBIH, MedicalRecord::STATUS_GIZI_OBESITAS, MedicalRecord::STATUS_BB_U_KURANG, MedicalRecord::STATUS_GIZI_KURANG]) ||
-                       in_array($r->wasting_status, [MedicalRecord::STATUS_BB_U_RISIKO_LEBIH, MedicalRecord::STATUS_GIZI_BERISIKO_LEBIH, MedicalRecord::STATUS_GIZI_LEBIH, MedicalRecord::STATUS_GIZI_OBESITAS, MedicalRecord::STATUS_BB_U_KURANG, MedicalRecord::STATUS_GIZI_KURANG]);
-            })->count();
+            $baik = $group->where('nutrition_status', MedicalRecord::STATUS_BB_U_NORMAL)->count();
+            $kurang = $group->where('nutrition_status', MedicalRecord::STATUS_BB_U_KURANG)->count();
+            $buruk = $group->where('nutrition_status', MedicalRecord::STATUS_BB_U_SANGAT_KURANG)->count();
+            $lebih = $group->where('nutrition_status', MedicalRecord::STATUS_BB_U_RISIKO_LEBIH)->count();
 
             return (object) [
-                'normal_rate' => round(($normal / $total) * 100, 1),
-                'stunting_rate' => round(($stunting / $total) * 100, 1),
-                'risk_rate' => round(($risk / $total) * 100, 1),
+                'baik_rate' => round(($baik / $total) * 100, 1),
+                'kurang_rate' => round(($kurang / $total) * 100, 1),
+                'buruk_rate' => round(($buruk / $total) * 100, 1),
+                'lebih_rate' => round(($lebih / $total) * 100, 1),
             ];
         });
 
-        $trendNormal = [];
-        $trendStunting = [];
-        $trendRisk = [];
+        $trendGiziBaik = [];
+        $trendGiziKurang = [];
+        $trendGiziBuruk = [];
+        $trendGiziLebih = [];
         $trendAvgWeight = [];
         $trendAvgHeight = [];
         for ($m = 1; $m <= 12; $m++) {
             $monthData = $balitaTrends->get($m);
-            $trendNormal[] = $monthData ? $monthData->normal_rate : 0;
-            $trendStunting[] = $monthData ? $monthData->stunting_rate : 0;
-            $trendRisk[] = $monthData ? $monthData->risk_rate : 0;
+            $trendGiziBaik[] = $monthData ? $monthData->baik_rate : 0;
+            $trendGiziKurang[] = $monthData ? $monthData->kurang_rate : 0;
+            $trendGiziBuruk[] = $monthData ? $monthData->buruk_rate : 0;
+            $trendGiziLebih[] = $monthData ? $monthData->lebih_rate : 0;
 
             // Rata-rata BB & TB per bulan
             $monthRecs = $balitaRecords->filter(fn ($r) => Carbon::parse($r->visit_date)->month === $m);
@@ -503,9 +501,10 @@ class ComputeAnalyticsSnapshot implements ShouldQueue
             // Balita
             'stuntingRate' => $stuntingRate,
             'cakupanImunisasi' => $cakupanImunisasi,
-            'trendNormal' => $trendNormal,
-            'trendStunting' => $trendStunting,
-            'trendRisk' => $trendRisk,
+            'trendGiziBaik' => $trendGiziBaik,
+            'trendGiziKurang' => $trendGiziKurang,
+            'trendGiziBuruk' => $trendGiziBuruk,
+            'trendGiziLebih' => $trendGiziLebih,
             'trendAvgWeight' => $trendAvgWeight,
             'trendAvgHeight' => $trendAvgHeight,
             'nutritionLabels' => array_keys($dist),
