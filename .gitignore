@@ -16,6 +16,7 @@ public/build/
 .env
 .env.local
 *.env.*
+.envrc
 
 # Editor/IDE files
 .vscode/
@@ -36,4 +37,12 @@ htmlcov/
 dist/
 build/
 *.egg-info/
+
+# Local utility scripts/files
+scratch_test.cjs
+unzip.php
+check_gallery.php
+db_import.php
+db-export.bat
+db-import.bat
 ```
