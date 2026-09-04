@@ -1,108 +1,125 @@
-# Posyandu - Website Management for Rekap Data Rekam Medis
+# Posyandu Kenanga - Sistem Informasi & Rekam Medis
 
-## Deskripsi
-
-**Posyandu** adalah aplikasi web berbasis Laravel yang dirancang untuk mempermudah pengelolaan data rekam medis di posyandu. Sistem ini memberikan kemudahan bagi petugas kesehatan dan administrator dalam mengelola dan merekap data pasien, jadwal layanan, artikel edukasi, galeri, serta informasi lainnya yang berkaitan dengan layanan posyandu.
-
-Dengan menggunakan aplikasi ini, para petugas dan pengelola posyandu dapat dengan cepat mengakses dan memanipulasi data pasien, jadwal pemeriksaan, serta berbagai informasi medis lainnya. Selain itu, sistem ini juga menyediakan fitur otentikasi yang memungkinkan akses terbatas berdasarkan peran pengguna seperti **superadmin**, **admin**, dan **kader**.
-
-Aplikasi ini dibangun dengan menggunakan **Laravel** untuk backend dan **Tailwind CSS** untuk styling frontend.
+Sistem informasi berbasis web untuk operasional Posyandu Kenanga (Bekasi Timur). Menggabungkan portal informasi publik untuk warga dengan dashboard administratif untuk kader dan tenaga kesehatan dalam pencatatan antropometri, rekam medis balita & ibu hamil, serta pelaporan bulanan.
 
 ---
 
-## Fitur Utama
+## Modul & Fitur Utama
 
-1. **Manajemen Data Pasien**:
-   - Menambahkan, memperbarui, dan menghapus data pasien.
-   - Melihat informasi lengkap mengenai pasien termasuk rekam medis.
-2. **Manajemen Jadwal**:
-   - Pengaturan jadwal layanan posyandu.
-   - Menambah, memperbarui, dan menghapus jadwal layanan.
-3. **Manajemen Rekam Medis**:
-   - Pengelolaan catatan medis pasien.
-   - Menambah, memperbarui, dan menghapus catatan medis.
-4. **Manajemen Artikel**:
-   - Pengelolaan artikel edukasi tentang kesehatan posyandu.
-   - Menambahkan artikel untuk meningkatkan pemahaman masyarakat.
-5. **Manajemen Galeri**:
-   - Pengelolaan gambar untuk galeri posyandu.
-   - Mengunggah dan mengelola gambar yang berkaitan dengan kegiatan posyandu.
-6. **Autentikasi Pengguna**:
-   - Sistem login dan registrasi untuk petugas kesehatan dan administrator.
-   - Verifikasi email dan reset password untuk keamanan pengguna.
-7. **Role-Based Access Control (RBAC)**:
-   - Pengelolaan akses berdasarkan peran pengguna (superadmin, admin, dan kader).
-8. **Komponen Dinamis**:
-   - Menggunakan Livewire (Flux & Volt) untuk mengelola interaksi dinamis pada antarmuka pengguna.
-9. **Penanganan Error Terintegrasi**:
-   - Pengelolaan error halaman 401, 403, 404, 419, dan 500 untuk pengalaman pengguna yang lebih baik.
+### 1. Portal Publik
+* **Beranda Publik**: Jadwal kegiatan posyandu terdekat, statistik layanan, profil kader, dan galeri kegiatan.
+* **Artikel Kesehatan**: Edukasi gizi, imunisasi, dan kesehatan keluarga dengan filter kategori dan pencarian.
+* **Kontak & Pengaduan**: Kanal komunikasi langsung dengan kader via form kontak dan tautan WhatsApp.
 
----
+### 2. Rekam Medis & Antropometri Balita
+* **Grafik Pertumbuhan WHO (KMS Digital)**: Visualisasi kurva pertumbuhan berat badan, tinggi badan, dan lingkar kepala sesuai standar antropometri WHO.
+* **Pencatatan Masal (Bulk Entry)**: Input cepat pengukuran antropometri saat hari pelaksanaan posyandu tanpa harus membuka profil satu per satu.
+* **Riwayat Imunisasi & Vitamin**: Pencatatan pemberian vaksin dasar dan suplemen (Vitamin A, obat cacing).
 
-## Teknologi yang Digunakan
+### 3. Manajemen Data Master
+* **Data Pasien**: Pengelolaan data anak, ibu hamil, dan lansia. Mendukung import/export via file Excel (`.xlsx`) lengkap dengan validasi template.
+* **Jadwal Posyandu**: Penjadwalan tanggal kegiatan, lokasi pos penimbangan, dan jenis layanan yang disediakan.
+* **Struktur Wilayah**: Pengelompokan data berdasarkan pos posyandu dan pedukuhan/RT/RW.
+* **Galeri Dokumentasi**: Pengelolaan foto dan album kegiatan posyandu.
 
-- **Backend**: Laravel 12.x
-- **Frontend**: Tailwind CSS, Blade Templating Engine
-- **Livewire**: Untuk komponen dinamis dan interaktif di frontend (Flux & Volt)
-- **Database**: MySQL (Default) atau SQLite
-- **Authentication**: Laravel Fortify / Custom Auth
-- **Version Control**: Git, GitHub
+### 4. Pelaporan & Rekapitulasi
+* **Laporan Bulanan**: Rekapitulasi status gizi (stunting, wasting, gizi kurang) dan kehadiran balita.
+* **Export PDF & Excel**: Cetak rekap bulanan dan rekam medis individual dalam format siap cetak (A4/PDF) atau spreadsheet untuk arsip puskesmas.
+
+### 5. Keamanan & Hak Akses (RBAC)
+* **Tiga Tingkat Peran**: `superadmin`, `admin`, dan `kader`.
+* **Activity Log**: Pencatatan riwayat perubahan data krusial untuk audit internal.
+* **Proteksi Brute-Force**: Rate limiting pada endpoint login.
 
 ---
 
-## Panduan Instalasi (Lokal)
+## Tech Stack
 
-Perintah ini akan membantu mengotomatisasi instalasi awal:
+| Layer | Teknologi |
+| --- | --- |
+| **Framework** | Laravel 12.x (PHP ^8.2) |
+| **Frontend** | Tailwind CSS, Blade, Livewire 3 (Volt & Flux) |
+| **Database** | MySQL 8.x (dapat menggunakan SQLite untuk testing) |
+| **Export/Import**| PhpSpreadsheet (`.xlsx`), Barryvdh Laravel DomPDF (`.pdf`) |
+| **Asset Bundler**| Vite |
+| **Test Suite** | Pest PHP / PHPUnit |
 
-```bash
-composer install
-composer setup
-php artisan serve
+---
+
+## Panduan Instalasi Lokal
+
+### Kebutuhan Sistem
+* PHP >= 8.2 (dengan ekstensi `gd`, `zip`, `fileinfo`, `mbstring`, `pdo_mysql`)
+* Composer >= 2.x
+* Node.js >= 18.x & NPM
+* MySQL / MariaDB (misal: via XAMPP atau Laragon)
+
+### Langkah Instalasi
+
+1. **Clone repository**:
+   ```bash
+   git clone https://github.com/Alarave/kenanga-posyandu.git
+   cd kenanga-posyandu
+   ```
+
+2. **Buat database**:
+   Buat database baru di MySQL dengan nama `posyandu_db` (atau sesuaikan di `.env`).
+
+3. **Jalankan script setup otomatis**:
+   ```bash
+   composer install
+   composer setup
+   ```
+   *Script `composer setup` otomatis menyalin `.env.example`, generate `APP_KEY`, menjalankan migrasi + seed data awal (termasuk data referensi standar WHO), menginstal dependensi npm, dan melakukan build aset.*
+
+4. **Jalankan server pengembangan**:
+   ```bash
+   # Opsi A: Jalankan semua service sekaligus (server, queue, logs, vite)
+   composer dev
+
+   # Opsi B: Jalankan manual di terminal terpisah
+   php artisan serve
+   npm run dev
+   ```
+
+Aplikasi dapat diakses melalui browser di `http://127.0.0.1:8000`.
+
+### Kredensial Default (Seeder)
+* **Email**: `admin@posyandu.local`
+* **Password**: `password`
+
+---
+
+## Helper Scripts (Pengembangan Lokal)
+
+Tersedia batch script di root direktori untuk mempermudah operasional tim:
+
+| Script | Fungsi |
+| --- | --- |
+| `db-export.bat` | Backup database `posyandu_db` ke `database/db_snapshot.sql` |
+| `db-import.bat` | Restore database dari `database/db_snapshot.sql` ke database lokal |
+| `start-cloudflare-tunnel.bat` | Ekspos server lokal ke internet via Cloudflare Tunnel |
+| `start-localtunnel.bat` | Ekspos server lokal ke internet via LocalTunnel |
+
+---
+
+## Struktur Direktori Utama
+
 ```
-
-> [!IMPORTANT]
-> Karena menggunakan **MySQL**, Anda harus membuat database kosong bernama `posyandu_db` di MySQL/XAMPP terlebih dahulu sebelum menjalankan perintah `composer setup`.
-
-Perintah `composer setup` akan secara otomatis:
-1. Menyalin `.env.example` menjadi `.env`.
-2. Membuat Application Key (`php artisan key:generate`).
-3. Menjalankan migrasi database beserta seeding data awal (data Admin default, data standar WHO, dll).
-4. Menginstal dependencies npm dan melakukan kompilasi aset frontend.
-
-Setelah instalasi selesai, buka `http://127.0.0.1:8000` di peramban (browser) Anda.
-
-### Akun Login Default
-- **Email**: `admin@posyandu.local`
-- **Password**: `password`
-
----
-
-## Skrip Utilitas (Helper Scripts)
-
-Proyek ini dilengkapi dengan skrip batch (.bat) untuk memudahkan alur kerja pengembangan:
-
-### 1. Sinkronisasi Database
-*   **`db-export.bat`**: Mengekspor database lokal `posyandu_db` Anda ke dalam berkas `database/db_snapshot.sql`. Gunakan ini sebelum melakukan push atau serah-terima pembaruan database.
-*   **`db-import.bat`**: Mengimpor berkas `database/db_snapshot.sql` ke database lokal Anda. Gunakan ini setelah melakukan pull untuk menyelaraskan data Anda dengan anggota tim lainnya.
-
-### 2. Ekspos Server Lokal (Deployment/Tunneling)
-Jika Anda ingin mendemonstrasikan aplikasi kepada orang lain secara online dari komputer lokal Anda:
-*   **`start-cloudflare-tunnel.bat`**: Mengekspos port lokal Anda menggunakan Cloudflare Tunnel (memerlukan `cloudflared` terinstal secara global atau di sistem Anda).
-*   **`start-localtunnel.bat`**: Mengekspos port lokal Anda menggunakan LocalTunnel (dijalankan via NPM `npx localtunnel`). Anda dapat menentukan subdomain kustom yang diinginkan.
-
----
-
-## Kontribusi
-
-Kami menyambut kontribusi dari komunitas untuk meningkatkan aplikasi ini. Berikut adalah langkah-langkah untuk berkontribusi:
-
-1. Fork repository ini.
-2. Buat branch baru untuk fitur atau perbaikan yang Anda kerjakan.
-3. Lakukan perubahan dan pastikan semua pengujian berfungsi dengan benar.
-4. Kirim pull request ke branch `develop`.
-
----
-
-## Repositori GitHub
-
-[https://github.com/Alarave/posyandu-admin.git](https://github.com/Alarave/posyandu-admin.git)
+kenanga-posyandu/
+├── app/
+│   ├── Http/Controllers/   # Controller web publik, admin, dan auth
+│   ├── Livewire/           # Komponen interaktif (Volt/Flux untuk rekam medis, galeri, dll)
+│   ├── Models/             # Model Eloquent (Patient, MedicalRecord, Article, Posyandu, dll)
+│   ├── Services/           # Business logic (ArticleService, ReportService, dll)
+│   └── Traits/             # Shared traits (LogsActivity)
+├── database/
+│   ├── migrations/         # Skema database
+│   └── seeders/            # Seeder data awal & referensi antropometri WHO
+├── resources/
+│   ├── views/              # Blade template (portal publik, layout admin, print template)
+│   └── css/                # Styling Tailwind CSS
+├── routes/
+│   └── web.php             # Routing publik dan admin
+└── storage/                # File upload (thumbnail artikel, galeri, foto pasien)
+```

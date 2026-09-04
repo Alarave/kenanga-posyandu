@@ -25,14 +25,14 @@ class PublicArticleController extends Controller
                 ->first();
         });
 
-        $articles = Cache::remember($cacheKey, 300, function () use ($request) {
+        $articles = Cache::remember($cacheKey, 300, function () use ($request, $featured) {
             return Article::with(['category', 'user'])
                 ->where('status', 'published')
+                ->when($featured, fn ($q) => $q->where('id', '!=', $featured->id))
                 ->filter([
                     'category' => $request->category,
                     'search' => $request->search,
                 ])
-                ->latest('published_at')
                 ->paginate(4)
                 ->withQueryString();
         });

@@ -1,48 +1,70 @@
-```
 # Dependencies
+/vendor/
 node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# Build artifacts
-public/build/
-
-# Temporary files
-*.tmp
-*.swp
-
-# Logs
-*.log
+# Laravel storage & cache
+/public/build/
+/public/hot
+/public/storage
+storage/*.key
+.phpunit.result.cache
+.phpunit.cache/
 
 # Environment files
 .env
+.env.backup
 .env.local
-*.env.*
+.env.*.local
+.env.production
 .envrc
 
-# Editor/IDE files
+# Logs & Temporary files
+*.log
+*.tmp
+*.swp
+*.bak
+
+# Database & Backups
+*.sql
+*.sqlite
+*.sqlite-journal
+
+# IDE & Editor files
 .vscode/
 .idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+*.sublime-project
+*.sublime-workspace
 
-# Python cache
+# Operating System files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Build / Python / Coverage (jika ada tool eksternal)
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
-
-# Coverage reports
 coverage/
 htmlcov/
 .coverage
-
-# Distribution / packaging
 dist/
 build/
 *.egg-info/
 
-# Local utility scripts/files
+# Local Posyandu Utility scripts
 scratch_test.cjs
 unzip.php
 check_gallery.php
 db_import.php
 db-export.bat
 db-import.bat
-```

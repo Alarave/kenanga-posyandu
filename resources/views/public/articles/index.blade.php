@@ -885,7 +885,6 @@
         align-items: flex-start;
         gap: 16px;
         text-decoration: none;
-        group: true;
     }
 
     .popular-num {
@@ -1154,8 +1153,7 @@
                 $window   = 2;
                 $pStart   = max(1, $current - $window);
                 $pEnd     = min($last, $current + $window);
-                $query    = request()->except('page');
-                $pageUrl  = fn($p) => $articles->url($p) . (count($query) ? '&' . http_build_query($query) : '');
+                $pageUrl  = fn($p) => $articles->url($p);
             @endphp
             <div class="articles-pagination">
                 <p class="pagination-info">
@@ -1222,6 +1220,9 @@
             <div>
                 <h4 class="sidebar-section-label">Cari Pengetahuan</h4>
                 <form action="{{ route('public.articles.index') }}" method="GET">
+                    @if(request('category'))
+                        <input type="hidden" name="category" value="{{ request('category') }}">
+                    @endif
                     <div class="sidebar-search">
                         <span class="material-symbols-outlined sidebar-search-icon">search</span>
                         <input type="text" name="search" value="{{ request('search') }}"

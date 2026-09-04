@@ -152,8 +152,8 @@ Route::middleware(['auth'])->group(function () {
     // ---------------------------------------------------------
     Route::middleware(['role:superadmin'])->group(function () {
         Route::get('admin/log-aktivitas', [ActivityLogController::class, 'index'])->name('admin.activity-logs.index');
-        Route::get('admin/log-aktivitas/{activityLog}', [ActivityLogController::class, 'show'])->name('admin.activity-logs.show');
         Route::get('admin/log-aktivitas/statistics', [ActivityLogController::class, 'statistics'])->name('admin.activity-logs.statistics');
+        Route::get('admin/log-aktivitas/{activityLog}', [ActivityLogController::class, 'show'])->name('admin.activity-logs.show');
     });
 
     // ---------------------------------------------------------
@@ -238,8 +238,8 @@ Route::middleware(['auth'])->group(function () {
         Route::put('admin/users/{user}', [UserController::class, 'update']);
         Route::delete('admin/users/{user}', [UserController::class, 'destroy']);
         Route::get('admin/activity-logs', [ActivityLogController::class, 'index']);
-        Route::get('admin/activity-logs/{activityLog}', [ActivityLogController::class, 'show']);
         Route::get('admin/activity-logs/statistics', [ActivityLogController::class, 'statistics']);
+        Route::get('admin/activity-logs/{activityLog}', [ActivityLogController::class, 'show']);
     });
 
     Route::middleware(['role:superadmin,admin,kader'])->group(function () {
@@ -255,7 +255,10 @@ Route::middleware(['auth'])->group(function () {
     Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 });
 
-// Route for 404 page
 Route::fallback(function () {
+    if (request()->expectsJson()) {
+        return response()->json(['message' => 'Not Found'], 404);
+    }
+
     return response()->view('errors.404', [], 404);
 });
