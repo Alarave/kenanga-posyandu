@@ -58,6 +58,16 @@ describe('login behavior', function () {
         $this->assertAuthenticated();
     });
 
+    it('menolak login dengan email huruf kapital/campuran (case-sensitive)', function () {
+        $response = $this->post('/login', [
+            'email' => 'TEST@EXAMPLE.COM',
+            'password' => 'password123',
+        ]);
+
+        $response->assertSessionHasErrors('email');
+        $this->assertGuest();
+    });
+
     it('menolak login dengan email yang tidak valid', function () {
         $response = $this->post('/login', [
             'email' => 'wrong@example.com',
@@ -87,5 +97,30 @@ describe('logout behavior', function () {
 
         $response->assertRedirect('/articles');
         $this->assertGuest();
+    });
+});
+
+describe('login throttling', function () {
+    it('mengunci akun sementara setelah 5 kali gagal login', function () {
+        // Lakukan 5 kali percobaan login gagal
+        for ($i = 0; $i < 5; $i++) {
+            $response = $this->post('/login', [
+                'email' => 'test@example.com',
+                'password' => 'wrongpassword',
+            ]);
+            $response->assertSessionHasErrors('email');
+        }
+
+        // Percobaan ke-6 harus ditolak oleh throttle middleware
+        $response = $this->post('/login', [
+            'email' => 'test@example.com',
+            'password' => 'wrongpassword',
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHasErrors('email');
+        
+        $errors = session('errors')->getBag('default')->get('email');
+        expect($errors[0])->toContain('Terlalu banyak percobaan gagal, coba lagi dalam');
     });
 });

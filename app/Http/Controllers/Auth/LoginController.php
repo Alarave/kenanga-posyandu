@@ -23,8 +23,12 @@ class LoginController extends Controller
             'password' => 'required|string',
         ]);
 
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            return redirect()->route('dashboard')->with('success', 'Berhasil masuk ke sistem.');
+        $user = \App\Models\User::where('email', $request->email)->first();
+
+        if ($user && $user->email === $request->email) {
+            if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+                return redirect()->route('dashboard')->with('success', 'Berhasil masuk ke sistem.');
+            }
         }
 
         return back()->withErrors(['email' => 'Email atau password yang Anda masukkan salah.']);
