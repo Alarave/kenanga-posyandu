@@ -1,0 +1,41 @@
+---
+title: "JUDUL SKRIPSI (MOHON DIISI)"
+subtitle: "Laporan Dokumentasi Pipeline dan Arsitektur Multi-Engine"
+author:
+  - name: "Nama Penulis (Mohon Diisi)"
+    nim: "1234567890"
+  - name: "Nama Mahasiswa 2"
+    nim: "101234568"
+  - name: "Nama Mahasiswa 3"
+    nim: "101234569"
+lecturer: "Dr. Nama Dosen Pengampu, M.Kom."
+lecturer_label: "Dosen Pengampu:"
+course: "Proyek Perangkat Lunak"
+institution: "Nama Universitas"
+faculty: "Fakultas"
+year: "2026"
+date: "Agustus 2026"
+daftar_gambar: true
+daftar_tabel: true
+abstract_id: |
+  Abstrak laporan dalam Bahasa Indonesia. Abstrak ini memberikan ringkasan mengenai latar belakang, metodologi, dan hasil penelitian.
+keywords_id:
+  - Otomatisasi
+  - Dokumen Akademik
+abstract_en: |
+  Abstract of the report in English. This abstract provides a summary of the background, methodology, and research results.
+keywords_en:
+  - Automation
+  - Academic Document
+approval:
+  city: "Jakarta"
+  date: "Oktober 2026"
+  supervisors:
+    - "Dr. Nama Pembimbing 1, M.Kom."
+    - "Dr. Nama Pembimbing 2, M.T."
+  dean:
+    role: "Dekan Fakultas"
+    name: "Prof. Dr. Nama Dekan"
+    nip: "197001012000031001"
+preset: "skripsi-4433"
+...
